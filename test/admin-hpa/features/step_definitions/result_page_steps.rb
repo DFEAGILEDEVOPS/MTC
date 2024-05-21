@@ -281,3 +281,129 @@ And(/^I should see their status set to Incomplete$/) do
   statuses = results_page.results.pupil_list.map {|pupil| pupil.status.text}
   expect(statuses).to eql ["Incomplete", "Incomplete", "Incomplete", "Incomplete", "Incomplete"]
 end
+
+Given(/^I have a pupil who has the Not able to administer attendance code$/) do
+  step 'I am on the school landing page for a school using an account with the sta admin role'
+  step 'I should be able to add a pupil'
+  pupils_not_taking_check_page.load
+  pupils_not_taking_check_page.add_reason.click
+  pupil_reason_page.select_reason('Not able to administer')
+  @pupil_row = pupil_reason_page.pupil_list.rows.first
+  @pupil_forename = @pupil_row.name.text.split(',')[1].strip
+  @pupil_lastname = @pupil_row.name.text.split(',')[0].strip
+  @pupil_row.checkbox.click
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+Then(/^I should see the pupil has the Not able to administer attendance code$/) do
+  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
+  checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
+  school_landing_page.load
+  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  school_landing_page.results.click
+  expect(results_page).to have_heading
+  expect(results_page).to_not have_no_hdf_message
+  expect(results_page).to_not have_hdf_button
+  expect(results_page).to have_ctf_download
+  @name = @details_hash[:first_name] + ', ' +@details_hash[:last_name]
+  expect(results_page.results.pupil_list.find {|row| row.name.text == @name}.status.text).to eql 'Not able to administer'
+  results_page.ctf_download.click
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  wait_until(120,5){File.exist?(ctf_path)}
+  ctf_file = File.read(ctf_path)
+  doc = Nokogiri::XML ctf_file
+  ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
+  pupil_result = ctf_results_hash.find{|h| h[:name].include? @name}
+  expect(pupil_result[:mark]).to eql 'NAA'
+end
+
+Given(/^I have a pupil who has the Maladmin attendance code$/) do
+  step 'the service manager has set a pupil to be annulled because of maladmin'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step 'I am on the school landing page for a school using an account with the sta admin role'
+end
+
+Then(/^I should see the pupil has the Maladministration attendance code$/) do
+  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
+  checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
+  school_landing_page.load
+  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  school_landing_page.results.click
+  expect(results_page).to have_heading
+  expect(results_page).to_not have_no_hdf_message
+  expect(results_page).to_not have_hdf_button
+  expect(results_page).to have_ctf_download
+  @name = @pupil_details["foreName"] + ', ' + @pupil_details['lastName']
+  expect(results_page.results.pupil_list.find {|row| row.name.text == @name}.status.text).to eql 'Maladministration'
+  results_page.ctf_download.click
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  wait_until(120,5){File.exist?(ctf_path)}
+  ctf_file = File.read(ctf_path)
+  doc = Nokogiri::XML ctf_file
+  ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
+  pupil_result = ctf_results_hash.find{|h| h[:name].include? @name}
+  expect(pupil_result[:mark]).to eql 'Q'
+end
+
+
+Given(/^I have a pupil who has the Pupil cheating attendance code$/) do
+  step 'the service manager has set a pupil to be annulled because of pupil_cheating'
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step 'I am on the school landing page for a school using an account with the sta admin role'
+end
+
+Then(/^I should see the pupil has the Pupil cheating attendance code$/) do
+  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
+  checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
+  school_landing_page.load
+  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  school_landing_page.results.click
+  expect(results_page).to have_heading
+  expect(results_page).to_not have_no_hdf_message
+  expect(results_page).to_not have_hdf_button
+  expect(results_page).to have_ctf_download
+  @name = @pupil_details["foreName"] + ', ' + @pupil_details['lastName']
+  expect(results_page.results.pupil_list.find {|row| row.name.text == @name}.status.text).to eql 'Pupil cheating'
+  results_page.ctf_download.click
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  wait_until(120,5){File.exist?(ctf_path)}
+  ctf_file = File.read(ctf_path)
+  doc = Nokogiri::XML ctf_file
+  ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
+  pupil_result = ctf_results_hash.find{|h| h[:name].include? @name}
+  expect(pupil_result[:mark]).to eql 'H'
+end
+
+And(/^the PS report should have the (.+) attendance code$/) do |attendance_code|
+  response = FunctionsHelper.sync_all
+  expect(response.code).to eql 202
+  sleep 30
+  urn = SqlDbHelper.find_school(@school_id)["urn"]
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
+  step 'I have signed in with tech-support'
+  tech_support_page.run_ps_report.click
+  run_ps_report_page.run_ps_report_for_school(urn)
+  p "PS Report triggered at #{Time.now}"
+  wait_until(300, 15) { SqlDbHelper.get_ps_report_job['jobStatus_id'] == 3 }
+  p "PS Report completed at #{Time.now}"
+  filename = JSON.parse(SqlDbHelper.get_ps_report_job['meta'])['filename']
+  filename.slice!('ps-report-staging-')
+  filename.slice!('.csv')
+  ps_report_table_name = "psychometricReport_#{filename.gsub('-', '_')}"
+  pupil_upn = @pupil_details['upn'] unless @pupil_details.nil?
+  pupil_upn = @details_hash[:upn] unless @details_hash.nil?
+  pupil_id = SqlDbHelper.pupil_details_using_school(pupil_upn, @school['id'])['id']
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(ps_report_table_name,pupil_id)
+  case attendance_code
+  when 'Pupil cheating'
+    expected_code = 'H'
+  when 'Maladministration'
+    expected_code = 'Q'
+  when 'Not able to administer'
+    expected_code = 'NAA'
+  else
+    fail 'Attendance code not valid'
+  end
+  expect(ps_report_record['ReasonNotTakingCheck']).to eql expected_code
+end

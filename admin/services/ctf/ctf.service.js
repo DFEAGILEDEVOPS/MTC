@@ -55,7 +55,16 @@ const ctfService = {
    * @return {string|*}
    */
   getCtfResult: function getCtfResult (pupilResult) {
-    // if they have a score they took the check
+    // Short circuit the short circuit: annulled codes where attendanceCode and score are set.
+    switch (pupilResult.attendanceCode) {
+      case pupilAttendanceCodes.pupilCheating.code:
+        return ctfResults.pupilCheating.code
+
+      case pupilAttendanceCodes.maladministration.code:
+        return ctfResults.maladministration.code
+    }
+
+    // If they have a score they took the check
     if (RA.isNotNil(pupilResult.score)) {
       return pupilResult.score
     }
@@ -79,6 +88,9 @@ const ctfService = {
 
       case pupilAttendanceCodes.incorrectRegistration.code:
         return ctfResults.incorrectRegistration.code
+
+      case pupilAttendanceCodes.notAbleToAdminister.code:
+        return ctfResults.notAbleToAdminister.code
     }
 
     // handle not taken check

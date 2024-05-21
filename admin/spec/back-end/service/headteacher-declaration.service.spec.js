@@ -237,28 +237,34 @@ describe('headteacherDeclarationService', () => {
     const attendanceCode = 'XXX'
     const schoolId = 42
     const service = require('../../../services/headteacher-declaration.service')
+    const role = 'TEACHER'
 
     beforeEach(() => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     })
 
     test('throws an error when no pupilIds are provided', async () => {
-      await expect(service.updatePupilsAttendanceCode(null, attendanceCode, userId, schoolId)).rejects.toThrow('pupilIds, code and userId are required')
+      await expect(service.updatePupilsAttendanceCode(null, attendanceCode, userId, schoolId, role)).rejects.toThrow('pupilIds, code and userId are required')
     })
 
     test('throws an error when no code is provided', async () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      await expect(service.updatePupilsAttendanceCode(pupilIds, null, userId, schoolId)).rejects.toThrow('pupilIds, code and userId are required')
+      await expect(service.updatePupilsAttendanceCode(pupilIds, null, userId, schoolId, role)).rejects.toThrow('pupilIds, code and userId are required')
+    })
+
+    test('throws an error when a role is not provided', async () => {
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
+      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId, undefined)).rejects.toThrow('role is required')
     })
 
     test('throws an error when no userId is provided', async () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, null, schoolId)).rejects.toThrow('pupilIds, code and userId are required')
+      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, null, schoolId, role)).rejects.toThrow('pupilIds, code and userId are required')
     })
 
     test('throws an error when at least one pupil is frozen', async () => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockRejectedValue(new Error('frozen'))
-      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)).rejects.toThrow('frozen')
+      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId, role)).rejects.toThrow('frozen')
     })
 
     test('throws an error when an invalid attendance code is provided', async () => {
@@ -266,7 +272,7 @@ describe('headteacherDeclarationService', () => {
       jest.spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').mockImplementation(() => {
         throw new Error('Attendance code not found')
       })
-      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)).rejects.toThrow('Attendance code not found')
+      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId, role)).rejects.toThrow('Attendance code not found')
     })
 
     test('calls pupilAttendanceDataService.sqlUpdateBatch', async () => {
@@ -274,8 +280,8 @@ describe('headteacherDeclarationService', () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       jest.spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').mockResolvedValue(attendanceCodeMock)
       jest.spyOn(pupilAttendanceDataService, 'sqlUpdateBatch').mockResolvedValue('Mock result')
-      await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)
-      expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode)
+      await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId, role)
+      expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode, role)
       expect(pupilAttendanceDataService.sqlUpdateBatch).toHaveBeenCalledWith(pupilIds, attendanceCodeMock.id, userId)
     })
 
@@ -284,7 +290,7 @@ describe('headteacherDeclarationService', () => {
       jest.spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').mockResolvedValue(attendanceCodeMock)
       jest.spyOn(pupilAttendanceDataService, 'sqlUpdateBatch').mockResolvedValue('Mock result')
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)
+      await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId, role)
       expect(redisCacheService.drop).toHaveBeenCalled()
     })
   })

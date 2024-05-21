@@ -351,7 +351,6 @@ Then(/^I should not see any records for the test school$/) do
   filename.slice!('ps-report-staging-')
   filename.slice!('.csv')
   ps_report_table_name = "psychometricReport_#{filename.gsub('-', '_')}"
-  binding.pry
   expect(SqlDbHelper.count_all_ps_records_for_school(ps_report_table_name,@school_id)).to eql 0
 end
 

@@ -990,6 +990,11 @@ describe('report line class', () => {
       expect(res).toBe('Q')
     })
 
+    test('returns NAA for pupils for Not Able To Administer', () => {
+      const res = ReportLineTest.getReasonNotTakingCheck('NOABA')
+      expect(res).toBe('NAA')
+    })
+
     test('returns null if the code is null', () => {
       const res = ReportLineTest.getReasonNotTakingCheck(null)
       expect(res).toBeNull()

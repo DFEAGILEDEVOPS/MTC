@@ -47,7 +47,8 @@ class PupilReasonPage < SitePrism::Page
      'attendance-code-LEFTT' => 'Left school',
      'attendance-code-NOACC' => 'Unable to access',
      'attendance-code-BLSTD' => 'Working below expectation',
-     'attendance-code-JSTAR' => 'Just arrived and unable to establish abilities'
+     'attendance-code-JSTAR' => 'Just arrived and unable to establish abilities',
+     'attendance-code-NOABA' => 'Not able to administer'
     }
   end
 
