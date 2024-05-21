@@ -33,14 +33,21 @@ Before("not @event_auditing", "not @feedback_hook", "not @local_storage_hook") d
   end
 end
 
-Before('@ps_report_hook') do
-  # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"))
-  # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"))
+Before('@no_local_storage_hook') do
+  @current_driver = Capybara.current_driver
+  Capybara.current_driver = :no_local_storage
+  sign_in_page.load
 end
 
 Before('@admin_logout_hook') do
   visit ENV['ADMIN_BASE_URL']
   page.click_link('Sign out') if page.has_link?('Sign out')
+end
+
+
+After('@no_local_storage_hook') do
+  Capybara.current_driver = @current_driver
+  sign_in_page.load
 end
 
 After('@window_date_time_reset_hook') do
