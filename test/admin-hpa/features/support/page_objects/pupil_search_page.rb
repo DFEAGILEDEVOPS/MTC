@@ -11,7 +11,7 @@ class PupilSearchPage < SitePrism::Page
   section :pupil_results, '.govuk-spacious' do
     sections :pupil_row, 'tbody tr' do
       element :created_at, 'td:nth-child(1)'
-      element :name, 'td:nth-child(2)'
+      element :name, 'td a'
       element :dob, 'td:nth-child(3)'
       element :school, 'td:nth-child(4)'
       element :urn, 'td:nth-child(5)'

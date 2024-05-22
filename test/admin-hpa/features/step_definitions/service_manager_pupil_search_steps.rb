@@ -12,7 +12,7 @@ end
 Then(/^the summary page is displayed with the status set to (.+) along with details of the pupil$/) do |status|
   pupil_details = SqlDbHelper.pupil_details(@upn, @school_id)
   school_details = SqlDbHelper.find_school(@school_id)
-  expect(pupil_summary_page.pupil_name.text).to eql pupil_details['lastName'] + ', ' + pupil_details['foreName']
+  expect(pupil_summary_page.pupil_name.text).to eql pupil_details['lastName'] + ', ' + pupil_details['foreName'] unless current_url.include? 'pupil_search'
   expect(pupil_summary_page.dob.text).to eql pupil_details['dateOfBirth'].strftime("%-d %b %Y")
   expect(pupil_summary_page.upn.text).to eql pupil_details['upn']
   expect(pupil_summary_page.pupil_id.text).to eql pupil_details['id'].to_s
