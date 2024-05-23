@@ -54,12 +54,16 @@ export class QrCodeUsageService implements IQrCodeUsageService {
    */
   private _appWasOpenedUsingQrCode = false
 
+  /**
+   * flag to indicate the serice has initialised by reading localStorage
+   */
+  private isInitialised = false;
+
   constructor(
     private storageService: StorageService,
     private monotonicTimeService: MonotonicTimeService,
     private auditEntryFactory:AuditEntryFactory,
     private auditService: AuditService) {
-    this.initialiseFromLocalStorage()
   }
 
   initialiseFromLocalStorage () {
@@ -92,9 +96,12 @@ export class QrCodeUsageService implements IQrCodeUsageService {
       // we have detected QR code uses, so we infer that the app was opened using a QR code
       this._appWasOpenedUsingQrCode = true
     }
+
+    this.isInitialised = true
   }
 
   storeToLocalStorage () {
+    if (!this.isInitialised) this.initialiseFromLocalStorage()
     this.qrCodeArrivalTimestamps.forEach(ts => {
       const auditEntry = this.auditEntryFactory.createQrCodeArrivalAuditEntryClass(ts)
       this.auditService.addEntry(auditEntry)
@@ -106,26 +113,31 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   qrCodeArrival () {
+    if (!this.isInitialised) this.initialiseFromLocalStorage()
     this.qrCodeArrivalTimestamps.push(this.monotonicTimeService.getMonotonicDateTime())
     this.isQrCodeArrivalSession = true
     this._appWasOpenedUsingQrCode = true
   }
 
   closeQrCodeArrivalSession () {
+    if (!this.isInitialised) this.initialiseFromLocalStorage()
     this.isQrCodeArrivalSession = false
   }
 
   qrCodeSubsequentAppUsageIfNeeded () {
+    if (!this.isInitialised) this.initialiseFromLocalStorage()
     if (!this.isQrCodeArrivalSession  && this._appWasOpenedUsingQrCode) {
       this.qrCodeSubsequentAppUses.push(this.monotonicTimeService.getMonotonicDateTime())
     }
   }
 
   appWasOpenedUsingQrCode () {
+    if (!this.isInitialised) this.initialiseFromLocalStorage()
     return this._appWasOpenedUsingQrCode
   }
 
   postLoginHook() {
+    if (!this.isInitialised) this.initialiseFromLocalStorage()
     // The sequencing is important here.
     this.qrCodeSubsequentAppUsageIfNeeded()
     this.closeQrCodeArrivalSession() // This must be after qrCodeSubsequentAppUsageIfNeeded() and not before
