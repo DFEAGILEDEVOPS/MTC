@@ -395,6 +395,23 @@ const controller = {
     }
   },
 
+  purgeQueueConfirm: async function purgeQueueConfirm (req, res, next) {
+    try {
+      const queueName = req.params.queueName
+      if (!queueName) {
+        throw new Error('Queue name not provided')
+      }
+      req.breadcrumbs('Purge Queue')
+      res.locals.pageTitle = 'Purge Queue'
+      res.render('tech-support/queue-purge-confirm', {
+        breadcrumbs: req.breadcrumbs(),
+        queueName
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   getCheckResultsResyncCheck: async function getCheckResultsResyncCheck (req, res, next, error = new ValidationError()) {
     try {
       res.locals.pageTitle = 'Check Results - Resync Check'
