@@ -39,6 +39,11 @@ async function main (options) {
     return usage()
   }
 
+  if (options.count > 4500) {
+    options.count = 4500
+    console.warn('Warning: Azure Service Bus has a limit of 4500 messages per operation. capping at 4500...')
+  }
+
   try {
     await fillQueue(options.queue, options.count)
   } catch (error) {

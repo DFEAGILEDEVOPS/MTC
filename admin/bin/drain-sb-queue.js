@@ -4,6 +4,7 @@
 const commandLineArgs = require('command-line-args')
 const sb = require('@azure/service-bus')
 const config = require('../config')
+const perf = require('perf_hooks')
 
 const optionDefinitions = [
   { name: 'queue', alias: 'q', type: String },
@@ -24,8 +25,11 @@ async function drainQueue (queueName, count) {
     receiveMode: 'receiveAndDelete'
   })
   console.log(`attempting to receive and delete ${count} messages from ${queueName}...`)
+  const start = perf.performance.now()
   await sbReceiver.receiveMessages(count)
-  console.log('queue drain complete')
+  const end = perf.performance.now()
+  const duration = end - start
+  console.log('queue drain complete in', duration, 'ms')
 }
 
 async function main (options) {
@@ -41,6 +45,7 @@ async function main (options) {
     process.exit(1)
   }
   console.log(`Purged queue ${options.queue} successfully`)
+  process.exit(0)
 }
 
 const options = commandLineArgs(optionDefinitions)
