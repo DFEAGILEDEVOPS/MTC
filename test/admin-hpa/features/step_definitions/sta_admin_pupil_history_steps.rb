@@ -229,3 +229,9 @@ Then(/^I should see a list of all checks including the consumed discretionary re
     expect(check.status.text).to eql 'Check complete'
   end
 end
+
+Then(/^I should see the sta admin impersonation is audited$/) do
+  user_id = SqlDbHelper.find_teacher(@teacher)['id']
+  audit_record = SqlDbHelper.get_school_impersonation_audit(user_id,@school['id'])
+  expect(audit_record).to_not be_nil
+end
