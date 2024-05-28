@@ -37,7 +37,7 @@ Feature:
     Examples:
       | type       |
       | Official   |
-      | Try it out |
+      | Try it out | 
 
   Scenario Outline: Pupil logged in is displayed in the check history for a pupil
     Given pupil has logged in to a <type> check
