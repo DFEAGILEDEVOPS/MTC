@@ -108,3 +108,9 @@ end
 Then(/^the school password should be unmasked$/) do
   expect(view_and_print_live_pins_page.pupil_list.rows.first.school_password.text).to eql SqlDbHelper.find_school(@school_id)['pin']
 end
+
+Then(/^I should see the helpdesk impersonation is audited$/) do
+  user_id = SqlDbHelper.find_teacher(@teacher)['id']
+  audit_record = SqlDbHelper.get_school_impersonation_audit(user_id,@school['id'])
+  expect(audit_record).to_not be_nil
+end
