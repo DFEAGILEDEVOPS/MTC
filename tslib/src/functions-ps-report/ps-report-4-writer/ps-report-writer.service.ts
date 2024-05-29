@@ -227,16 +227,16 @@ export class PsReportWriterService {
         options: config.Sql.options
       }
     } else {
-        // normal connect
+      // normal connect
       sqlConfig = {
-          database: config.Sql.database,
-          server: config.Sql.server,
-          port: config.Sql.port,
-          requestTimeout: config.Sql.censusRequestTimeout,
-          connectionTimeout: config.Sql.connectionTimeout,
-          user: config.Sql.user,
-          password: config.Sql.password,
-          options: config.Sql.options
+        database: config.Sql.database,
+        server: config.Sql.server,
+        port: config.Sql.port,
+        requestTimeout: config.Sql.censusRequestTimeout,
+        connectionTimeout: config.Sql.connectionTimeout,
+        user: config.Sql.user,
+        password: config.Sql.password,
+        options: config.Sql.options
       }
     }
 
