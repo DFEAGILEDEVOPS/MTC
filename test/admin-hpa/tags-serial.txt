@@ -1,6 +1,5 @@
-# tags in this file are candidates for not running in parallel due to their nature
-@build_commit_ping_feature
 @assign_to_check_window_feature
+@build_commit_ping_feature
 @check_time_limits_feature
 @create_check_window_feature
 @csrf_token_feature
