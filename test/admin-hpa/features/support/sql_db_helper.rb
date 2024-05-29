@@ -836,4 +836,12 @@ class SqlDbHelper
     ps_report
   end
 
+  def self.get_school_impersonation_audit(user_id, school_id)
+    sql = "SELECT * FROM mtc_admin.schoolImpersonationAudit WHERE school_id = #{school_id} and user_id = #{user_id}"
+    result = SQL_CLIENT.execute(sql)
+    audit = result.first
+    result.cancel
+    audit
+  end
+
 end
