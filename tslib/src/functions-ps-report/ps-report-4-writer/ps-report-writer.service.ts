@@ -209,13 +209,14 @@ export class PsReportWriterService {
      * error in this block means we are running in Azure.
      */
     const result = await this.sqlService.query(sql2, [])
-
     this.logger.verbose(`${this.logServiceName} OS is ${JSON.stringify(result)}`)
+    let sqlConfig: mssql.config
+
     if (result[0].engineEdition === 'Enterprise' || result[0].engineEdition === 'Azure SQL Edge') {
       this.logger.info(`${this.logServiceName}: SQL Server is (likely) running on Linux`)
       // SQL Server on Linux does not have a Bulk Upload permission, you have to use the `sa` user.
       // This is only suitable for local dev.
-      const sqlConfig: mssql.config = {
+      sqlConfig = {
         database: config.Sql.database,
         server: config.Sql.server,
         port: config.Sql.port,
@@ -225,8 +226,22 @@ export class PsReportWriterService {
         password: config.Sql.LocalAdmin.password,
         options: config.Sql.options
       }
-      await mssql.connect(sqlConfig)
+    } else {
+      // normal connect
+      sqlConfig = {
+        database: config.Sql.database,
+        server: config.Sql.server,
+        port: config.Sql.port,
+        requestTimeout: config.Sql.censusRequestTimeout,
+        connectionTimeout: config.Sql.connectionTimeout,
+        user: config.Sql.user,
+        password: config.Sql.password,
+        options: config.Sql.options
+      }
     }
+
+    // Connect to sql for Azure and local - we will upload via mssql directly
+    await mssql.connect(sqlConfig)
 
     // This file format is extremely finicky.
     // 1. The row must end in '\r\n'

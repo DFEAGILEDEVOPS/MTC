@@ -55,7 +55,7 @@ install_functions () {
   cd ${scriptDir}/func-ps-report
   yarn install && yarn clean && yarn build
 
-  mybanner "Sycnchonising local function settings with master values from .env"
+  mybanner "Synchronising local function settings with master values from .env"
   ${scriptDir}/bin/sync-local-settings.js
 }
 
