@@ -141,3 +141,7 @@ deploy.zip
 *~
 test/pupil-hpa/data/*.csv
 test/pupil-hpa/data/*.csv
+
+# E2E Test output
+test/admin-hpa/out
+test/pupil-hpa/out
