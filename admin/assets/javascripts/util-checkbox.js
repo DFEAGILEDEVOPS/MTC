@@ -201,6 +201,7 @@ var stickyBanner = {
           // prevent form submission for print pins form
           var printPinsForm = document.getElementById('printPinsForm')
           !printPinsForm && form.submit()
+          $(this).attr('disabled', 'disabled')
         })
       }
       // move the sticky banner to be a sibling of content and footer
