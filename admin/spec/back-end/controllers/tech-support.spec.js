@@ -128,6 +128,22 @@ describe('tech-support controller', () => {
     })
   })
 
+  describe('/clear-service-bus-queue', () => {
+    test('GET: should render the page', async () => {
+      const reqParams = getReqParams('/tech-support/clear-service-bus-queue', 'GET')
+      const req = getRequest(reqParams)
+      const queueName = 'test-queue'
+      req.params.queueName = queueName
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      await sut.getClearServiceBusQueue(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe(`Clear Service Bus Queue: ${queueName}`)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
   describe('/results-resync-check', () => {
     test('GET: should render the page', async () => {
       const req = getRequest(getReqParams('/tech-support/results-resync-check', 'GET'))
