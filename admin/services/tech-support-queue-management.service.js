@@ -1,12 +1,12 @@
 'use strict'
 
-const serviceBusQueueMetadataService = require('./data-access/service-bus-queue-metadata.service')
+const serviceBusQueueAdminService = require('./data-access/service-bus-queue-admin.service')
 const storageQueueMetadataService = require('./data-access/azure-queue.data.service')
 const R = require('ramda')
 
 const service = {
   getServiceBusQueueSummary: async function getServiceBusQueueSummary () {
-    return serviceBusQueueMetadataService.getAllQueueMessageCounts()
+    return serviceBusQueueAdminService.getAllQueueMessageCounts()
   },
 
   getStorageAccountQueueSummary: async function getStorageAccountQueueSummary () {
@@ -25,6 +25,10 @@ const service = {
       })
     }
     return toReturn
+  },
+
+  clearServiceBusQueue: async function clearServiceBusQueue (queueName) {
+    return serviceBusQueueAdminService.drainQueue(queueName)
   }
 }
 
