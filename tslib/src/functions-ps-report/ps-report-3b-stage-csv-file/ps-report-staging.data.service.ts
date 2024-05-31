@@ -24,9 +24,11 @@ export class PsReportStagingDataService {
    */
   public async createAppendBlock (): Promise<void> {
     const containerService = this.blobService.getContainerClient(this.containerName)
+    // Create the container if missing
     await containerService.createIfNotExists()
     const appendBlobService = containerService.getAppendBlobClient(this.blobName)
-    await appendBlobService.create()
+    // Create the CSV file.
+    await appendBlobService.createIfNotExists()
   }
 
   /**
