@@ -4,7 +4,6 @@
 const sut = require('../../../services/queue-management.service')
 const storageDataService = require('../../../services/data-access/azure-queue.data.service')
 const serviceBusQueueAdminService = require('../../../services/data-access/service-bus-queue-admin.data.service')
-const service = require('../../../services/check-diagnostic.service')
 
 describe('tech support queue management service', () => {
   afterEach(() => {
