@@ -398,10 +398,11 @@ const controller = {
   getClearServiceBusQueue: async function getClearServiceBusQueue (req, res, next, error = new ValidationError()) {
     try {
       const queueName = req.params.queueName
-      if (!queueName) {
+/*       if (!queueName) {
         res.redirect('/tech-support/queue-overview')
-      }
+      } */
       const title = `Clear Service Bus Queue: ${queueName}`
+      req.breadcrumbs('Queue Overview', '/tech-support/queue-overview')
       req.breadcrumbs(title)
       res.locals.pageTitle = title
       res.render('tech-support/queue-purge-confirm', {

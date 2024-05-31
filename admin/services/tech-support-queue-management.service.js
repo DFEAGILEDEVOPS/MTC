@@ -28,7 +28,7 @@ const service = {
   },
 
   clearServiceBusQueue: async function clearServiceBusQueue (queueName) {
-    return serviceBusQueueAdminService.drainQueue(queueName)
+    return serviceBusQueueAdminService.clearQueue(queueName)
   }
 }
 
