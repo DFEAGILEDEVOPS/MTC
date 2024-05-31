@@ -259,10 +259,10 @@ export class PsReportWriterService {
   }
 
   public async cleanup (filename: string): Promise<void> {
-    this.logger.info(`${this.logServiceName}: cleanup() called`)
-    // Remove CSV file
-    const blobService = new BlobService()
-    await blobService.deleteBlob(filename, containerName)
-    this.logger.info(`${this.logServiceName}: csv file ${filename} deleted.`)
+    this.logger.info(`${this.logPrefix()}: cleanup() called but not actioned.  File left as-is.`)
+    // // Remove CSV file
+    // const blobService = new BlobService()
+    // await blobService.deleteBlob(filename, containerName)
+    // this.logger.info(`${this.logServiceName}: csv file ${filename} deleted.`)
   }
 }
