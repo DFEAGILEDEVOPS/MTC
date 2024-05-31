@@ -28,7 +28,9 @@ const service = {
   },
 
   clearServiceBusQueue: async function clearServiceBusQueue (queueName) {
-    return serviceBusQueueAdminService.clearQueue(queueName)
+    const counts = await serviceBusQueueAdminService.getQueueMessageCount(queueName)
+    if (counts.activeMessageCount === 0) return
+    return serviceBusQueueAdminService.clearQueue(queueName, counts.activeMessageCount)
   }
 }
 

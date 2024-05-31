@@ -40,6 +40,10 @@ const serviceBusQueueAdminService = {
       await queueReceiver.close()
       await sbClient.close()
     }
+  },
+
+  getQueueMessageCount: async function getQueueMessageCount (queueName) {
+    return getQueueMessageCount(queueName)
   }
 }
 
