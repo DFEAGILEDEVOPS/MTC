@@ -21,8 +21,9 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
   funcName = funcName + ': ' + context.invocationId
   try {
     context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
-    dbTable = await service.createDestinationTableAndView(incomingMessage)
+    dbTable = await service.createDestinationTableAndViewIfNotExists(incomingMessage)
     context.log.verbose(`${funcName}: new table created ${dbTable}`)
+
     await service.prepareForUpload(incomingMessage.filename)
     context.log(`${funcName}: starting bulk upload from ${incomingMessage.filename} into table ${dbTable}`)
     await service.bulkUpload(incomingMessage, dbTable) // the container is *known* and is stored in the location path of the database 'EXTERNAL DATA SOURCE'.

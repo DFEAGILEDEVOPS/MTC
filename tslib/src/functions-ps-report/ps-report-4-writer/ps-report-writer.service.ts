@@ -23,11 +23,31 @@ export class PsReportWriterService {
     return `${this.logServiceName}: ${this.invocationId}`
   }
 
+  public async tableExists (tableName: string): Promise<boolean> {
+    const sql = `
+    SELECT
+      *
+    FROM
+      information_schema.tables
+    WHERE
+      table_name = @name`
+      const params = [
+        { name: 'name', value: tableName, type: mssql.NVarChar }
+      ]
+
+    const res = this.sqlService.query(sql, params)
+
+    if (res !== null) {
+      return true
+    }
+
+    return false
+  }
   /**
    *
    * @returns Create a new ps report table and return the table name
    */
-  public async createDestinationTableAndView (incomingMessage: PsReportStagingCompleteMessage): Promise<string> {
+  public async createDestinationTableAndViewIfNotExists (incomingMessage: PsReportStagingCompleteMessage): Promise<string> {
     let ds = moment().format('YYYY_MM_DDTHHmm') // default
     // Match 'ps-report-staging-2024-02-27-1510.csv'
     const matches = incomingMessage.filename.match(/\d\d\d\d-\d\d-\d\d-\d\d\d\d/)
@@ -35,6 +55,12 @@ export class PsReportWriterService {
       ds = matches[0].replaceAll('-', '_')
     }
     const newTableName = `psychometricReport_${ds}`
+
+    const tableExists = await this.tableExists(newTableName)
+    if (tableExists) {
+      throw new Error('Table already exists: ' + newTableName)
+    }
+
     const sql1 = `
       CREATE TABLE mtc_results.${newTableName} (
         PupilId int NOT NULL CONSTRAINT [PK_${newTableName}] PRIMARY KEY,
