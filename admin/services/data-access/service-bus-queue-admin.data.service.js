@@ -37,7 +37,7 @@ const serviceBusQueueAdminService = {
       await queueReceiver.receiveMessages(messageCount)
     } finally {
       await queueReceiver.close()
-      // await sbClient.close()
+      await sbClient.close()
     }
   },
 
