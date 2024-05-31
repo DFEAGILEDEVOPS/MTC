@@ -5,6 +5,8 @@ import { BlobService } from '../../azure/blob-service'
 import * as mssql from 'mssql'
 import config from '../../config'
 import type { PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
+import * as R from 'ramda'
+
 const containerName = 'ps-report-bulk-upload'
 
 export class PsReportWriterService {
@@ -31,18 +33,18 @@ export class PsReportWriterService {
       information_schema.tables
     WHERE
       table_name = @name`
-      const params = [
-        { name: 'name', value: tableName, type: mssql.NVarChar }
-      ]
 
+    const params = [
+      { name: 'name', value: tableName, type: mssql.NVarChar }
+    ]
     const res = this.sqlService.query(sql, params)
-
-    if (res !== null) {
+    // empty: res => {}
+    if (R.isEmpty(res)) {
       return true
     }
-
     return false
   }
+
   /**
    *
    * @returns Create a new ps report table and return the table name
