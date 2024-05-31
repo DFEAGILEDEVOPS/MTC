@@ -4,7 +4,7 @@ import { PsReportWriterService } from './ps-report-writer.service'
 import { type PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
 import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
-const funcName = 'ps-report-4-writer'
+let funcName = 'ps-report-4-writer'
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
   const start = performance.now()
@@ -16,8 +16,9 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
 
 async function bulkUpload (context: Context, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
   let dbTable: string = ''
-  const service = new PsReportWriterService(context.log)
+  const service = new PsReportWriterService(context.log, context.invocationId)
   const jobDataService = new JobDataService()
+  funcName = funcName + ': ' + context.invocationId
   try {
     context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
     dbTable = await service.createDestinationTableAndView(incomingMessage)
