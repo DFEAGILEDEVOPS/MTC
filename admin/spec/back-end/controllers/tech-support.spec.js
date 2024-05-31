@@ -142,6 +142,20 @@ describe('tech-support controller', () => {
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
     })
+
+    test('POST: should return validation error if queue name does not match', async () => {
+      const reqParams = getReqParams('/tech-support/clear-service-bus-queue', 'POST')
+      const req = getRequest(reqParams)
+      req.body.confirmedQueueName = 'test-queue'
+      req.params.queueName = 'wrong-queue'
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(sut, 'getClearServiceBusQueue').mockResolvedValue()
+      await sut.postClearServiceBusQueue(req, res, next)
+      expect(sut.getClearServiceBusQueue).toHaveBeenCalledTimes(1)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
   })
 
   describe('/results-resync-check', () => {

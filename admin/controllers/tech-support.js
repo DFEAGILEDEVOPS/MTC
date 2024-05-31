@@ -395,7 +395,7 @@ const controller = {
     }
   },
 
-  getClearServiceBusQueue: async function getClearServiceBusQueue (req, res, next) {
+  getClearServiceBusQueue: async function getClearServiceBusQueue (req, res, next, error = new ValidationError()) {
     try {
       const queueName = req.params.queueName
       if (!queueName) {
@@ -406,8 +406,26 @@ const controller = {
       res.locals.pageTitle = title
       res.render('tech-support/queue-purge-confirm', {
         breadcrumbs: req.breadcrumbs(),
-        queueName
+        queueName,
+        err: error || new ValidationError()
       })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postClearServiceBusQueue: async function postClearServiceBusQueue (req, res, next) {
+    try {
+      const confirmedQueueName = req.body.confirmedQueueName
+      const queueName = req.params.queueName
+      if (confirmedQueueName !== queueName) {
+        const validationError = new ValidationError()
+        validationError.addError('confirmedQueueName', 'Queue name does not match')
+        return controller.getClearServiceBusQueue(req, res, next, validationError)
+      }
+      await queueMgmtService.clearServiceBusQueue(queueName)
+      req.flash('info', `Queue '${queueName}' cleared`)
+      res.redirect('/tech-support/queue-overview')
     } catch (error) {
       return next(error)
     }
