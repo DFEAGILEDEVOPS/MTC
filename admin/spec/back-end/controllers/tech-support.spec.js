@@ -4,7 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
-const queueMgmtService = require('../../../services/tech-support-queue-management.service')
+const queueMgmtService = require('../../../services/queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../../../services/tech-support/check-submit/check-submit.service')

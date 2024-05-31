@@ -1,9 +1,9 @@
 'use strict'
 
 /* global describe, test, expect, jest, afterEach */
-const sut = require('../../../services/tech-support-queue-management.service')
+const sut = require('../../../services/queue-management.service')
 const storageDataService = require('../../../services/data-access/azure-queue.data.service')
-const serviceBusQueueAdminService = require('../../../services/data-access/service-bus-queue-admin.service')
+const serviceBusQueueAdminService = require('../../../services/data-access/service-bus-queue-admin.data.service')
 const service = require('../../../services/check-diagnostic.service')
 
 describe('tech support queue management service', () => {
@@ -55,9 +55,9 @@ describe('tech support queue management service', () => {
       const queueName = 'q1'
       const activeMessageCount = 5
       jest.spyOn(serviceBusQueueAdminService, 'clearQueue').mockResolvedValueOnce()
-      jest.spyOn(serviceBusQueueAdminService, 'getQueueMessageCount').mockResolvedValueOnce({ activeMessageCount })
+      jest.spyOn(serviceBusQueueAdminService, 'getQueueActiveMessageCount').mockResolvedValueOnce(activeMessageCount)
       await sut.clearServiceBusQueue(queueName)
-      expect(serviceBusQueueAdminService.getQueueMessageCount).toHaveBeenCalledTimes(1)
+      expect(serviceBusQueueAdminService.getQueueActiveMessageCount).toHaveBeenCalledTimes(1)
       expect(serviceBusQueueAdminService.clearQueue).toHaveBeenCalledWith(queueName, activeMessageCount)
     })
 
@@ -65,9 +65,9 @@ describe('tech support queue management service', () => {
       const queueName = 'q1'
       const activeMessageCount = 0
       jest.spyOn(serviceBusQueueAdminService, 'clearQueue').mockResolvedValueOnce()
-      jest.spyOn(serviceBusQueueAdminService, 'getQueueMessageCount').mockResolvedValueOnce({ activeMessageCount })
+      jest.spyOn(serviceBusQueueAdminService, 'getQueueActiveMessageCount').mockResolvedValueOnce(activeMessageCount)
       await sut.clearServiceBusQueue(queueName)
-      expect(serviceBusQueueAdminService.getQueueMessageCount).toHaveBeenCalledTimes(1)
+      expect(serviceBusQueueAdminService.getQueueActiveMessageCount).toHaveBeenCalledTimes(1)
       expect(serviceBusQueueAdminService.clearQueue).not.toHaveBeenCalled()
     })
   })

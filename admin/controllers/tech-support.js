@@ -7,7 +7,7 @@ const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
-const queueMgmtService = require('../services/tech-support-queue-management.service')
+const queueMgmtService = require('../services/queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../services/tech-support/check-submit/check-submit.service')
@@ -425,7 +425,6 @@ const controller = {
         return controller.getClearServiceBusQueue(req, res, next, validationError)
       }
       await queueMgmtService.clearServiceBusQueue(queueName)
-      req.flash('info', `Queue '${queueName}' cleared`)
       res.redirect('/tech-support/queue-overview')
     } catch (error) {
       return next(error)

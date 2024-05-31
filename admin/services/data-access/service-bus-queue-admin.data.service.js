@@ -29,21 +29,21 @@ const serviceBusQueueAdminService = {
     return await Promise.all(messageCountPromises)
   },
 
-  clearQueue: async function clearQueue (queueName) {
+  clearQueue: async function clearQueue (queueName, messageCount) {
     let sbClient, queueReceiver
     try {
       sbClient = new sb.ServiceBusClient(config.ServiceBus.connectionString)
       queueReceiver = sbClient.createReceiver(queueName, { receiveMode: 'receiveAndDelete' })
-      const queueMeta = await getQueueMessageCount(queueName)
-      await queueReceiver.receiveMessages(queueMeta.activeMessageCount)
+      await queueReceiver.receiveMessages(messageCount)
     } finally {
       await queueReceiver.close()
-      await sbClient.close()
+      // await sbClient.close()
     }
   },
 
-  getQueueMessageCount: async function getQueueMessageCount (queueName) {
-    return getQueueMessageCount(queueName)
+  getQueueActiveMessageCount: async function getQueueActiveMessageCount (queueName) {
+    const counts = await getQueueMessageCount(queueName)
+    return counts.activeMessageCount
   }
 }
 
