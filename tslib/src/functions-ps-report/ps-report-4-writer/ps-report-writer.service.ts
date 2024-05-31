@@ -254,7 +254,8 @@ export class PsReportWriterService {
           ROWTERMINATOR = '\r\n')
       ;`
     await mssql.query(sql)
-    await this.cleanup(sFilename)
+    // tmp
+    // await this.cleanup(sFilename)
   }
 
   public async cleanup (filename: string): Promise<void> {
