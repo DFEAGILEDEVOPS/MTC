@@ -37,7 +37,7 @@ export class PsReportWriterService {
     const params = [
       { name: 'name', value: tableName, type: mssql.NVarChar }
     ]
-    const res = this.sqlService.query(sql, params)
+    const res = await this.sqlService.query(sql, params)
     // empty: res => {}
     if (R.isEmpty(res)) {
       return true
