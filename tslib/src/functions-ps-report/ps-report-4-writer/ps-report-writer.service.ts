@@ -38,11 +38,12 @@ export class PsReportWriterService {
       { name: 'name', value: tableName, type: mssql.NVarChar }
     ]
     const res = await this.sqlService.query(sql, params)
-    // empty: res => {}
+    // this.logger.verbose(`${this.logPrefix()}: res: ${JSON.stringify(res)}`)
+    // empty: res => []
     if (R.isEmpty(res)) {
-      return true
+      return false
     }
-    return false
+    return true
   }
 
   /**
