@@ -20,7 +20,8 @@ export class PsReportLogger implements ILogger {
       generatedAt: moment(),
       message,
       source: this.source,
-      level
+      level,
+      invocationId: this.context.invocationId
     }
     return formatter.formatEntry(entry)
   }
