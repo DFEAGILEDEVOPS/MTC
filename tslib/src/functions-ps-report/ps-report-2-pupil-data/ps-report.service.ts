@@ -24,6 +24,7 @@ export class PsReportService {
   }
 
   async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
+    this.logger.verbose(`${logName}.process() called with ${JSON.stringify(incomingMessage)}`)
     let pupils: readonly Pupil[]
     let school: School | undefined
     schoolCounter += 1
