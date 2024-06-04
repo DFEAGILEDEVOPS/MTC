@@ -8,6 +8,7 @@ import { jsonReviver } from '../../common/json-reviver'
 import { PsReportStagingDataService } from './ps-report-staging.data.service'
 import { CsvTransformer } from './csv-transformer'
 import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
+import * as crypto from 'crypto'
 
 const functionName = 'ps-report-3b-stage-csv-file'
 let logPrefix = functionName
@@ -97,7 +98,9 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
         // This message should be delivered once - duplicatePrevention is on the sb queue.
         const completeMessage: PsReportStagingCompleteMessage = {
           filename: incomingMessage.filename,
-          jobUuid: incomingMessage.jobUuid
+          jobUuid: incomingMessage.jobUuid,
+          // experimental : azure may not respect this in the message body.
+          messageId: crypto.createHash('md5').update(incomingMessage.filename + incomingMessage.jobUuid).digest('hex')
         }
         context.bindings.outputData = [completeMessage]
         await disconnect()
