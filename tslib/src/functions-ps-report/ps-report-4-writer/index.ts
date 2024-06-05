@@ -38,8 +38,7 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
       await jobDataService.setJobComplete(incomingMessage.jobUuid,
         JobStatusCode.Failed, JSON.stringify(error))
     }
-    // Live debugging: 2024-05-31 for PS report. To be re-enabled.
-    // await service.cleanup(incomingMessage.filename)
+    await service.cleanup(incomingMessage.filename)
   }
 }
 
