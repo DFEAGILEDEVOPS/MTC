@@ -87,10 +87,8 @@ export class PsReportService {
    * Determine if the staging start message should be sent to the `ps-report-3-staging` function
    * which is listening for message on the sb queue `ps-report-staging-start`
    *
-   * By default it will send the message when there are 5% of the totalMessages remaining. E.g.
-   * 5% of 16,908 is 845.4 which will be rounded up to 846.
+   * By default it will send the message when there is 1 remaining message.
    *
-   * In local environments, 5% of 5 is 0.25 and ceil() will round that up to 1.
    *
    * Similar logic works for the test environment where ps reports will be generated for a single school.
    *
@@ -100,23 +98,14 @@ export class PsReportService {
     // See how many message are left on the "schools" sb queue
     const inputQueueName = 'ps-report-schools'
     const queueRuntimeProperties = await this.serviceBusAdministrationClient.getQueueRuntimeProperties(inputQueueName)
-
-    /**
-     * The number of messages left of the queue at which point we want to tell the staging-service to start running.
-     */
-
-    // const targetLowMessageCount = Math.ceil((config.PsReport.ListSchools.PercentLeftToStartStaging / 100) * incomingMessage.totalNumberOfSchools)
     const msgCount = queueRuntimeProperties.activeMessageCount
-
     if (msgCount === undefined || msgCount === null) {
       return false
     }
 
-    // Look for a low message count.  Ideally, this will be the last message after all the messages have been processed, but a
-    // low message count is also possible if the first school has only a few pupils, so it's always possible this will trigger
-    // at the beginning.
+    // Look for the last message on the queue.  This _could_ also match the first message on the queue if a school had a single pupil in Y4.
     if (msgCount <= 1) {
-      this.logger.verbose(`shouldStartStaging() returning true as there are ${msgCount} messages left from a total of ${incomingMessage.totalNumberOfSchools} and the threshold is ${config.PsReport.ListSchools.PercentLeftToStartStaging}%`)
+      this.logger.verbose(`shouldStartStaging() returning true as there are ${msgCount} messages left from a total of ${incomingMessage.totalNumberOfSchools}`)
       return true
     }
 
