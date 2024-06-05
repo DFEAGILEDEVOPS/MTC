@@ -38,7 +38,7 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
       await jobDataService.setJobComplete(incomingMessage.jobUuid,
         JobStatusCode.Failed, JSON.stringify(error))
     }
-    await service.cleanup(incomingMessage.filename)
+    // await service.cleanup(incomingMessage.filename)
   }
 }
 
