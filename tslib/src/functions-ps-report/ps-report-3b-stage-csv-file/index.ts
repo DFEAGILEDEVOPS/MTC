@@ -98,7 +98,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
         // ToDo: move away from output bindinds and send this message using the sbClient instead.
         const completeMessage: PsReportStagingCompleteMessage = {
           filename: incomingMessage.filename,
-          jobUuid: incomingMessage.jobUuid,
+          jobUuid: incomingMessage.jobUuid
         }
         context.bindings.outputData = [completeMessage]
         await disconnect()

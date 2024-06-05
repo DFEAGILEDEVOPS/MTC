@@ -13,7 +13,7 @@ import config from '../../config'
  * The UUID is used to fetch all pupils for the school
  */
 
- export interface IOutputBinding {
+export interface IOutputBinding {
   psReportPupilMessage: PupilResult[]
 }
 

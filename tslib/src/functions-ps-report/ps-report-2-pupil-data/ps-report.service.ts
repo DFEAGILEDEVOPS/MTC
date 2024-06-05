@@ -114,7 +114,7 @@ export class PsReportService {
 
     // Look for a low message count.  Ideally, this will be the last message after all the messages have been processed, but a
     // low message count is also possible if the first school has only a few pupils, so it's always possible this will trigger
-    // at the beginning. 
+    // at the beginning.
     if (msgCount <= 1) {
       this.logger.verbose(`shouldStartStaging() returning true as there are ${msgCount} messages left from a total of ${incomingMessage.totalNumberOfSchools} and the threshold is ${config.PsReport.ListSchools.PercentLeftToStartStaging}%`)
       return true
