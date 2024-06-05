@@ -15,14 +15,14 @@ export class PsReportService {
   private readonly logger: ILogger
   private readonly serviceBusAdministrationClient: ServiceBusAdministrationClient
 
-  constructor (outputBinding: IOutputBinding, logger: ILogger, dataService?: IPsReportDataService) {
+  constructor (outputBinding: IOutputBinding, logger: ILogger, dataService?: IPsReportDataService, serviceBusAdminClient?: ServiceBusAdministrationClient) {
     this.outputBinding = outputBinding
     this.logger = logger
     this.dataService = dataService ?? new PsReportDataService(this.logger)
     if (config.ServiceBus.ConnectionString === undefined || config.ServiceBus.ConnectionString === null) {
       throw new Error('Unable to connect to service bus.  Please check the config.')
     }
-    this.serviceBusAdministrationClient = new ServiceBusAdministrationClient(config.ServiceBus.ConnectionString)
+    this.serviceBusAdministrationClient = serviceBusAdminClient ?? new ServiceBusAdministrationClient(config.ServiceBus.ConnectionString)
   }
 
   async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
@@ -93,6 +93,8 @@ export class PsReportService {
    * Similar logic works for the test environment where ps reports will be generated for a single school.
    *
    * The ps-report-3-staging function will then start assembling the CSV file for bulk upload.
+   *
+   * TODO: refactror the below two function into somewhere suitable for data services.
    */
   private async shouldStartStaging (incomingMessage: PsReportSchoolFanOutMessage): Promise<boolean> {
     // See how many message are left on the "schools" sb queue
