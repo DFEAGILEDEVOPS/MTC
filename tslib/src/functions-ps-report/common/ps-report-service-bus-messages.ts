@@ -35,5 +35,4 @@ export interface PsReportStagingStartMessage {
 export interface PsReportStagingCompleteMessage {
   filename: string
   jobUuid: string
-  messageId?: string
 }
