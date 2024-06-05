@@ -106,7 +106,7 @@ export class PsReportService {
      */
 
     // const targetLowMessageCount = Math.ceil((config.PsReport.ListSchools.PercentLeftToStartStaging / 100) * incomingMessage.totalNumberOfSchools)
-    const msgCount = queueRuntimeProperties.totalMessageCount
+    const msgCount = queueRuntimeProperties.activeMessageCount
 
     if (msgCount === undefined || msgCount === null) {
       return false
