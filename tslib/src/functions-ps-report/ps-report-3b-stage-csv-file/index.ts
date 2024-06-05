@@ -94,7 +94,8 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
         context.log(`${logPrefix}: exiting (and sending output binding message) as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
         done = true
 
-        // This message should be delivered once - duplicatePrevention is on the sb queue.
+        // This message should be delivered once - duplicatePrevention is on the sb queue, but outputbindings do not allow a messageId to be set.
+        // ToDo: move away from output bindinds and send this message using the sbClient instead.
         const completeMessage: PsReportStagingCompleteMessage = {
           filename: incomingMessage.filename,
           jobUuid: incomingMessage.jobUuid

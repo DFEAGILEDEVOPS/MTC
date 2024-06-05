@@ -37,12 +37,13 @@ export class PsReportWriterService {
     const params = [
       { name: 'name', value: tableName, type: mssql.NVarChar }
     ]
-    const res = this.sqlService.query(sql, params)
-    // empty: res => {}
+    const res = await this.sqlService.query(sql, params)
+    // this.logger.verbose(`${this.logPrefix()}: res: ${JSON.stringify(res)}`)
+    // empty: res => []
     if (R.isEmpty(res)) {
-      return true
+      return false
     }
-    return false
+    return true
   }
 
   /**
@@ -282,7 +283,6 @@ export class PsReportWriterService {
           ROWTERMINATOR = '\r\n')
       ;`
     await mssql.query(sql)
-    // tmp
     // await this.cleanup(sFilename)
   }
 

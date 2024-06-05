@@ -12,4 +12,5 @@ export type IContextBindingsLike = Record<string, any>
 export interface IContextLike {
   bindings: IContextBindingsLike
   log: ILogger
+  invocationId: string
 }
