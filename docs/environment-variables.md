@@ -87,7 +87,6 @@ Env Var | Type | Default value | Required | Components | Description
  PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE | Int | 32 | Optional | FP | The numbers of messages to read in one batch when reading from the `ps_report_export` service bus queue when aseembling the staging CSV file.
  PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE | Int | 32 | Optional | FP | The number of messages to read before writing to the CSV file in blob storage.
  PS_REPORT_STAGING_POLL_INTERVAL | Int | 10 milliseconds | Optional | FP | The number of milliseconds to sleep betwen batch reads. Unknown if required, set between 1 and 500.
- PS_REPORT_LIST_SCHOOLS_START_STAGING_PERCENT_LEFT | Int | Optional | FP | The percentage of messages left on the `ps-report-schools` queue when the ps-report-3b-staging should be started to start building the CSV file in blob storage.
  PUPIL_APP_URL | String | NULL | Required | AA | The URL of the pupil app - used to generate the QR code on the pin slips
  PUPIL_APP_USE_COMPRESSION | Boolean | true | Optional | AA | Determines whether the pupil app should compress the payload before sending it back.  Leave this as true.
  PUPIL_AUTH_JWT_SECRET | String | NULL | Required | AA,PAPI | 32 char minimum value.  Secret used to sign and verify JWT token for pupil check submission.  Pupil API will fail to start without a configured value of minimum length.
