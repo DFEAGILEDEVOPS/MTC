@@ -138,6 +138,9 @@ export default {
       WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE, 32), 10), // 32 x 32 = 1024 csv rows written per write
       WaitTimeToTriggerStagingComplete: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WAIT_TIME_COMPLETE, 600), 10), // 600 seconds = 10 * 60 = 10 minutes
       PollInterval: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_POLL_INTERVAL, 10), 10) // Default is 10 milliseconds between polls when writing to the CSV file.
+    },
+    ListSchools: {
+      PercentLeftToStartStaging: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LIST_SCHOOLS_START_STAGING_PERCENT_LEFT, 5), 10) // default is to start staging when 5% messages are left on the ps-report-schools queue.
     }
   }
 }

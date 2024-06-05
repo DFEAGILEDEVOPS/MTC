@@ -1,7 +1,7 @@
 import { PsReportService } from './ps-report.service'
 import { type ILogger, MockLogger } from '../../common/logger'
 import { type IPsReportDataService } from './ps-report.data.service'
-import { type IMultipleOutputBinding } from '.'
+import { type IOutputBinding } from '.'
 import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 
 describe('PsReportService', () => {
@@ -9,7 +9,7 @@ describe('PsReportService', () => {
   let logger: ILogger
   let psReportDataService: IPsReportDataService
   const schoolUuid = 'AAAA-BBBB-CCCC-DDDD'
-  const outputBindings: IMultipleOutputBinding = { psReportPupilMessage: [], psReportStagingStart: [] }
+  const outputBindings: IOutputBinding = { psReportPupilMessage: [] }
   const mockPupils = [{ id: 1, schoolId: 99 }, { id: 2, schoolId: 99 }, { id: 3, schoolId: 99 }]
   const mockSchool = { id: 99, name: 'test school' }
   const psReportSchoolFanOutMessage: PsReportSchoolFanOutMessage = {
@@ -28,7 +28,6 @@ describe('PsReportService', () => {
       getSchool: jest.fn()
     }
     outputBindings.psReportPupilMessage = []
-    outputBindings.psReportStagingStart = []
     sut = new PsReportService(outputBindings, logger, psReportDataService)
   })
 
