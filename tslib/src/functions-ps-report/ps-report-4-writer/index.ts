@@ -4,7 +4,7 @@ import { PsReportWriterService } from './ps-report-writer.service'
 import { type PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
 import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
-const funcName = 'ps-report-4-writer'
+let funcName = 'ps-report-4-writer'
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
   const start = performance.now()
@@ -16,12 +16,14 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
 
 async function bulkUpload (context: Context, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
   let dbTable: string = ''
-  const service = new PsReportWriterService(context.log)
+  const service = new PsReportWriterService(context.log, context.invocationId)
   const jobDataService = new JobDataService()
+  funcName = funcName + ': ' + context.invocationId
   try {
     context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
-    dbTable = await service.createDestinationTableAndView(incomingMessage)
+    dbTable = await service.createDestinationTableAndViewIfNotExists(incomingMessage)
     context.log.verbose(`${funcName}: new table created ${dbTable}`)
+
     await service.prepareForUpload(incomingMessage.filename)
     context.log(`${funcName}: starting bulk upload from ${incomingMessage.filename} into table ${dbTable}`)
     await service.bulkUpload(incomingMessage, dbTable) // the container is *known* and is stored in the location path of the database 'EXTERNAL DATA SOURCE'.
@@ -36,7 +38,7 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
       await jobDataService.setJobComplete(incomingMessage.jobUuid,
         JobStatusCode.Failed, JSON.stringify(error))
     }
-    await service.cleanup(incomingMessage.filename)
+    // await service.cleanup(incomingMessage.filename)
   }
 }
 

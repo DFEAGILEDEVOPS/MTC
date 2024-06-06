@@ -10,6 +10,7 @@ import { CsvTransformer } from './csv-transformer'
 import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
 
 const functionName = 'ps-report-3b-stage-csv-file'
+let logPrefix = functionName
 const receiveQueueName = 'ps-report-export'
 const sleep = async (ms: number): Promise<void> => { return new Promise((resolve) => setTimeout(resolve, ms)) }
 let emptyPollTime: undefined | number
@@ -24,11 +25,12 @@ let psReportStagingDataService: PsReportStagingDataService
  *
 */
 const PsReportStageCsvFile: AzureFunction = async function (context: Context, incomingMessage: PsReportStagingStartMessage): Promise<void> {
-  context.log(`${functionName}: starting`)
+  logPrefix = functionName + ': ' + context.invocationId
+  context.log(`${logPrefix}: starting`)
   const start = performance.now()
 
   if (config.ServiceBus.ConnectionString === undefined) {
-    throw new Error(`${functionName}: ServiceBusConnection env var is missing`)
+    throw new Error(`${logPrefix}: ServiceBusConnection env var is missing`)
   }
 
   let busClient: sb.ServiceBusClient
@@ -43,18 +45,18 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
 
   // connect to service bus...
   try {
-    context.log(`${functionName}: connecting to service bus...`)
+    context.log(`${logPrefix}: connecting to service bus...`)
     busClient = new sb.ServiceBusClient(config.ServiceBus.ConnectionString)
     receiver = busClient.createReceiver(receiveQueueName, {
       receiveMode: 'peekLock'
     })
-    context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
+    context.log(`${logPrefix}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: unable to connect to service bus at this time: ${errorMessage}`)
+    context.log.error(`${logPrefix}: unable to connect to service bus at this time: ${errorMessage}`)
     throw error
   }
 
@@ -69,7 +71,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: unable to connect to service bus at this time: ${errorMessage}`)
+    context.log.error(`${logPrefix}: unable to connect to service bus at this time: ${errorMessage}`)
     throw error
   }
 
@@ -77,20 +79,23 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
   let batchIndex = 0
 
   while (!done) {
-    context.log(`${functionName}: starting batch ${batchIndex + 1}`)
+    context.log(`${logPrefix}: starting batch ${batchIndex + 1}`)
     const messageBatch = await receiver.receiveMessages(config.PsReport.StagingFile.ReadMessagesPerBatch)
     if (RA.isNilOrEmpty(messageBatch)) {
-      context.log(`${functionName}: no messages to process`)
+      context.log(`${logPrefix}: no messages to process`)
       if (emptyPollTime === undefined) {
-        context.log(`${functionName}: Setting flag to mark the time since no messages were found.`)
+        context.log(`${logPrefix}: Setting flag to mark the time since no messages were found.`)
         emptyPollTime = getEpoch()
       }
       const nowEpoch = getEpoch()
       const timeSinceLastMessage = nowEpoch - emptyPollTime
-      context.log(`${functionName}: nowEpoch: ${nowEpoch} emptyPollTime: ${emptyPollTime} timeSinceLastMessage: ${timeSinceLastMessage} target wait time is ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete}`)
+      context.log(`${logPrefix}: nowEpoch: ${nowEpoch} emptyPollTime: ${emptyPollTime} timeSinceLastMessage: ${timeSinceLastMessage} target wait time is ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete}`)
       if (timeSinceLastMessage >= config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete) {
-        context.log(`${functionName}: exiting as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
+        context.log(`${logPrefix}: exiting (and sending output binding message) as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
         done = true
+
+        // This message should be delivered once - duplicatePrevention is on the sb queue, but outputbindings do not allow a messageId to be set.
+        // ToDo: move away from output bindinds and send this message using the sbClient instead.
         const completeMessage: PsReportStagingCompleteMessage = {
           filename: incomingMessage.filename,
           jobUuid: incomingMessage.jobUuid
@@ -99,7 +104,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
         await disconnect()
         return finish(start, context)
       } else {
-        context.log(`${functionName}: waiting for messages...`)
+        // context.log(`${logPrefix}: waiting for messages...`)
         await sleep(config.PsReport.StagingFile.PollInterval) // wait n milliseconds before polling again. Default is 10.
       }
     } else {
@@ -107,7 +112,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
       // so, 1st reset the timer, as it may have been set previously
       emptyPollTime = undefined
       // and process the messages
-      context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
+      context.log(`${logPrefix}: received batch of ${messageBatch.length} messages`)
       await process(context, messageBatch, receiver)
     }
 
@@ -122,7 +127,7 @@ function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
+  context.log(`${logPrefix}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
 async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
@@ -130,7 +135,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
   // if any completes fail, just abandon.
   // the sql updates are idempotent and as such replaying a message
   // will not have an adverse effect.
-  context.log(`${functionName}: batch processed successfully, completing all messages in batch`)
+  context.log(`${logPrefix}: batch processed successfully, completing all messages in batch`)
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
@@ -143,7 +148,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
         if (error instanceof Error) {
           errorMessage = error.message
         }
-        context.log.error(`${functionName}: unable to abandon message:${errorMessage}`)
+        context.log.error(`${logPrefix}: unable to abandon message:${errorMessage}`)
         // do nothing.
         // the lock will expire and message reprocessed at a later time
       }
@@ -161,7 +166,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
       if (error instanceof Error) {
         errorMessage = error.message
       }
-      context.log.error(`${functionName}: unable to abandon message:${errorMessage}`)
+      context.log.error(`${logPrefix}: unable to abandon message:${errorMessage}`)
     }
   }
 }

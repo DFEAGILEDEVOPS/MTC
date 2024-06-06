@@ -5,30 +5,52 @@ import { BlobService } from '../../azure/blob-service'
 import * as mssql from 'mssql'
 import config from '../../config'
 import type { PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
+import * as R from 'ramda'
+
 const containerName = 'ps-report-bulk-upload'
 
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
   private readonly logger: ILogger
+  private readonly invocationId: string
   private readonly logServiceName = 'PsReportWriterService'
 
-  constructor (logger?: ILogger, sqlService?: ISqlService) {
-    if (logger === undefined) {
-      logger = new ConsoleLogger()
-    }
-    this.logger = logger
+  constructor (logger?: ILogger, invocationId?: string, sqlService?: ISqlService) {
+    this.logger = logger ?? new ConsoleLogger()
+    this.invocationId = invocationId ?? 'n/a'
+    this.sqlService = sqlService ?? new SqlService(this.logger)
+  }
 
-    if (sqlService === undefined) {
-      sqlService = new SqlService(this.logger)
+  public logPrefix (): string {
+    return `${this.logServiceName}: ${this.invocationId}`
+  }
+
+  public async tableExists (tableName: string): Promise<boolean> {
+    const sql = `
+    SELECT
+      *
+    FROM
+      information_schema.tables
+    WHERE
+      table_name = @name`
+
+    const params = [
+      { name: 'name', value: tableName, type: mssql.NVarChar }
+    ]
+    const res = await this.sqlService.query(sql, params)
+    // this.logger.verbose(`${this.logPrefix()}: res: ${JSON.stringify(res)}`)
+    // empty: res => []
+    if (R.isEmpty(res)) {
+      return false
     }
-    this.sqlService = sqlService
+    return true
   }
 
   /**
    *
    * @returns Create a new ps report table and return the table name
    */
-  public async createDestinationTableAndView (incomingMessage: PsReportStagingCompleteMessage): Promise<string> {
+  public async createDestinationTableAndViewIfNotExists (incomingMessage: PsReportStagingCompleteMessage): Promise<string> {
     let ds = moment().format('YYYY_MM_DDTHHmm') // default
     // Match 'ps-report-staging-2024-02-27-1510.csv'
     const matches = incomingMessage.filename.match(/\d\d\d\d-\d\d-\d\d-\d\d\d\d/)
@@ -36,6 +58,12 @@ export class PsReportWriterService {
       ds = matches[0].replaceAll('-', '_')
     }
     const newTableName = `psychometricReport_${ds}`
+
+    const tableExists = await this.tableExists(newTableName)
+    if (tableExists) {
+      throw new Error('Table already exists: ' + newTableName)
+    }
+
     const sql1 = `
       CREATE TABLE mtc_results.${newTableName} (
         PupilId int NOT NULL CONSTRAINT [PK_${newTableName}] PRIMARY KEY,
@@ -120,19 +148,19 @@ export class PsReportWriterService {
         PupilUPN ASC
       ) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON  ) ON [PRIMARY]
     `
-    this.logger.verbose(`${this.logServiceName}: creating table ${newTableName}`)
+    this.logger.verbose(`${this.logPrefix()}: creating table ${newTableName}`)
     await this.sqlService.modify(fullSql, [])
 
-    this.logger.verbose(`${this.logServiceName}: Creating trigger`)
+    this.logger.verbose(`${this.logPrefix()}: Creating trigger`)
     await this.sqlService.modify(triggerSql, [])
 
-    this.logger.verbose(`${this.logServiceName}: Creating IX1`)
+    this.logger.verbose(`${this.logPrefix()}: Creating IX1`)
     await this.sqlService.modify(ix1Sql, [])
 
-    this.logger.verbose(`${this.logServiceName}: Creating IX2`)
+    this.logger.verbose(`${this.logPrefix()}: Creating IX2`)
     await this.sqlService.modify(ix2Sql, [])
 
-    this.logger.info(`${this.logServiceName}: new table ${newTableName} created`)
+    this.logger.info(`${this.logPrefix()}: new table ${newTableName} created`)
 
     const viewSql = `
         CREATE OR ALTER VIEW [mtc_results].[vewPsychometricReport]
@@ -140,7 +168,7 @@ export class PsReportWriterService {
           SELECT * FROM [mtc_results].[${newTableName}]
     `
     await this.sqlService.modify(viewSql, [])
-    this.logger.info(`${this.logServiceName}: psychometricReport view recreated`)
+    this.logger.info(`${this.logPrefix()}: psychometricReport view recreated`)
     return newTableName
   }
 
@@ -151,7 +179,7 @@ export class PsReportWriterService {
   public async prepareForUpload (blobFile: string): Promise<void> {
     const blobService = new BlobService()
     const containerUrl = await blobService.getContainerUrl(containerName)
-    this.logger.verbose(`${this.logServiceName}: container url is ${containerUrl}`)
+    this.logger.verbose(`${this.logPrefix()}: container url is ${containerUrl}`)
     const sasToken = await blobService.getBlobReadWriteSasToken(containerName, blobFile)
     const sql = `
       IF (SELECT COUNT(*) FROM sys.database_scoped_credentials WHERE name = 'PsReportBulkUploadCredential') = 0
@@ -209,7 +237,7 @@ export class PsReportWriterService {
      * error in this block means we are running in Azure.
      */
     const result = await this.sqlService.query(sql2, [])
-    this.logger.verbose(`${this.logServiceName} OS is ${JSON.stringify(result)}`)
+    this.logger.verbose(`${this.logPrefix()}: OS is ${JSON.stringify(result)}`)
     let sqlConfig: mssql.config
 
     if (result[0].engineEdition === 'Enterprise' || result[0].engineEdition === 'Azure SQL Edge') {
@@ -255,14 +283,14 @@ export class PsReportWriterService {
           ROWTERMINATOR = '\r\n')
       ;`
     await mssql.query(sql)
-    await this.cleanup(sFilename)
+    // await this.cleanup(sFilename)
   }
 
   public async cleanup (filename: string): Promise<void> {
-    this.logger.info(`${this.logServiceName}: cleanup() called`)
+    this.logger.info(`${this.logPrefix()}: cleanup() called`)
     // Remove CSV file
     const blobService = new BlobService()
     await blobService.deleteBlob(filename, containerName)
-    this.logger.info(`${this.logServiceName}: csv file ${filename} deleted.`)
+    this.logger.info(`${this.logPrefix()}: csv file ${filename} deleted.`)
   }
 }
