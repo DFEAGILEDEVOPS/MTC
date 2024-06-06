@@ -42,7 +42,7 @@ export class SubmitController {
     try {
       await this.checkSubmitService.submit(req.body)
     } catch (error: any) {
-      if (error.code = 'MessageSizeExceeded') {
+      if (error.code === 'MessageSizeExceeded') {
         logger.alert(`Message received but rejected from Service Bus as being too large: message size is ${req.body?.length}`)
         return apiResponse.messageTooLarge(res)
       }
