@@ -39,7 +39,15 @@ export class SubmitController {
       logger.error(`JWT verification failed: ${error.message} for check:${req.body.checkCode}}`)
       return apiResponse.unauthorised(res)
     }
-    await this.checkSubmitService.submit(req.body)
+    try {
+      await this.checkSubmitService.submit(req.body)
+    } catch (error: any) {
+      if (error.code = 'MessageSizeExceeded') {
+        logger.alert(`Message received but rejected from Service Bus as being too large: message size is ${req.body?.length}`)
+        return apiResponse.messageTooLarge(res)
+      }
+      return apiResponse.serverError(res)
+    }
     return apiResponse.sendJson(res, {})
   }
 }
