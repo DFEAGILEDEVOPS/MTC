@@ -46,7 +46,9 @@ class App {
       includeSubDomains: true,
       preload: true
     }))
-    this.express.use(bodyParser.json())
+    // Prod / Service-Bus / check-submission has a max message size of 1MB
+    // Local / Service-Bus (non-premium) will have a limit of 250KB
+    this.express.use(bodyParser.json({ limit: '1MB' }))
   }
 
   // Configure API endpoints.
