@@ -1,21 +1,21 @@
-import type { Pupil } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type Pupil } from '../pupil-data.models'
 import moment from 'moment'
 
 export const pupil: Pupil = {
-  checkComplete: true,
+  checkComplete: null,
   currentCheckId: null,
   dateOfBirth: moment.utc('2012-04-01'),
   forename: 'Tester',
   gender: 'M',
-  id: 4,
-  isEdited: false,
+  id: 3,
+  isEdited: true,
   jobId: 1,
   lastname: 'Person',
-  middlenames: 'Other',
+  middlenames: 'Middle Names',
   notTakingCheckReason: 'Absent during check window',
   notTakingCheckCode: 'ABSNT',
   restartAvailable: false,
   slug: 'abc-def-hij-klm',
-  schoolId: 4,
-  upn: 'TEST987'
+  schoolId: 3,
+  upn: 'TEST986'
 }

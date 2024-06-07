@@ -1,4 +1,4 @@
-import { type Input } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type Input } from './pupil-data.models'
 import moment from 'moment/moment'
 import { ReportLineAnswer } from './report-line-answer.class'
 

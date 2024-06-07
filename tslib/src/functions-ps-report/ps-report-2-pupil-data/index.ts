@@ -1,11 +1,11 @@
 import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PsReportService } from './ps-report.service'
-import { type PupilResult } from './models'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 import config from '../../config'
+import type { IPsychometricReportLine } from './transformer-models'
 
 /**
  * Incoming message is just the name and UUID of the school to process
@@ -14,7 +14,7 @@ import config from '../../config'
  */
 
 export interface IOutputBinding {
-  psReportPupilMessage: PupilResult[]
+  psReportExportOutput: IPsychometricReportLine[]
 }
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
@@ -23,14 +23,14 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
   if (config.Logging.DebugVerbosity > 1) {
     logger.verbose(`called for school ${incomingMessage.name}`)
   }
-  const outputBinding: IOutputBinding = { psReportPupilMessage: [] }
+  const outputBinding: IOutputBinding = { psReportExportOutput: [] }
   context.bindings = outputBinding
   const psReportService = new PsReportService(outputBinding, logger)
   await psReportService.process(incomingMessage)
   const end = performance.now()
   const durationInMilliseconds = end - start
   if (config.Logging.DebugVerbosity > 1) {
-    logger.info(`processed ${outputBinding.psReportPupilMessage.length} pupils, run took ${durationInMilliseconds} ms`)
+    logger.info(`processed ${outputBinding.psReportExportOutput.length} pupils, run took ${durationInMilliseconds} ms`)
   }
 }
 

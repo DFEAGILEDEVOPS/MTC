@@ -1,4 +1,4 @@
-import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-3-transformer/models'
+import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
 import * as CSV from 'csv-string'
 import moment from 'moment'
 import { type ILogger } from '../../common/logger'
