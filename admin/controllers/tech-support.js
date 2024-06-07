@@ -613,10 +613,6 @@ const controller = {
     try {
       req.breadcrumbs('Submit Service Bus Queue Message')
       res.locals.pageTitle = 'Submit Service Bus Queue Message'
-/*    does not work...
-      res.locals.isSubmitMetaRedirectUrl = true
-      res.locals.waitTimeBeforeMetaRedirectInSeconds = 30
-      res.locals.metaRedirectUrl = `/tech-support/sb-queue-submit` */
       res.render('tech-support/sb-queue-submit', {
         breadcrumbs: req.breadcrumbs()
       })

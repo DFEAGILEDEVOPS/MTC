@@ -4,7 +4,6 @@ const sb = require('@azure/service-bus')
 const config = require('../../config')
 
 let adminClient
-let sbClient
 let queueNames
 
 const serviceBusQueueAdminService = {
@@ -52,7 +51,7 @@ const serviceBusQueueAdminService = {
     const sender = sbClient.createSender(queueName)
     await sender.sendMessages({
       body: message,
-      contentType: contentType
+      contentType
     })
     await sender.close()
     await sbClient.close()

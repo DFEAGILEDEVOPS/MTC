@@ -418,7 +418,7 @@ describe('tech-support controller', () => {
       expect(res.redirect).toHaveBeenCalledWith('/tech-support/queue-overview')
       expect(next).not.toHaveBeenCalled()
       expect(queueMgmtService.sendServiceBusQueueMessage)
-      .toHaveBeenCalledWith(req.body.queueName, req.body.message, req.body.contentType)
+        .toHaveBeenCalledWith(req.body.queueName, req.body.message, req.body.contentType)
     })
   })
 })
