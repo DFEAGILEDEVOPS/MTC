@@ -37,7 +37,7 @@ const service = {
     if (contentType === 'application/json') {
       message = JSON.parse(message)
     }
-    return serviceBusQueueAdminService.sendMessageToQueue(queueName, message, contentType)
+    await serviceBusQueueAdminService.sendMessageToQueue(queueName, message, contentType)
   }
 }
 

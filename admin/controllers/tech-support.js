@@ -614,7 +614,8 @@ const controller = {
       req.breadcrumbs('Submit Service Bus Queue Message')
       res.locals.pageTitle = 'Submit Service Bus Queue Message'
       res.render('tech-support/sb-queue-submit', {
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        error: ''
       })
     } catch (error) {
       return next(error)
@@ -627,7 +628,10 @@ const controller = {
       await queueMgmtService.sendServiceBusQueueMessage(req.body.queueName, req.body.message, req.body.contentType)
       return res.redirect('/tech-support/queue-overview')
     } catch (error) {
-      return next(error)
+      res.render('tech-support/sb-queue-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        error: error.message
+      })
     }
   }
 }

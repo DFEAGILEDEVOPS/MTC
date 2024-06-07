@@ -47,14 +47,18 @@ const serviceBusQueueAdminService = {
   },
 
   sendMessageToQueue: async function sendMessageToQueue (queueName, message, contentType) {
-    const sbClient = new sb.ServiceBusClient(config.ServiceBus.connectionString)
-    const sender = sbClient.createSender(queueName)
-    await sender.sendMessages({
-      body: message,
-      contentType
-    })
-    await sender.close()
-    await sbClient.close()
+    let sbClient, sender
+    try {
+      sbClient = new sb.ServiceBusClient(config.ServiceBus.connectionString)
+      sender = sbClient.createSender(queueName)
+      await sender.sendMessages({
+        body: message,
+        contentType
+      })
+    } finally {
+      await sender.close()
+      await sbClient.close()
+    }
   }
 }
 
