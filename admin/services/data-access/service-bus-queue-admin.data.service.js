@@ -4,13 +4,14 @@ const sb = require('@azure/service-bus')
 const config = require('../../config')
 
 let adminClient
+let sbClient
 let queueNames
 
 const serviceBusQueueAdminService = {
   getQueueNames: async function getQueueNames () {
     if (queueNames) return queueNames
     queueNames = []
-    const queues = await getQueueClient().listQueues()
+    const queues = await getServiceBusAdminClient().listQueues()
     let q = await queues.next()
     while (!q.done) {
       queueNames.push(q.value.name)
@@ -44,10 +45,21 @@ const serviceBusQueueAdminService = {
   getQueueActiveMessageCount: async function getQueueActiveMessageCount (queueName) {
     const counts = await getQueueMessageCount(queueName)
     return counts.activeMessageCount
+  },
+
+  sendMessageToQueue: async function sendMessageToQueue (queueName, message, contentType) {
+    const sbClient = new sb.ServiceBusClient(config.ServiceBus.connectionString)
+    const sender = sbClient.createSender(queueName)
+    await sender.sendMessages({
+      body: message,
+      contentType: contentType
+    })
+    await sender.close()
+    await sbClient.close()
   }
 }
 
-function getQueueClient () {
+function getServiceBusAdminClient () {
   if (!adminClient) {
     adminClient = new sb.ServiceBusAdministrationClient(config.ServiceBus.connectionString)
   }
@@ -55,7 +67,7 @@ function getQueueClient () {
 }
 
 async function getQueueMessageCount (queueName) {
-  const props = await getQueueClient().getQueueRuntimeProperties(queueName)
+  const props = await getServiceBusAdminClient().getQueueRuntimeProperties(queueName)
   return {
     name: queueName,
     activeMessageCount: props.activeMessageCount,

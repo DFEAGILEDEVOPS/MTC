@@ -1,0 +1,56 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="/tech-support/sb-queue-submit" method="post" autocomplete="off">
+          <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+          <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="payload">
+              Submit a message to a service bus queue
+            </label>
+          </h1>
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="queueName">Target Queue:</label>
+            <input class="govuk-input govuk-!-width-one-half" type="text"
+              id="queueName" name="queueName"
+              value="ps-report-staging-start"
+              spellcheck="false"
+              autocorrect="off">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="contentType">Content Type:</label>
+            <input class="govuk-input govuk-!-width-one-half" type="text"
+              id="contentType name="contentType"
+              value="application/json"
+              spellcheck="false"
+              autocorrect="off">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="message">Message:</label>
+            <textarea id="message" name="message" class="govuk-textarea govuk-!-width-three-quarters"
+            rows="10"
+            spellcheck="false" autocorrect="off" autocapitalize="off">{}</textarea>
+          </div>
+          <button type="submit" id="submit-btn" class="govuk-button">Submit</button>
+          <a class="govuk-button govuk-button--secondary" href="/tech-support/home">Cancel</a>
+        </form>
+      </div>
+
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="/tech-support/queue-overview">Queue Overview</a>
+              </li>
+              <li>
+                <a class="govuk-link" href="/tech-support/ps-report-run">Run PS Report</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>

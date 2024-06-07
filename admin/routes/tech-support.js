@@ -121,14 +121,28 @@ router.get(
 )
 
 router.get(
+  '/sb-queue-submit',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getSbQueueSubmit
+)
+
+router.post(
+  '/sb-queue-submit',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postSbQueueSubmit
+)
+
+router.get(
   '/clear-service-bus-queue/:queueName',
   isAuthenticated([roles.techSupport]),
-  techSupportController.getClearServiceBusQueue)
+  techSupportController.getClearServiceBusQueue
+)
 
 router.post(
   '/clear-service-bus-queue/:queueName',
   isAuthenticated([roles.techSupport]),
-  techSupportController.postClearServiceBusQueue)
+  techSupportController.postClearServiceBusQueue
+)
 
 router.get(
   '/results-resync-check',

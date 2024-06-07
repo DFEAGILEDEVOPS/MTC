@@ -389,4 +389,36 @@ describe('tech-support controller', () => {
       expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.isJson, req.body.payload)
     })
   })
+
+  describe('/sb-queue-submit', () => {
+    test('GET: should render page', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'GET')
+      const req = getRequest(reqParams)
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getSbQueueSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should submit message to service', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        message: 'sfsdfkdsf',
+        queueName: 'myqueue',
+        contentType: 'application/json'
+      }
+      const res = getResponse()
+      jest.spyOn(queueMgmtService, 'sendServiceBusQueueMessage').mockImplementation()
+      jest.spyOn(res, 'redirect').mockImplementation()
+      await sut.postSbQueueSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.redirect).toHaveBeenCalledWith('/tech-support/queue-overview')
+      expect(next).not.toHaveBeenCalled()
+      expect(queueMgmtService.sendServiceBusQueueMessage)
+      .toHaveBeenCalledWith(req.body.queueName, req.body.message, req.body.contentType)
+    })
+  })
 })
