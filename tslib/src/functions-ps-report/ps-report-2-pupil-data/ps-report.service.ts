@@ -2,10 +2,8 @@ import { type IPsReportDataService, PsReportDataService } from './ps-report.data
 import { type Pupil, type PupilResult, type School } from './models'
 import { type ILogger } from '../../common/logger'
 import { type IOutputBinding } from '.'
-import type { PsReportSchoolFanOutMessage, PsReportStagingStartMessage } from '../common/ps-report-service-bus-messages'
-import { ServiceBusQueueName } from '../../azure/service-bus-queue.names'
+import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 import config from '../../config'
-import { IServiceBusQueueService, ServiceBusQueueService, IServiceBusQueueMessage } from '../../azure/service-bus.queue.service'
 
 const logName = 'ps-report-2-pupil-data: PsReportService'
 
@@ -13,13 +11,11 @@ export class PsReportService {
   private readonly dataService: IPsReportDataService
   private readonly outputBinding: IOutputBinding
   private readonly logger: ILogger
-  private readonly sbQueueService: IServiceBusQueueService
 
-  constructor (outputBinding: IOutputBinding, logger: ILogger, dataService?: IPsReportDataService, sbQueueService?: IServiceBusQueueService) {
+  constructor (outputBinding: IOutputBinding, logger: ILogger, dataService?: IPsReportDataService) {
     this.outputBinding = outputBinding
     this.logger = logger
     this.dataService = dataService ?? new PsReportDataService(this.logger)
-    this.sbQueueService = sbQueueService ?? new ServiceBusQueueService()
   }
 
   async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
@@ -66,50 +62,5 @@ export class PsReportService {
           Error was ${error.message}`)
       }
     }
-
-    const shouldStartStaging = await this.shouldStartStaging(incomingMessage)
-    if (shouldStartStaging) {
-      this.logger.verbose(`${logName}: sending staging start message`)
-      // send a message to the ps-report-3b-staging function to start up and start creating the csv file in blob storage.
-      const msg: PsReportStagingStartMessage = {
-        startTime: new Date(),
-        jobUuid: incomingMessage.jobUuid,
-        filename: incomingMessage.filename
-      }
-      await this.sendStagingStartMessage(msg)
-    }
-  }
-
-  /**
-   * Determine if the staging start message should be sent to the `ps-report-3-staging` function
-   * which is listening for message on the sb queue `ps-report-staging-start`
-   *
-   * By default it will send the message when there are 100 or less messages on the queue.  This
-   * has proven problematic in live as apparently it failed to detect when only 1 message was on the
-   * queue.
-   *
-   * Similar logic works for the test environment where ps reports will be generated for a single school.
-   *
-   * The ps-report-3-staging function will then start assembling the CSV file for bulk upload.
-   *
-   */
-  private async shouldStartStaging (incomingMessage: PsReportSchoolFanOutMessage): Promise<boolean> {
-    // See how many message are left on the "schools" sb queue
-    const msgCount = await this.sbQueueService.getActiveMessageCount(ServiceBusQueueName.psReportSchools)
-    // Look for the last message on the queue.  This _could_ also match the first message on the queue if a school had a single pupil in Y4.
-    if (msgCount <= 100) { // TODO: JMS:  make this into config
-      this.logger.verbose(`shouldStartStaging() returning true as there are ${msgCount} messages left from a total of ${incomingMessage.totalNumberOfSchools}`)
-      return true
-    }
-    return false
-  }
-
-  private async sendStagingStartMessage (msg: PsReportStagingStartMessage): Promise<void> {
-     const message: IServiceBusQueueMessage = {
-        body: msg,
-        messageId: msg.jobUuid, // for duplicate detection
-        contentType: 'application/json'
-      }
-      await this.sbQueueService.dispatch(message, ServiceBusQueueName.psReportStagingStart)
   }
 }

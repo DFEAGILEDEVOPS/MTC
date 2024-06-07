@@ -8,7 +8,6 @@ describe.skip('PsReportService', () => {
   let sut: PsReportService
   let logger: ILogger
   let psReportDataService: IPsReportDataService
-  const serviceBusAdministrationClient: any = {}
   const schoolUuid = 'AAAA-BBBB-CCCC-DDDD'
   const outputBindings: IOutputBinding = { psReportPupilMessage: [] }
   const mockPupils = [{ id: 1, schoolId: 99 }, { id: 2, schoolId: 99 }, { id: 3, schoolId: 99 }]
@@ -30,7 +29,7 @@ describe.skip('PsReportService', () => {
     }
     outputBindings.psReportPupilMessage = []
 
-    sut = new PsReportService(outputBindings, logger, psReportDataService, serviceBusAdministrationClient)
+    sut = new PsReportService(outputBindings, logger, psReportDataService)
   })
 
   test('it is defined', () => {
