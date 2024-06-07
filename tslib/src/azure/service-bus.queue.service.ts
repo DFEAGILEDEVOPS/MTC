@@ -8,8 +8,8 @@ export interface IServiceBusQueueService {
 }
 
 export interface IServiceBusQueueMessage {
-  body: any,
-  messageId?: string,
+  body: any
+  messageId?: string
   contentType?: string
 }
 
