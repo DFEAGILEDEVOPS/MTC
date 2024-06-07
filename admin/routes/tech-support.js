@@ -121,6 +121,16 @@ router.get(
 )
 
 router.get(
+  '/clear-service-bus-queue/:queueName',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getClearServiceBusQueue)
+
+router.post(
+  '/clear-service-bus-queue/:queueName',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postClearServiceBusQueue)
+
+router.get(
   '/results-resync-check',
   isAuthenticated([roles.techSupport]),
   techSupportController.getCheckResultsResyncCheck

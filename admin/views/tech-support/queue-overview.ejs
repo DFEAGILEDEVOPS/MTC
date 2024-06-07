@@ -19,7 +19,7 @@
                 <% sbQueueInfo.forEach((queue)=> { %>
                   <tr class="govuk-table__row">
                     <td>
-                      <%= queue.name %>
+                      <a href="/tech-support/clear-service-bus-queue/<%= queue.name %>"><%= queue.name %></a>
                     </td>
                     <td>
                       <%= queue.activeMessageCount %>

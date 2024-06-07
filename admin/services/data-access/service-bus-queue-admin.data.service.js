@@ -6,7 +6,7 @@ const config = require('../../config')
 let adminClient
 let queueNames
 
-const serviceBusQueueMetadataService = {
+const serviceBusQueueAdminService = {
   getQueueNames: async function getQueueNames () {
     if (queueNames) return queueNames
     queueNames = []
@@ -20,13 +20,30 @@ const serviceBusQueueMetadataService = {
   },
 
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
-    const queues = await serviceBusQueueMetadataService.getQueueNames()
+    const queues = await serviceBusQueueAdminService.getQueueNames()
     const messageCountPromises = []
     for (let index = 0; index < queues.length; index++) {
       const qName = queues[index]
       messageCountPromises.push(getQueueMessageCount(qName))
     }
     return await Promise.all(messageCountPromises)
+  },
+
+  clearQueue: async function clearQueue (queueName, messageCount) {
+    let sbClient, queueReceiver
+    try {
+      sbClient = new sb.ServiceBusClient(config.ServiceBus.connectionString)
+      queueReceiver = sbClient.createReceiver(queueName, { receiveMode: 'receiveAndDelete' })
+      await queueReceiver.receiveMessages(messageCount)
+    } finally {
+      await queueReceiver.close()
+      await sbClient.close()
+    }
+  },
+
+  getQueueActiveMessageCount: async function getQueueActiveMessageCount (queueName) {
+    const counts = await getQueueMessageCount(queueName)
+    return counts.activeMessageCount
   }
 }
 
@@ -58,4 +75,4 @@ main()
   .catch(err => console.error(err))
 */
 
-module.exports = serviceBusQueueMetadataService
+module.exports = serviceBusQueueAdminService

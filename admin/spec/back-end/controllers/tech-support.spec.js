@@ -4,7 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
-const queueMgmtService = require('../../../services/tech-support-queue-management.service')
+const queueMgmtService = require('../../../services/queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../../../services/tech-support/check-submit/check-submit.service')
@@ -125,6 +125,36 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
       expect(queueMgmtService.getServiceBusQueueSummary).toHaveBeenCalledTimes(1)
       expect(queueMgmtService.getStorageAccountQueueSummary).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('/clear-service-bus-queue', () => {
+    test('GET: should render the page', async () => {
+      const reqParams = getReqParams('/tech-support/clear-service-bus-queue', 'GET')
+      const req = getRequest(reqParams)
+      const queueName = 'test-queue'
+      req.params.queueName = queueName
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      await sut.getClearServiceBusQueue(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe(`Clear Service Bus Queue: ${queueName}`)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should return validation error if queue name does not match', async () => {
+      const reqParams = getReqParams('/tech-support/clear-service-bus-queue', 'POST')
+      const req = getRequest(reqParams)
+      req.body.confirmedQueueName = 'test-queue'
+      req.params.queueName = 'wrong-queue'
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(sut, 'getClearServiceBusQueue').mockResolvedValue()
+      await sut.postClearServiceBusQueue(req, res, next)
+      expect(sut.getClearServiceBusQueue).toHaveBeenCalledTimes(1)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
     })
   })
 
