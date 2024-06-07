@@ -607,6 +607,32 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getSbQueueSubmit: async function getSbQueueSubmit (req, res, next) {
+    try {
+      req.breadcrumbs('Submit Service Bus Queue Message')
+      res.locals.pageTitle = 'Submit Service Bus Queue Message'
+      res.render('tech-support/sb-queue-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        error: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postSbQueueSubmit: async function postSbQueueSubmit (req, res, next) {
+    res.locals.pageTitle = 'Submit Service Bus Queue Message'
+    try {
+      await queueMgmtService.sendServiceBusQueueMessage(req.body.queueName, req.body.message, req.body.contentType)
+      return res.redirect('/tech-support/queue-overview')
+    } catch (error) {
+      res.render('tech-support/sb-queue-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        error: error.message
+      })
+    }
   }
 }
 
