@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp build",
     "build:watch": "yarn tsc --watch",
+    "dev": "yarn start:dev",
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
@@ -30,7 +31,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "0e643b584571fcff14c5678866f830eb"
+    "assets-version": "8066100cea64f449580402f1ebd4ae94"
   },
   "engines": {
     "node": ">= 18"

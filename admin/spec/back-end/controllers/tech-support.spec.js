@@ -389,4 +389,58 @@ describe('tech-support controller', () => {
       expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.isJson, req.body.payload)
     })
   })
+
+  describe('/sb-queue-submit', () => {
+    test('GET: should render page', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'GET')
+      const req = getRequest(reqParams)
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getSbQueueSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should submit message to service and redirect to overview', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        message: 'sfsdfkdsf',
+        queueName: 'myqueue',
+        contentType: 'application/json'
+      }
+      const res = getResponse()
+      jest.spyOn(queueMgmtService, 'sendServiceBusQueueMessage').mockImplementation()
+      jest.spyOn(res, 'redirect').mockImplementation()
+      await sut.postSbQueueSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.redirect).toHaveBeenCalledWith('/tech-support/queue-overview')
+      expect(next).not.toHaveBeenCalled()
+      expect(queueMgmtService.sendServiceBusQueueMessage)
+        .toHaveBeenCalledWith(req.body.queueName, req.body.message, req.body.contentType)
+    })
+
+    test('POST: if error thrown it should render error message', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        message: 'sfsdfkdsf',
+        queueName: 'myqueue',
+        contentType: 'application/json'
+      }
+      const res = getResponse()
+      const errorMessage = 'mock error'
+      jest.spyOn(queueMgmtService, 'sendServiceBusQueueMessage').mockRejectedValue(new Error(errorMessage))
+      jest.spyOn(res, 'render').mockImplementation((url, objs) => {
+        console.log(`url: ${url}, objs: ${JSON.stringify(objs)}`)
+      })
+      jest.spyOn(res, 'redirect').mockImplementation()
+      await sut.postSbQueueSubmit(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
 })

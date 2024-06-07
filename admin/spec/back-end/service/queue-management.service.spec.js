@@ -69,6 +69,16 @@ describe('tech support queue management service', () => {
       expect(serviceBusQueueAdminService.getQueueActiveMessageCount).toHaveBeenCalledTimes(1)
       expect(serviceBusQueueAdminService.clearQueue).not.toHaveBeenCalled()
     })
+
+    test('should send a message to a service bus queue', async () => {})
+    test('if message is JSON, should convert to object before sending', async () => {
+      const queueName = 'q1'
+      const message = '{"pupilUUID":"1234","version":1}'
+      const contentType = 'application/json'
+      jest.spyOn(serviceBusQueueAdminService, 'sendMessageToQueue').mockResolvedValueOnce()
+      await sut.sendServiceBusQueueMessage(queueName, message, contentType)
+      expect(serviceBusQueueAdminService.sendMessageToQueue).toHaveBeenCalledWith(queueName, JSON.parse(message), contentType)
+    })
   })
 
   describe('storage account functionality', () => {
