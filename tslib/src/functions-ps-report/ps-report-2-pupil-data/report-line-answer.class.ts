@@ -1,6 +1,6 @@
-import { type Input } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type Input } from './pupil-data.models'
 import * as R from 'ramda'
-import { type IReportLineAnswer } from './models'
+import { type IReportLineAnswer } from './transformer-models'
 
 export class ReportLineAnswer {
   private _questionNumber: number | null = null

@@ -3,7 +3,8 @@ import { type IServiceBusQueueService } from '../azure/service-bus.queue.service
 import { ServiceBusQueueName } from '../azure/service-bus-queue.names'
 
 const SbQueueServiceMock = jest.fn<IServiceBusQueueService, any>(() => ({
-  dispatch: jest.fn()
+  dispatch: jest.fn(),
+  getActiveMessageCount: jest.fn()
 }))
 
 let sut: CheckSubmitService

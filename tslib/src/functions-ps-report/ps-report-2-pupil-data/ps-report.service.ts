@@ -1,28 +1,22 @@
 import { type IPsReportDataService, PsReportDataService } from './ps-report.data.service'
-import { type Pupil, type PupilResult, type School } from './models'
+import { type Pupil, type PupilResult, type School } from './pupil-data.models'
 import { type ILogger } from '../../common/logger'
 import { type IOutputBinding } from '.'
-import type { PsReportSchoolFanOutMessage, PsReportStagingStartMessage } from '../common/ps-report-service-bus-messages'
-import { ServiceBusAdministrationClient, ServiceBusClient, type ServiceBusMessage } from '@azure/service-bus'
+import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 import config from '../../config'
+import { ReportLine } from './report-line.class'
 
 const logName = 'ps-report-2-pupil-data: PsReportService'
-const outputQueueName = 'ps-report-staging-start'
 
 export class PsReportService {
   private readonly dataService: IPsReportDataService
   private readonly outputBinding: IOutputBinding
   private readonly logger: ILogger
-  private readonly serviceBusAdministrationClient: ServiceBusAdministrationClient
 
-  constructor (outputBinding: IOutputBinding, logger: ILogger, dataService?: IPsReportDataService, serviceBusAdminClient?: ServiceBusAdministrationClient) {
+  constructor (outputBinding: IOutputBinding, logger: ILogger, dataService?: IPsReportDataService) {
     this.outputBinding = outputBinding
     this.logger = logger
     this.dataService = dataService ?? new PsReportDataService(this.logger)
-    if (config.ServiceBus.ConnectionString === undefined || config.ServiceBus.ConnectionString === null) {
-      throw new Error('Unable to connect to service bus.  Please check the config.')
-    }
-    this.serviceBusAdministrationClient = serviceBusAdminClient ?? new ServiceBusAdministrationClient(config.ServiceBus.ConnectionString)
   }
 
   async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
@@ -52,7 +46,7 @@ export class PsReportService {
       }
       try {
         const result: PupilResult = await this.dataService.getPupilData(pupil, school)
-        const output: PupilResult = {
+        const pupilResult: PupilResult = {
           answers: result.answers,
           check: result.check,
           checkConfig: result.checkConfig,
@@ -62,75 +56,18 @@ export class PsReportService {
           pupil: result.pupil,
           school: result.school
         }
-        this.outputBinding.psReportPupilMessage.push(output)
+
+        // Now we have the pupil data we can transform it into the report format
+        const reportLine = new ReportLine(pupilResult.answers, pupilResult.check, pupilResult.checkConfig, pupilResult.checkForm, pupilResult.device, pupilResult.events, pupilResult.pupil, pupilResult.school)
+        const outputData = reportLine.transform()
+
+        // Send the transformed pupil data onto the ps-report-export queue using the output bindings.
+        this.outputBinding.psReportExportOutput.push(outputData)
       } catch (error: any) {
         // Ignore the error on the particular pupil and carry on so it reports on the rest of the school
         this.logger.error(`${logName}: ERROR: Failed to retrieve pupil data for pupil ${pupil.slug} in school ${incomingMessage.uuid}
           Error was ${error.message}`)
       }
-    }
-
-    const shouldStartStaging = await this.shouldStartStaging(incomingMessage)
-    if (shouldStartStaging) {
-      this.logger.verbose(`${logName}: sending staging start message`)
-      // send a message to the ps-report-3b-staging function to start up and start creating the csv file in blob storage.
-      const msg: PsReportStagingStartMessage = {
-        startTime: new Date(),
-        jobUuid: incomingMessage.jobUuid,
-        filename: incomingMessage.filename
-      }
-      await this.sendStagingStartMessage(msg)
-    }
-  }
-
-  /**
-   * Determine if the staging start message should be sent to the `ps-report-3-staging` function
-   * which is listening for message on the sb queue `ps-report-staging-start`
-   *
-   * By default it will send the message when there is 1 remaining message.
-   *
-   *
-   * Similar logic works for the test environment where ps reports will be generated for a single school.
-   *
-   * The ps-report-3-staging function will then start assembling the CSV file for bulk upload.
-   *
-   * TODO: refactror the below two function into somewhere suitable for data services.
-   */
-  private async shouldStartStaging (incomingMessage: PsReportSchoolFanOutMessage): Promise<boolean> {
-    // See how many message are left on the "schools" sb queue
-    const inputQueueName = 'ps-report-schools'
-    const queueRuntimeProperties = await this.serviceBusAdministrationClient.getQueueRuntimeProperties(inputQueueName)
-    const msgCount = queueRuntimeProperties.activeMessageCount
-    if (msgCount === undefined || msgCount === null) {
-      return false
-    }
-
-    // Look for the last message on the queue.  This _could_ also match the first message on the queue if a school had a single pupil in Y4.
-    if (msgCount <= 1) {
-      this.logger.verbose(`shouldStartStaging() returning true as there are ${msgCount} messages left from a total of ${incomingMessage.totalNumberOfSchools}`)
-      return true
-    }
-
-    return false
-  }
-
-  private async sendStagingStartMessage (msg: PsReportStagingStartMessage): Promise<void> {
-    if (config.ServiceBus.ConnectionString === undefined) {
-      throw new Error('Can\'t connect to service bus.  Missing ConnectionString.')
-    }
-    const sbClient = new ServiceBusClient(config.ServiceBus.ConnectionString)
-    const sender = sbClient.createSender(outputQueueName)
-    try {
-      const message: ServiceBusMessage = {
-        body: msg,
-        messageId: msg.jobUuid, // for duplicate detection
-        contentType: 'application/json'
-      }
-      await sender.sendMessages(message)
-      await sender.close()
-      await sbClient.close()
-    } finally {
-      await sbClient.close()
     }
   }
 }

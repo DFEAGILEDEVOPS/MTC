@@ -6,7 +6,7 @@ import { PsReportSource } from '../common/ps-report-log-entry'
 import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
-import { type PsReportListSchoolsIncomingMessage } from '../common/ps-report-service-bus-messages'
+import type { PsReportStagingStartMessage, PsReportListSchoolsIncomingMessage } from '../common/ps-report-service-bus-messages'
 
 const serviceBusTrigger: AzureFunction = async function (context: Context, jobInfo: PsReportListSchoolsIncomingMessage): Promise<void> {
   const logger = new PsReportLogger(context, PsReportSource.SchoolGenerator)
@@ -28,6 +28,16 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
     const messages = await schoolListService.getSchoolMessages(messageSpec)
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
+
+    // Send a message to start ps-report-3b-staging (the csv assembly)
+    // service-bus queue = stagingStart
+    const stagingStartMessage: PsReportStagingStartMessage = {
+      startTime: new Date(),
+      jobUuid: jobInfo.jobUuid,
+      filename
+    }
+    context.bindings.stagingStart = stagingStartMessage
+    logger.info(`staging-start message sent: ${JSON.stringify(stagingStartMessage)}`)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {

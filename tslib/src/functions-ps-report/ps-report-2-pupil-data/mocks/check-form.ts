@@ -1,4 +1,4 @@
-import { type CheckForm } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type CheckForm } from '../pupil-data.models'
 
 export const checkForm: CheckForm = {
   id: 9,
