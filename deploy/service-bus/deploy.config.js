@@ -26,7 +26,6 @@ const eightyGigabytes = 81920
 const fourteenDays = 'P14D'
 const oneHundredAndTwentyDays = 'P120D'
 const fiveMinutes = 'PT5M'
-const fifteenMinutes = 'P15M'
 const oneDay = 'P1D'
 const sixDays = 'P6D'
 const twentyThreeHours = 'PT23H'
@@ -72,35 +71,29 @@ const config = {
     {
       name: 'ps-report-schools',
       defaultMessageTimeToLive: sixHours,
-      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_SCHOOLS') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_SCHOOLS, 10) : fiveGigabytes,
-      lockDuration: fifteenMinutes
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_SCHOOLS') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_SCHOOLS, 10) : fiveGigabytes
     },
     {
       name: 'ps-report-staging',
       defaultMessageTimeToLive: sixHours,
-      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING, 10) : eightyGigabytes,
-      lockDuration: fifteenMinutes
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING, 10) : eightyGigabytes
     },
     {
       name: 'ps-report-export',
       defaultMessageTimeToLive: sixHours,
-      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT, 10) : eightyGigabytes,
-      lockDuration: fifteenMinutes
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT, 10) : eightyGigabytes
     },
     {
       name: 'ps-report-staging-start',
       defaultMessageTimeToLive: sixHours,
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT, 10) : eightyGigabytes,
-      requiresDuplicateDetection: true,
-      lockDuration: sixHours
+      requiresDuplicateDetection: true
     },
     {
       name: 'ps-report-staging-complete',
       defaultMessageTimeToLive: sixHours,
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT, 10) : eightyGigabytes,
-      requiresDuplicateDetection: true,
-      lockDuration: fifteenMinutes,
-      maxDeliveryCount: 1
+      requiresDuplicateDetection: true
     },
     {
       name: 'pupil-login',
@@ -117,8 +110,7 @@ const config = {
       name: 'ps-report-exec',
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC, 10) : oneGigabyte,
       defaultMessageTimeToLive: sixHours,
-      maxDeliveryCount: 1,
-      lockDuration: fifteenMinutes
+      maxDeliveryCount: 1
     }
   ]
 }
