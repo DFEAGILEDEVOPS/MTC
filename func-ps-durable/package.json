@@ -6,9 +6,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "clean": "rimraf dist",
-    "prestart": "npm run clean && npm run build",
-    "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "prestart": "yarn clean && yarn build",
+    "start": "func start --port 7075"
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
