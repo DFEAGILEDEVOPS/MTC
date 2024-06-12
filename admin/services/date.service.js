@@ -2,6 +2,7 @@
 const moment = require('moment')
 const momentTz = require('moment-timezone')
 const logger = require('./log.service').getLogger()
+const config = require('../config')
 
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
@@ -15,7 +16,7 @@ const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 const iso8601WithMsPrecisionWithoutTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSS'
 const filenameFriendly = 'YYYY-MM-DD-HHmm'
-const config = require('../config')
+const pupilHistoryDateTime = 'D MMM H:mm z'
 
 const dateService = {
   formatYear: function (date) {
@@ -40,6 +41,10 @@ const dateService = {
 
   formatDateAndTime: function (date) {
     return dateService.checkAndFormat(date, dateAndTimeFormat)
+  },
+
+  formatPupilHistoryDateAndTime: function (date) {
+    return dateService.checkAndFormat(date, pupilHistoryDateTime)
   },
 
   /**

@@ -1,3 +1,4 @@
+
 'use strict'
 /* global describe test expect jest afterEach */
 
@@ -31,6 +32,13 @@ function invalidInputTests (method) {
 describe('date service', () => {
   afterEach(() => {
     jest.restoreAllMocks()
+  })
+
+  describe('#formatPupilHistoryDateAndTime', () => {
+    test('returns the expected format', () => {
+      const date = moment.tz('2024-06-12T13:22:30Z', 'Europe/London')
+      expect(dateService.formatPupilHistoryDateAndTime(date)).toBe('12 Jun 14:22 BST')
+    })
   })
 
   describe('#formatFullGdsDate', () => {

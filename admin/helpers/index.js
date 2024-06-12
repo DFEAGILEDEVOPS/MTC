@@ -72,6 +72,7 @@ module.exports = async function (app) {
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
   app.locals.formatGdsDateAndTime = formatGdsDateAndTime
+  app.locals.formatPupilHistoryDataAndTime = dateService.formatPupilHistoryDateAndTime
   app.locals.formatFullGdsDateAndTime = formatFullGdsDateAndTime
   app.locals.formatPinDate = dateService.formatPinDate
   app.locals.formatPinExpiryTime = dateService.formatPinExpiryTime
