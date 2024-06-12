@@ -1,4 +1,3 @@
-
 'use strict'
 /* global describe test expect jest afterEach */
 
