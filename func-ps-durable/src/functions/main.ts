@@ -31,7 +31,11 @@ const psMainOrchestrator: OrchestrationHandler = function* (context: Orchestrati
   // write the transformed pupils to blob storage
   const writePupilToBlobTasks: df.Task[] = []
   for (const pupil of transformedPupils) {
-    const data = { pupil, pupilId: pupil.id }
+    const data: IBlobStorageData = {
+      pupil,
+      pupilId: pupil.id,
+      jobId: context.df.instanceId
+    }
     writePupilToBlobTasks.push(context.df.callActivity(writePupilToBlobStorageActivityName, data))
   }
   const writeResults = yield context.df.Task.all(writePupilToBlobTasks)
@@ -63,8 +67,8 @@ const getPupilsHandler: ActivityHandler = async (input: any): Promise<Pupil[]> =
     }
   }
   const pupilCount = faker.number.int({
-    min: 3,
-    max: 10
+    min: Number(process.env.MinimumPupilCount),
+    max: Number(process.env.MaximumPupilCount)
   })
   return faker.helpers.multiple(createRandomPupil, {
     count: pupilCount
@@ -81,10 +85,16 @@ const transformPupilHandler: ActivityHandler = async (input: Pupil): Promise<Tra
 
 const blobOutputBinding = output.storageBlob({
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
-  path: 'pupils/{pupilId}.json'
+  path: 'pupils-{jobId}/{pupilId}.json'
 })
 
-const writePupilToBlobStorageHandler: ActivityHandler = async (data: { pupil: TransformedPupil, pupilId: string }, context: InvocationContext): Promise<void> => {
+export interface IBlobStorageData {
+  pupil: TransformedPupil
+  pupilId: string
+  jobId: string
+}
+
+const writePupilToBlobStorageHandler: ActivityHandler = async (data: IBlobStorageData, context: InvocationContext): Promise<void> => {
   context.log(`writing pupil to blob storage: ${data.pupilId}`)
   context.extraOutputs.set(blobOutputBinding, JSON.stringify(data.pupil))
 }
