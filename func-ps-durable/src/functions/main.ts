@@ -1,6 +1,7 @@
-import { app, HttpHandler, HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
+import { app, HttpHandler, HttpRequest, HttpResponse, InvocationContext, output } from '@azure/functions'
 import * as df from 'durable-functions'
 import { type ActivityHandler, OrchestrationContext, type OrchestrationHandler } from 'durable-functions'
+import { faker } from '@faker-js/faker'
 
 // overall pattern taken from https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-cloud-backup?tabs=javascript-v4
 
@@ -16,6 +17,7 @@ const psMainOrchestrator: OrchestrationHandler = function* (context: Orchestrati
 
   // get all the target pupils dataset
   const pupils = yield context.df.callActivity(getPupilsActivityName, input)
+  context.log(`total pupils retrieved: ${pupils.length}`)
 
   // transform the pupils
   const transformPupilTasks: df.Task[] = []
@@ -23,35 +25,78 @@ const psMainOrchestrator: OrchestrationHandler = function* (context: Orchestrati
     transformPupilTasks.push(context.df.callActivity(transformPupilActivityName, pupil))
   }
   context.log(`attempting to transform ${transformPupilTasks.length} pupils...`)
-  const transformedPupils = yield context.df.Task.all(pupils)
+  const transformedPupils = yield context.df.Task.all(transformPupilTasks)
   context.log(`total pupils transformed: ${transformedPupils.length}`)
 
   // write the transformed pupils to blob storage
   const writePupilToBlobTasks: df.Task[] = []
   for (const pupil of transformedPupils) {
-    writePupilToBlobTasks.push(context.df.callActivity(writePupilToBlobStorageActivityName, pupil))
+    const data = { pupil, pupilId: pupil.id }
+    writePupilToBlobTasks.push(context.df.callActivity(writePupilToBlobStorageActivityName, data))
   }
   const writeResults = yield context.df.Task.all(writePupilToBlobTasks)
   return writeResults
 }
 
-const getPupils: ActivityHandler =  async(input: string): Promise<any[]> => {
-  throw new Error('Not implemented yet')
+export class Pupil {
+  id: string
+  firstName: string
+  lastName: string
+  dob: Date
 }
 
-const transformPupil: ActivityHandler = async(input: Record<number, any>): Promise<any> => {
-  throw new Error('Not implemented yet')
+export class TransformedPupil {
+  id: string
+  name: string
+  age: number
 }
 
-const writePupilToBlobStorage: ActivityHandler = async(input: any): Promise<void> => {
-  throw new Error('Not implemented yet')
+const getPupilsHandler: ActivityHandler = async (input: any): Promise<Pupil[]> => {
+  const createRandomPupil = () => {
+    return {
+      id: faker.string.uuid(),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      dob: faker.date.past({
+        years: 36
+      })
+    }
+  }
+  const pupilCount = faker.number.int({
+    min: 3,
+    max: 10
+  })
+  return faker.helpers.multiple(createRandomPupil, {
+    count: pupilCount
+  })
+}
+
+const transformPupilHandler: ActivityHandler = async (input: Pupil): Promise<TransformedPupil> => {
+  return {
+    id: input.id,
+    name: `${input.firstName} ${input.lastName}`,
+    age: Math.floor((new Date().getTime() - new Date(input.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
+  }
+}
+
+const blobOutputBinding = output.storageBlob({
+  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+  path: 'pupils/{pupilId}.json'
+})
+
+const writePupilToBlobStorageHandler: ActivityHandler = async (data: { pupil: TransformedPupil, pupilId: string }, context: InvocationContext): Promise<void> => {
+  context.log(`writing pupil to blob storage: ${data.pupilId}`)
+  context.extraOutputs.set(blobOutputBinding, JSON.stringify(data.pupil))
 }
 
 // register the durable functions
 df.app.orchestration('psreport', psMainOrchestrator)
-df.app.activity(getPupilsActivityName, { handler: getPupils })
-df.app.activity(transformPupilActivityName, { handler: transformPupil })
-df.app.activity(writePupilToBlobStorageActivityName, { handler: writePupilToBlobStorage })
+df.app.activity(getPupilsActivityName, { handler: getPupilsHandler })
+df.app.activity(transformPupilActivityName, { handler: transformPupilHandler })
+df.app.activity(writePupilToBlobStorageActivityName, {
+  handler: writePupilToBlobStorageHandler,
+  extraOutputs: [blobOutputBinding]
+})
 
 // define the main trigger / input binding
 const psMainHttpStart: HttpHandler = async (request: HttpRequest, context: InvocationContext): Promise<HttpResponse> => {
