@@ -34,7 +34,7 @@ describe('date service', () => {
   })
 
   describe('#formatPupilHistoryDateAndTime', () => {
-    test('returns the expected format', () => {
+    test('returns the expected format in 24H and shows the timezone', () => {
       const date = moment.tz('2024-06-12T13:22:30Z', 'Europe/London')
       expect(dateService.formatPupilHistoryDateAndTime(date)).toBe('12 Jun 14:22 BST')
     })
