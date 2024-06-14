@@ -143,9 +143,9 @@ export class PupilHistoryDataService {
         isLiveCheck: o.isLiveCheck,
         processingFailed: o.processingFailed,
         pupilId: o.pupil_id,
-        pupilLoginDate: moment.tz(o.pupilLoginDate, config.DEFAULT_TIMEZONE),
+        pupilLoginDate: o.pupilLoginDate !== null ? moment.tz(o.pupilLoginDate, config.DEFAULT_TIMEZONE) : null,
         received: o.received,
-        receivedByServerAt: moment.tz(o.receivedByServerAt, config.DEFAULT_TIMEZONE),
+        receivedByServerAt: o.receivedByServerAt !== null ? moment.tz(o.receivedByServerAt, config.DEFAULT_TIMEZONE) : null,
         resultsSynchronised: o.resultsSynchronised,
         updatedAt: o.updatedAt,
         checkStatus: ''
