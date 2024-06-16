@@ -86,13 +86,8 @@ end
 
 Then(/^I should see the pin gen reflected in the check history$/) do
   check_details = SqlDbHelper.check_details(@pupil_details['id'])
-  current_timezone = Time.now.zone
-  if current_timezone == 'BST'
-    timezone_string = 'GB'
-  else
-    timezone_string = 'GMT'
-  end
-  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
+  zone = 'Europe/London'
+  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
   expect(pupil_history_page.check_history.rows.first.login.text).to eql ""
   expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? '' : 'n/a'
   expect(pupil_history_page.check_history.rows.first.active.text).to eql @check_type == 'Official' ? '*' : ''
@@ -114,14 +109,9 @@ end
 
 Then(/^I should see the pupil login reflected in the check history$/) do
   check_details = SqlDbHelper.check_details(@pupil_details['id'])
-  current_timezone = Time.now.zone
-  if current_timezone == 'BST'
-    timezone_string = 'GB'
-  else
-    timezone_string = 'GMT'
-  end
-  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
+  zone = 'Europe/London'
+  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
   expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? '' : 'n/a'
   expect(pupil_history_page.check_history.rows.first.active.text).to eql @check_type == 'Official' ? '*' : ''
   expect(pupil_history_page.check_history.rows.first.type.text).to eql @check_type
@@ -150,15 +140,10 @@ end
 
 Then(/^I should see the completed check reflected in the check history$/) do
   check_details = SqlDbHelper.check_details(@pupil_details['id'])
-  current_timezone = Time.now.zone
-  if current_timezone == 'BST'
-    timezone_string = 'GB'
-  else
-    timezone_string = 'GMT'
-  end
-  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-  expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? check_details['receivedByServerAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ") : 'n/a'
+  zone = 'Europe/London'
+  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? check_details['receivedByServerAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ") : 'n/a'
   expect(pupil_history_page.check_history.rows.first.active.text).to eql @check_type == 'Official' ? '*' : ''
   expect(pupil_history_page.check_history.rows.first.type.text).to eql @check_type
   expect(pupil_history_page.check_history.rows.first.status.text).to eql @check_type == 'Official' ? "Check complete" : 'Logged in'
@@ -177,16 +162,11 @@ end
 Then(/^I should see a list of all checks with the latest being marked as active$/) do
   pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
   latest_check = pupil_checks.last
-  current_timezone = Time.now.zone
-  if current_timezone == 'BST'
-    timezone_string = 'GB'
-  else
-    timezone_string = 'GMT'
-  end
+  zone = 'Europe/London'
   pupil_history_page.check_history.rows.each_with_index do |check, index|
-    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
+    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
     expect(check.active.text).to eql pupil_checks[index] == latest_check ? '*' : ''
     expect(check.type.text).to eql 'Official'
     expect(check.status.text).to eql 'Check complete'
@@ -221,16 +201,11 @@ Then(/^I should see a list of all checks including the consumed discretionary re
   expect(pupil_history_page).to have_discretionary_restart_button
   pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
   latest_check = pupil_checks.last
-  current_timezone = Time.now.zone
-  if current_timezone == 'BST'
-    timezone_string = 'GB'
-  else
-    timezone_string = 'GMT'
-  end
+  zone = 'Europe/London'
   pupil_history_page.check_history.rows.each_with_index do |check, index|
-    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
+    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
     expect(check.active.text).to eql pupil_checks[index] == latest_check ? '*' : ''
     expect(check.type.text).to eql 'Official'
     expect(check.status.text).to eql 'Check complete'
@@ -250,16 +225,11 @@ Then(/^I should see a list of all checks including the consumed discretionary re
   expect(pupil_history_page.pupil_history.discretionary_restart.text).to eql 'N'
   pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
   latest_check = pupil_checks.last
-  current_timezone = Time.now.zone
-  if current_timezone == 'BST'
-    timezone_string = 'GB'
-  else
-    timezone_string = 'GMT'
-  end
+  zone = 'Europe/London'
   pupil_history_page.check_history.rows.each_with_index do |check, index|
-    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
-    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].in_time_zone(timezone_string).strftime("%-d %b %H:%M #{current_timezone}").gsub("  ", " ")
+    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
+    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].in_time_zone(zone).strftime("%-d %b %H:%M %Z").gsub("  ", " ")
     expect(check.active.text).to eql pupil_checks[index] == latest_check ? '*' : ''
     expect(check.type.text).to eql 'Official'
     expect(check.status.text).to eql 'Check complete'
