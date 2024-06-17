@@ -27,8 +27,7 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   check_events = SqlDbHelper.get_event_types_for_check(check_result['id']) unless @check_details.nil?
   check_inputs = SqlDbHelper.get_input_data(check_result['id']) unless @check_details.nil?
   school_details = SqlDbHelper.find_school(pupil_details['school_id'])
-  device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device') unless @check_details.nil?
-  device_info = SqlDbHelper.get_device_information(device_cookie[:value]) unless @check_details.nil?
+  device_info = SqlDbHelper.get_device_information(@device_cookie[:value]) unless @check_details.nil?
   filename = JSON.parse(SqlDbHelper.get_ps_report_job['meta'])['filename']
   filename.slice!('ps-report-staging-')
   filename.slice!('.csv')
@@ -110,6 +109,7 @@ And(/^I complete the check$/) do
   @answers = check_page.complete_check_with_correct_answers(25, 'keyboard')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_heading
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end
 
 Given(/^I have marked a pupil as not taking check with the (.+) reason$/) do |reason|
