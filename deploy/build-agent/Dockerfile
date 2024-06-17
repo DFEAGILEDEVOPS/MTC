@@ -77,6 +77,7 @@ RUN apt-get update && \
     libncurses5-dev \
     libyaml-dev \
     libnss3 \
+    tzdata \
     # for zipping up function apps
     zip \
     && rm -rf /var/lib/apt/lists/*
