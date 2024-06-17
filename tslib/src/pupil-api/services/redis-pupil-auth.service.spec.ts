@@ -18,7 +18,8 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
 }))
 
 const MessageDispatchMock = jest.fn<IServiceBusQueueService, any>(() => ({
-  dispatch: jest.fn()
+  dispatch: jest.fn(),
+  getActiveMessageCount: jest.fn()
 }))
 
 describe('redis-pupil-auth.service', () => {

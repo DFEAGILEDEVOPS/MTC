@@ -34,7 +34,7 @@
                     </p>
                 </div>
             </div>
-            <% } %>
+        <% } %>
 
     <h2 class="govuk-heading-m"><%= pupilHistory.pupil.lastName %>, <%= pupilHistory.pupil.foreName.concat(' ', pupilHistory.pupil.middleNames) %></h2>
 
@@ -81,9 +81,9 @@
         <tbody class="govuk-body-s">
             <% for (let i = 0; i < pupilHistory.checks.length; i++) { %>
                 <tr>
-                    <td title="<%= pupilHistory.checks[i].checkCode %>"><%= formatGdsDateAndTime(pupilHistory.checks[i].createdAt) %></td>
-                    <td title="<%= pupilHistory.checks[i].pupilLoginDate?.toISOString() %>"><%= pupilHistory.checks[i].pupilLoginDate ? formatGdsDateAndTime(pupilHistory.checks[i].pupilLoginDate) : '' %></td>
-                    <td><%= pupilHistory.checks[i].receivedByServerAt !== null ? formatGdsDateAndTime(pupilHistory.checks[i].receivedByServerAt) : pupilHistory.checks[i].isLiveCheck === false ? 'n/a' : '' %></td>
+                    <td title="<%= pupilHistory.checks[i].checkCode %>"><%= formatPupilHistoryDataAndTime(pupilHistory.checks[i].createdAt) %></td>
+                    <td title="<%= pupilHistory.checks[i].pupilLoginDate?.toISOString() %>"><%= pupilHistory.checks[i].pupilLoginDate ? formatPupilHistoryDataAndTime(pupilHistory.checks[i].pupilLoginDate) : '' %></td>
+                    <td><%= pupilHistory.checks[i].receivedByServerAt !== null ? formatPupilHistoryDataAndTime(pupilHistory.checks[i].receivedByServerAt) : pupilHistory.checks[i].isLiveCheck === false ? 'n/a' : '' %></td>
                     <td><%= pupilHistory.pupil.currentCheckId === pupilHistory.checks[i].id ? '*' : '' %></td>
                     <td><%= pupilHistory.checks[i].isLiveCheck === true ? 'Official' : 'Try it out' %></td>
                     <td><%= pupilHistory.checks[i].checkStatus %></td>

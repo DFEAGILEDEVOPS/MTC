@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp build",
     "build:watch": "yarn tsc --watch",
+    "dev": "yarn start:dev",
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",

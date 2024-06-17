@@ -2,7 +2,7 @@ import { PsReportDataService } from './ps-report.data.service'
 import { MockLogger } from '../../common/logger'
 import type { ISqlService } from '../../sql/sql.service'
 import moment from 'moment'
-import type { Pupil, School } from './models'
+import type { Pupil, School } from './pupil-data.models'
 
 describe('ps-report.data.service', () => {
   let sut: PsReportDataService

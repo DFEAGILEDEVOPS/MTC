@@ -18,7 +18,7 @@ import {
   type Pupil,
   type PupilResult, type RestartReasonCode,
   type School
-} from './models'
+} from './pupil-data.models'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import type moment from 'moment'

@@ -7,10 +7,10 @@ import {
   type Event,
   type Pupil,
   type School, type Answer, type NotTakingCheckCode, type RestartReasonCode
-} from '../../functions-ps-report/ps-report-2-pupil-data/models'
+} from './pupil-data.models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
-import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './models'
+import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './transformer-models'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull

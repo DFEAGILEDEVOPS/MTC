@@ -1,0 +1,44 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <% if (err && err.hasError()) { %>
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+        data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          You need to fix the errors on this page before continuing.
+        </h2>
+        <div class="govuk-error-summary__body">
+          <p>See highlighted errors below.</p>
+          <ul class="govuk-list govuk-error-summary__list">
+            <% err.getUniqueFields(['confirmedQueueName']).map(f => { %>
+            <% const errors = err.get(f) %>
+            <% if (Array.isArray(errors)) { %>
+            <%  errors.map(e => { %>
+            <li><a href="#<%= f %>"><%= e %></a></li>
+            <% }) } else { %>
+            <li><a href="#<%= f %>"><%= errors %></a></li>
+            <% } %>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <form action="/tech-support/clear-service-bus-queue/<%= queueName %>" id="confirmQueueNameForm" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="govuk-form-group <%= err.isError('confirmedQueueName') ? 'govuk-form-group--error' : '' %>">
+          <label class="govuk-label govuk-!-font-weight-bold" for="confirmedQueueName">Confirm Queue Name:</label>
+          <% if (err && err.isError('confirmedQueueName')) { %>
+          <span class="govuk-error-message"><%= err.get('confirmedQueueName') %></span>
+          <% } %>
+          <input type="text" id="confirmedQueueName"
+            class="govuk-input govuk-!-width-three-quarters <%= err.isError('confirmedQueueName') ? 'govuk-input--error' : '' %>"
+            name="confirmedQueueName" />
+        </div>
+        <button type="submit" id="submit-queuename" class="govuk-button">Confirm</button>
+      </form>
+    </div>
+  </div>
+</main>

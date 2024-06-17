@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { type Answer } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type Answer } from '../pupil-data.models'
 
 export const answers: readonly Answer[] = [
   {

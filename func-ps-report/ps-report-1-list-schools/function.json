@@ -13,6 +13,13 @@
       "name": "schoolMessages",
       "queueName": "ps-report-schools",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "stagingStart",
+      "queueName": "ps-report-staging-start",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions-ps-report/ps-report-1-list-schools/index.js"

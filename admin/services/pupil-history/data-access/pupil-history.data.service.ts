@@ -1,4 +1,5 @@
-import type moment from 'moment'
+import moment from 'moment-timezone'
+import * as config from '../../../config'
 const sqlService = require('../../data-access/sql.service')
 const uuidValidate = require('uuid-validate')
 const R = require('ramda')
@@ -134,17 +135,17 @@ export class PupilHistoryDataService {
         checkFormId: o.checkForm_id,
         checkWindowId: o.checkWindow_id,
         complete: o.complete,
-        completedAt: o.completedAt,
-        createdAt: o.createdAt,
+        completedAt: moment.tz(o.completedAt, config.DEFAULT_TIMEZONE),
+        createdAt: moment.tz(o.createdAt, config.DEFAULT_TIMEZONE),
         createdByUserId: o.createdBy_userId,
         id: o.id,
         inputAssistantAddedRetrospectively: o.inputAssistantAddedRetrospectively,
         isLiveCheck: o.isLiveCheck,
         processingFailed: o.processingFailed,
         pupilId: o.pupil_id,
-        pupilLoginDate: o.pupilLoginDate,
+        pupilLoginDate: o.pupilLoginDate !== null ? moment.tz(o.pupilLoginDate, config.DEFAULT_TIMEZONE) : null,
         received: o.received,
-        receivedByServerAt: o.receivedByServerAt,
+        receivedByServerAt: o.receivedByServerAt !== null ? moment.tz(o.receivedByServerAt, config.DEFAULT_TIMEZONE) : null,
         resultsSynchronised: o.resultsSynchronised,
         updatedAt: o.updatedAt,
         checkStatus: ''

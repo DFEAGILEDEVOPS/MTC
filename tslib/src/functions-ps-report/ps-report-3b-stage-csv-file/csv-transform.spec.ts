@@ -2,7 +2,7 @@ import moment from 'moment'
 import { CsvTransformer } from './csv-transformer'
 import * as CSV from 'csv-string'
 import { ConsoleLogger } from '../../common/logger'
-import { type IPsychometricReportLine } from '../ps-report-3-transformer/models'
+import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
 
 let sut: CsvTransformer
 

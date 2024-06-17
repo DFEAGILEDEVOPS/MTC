@@ -1,4 +1,4 @@
-import { type School } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type School } from '../pupil-data.models'
 
 export const school: School = {
   estabCode: 999,

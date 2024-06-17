@@ -7,7 +7,7 @@ const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
-const queueMgmtService = require('../services/tech-support-queue-management.service')
+const queueMgmtService = require('../services/queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../services/tech-support/check-submit/check-submit.service')
@@ -395,6 +395,42 @@ const controller = {
     }
   },
 
+  getClearServiceBusQueue: async function getClearServiceBusQueue (req, res, next, error = new ValidationError()) {
+    try {
+      const queueName = req.params.queueName
+      if (!queueName) {
+        res.redirect('/tech-support/queue-overview')
+      }
+      const title = `Clear Service Bus Queue: ${queueName}`
+      req.breadcrumbs('Queue Overview', '/tech-support/queue-overview')
+      req.breadcrumbs(title)
+      res.locals.pageTitle = title
+      res.render('tech-support/queue-purge-confirm', {
+        breadcrumbs: req.breadcrumbs(),
+        queueName,
+        err: error || new ValidationError()
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postClearServiceBusQueue: async function postClearServiceBusQueue (req, res, next) {
+    try {
+      const confirmedQueueName = req.body.confirmedQueueName
+      const queueName = req.params.queueName
+      if (confirmedQueueName !== queueName) {
+        const validationError = new ValidationError()
+        validationError.addError('confirmedQueueName', 'Queue name does not match')
+        return controller.getClearServiceBusQueue(req, res, next, validationError)
+      }
+      await queueMgmtService.clearServiceBusQueue(queueName)
+      res.redirect('/tech-support/queue-overview')
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   getCheckResultsResyncCheck: async function getCheckResultsResyncCheck (req, res, next, error = new ValidationError()) {
     try {
       res.locals.pageTitle = 'Check Results - Resync Check'
@@ -570,6 +606,32 @@ const controller = {
       })
     } catch (error) {
       return next(error)
+    }
+  },
+
+  getSbQueueSubmit: async function getSbQueueSubmit (req, res, next) {
+    try {
+      req.breadcrumbs('Submit Service Bus Queue Message')
+      res.locals.pageTitle = 'Submit Service Bus Queue Message'
+      res.render('tech-support/sb-queue-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        error: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postSbQueueSubmit: async function postSbQueueSubmit (req, res, next) {
+    res.locals.pageTitle = 'Submit Service Bus Queue Message'
+    try {
+      await queueMgmtService.sendServiceBusQueueMessage(req.body.queueName, req.body.message, req.body.contentType)
+      return res.redirect('/tech-support/queue-overview')
+    } catch (error) {
+      res.render('tech-support/sb-queue-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        error: error.message
+      })
     }
   }
 }

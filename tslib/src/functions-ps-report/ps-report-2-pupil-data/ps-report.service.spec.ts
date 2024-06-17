@@ -8,9 +8,8 @@ describe.skip('PsReportService', () => {
   let sut: PsReportService
   let logger: ILogger
   let psReportDataService: IPsReportDataService
-  const serviceBusAdministrationClient: any = {}
   const schoolUuid = 'AAAA-BBBB-CCCC-DDDD'
-  const outputBindings: IOutputBinding = { psReportPupilMessage: [] }
+  const outputBindings: IOutputBinding = { psReportExportOutput: [] }
   const mockPupils = [{ id: 1, schoolId: 99 }, { id: 2, schoolId: 99 }, { id: 3, schoolId: 99 }]
   const mockSchool = { id: 99, name: 'test school' }
   const psReportSchoolFanOutMessage: PsReportSchoolFanOutMessage = {
@@ -28,9 +27,9 @@ describe.skip('PsReportService', () => {
       getPupils: jest.fn(),
       getSchool: jest.fn()
     }
-    outputBindings.psReportPupilMessage = []
+    outputBindings.psReportExportOutput = []
 
-    sut = new PsReportService(outputBindings, logger, psReportDataService, serviceBusAdministrationClient)
+    sut = new PsReportService(outputBindings, logger, psReportDataService)
   })
 
   test('it is defined', () => {
@@ -71,6 +70,6 @@ describe.skip('PsReportService', () => {
       .mockResolvedValueOnce({ data: 2 })
       .mockResolvedValueOnce({ data: 3 })
     await sut.process(psReportSchoolFanOutMessage)
-    expect(outputBindings.psReportPupilMessage).toHaveLength(3)
+    expect(outputBindings.psReportExportOutput).toHaveLength(3)
   })
 })

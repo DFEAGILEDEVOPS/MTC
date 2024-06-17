@@ -33,6 +33,13 @@ describe('date service', () => {
     jest.restoreAllMocks()
   })
 
+  describe('#formatPupilHistoryDateAndTime', () => {
+    test('returns the expected format in 24H and shows the timezone', () => {
+      const date = moment.tz('2024-06-12T13:22:30Z', 'Europe/London')
+      expect(dateService.formatPupilHistoryDateAndTime(date)).toBe('12 Jun 14:22 BST')
+    })
+  })
+
   describe('#formatFullGdsDate', () => {
     test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
