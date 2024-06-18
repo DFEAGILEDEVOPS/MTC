@@ -64,7 +64,7 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   expect(ps_report_record["DeviceType"]).to eql nil
   expect(ps_report_record["BrowserType"]).to eql device_info.nil? ? nil : SqlDbHelper.browser_lookup(device_info['browserFamilyLookup_id'])['family'] + ' ' + device_info['browserMajorVersion'].to_s + '.' + device_info['browserMinorVersion'].to_s + '.' + device_info['browserPatchVersion'].to_s
   expect(ps_report_record["DeviceTypeModel"]).to eql nil
-  expect(ps_report_record["DeviceId"]).to eql device_info.nil? ? nil : device_cookie[:value]
+  expect(ps_report_record["DeviceId"]).to eql device_info.nil? ? nil : @device_cookie[:value]
   25.times do |index|
     question = index + 1
     expect(ps_report_record["Q#{question}ID"]).to eql check_inputs.nil? ? nil : check_inputs.find { |inputs| inputs["questionNumber"] == question }["question"]
@@ -240,6 +240,7 @@ When(/^the pupil completes the check$/) do
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
   p @check_code
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end
 
 Then(/^the ps report record should be updated with all the check details$/) do
@@ -283,6 +284,7 @@ And(/^complete the check$/) do
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
   p @check_code
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end
 
 Then(/^the PS report should include the AA for the pupil$/) do
