@@ -11,6 +11,7 @@ Given(/^I have completed the check with only (\d+) correct answers$/) do |correc
   expect(complete_page).to have_heading
   @check_code = @storage_pupil['checkCode']
   p @check_code
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end
 
 Then(/^all answers events and inputs match$/) do
