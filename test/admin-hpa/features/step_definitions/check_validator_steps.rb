@@ -385,3 +385,39 @@ Then(/^I should see the check is recieved and is set to version (\d+)$/) do |ver
   @received_check = AzureTableHelper.wait_for_received_check( @school['urlSlug'], @check_code)
   expect(@received_check['checkVersion']).to eql version
 end
+
+Given(/^I have a payload$/) do
+  step 'I have generated a live pin for a pupil'
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
+  @pupil_id = pupil_detail['id']
+  check_entry = SqlDbHelper.check_details(@pupil_id)
+  pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
+  pupil_pin = pupil_pin_detail['val']
+  school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+  response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
+  @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+  @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {decreased_answers_set: true})
+  @payload = @submission_hash[:submission_message]
+end
+
+Given(/^I submit a check submission message under 24KB$/) do
+  step 'I have a payload'
+  under_limit_message = {payload: "11" * 127992}
+  expect(under_limit_message.to_json.bytesize).to be < 256000
+  expect(under_limit_message.to_json.bytesize).to be > 255000
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  @response = RequestHelper.submit_check(jwt, under_limit_message)
+end
+
+Then(/^I should get a (\d+) response$/) do |code|
+  expect(@response.code).to eql code
+end
+
+Given(/^I submit a check submission message over 24KB$/) do
+  step 'I have a payload'
+  over_limit_message = {payload: "11" * 131999}
+  expect(over_limit_message.to_json.bytesize).to be > 256000
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  @response = RequestHelper.submit_check(jwt, over_limit_message)
+end
