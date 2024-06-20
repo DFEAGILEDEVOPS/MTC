@@ -58,3 +58,11 @@ Feature:
     Given a pupil has completed a check
     Then I should see the check is recieved and is set to version 3
 
+  Scenario: 200 response when check submission message is under 24kb
+    Given I submit a check submission message under 24KB
+    Then I should get a 200 response
+
+  Scenario: 413 response when check submission message is over 24kb
+    Given I submit a check submission message over 24KB
+    Then I should get a 413 response
+
