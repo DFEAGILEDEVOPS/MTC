@@ -94,13 +94,15 @@ export class ApplicationInsightsService {
     return this.commitId
   }
 
-  private loadCustomTelemetryProperties () {
-    const buildNumberTelemetryInitializer = (envelope: ITelemetryItem) => {
-      const baseData = envelope.data.baseData
-      baseData.properties = baseData.properties || {}
-      baseData.properties['buildNumber'] = this.getBuildNumber()
+  public loadCustomTelemetryProperties () {
+    const mtcTelemetryInitializer = (envelope: ITelemetryItem) => {
+      const baseData = envelope.data
+      const customProps = this.getCustomProperties()
+      for (const [key, val] of Object.entries(customProps)) {
+        baseData[key] = val
+      }
     }
-    this.appInsights.addTelemetryInitializer(buildNumberTelemetryInitializer)
+    this.appInsights.addTelemetryInitializer(mtcTelemetryInitializer)
   }
 
   private createRouterSubscription () {
