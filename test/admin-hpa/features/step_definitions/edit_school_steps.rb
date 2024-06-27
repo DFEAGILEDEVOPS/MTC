@@ -9,7 +9,7 @@ When(/^I change all the details of the school$/) do
   school_search_results_page.edit.click
   @toe = SqlDbHelper.type_of_establishment.sample
   dfe_number = create_dfe_number
-  @hash = {name: 'Changed School Name', dfe: (dfe_number[:lea_code] + dfe_number[:estab_code].to_s), urn: @urn + 1000, lea_code: SqlDbHelper.get_list_of_la_codes.sample, estab_code: @estab_code, type_of_establishment: @toe}
+  @hash = {name: 'Changed School Name', dfe: (dfe_number[:lea_code] + dfe_number[:estab_code].to_s), urn: SqlDbHelper.get_last_urn['urn'] + 1, lea_code: SqlDbHelper.get_list_of_la_codes.sample, estab_code: @estab_code, type_of_establishment: @toe}
   edit_school_page.edit_details(@hash)
 end
 
