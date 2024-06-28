@@ -395,16 +395,21 @@
     rhea-promise "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-blob@^12.17.0":
-  version "12.18.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.18.0.tgz#9dd001c9aa5e972216f5af15131009086cfeb59e"
-  integrity sha512-BzBZJobMoDyjJsPRMLNHvqHycTGrT8R/dtcTx9qUFcqwSRfGVK9A/cZ7Nx38UQydT9usZGbaDCN75QRNjezSAA==
+"@azure/storage-blob@^12.23.0":
+  version "12.23.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.23.0.tgz#36969427d1e4f961304278e980c50613f440b194"
+  integrity sha512-c1KJ5R5hqR/HtvmFtTn/Y1BNMq45NUBp0LZH7yF8WFMET+wmESgEr0FVTu/Z5NonmfUjbgJZG5Nh8xHc5RdWGQ==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
-    "@azure/core-http" "^3.0.0"
+    "@azure/core-auth" "^1.4.0"
+    "@azure/core-client" "^1.6.2"
+    "@azure/core-http-compat" "^2.0.0"
     "@azure/core-lro" "^2.2.0"
     "@azure/core-paging" "^1.1.1"
-    "@azure/core-tracing" "1.0.0-preview.13"
+    "@azure/core-rest-pipeline" "^1.10.1"
+    "@azure/core-tracing" "^1.0.0"
+    "@azure/core-util" "^1.6.1"
+    "@azure/core-xml" "^1.3.2"
     "@azure/logger" "^1.0.0"
     events "^3.0.0"
     tslib "^2.2.0"
