@@ -2,6 +2,7 @@
 
 const roleDataService = require('./data-access/role.data.service')
 const roles = require('../lib/consts/roles')
+const DfeSignInError = require('../error-types/dfe-signin-error')
 
 /**
  * @typedef UserRole
@@ -39,7 +40,7 @@ const service = {
     const role = mapping[dfeRoleCode]
 
     if (!role) {
-      throw new Error(`Unknown dfe role ${dfeRoleCode}`)
+      throw new DfeSignInError(`Unknown dfe role ${dfeRoleCode}`)
     }
     return role
   }

@@ -7,7 +7,8 @@ const asyncRetry = require('login.dfe.async-retry')
 const dfeSigninService = require('../services/dfe-signin.service')
 const passport = require('passport')
 const authModes = require('../lib/consts/auth-modes')
-
+const DfeSignInError = require('../error-types/dfe-signin-error')
+const { DsiSchoolNotFoundError } = require('../error-types/DsiSchoolNotFoundError')
 /**
  * Asynchronous setup of DfE signin with retry strategy for issuer discovery
  * @returns {Promise<Strategy>} configured Passport Strategy
@@ -20,10 +21,11 @@ const initSignOnAsync = async () => {
     issuer = await asyncRetry(async () =>
       Issuer.discover(config.Auth.dfeSignIn.issuerUrl), asyncRetry.strategies.apiStrategy)
   } catch (error) {
-    logger.error(`error discovering dfe signin service:${error.message}`)
-    throw error
+    const err = `Error discovering dfe signin service:${error.message}`
+    logger.warn(err)
+    throw new DfeSignInError(err, '', error)
   }
-  logger.info('dfe sign on initialised')
+  logger.debug('dfe sign on initialised')
   const client = new issuer.Client({
     client_id: config.Auth.dfeSignIn.clientId,
     client_secret: config.Auth.dfeSignIn.clientSecret,
@@ -46,8 +48,14 @@ const initSignOnAsync = async () => {
       const userInfo = await dfeSigninService.initialiseUser(authUserInfo, tokenset)
       done(null, userInfo)
     } catch (error) {
-      logger.error('DfeSignIn: initSignOnAsync(): Error initializing user: ' + error.message)
-      done(error)
+      const err = `DfeSignIn: initSignOnAsync(): Error initializing user: ${error.message}`
+      logger.error(err)
+      let userMessage = ''
+      if (error instanceof DsiSchoolNotFoundError) {
+        userMessage = error.message
+      }
+      const dfeSignInError = new DfeSignInError(err, userMessage, error)
+      done(dfeSignInError)
     }
   })
 }
@@ -63,7 +71,7 @@ const initSignOnSync = () => {
   logger.debug('discovering dfe signin service issuer...')
   Issuer.discover(config.Auth.dfeSignIn.issuerUrl)
     .then((issuer) => {
-      logger.info('dfe sign on discovered successfully')
+      logger.debug('dfe sign on discovered successfully')
       const client = new issuer.Client({
         client_id: config.Auth.dfeSignIn.clientId,
         client_secret: config.Auth.dfeSignIn.clientSecret
@@ -84,14 +92,24 @@ const initSignOnSync = () => {
           done(null, userInfo)
         } catch (error) {
           logger.error(error)
-          done(error)
+          if (error instanceof DfeSignInError) {
+            done(error)
+          }
+          let userMessage = ''
+          if (error instanceof DsiSchoolNotFoundError) {
+            userMessage = error.message
+          }
+          done(new DfeSignInError('Dfe Sign-in: error initialising user', userMessage, error))
         }
       })
       passport.use(authModes.dfeSignIn, dfeStrategy)
     })
     .catch((error) => {
       logger.error(`dfe signin initialisation failed:${error.message}`)
-      throw error
+      if (error instanceof DfeSignInError) {
+        throw error
+      }
+      throw new DfeSignInError(error.message, undefined, error)
     })
 }
 

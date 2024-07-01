@@ -5,6 +5,7 @@ const logger = require('../log.service').getLogger()
 const bluebird = require('bluebird')
 const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const axios = require('axios')
+const DfeSignInError = require('../../error-types/dfe-signin-error')
 
 const service = {
 /**
@@ -18,8 +19,9 @@ const service = {
       const userInfo = await getUserInfoFromDfeApi(token, user)
       return userInfo.roles[0].code
     } catch (error) {
-      logger.error(`unable to get dfe role for user:${user.id} error:${error.message}`)
-      throw error
+      const err = `unable to get dfe role for user:${user.id} error:${error.message}`
+      logger.error(err)
+      throw new DfeSignInError(err, 'DfE Sign-in Error: unable to determine role', error)
     }
   }
 }
@@ -44,8 +46,9 @@ const getUserInfoFromDfeApi = async (token, user) => {
   if (response.status === 200) {
     return response.data
   } else {
-    logger.error(`dfe API call failed: statusCode:${response.status} - ${response.statusText}`)
-    throw new Error(`unsatisfactory response returned from DfE API. statusCode:${response.status}`)
+    const err = `dfe API call failed: statusCode:${response.status} - ${response.statusText}`
+    logger.error(err)
+    throw new DfeSignInError(`unsatisfactory response returned from DfE API. statusCode:${response.status}`)
   }
 }
 

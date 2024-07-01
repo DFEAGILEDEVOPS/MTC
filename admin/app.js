@@ -413,6 +413,12 @@ app.use(function (err, req, res, next) {
     return res.render('availability/page-not-found', {})
   }
 
+  if (err.name === 'DfeSignInError') {
+    res.locals.pageTitle = 'DfE Sign-in Error'
+    res.status(500)
+    return res.render('dfe-sign-in-error', { userMessage: err.userMessage ?? '' })
+  }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage

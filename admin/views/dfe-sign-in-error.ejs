@@ -1,0 +1,13 @@
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+          <h1 class="govuk-heading-xl">Dfe Sign-in Error</h1>
+          <% if (userMessage.length > 0) { %>
+          <h2 class="govuk-heading-l"><%= userMessage %></h2>
+          <% } %>
+          <p class="govuk-body govuk-!-font-size-24">There was a problem signing-in.  This may be a temporary problem.</p>
+          <a href="/sign-in" class="govuk-button govuk-button--secondary" data-module="govuk-button">Try again</a>
+          <a href="/sign-out-dso" class="govuk-button" data-module="govuk-button">Sign out and try again</a>
+      </div>
+  </div>
+</main>
