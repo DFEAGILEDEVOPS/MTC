@@ -414,8 +414,12 @@ app.use(function (err, req, res, next) {
   }
 
   if (err.name === 'DfeSignInError') {
-    res.locals.pageTitle = 'DfE Sign-in Error'
+    res.locals.pageTitle = 'Something isn\'t quite right!'
     res.status(500)
+    if (err.originalError.code ===  'SCHOOL_NOT_FOUND') {
+      return res.render('dfe-sign-in-error-missing-org')
+    }
+    // Catchall handling for Dfe Sign in errors.
     return res.render('dfe-sign-in-error', { userMessage: err.userMessage ?? '' })
   }
 
