@@ -26,6 +26,7 @@ require 'lz_string'
 require_relative '../../features/support/app'
 require 'dotenv'
 require 'jwt'
+require 'csv'
 
 require_relative 'helpers'
 include Helpers

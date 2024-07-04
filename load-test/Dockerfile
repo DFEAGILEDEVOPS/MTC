@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3
 
 ENV FLOOD_TOKEN=""
 ENV FLOOD_GRID="mtc-grid"
