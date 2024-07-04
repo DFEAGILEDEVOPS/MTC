@@ -48,13 +48,13 @@ const initSignOnAsync = async () => {
       const userInfo = await dfeSigninService.initialiseUser(authUserInfo, tokenset)
       done(null, userInfo)
     } catch (error) {
-      const err = `DfeSignIn: initSignOnAsync(): Error initializing user: ${error.message}`
-      logger.error(err)
+      const systemErrorMessage = `DfeSignIn: initSignOnAsync(): Error initializing user: ${error.message}`
+      logger.error(systemErrorMessage)
       let userMessage = ''
       if (error instanceof DsiSchoolNotFoundError) {
         userMessage = error.message
       }
-      const dfeSignInError = new DfeSignInError(err, userMessage, error)
+      const dfeSignInError = new DfeSignInError(systemErrorMessage, userMessage, error)
       done(dfeSignInError)
     }
   })
