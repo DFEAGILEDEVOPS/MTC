@@ -31,7 +31,7 @@ const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
 const LoggerMock = jest.fn<ILogger, any>(() => ({
   error: jest.fn(),
   info: jest.fn(),
-  verbose: jest.fn(),
+  trace: jest.fn(),
   warn: jest.fn()
 }))
 

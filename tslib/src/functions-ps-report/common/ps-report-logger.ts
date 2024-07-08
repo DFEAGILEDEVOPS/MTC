@@ -31,9 +31,9 @@ export class PsReportLogger implements ILogger {
     this.context.log.info(formatted)
   }
 
-  verbose (message: string): void {
+  trace (message: string): void {
     const formatted = this.log(message, 'verbose')
-    this.context.log.verbose(formatted)
+    this.context.log.trace(formatted)
   }
 
   warn (message: string): void {

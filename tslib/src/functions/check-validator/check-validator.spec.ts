@@ -52,7 +52,7 @@ describe('check-validator', () => {
       error: jest.fn(),
       warn: jest.fn(),
       info: jest.fn(),
-      verbose: jest.fn()
+      trace: jest.fn()
     }
     const checkFormQuestionsFromAnswers = mockV3SubmittedCheck.answers.map((answer: any) => {
       return {

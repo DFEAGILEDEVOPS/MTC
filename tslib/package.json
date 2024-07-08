@@ -29,7 +29,6 @@
     "**/**/logform": "2.4.2"
   },
   "devDependencies": {
-    "@azure/functions": "^3.5.0",
     "@faker-js/faker": "^8.4.1",
     "@types/adm-zip": "^0.5.0",
     "@types/async": "^3.2.7",
@@ -66,6 +65,7 @@
   "dependencies": {
     "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@azure/data-tables": "^13.2.1",
+    "@azure/functions": "^4.5.0",
     "@azure/service-bus": "^7.9.4",
     "@azure/storage-blob": "^12.17.0",
     "@azure/storage-queue": "^12.16.0",

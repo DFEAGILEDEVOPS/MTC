@@ -6,6 +6,18 @@ export interface ICheckMarkerFunctionBindings {
   checkResultTable: any[]
 }
 
+export interface ICheckMarkerOutputs {
+  checkNotificationQueue: unknown[]
+  checkResultTable: unknown[]
+}
+
+export interface IMarkingEntity {
+  PartitionKey: string
+  RowKey: string
+  answers: Answer[]
+  formQuestions: CheckFormQuestion[]
+}
+
 export interface IMonotonicTimeDto {
   legacyDate?: string // ISO format string
   milliseconds?: number
