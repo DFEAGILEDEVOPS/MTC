@@ -1,14 +1,21 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { type ICheckStartedMessage, CheckStartedService } from './check-started.service'
 import * as os from 'os'
 const functionName = 'check-started'
 
-const queueTrigger: AzureFunction = async function (context: Context, checkStartedMessage: ICheckStartedMessage): Promise<void> {
+app.storageQueue('checkStartedQueueTrigger', {
+  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+  queueName: 'check-started',
+  handler: checkStartedFunction
+})
+
+export async function checkStartedFunction (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
+  const checkStartedMessage = triggerInput as ICheckStartedMessage
   const version = checkStartedMessage.version
-  context.log.info(`${functionName}: version:${version} message received for checkCode ${checkStartedMessage.checkCode}`)
-  context.log.info(`${functionName}: IP addresses:${getIp()}`)
+  context.info(`${functionName}: version:${version} message received for checkCode ${checkStartedMessage.checkCode}`)
+  context.info(`${functionName}: IP addresses:${getIp()}`)
 
   try {
     if (version !== 1) {
@@ -22,7 +29,7 @@ const queueTrigger: AzureFunction = async function (context: Context, checkStart
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
+    context.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 
@@ -50,5 +57,3 @@ function getIp (): string {
   }
   return addresses.join(', ')
 }
-
-export default queueTrigger
