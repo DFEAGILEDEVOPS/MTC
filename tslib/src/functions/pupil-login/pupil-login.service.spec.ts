@@ -1,9 +1,9 @@
 import { type IPupilLoginDataService } from './pupil-login.data.service'
-import { PupilLoginService, type IPupilLoginMessage, type IPupilLoginFunctionBindings, type IPupilEvent } from './pupil-login.service'
+import { PupilLoginService, type IPupilLoginMessage, type IPupilLoginOutputs, type IPupilEvent } from './pupil-login.service'
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService
-const bindings: IPupilLoginFunctionBindings = {
+const bindings: IPupilLoginOutputs = {
   pupilEventTable: []
 }
 

@@ -38,7 +38,9 @@ export async function serviceBusQueueTrigger (triggerMessage: unknown, context: 
       // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported. Expected version:${expectedVersion}.`)
     }
-    await receiver.process(context, submittedCheck)
+    const output = await receiver.process(context, submittedCheck)
+    context.extraOutputs.set(checkValidationOutputQueue, output.checkValidationQueue)
+    context.extraOutputs.set(checkNotificationOutputQueue, output.checkNotificationQueue)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {

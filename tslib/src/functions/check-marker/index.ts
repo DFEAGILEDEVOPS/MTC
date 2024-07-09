@@ -6,12 +6,12 @@ import type { ReceivedCheckFunctionBindingEntity, MarkCheckMessageV1 } from '../
 const functionName = 'check-marker'
 const marker = new V1.CheckMarkerV1()
 
-const outputQueue = output.serviceBusQueue({
+const checkNotificationOutputQueue = output.serviceBusQueue({
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
-  queueName: 'myoutputqueue'
+  queueName: 'check-notification'
 })
 
-const outputTable = output.table({
+const checkResultOutputTable = output.table({
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
   tableName: 'checkResult'
 })
@@ -25,9 +25,9 @@ const inputReceivedCheckTable = input.table({
 
 app.serviceBusQueue('serviceBusQueueTrigger', {
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
-  queueName: 'myinputqueue',
+  queueName: 'check-marking',
   handler: serviceBusQueueTrigger,
-  extraOutputs: [outputQueue, outputTable],
+  extraOutputs: [checkNotificationOutputQueue, checkResultOutputTable],
   extraInputs: [inputReceivedCheckTable]
 })
 
@@ -42,7 +42,9 @@ export async function serviceBusQueueTrigger (message: unknown, context: Invocat
     }
     const tableInput = context.extraInputs.get('receivedCheck')
     const receivedCheckInput = tableInput as ReceivedCheckFunctionBindingEntity
-    await marker.mark(receivedCheckInput, context)
+    const output = await marker.mark(receivedCheckInput, context)
+    context.extraOutputs.set(checkNotificationOutputQueue, output.checkNotificationQueue)
+    context.extraOutputs.set(checkResultOutputTable, output.checkResultTable)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {

@@ -42,7 +42,9 @@ export async function serviceBusQueueTrigger (triggerMessage: unknown, context: 
     }
     const tableInput = context.extraInputs.get('receivedCheck')
     const receivedCheckInput = tableInput as ReceivedCheckFunctionBindingEntity
-    await validator.validate(receivedCheckInput, validateCheckMessage, context)
+    const output = await validator.validate(receivedCheckInput, validateCheckMessage, context)
+    context.extraOutputs.set(checkNotificationOutputQueue, output.checkNotificationQueue)
+    context.extraOutputs.set(checkMarkingOutputQueue, output.checkMarkingQueue)
   } catch (error: any) {
     context.error(`${functionName}: ERROR: ${error.message}`)
     throw error

@@ -27,7 +27,8 @@ export async function storageQueueTrigger (triggerMessage: unknown, context: Inv
       // dead letter the message as we no longer support below v2
       throw new Error(`Message schema version:${version} unsupported`)
     }
-    service.process(feedbackMessage)
+    const output = service.process(feedbackMessage)
+    context.extraOutputs.set(outputTable, output.feedbackTable)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {
