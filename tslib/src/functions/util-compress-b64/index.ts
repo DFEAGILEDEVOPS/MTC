@@ -1,39 +1,57 @@
-import { type Context } from '@azure/functions'
+import { app, output, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { CompressionService } from '../../common/compression-service'
 
 const svc = new CompressionService()
 
-export default async function (context: Context): Promise<void> {
-  let input = context?.req?.body
-  if (input === undefined) {
-    context.res = {
+const responseOutput = output.http({
+  name: 'httpResponse',
+  bindings: {
+    statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+})
+
+app.http('httpRequestTrigger', {
+  methods: ['POST'],
+  authLevel: 'function',
+  handler: httpRequestTrigger,
+  extraOutputs: [responseOutput]
+})
+
+export async function httpRequestTrigger (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  const reqBody = request.body // TODO read stream
+  if (reqBody === undefined) {
+    return {
       status: 400,
       body: 'input is required'
     }
-    return
   }
   let compressed: string = ''
+  let temp: string = ''
   try {
-    if (context.req?.headers['content-type'] === 'application/json') {
-      input = JSON.stringify(input)
+    if (request.headers.get('content-type') === 'application/json') {
+      temp = JSON.stringify(reqBody)
     }
-    compressed = svc.compressToBase64(input)
+    compressed = svc.compressToBase64(temp)
   } catch (error) {
     let msg = 'unknown error'
     if (error instanceof Error) {
       msg = error.message
     }
-    context.res = {
-      status: 500,
-      body: `An error occured: ${msg}`
-    }
-    return
+    context.extraOutputs.set(responseOutput, {
+      body: {
+        error: msg
+      },
+      status: 500
+    })
+    return 
   }
 
-  context.res = {
-    status: 200,
+  context.extraOutputs.set(responseOutput, {
     body: {
       compressed
     }
-  }
+  })
 }
