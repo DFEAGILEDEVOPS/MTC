@@ -51,28 +51,64 @@ jobs:
   - task: Bash@3
     displayName: 'Migrate Database Up'
     inputs:
-      targetType: filePath
-      filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-up.sh'
-      arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
+      # targetType: filePath
+      # filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-up.sh'
+      # arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
+      azureSubscription: $(TargetAzureSubscription)
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Migrating db up for db: ${SQL_DATABASE}"
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+        cd $(Build.Repository.LocalPath)
+        cd db
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        nvm use
+        yarn install --frozen-lockfile --production
+        yarn migrate max
+        echo "exit code:$?"
     env:
       SQL_SERVER: $(SqlServer)
       SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
       SQL_PUPIL_CENSUS_USER_PASSWORD: $(SqlCensusUserPassword)
       SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
-      SQL_AZURE_SCALE: GP_Gen4_1
+      SQL_AZURE_SCALE: $(SqlAzureScale)
+      SQL_ADMIN_USER: $(SqlAdminUser)
+      SQL_ADMIN_USER_PASSWORD: $(SqlAdminUserPassword)
+      SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
+      SQL_DATABASE: $(Build.BuildNumber)
 
   - task: Bash@3
     displayName: 'Migrate Database Down'
     inputs:
-      targetType: filePath
-      filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-down.sh'
-      arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
+      # targetType: filePath
+      # filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-down.sh'
+      # arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
+      azureSubscription: $(TargetAzureSubscription)
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Migrating db down for db: ${SQL_DATABASE}"
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+        cd $(Build.Repository.LocalPath)
+        cd db
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        nvm use
+        yarn install --frozen-lockfile --production
+        yarn migrate 0
+        echo "exit code:$?"
     env:
       SQL_SERVER: $(SqlServer)
       SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
       SQL_PUPIL_CENSUS_USER_PASSWORD: $(SqlCensusUserPassword)
       SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
-      SQL_AZURE_SCALE: GP_Gen4_1
+      SQL_AZURE_SCALE: $(SqlAzureScale)
+      SQL_ADMIN_USER: $(SqlAdminUser)
+      SQL_ADMIN_USER_PASSWORD: $(SqlAdminUserPassword)
+      SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
+      SQL_DATABASE: $(Build.BuildNumber)
 
   - task: AzureCLI@2
     displayName: 'Delete Database'
