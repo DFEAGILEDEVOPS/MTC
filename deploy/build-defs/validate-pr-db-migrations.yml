@@ -55,9 +55,8 @@ jobs:
       # filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-up.sh'
       # arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
       azureSubscription: $(TargetAzureSubscription)
-      scriptType: bash
-      scriptLocation: inlineScript
-      inlineScript: |
+      targetType: inline
+      script: |
         echo "Migrating db up for db: ${SQL_DATABASE}"
         echo "BUILD_REPOSITORY_LOCALPATH :  $BUILD_REPOSITORY_LOCALPATH"
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
@@ -86,9 +85,8 @@ jobs:
       # filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-down.sh'
       # arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
       azureSubscription: $(TargetAzureSubscription)
-      scriptType: bash
-      scriptLocation: inlineScript
-      inlineScript: |
+      targetType: inline
+      script: |
         echo "Migrating db down for db: ${SQL_DATABASE}"
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
         cd $(Build.Repository.LocalPath)
