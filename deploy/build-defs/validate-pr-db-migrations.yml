@@ -49,18 +49,15 @@ jobs:
     displayName: 'admin: yarn install'
 
   - task: Bash@3
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/bash-v3?view=azure-pipelines
     displayName: 'Migrate Database Up'
     inputs:
-      # targetType: filePath
-      # filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-up.sh'
-      # arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
       azureSubscription: $(TargetAzureSubscription)
       targetType: inline
       script: |
         echo "Migrating db up for db: ${SQL_DATABASE}"
-        echo "BUILD_REPOSITORY_LOCALPATH :  $BUILD_REPOSITORY_LOCALPATH"
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
-        cd $BUILD_REPOSITORY_LOCALPATH
+        cd $(Build.Repository.LocalPath)
         cd db
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -79,11 +76,9 @@ jobs:
       SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
 
   - task: Bash@3
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/bash-v3?view=azure-pipelines
     displayName: 'Migrate Database Down'
     inputs:
-      # targetType: filePath
-      # filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-down.sh'
-      # arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
       azureSubscription: $(TargetAzureSubscription)
       targetType: inline
       script: |
