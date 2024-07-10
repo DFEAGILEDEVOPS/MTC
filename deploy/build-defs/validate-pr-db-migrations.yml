@@ -59,8 +59,9 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         echo "Migrating db up for db: ${SQL_DATABASE}"
+        echo "BUILD_REPOSITORY_LOCALPATH :  $BUILD_REPOSITORY_LOCALPATH"
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
-        cd $(Build.Repository.LocalPath)
+        cd $BUILD_REPOSITORY_LOCALPATH
         cd db
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
