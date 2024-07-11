@@ -1,41 +1,56 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { SchoolImportService } from './school-import.service'
 import type * as mssql from 'mssql'
 import * as ConnectionPoolService from '../../sql/pool.service'
 import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 
-const name = 'school-import'
+const functionName = 'school-import'
 
-const blobTrigger: AzureFunction = async function schoolImportIndex (context: Context, blob: any) {
+const blobStdOutOutput = output.storageBlob({
+  path: 'school-import/{DateTime}-{name}-output-log.txt',
+  connection: 'AZURE_STORAGE_CONNECTION_STRING'
+})
+
+const blobStdErrOutput = output.storageBlob({
+  path: 'school-import/{DateTime}-{name}-error-log.txt',
+  connection: 'AZURE_STORAGE_CONNECTION_STRING'
+})
+
+app.storageBlob(functionName, {
+  handler: schoolImportIndex,
+  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+  extraOutputs: [blobStdOutOutput, blobStdErrOutput],
+  path: 'school-import/{name}.csv'
+})
+
+export async function schoolImportIndex (blobInputTrigger: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
-  context.log(`${name} started for blob \n Name: ${context.bindingData.name} \n Blob Size: ${blob.length} Bytes`)
+  const blob = Buffer.from(blobInputTrigger as string, 'base64') // TODO copilot suggestion, not necessarily correct
+  const blobName = context.triggerMetadata?.name?.toString() ?? ''
+  context.log(`${functionName} started for blob \n Name: ${blobName} \n Blob Size: ${blob.length} Bytes`)
   let pool: mssql.ConnectionPool
   const jobResult = new SchoolImportJobOutput()
   let svc: SchoolImportService
 
-  // Setup
   try {
-    pool = await ConnectionPoolService.getInstance(context.log)
-    svc = new SchoolImportService(pool, jobResult, context.log)
+    pool = await ConnectionPoolService.getInstance(context)
+    svc = new SchoolImportService(pool, jobResult, context)
   } catch (error: any) {
-    context.log.error(`${name}: FATAL ERROR: ${error.message}`)
+    context.error(`${functionName}: FATAL ERROR: ${error.message}`)
     return
   }
 
   try {
-    await svc.process(blob, context.bindingData.name)
+    await svc.process(blob, blobName)
   } catch (error: any) {
-    context.log.error(`${name}: ERROR: ${error.message}`, error)
+    context.error(`${functionName}: ERROR: ${error.message}`, error)
   }
-
-  context.bindings.schoolImportStderr = jobResult.getErrorOutput()
-  context.bindings.schoolImportStdout = jobResult.getStandardOutput()
+  context.extraOutputs.set(blobStdOutOutput, jobResult.getStandardOutput())
+  context.extraOutputs.set(blobStdErrOutput, jobResult.getErrorOutput())
 
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} processed ${jobResult.linesProcessed} schools, run took ${durationInMilliseconds} ms`)
+  context.log(`${functionName}: ${timeStamp} processed ${jobResult.linesProcessed} schools, run took ${durationInMilliseconds} ms`)
 }
-
-export default blobTrigger

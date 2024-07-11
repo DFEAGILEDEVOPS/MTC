@@ -1,4 +1,4 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 
 import config from '../../config'
@@ -6,6 +6,12 @@ import { type ICheckCompletionMessage } from './models'
 import { SyncResultsServiceFactory } from './sync-results.service.factory'
 
 const functionName = 'sync-results-to-sql'
+
+app.serviceBusQueue(functionName, {
+  connection: 'AZURE_SERVICEBUS_CONNECTION_STRING',
+  queueName: 'check-completion',
+  handler: syncResultsToSql
+})
 
 /**
  * We are unable to determine the maximum number of delivery attempts for the azure service-bus queue
@@ -39,14 +45,15 @@ const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCou
  * if the message is abandoned 10 times (the current 'max delivery count') it will be
  * put on the dead letter queue automatically.
  */
-const serviceBusTrigger: AzureFunction = async function (context: Context, checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
+export async function syncResultsToSql (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
-  const syncResultsServiceFactory = new SyncResultsServiceFactory(context.log)
+  const syncResultsServiceFactory = new SyncResultsServiceFactory(context)
+  const checkCompletionMessage = triggerInput as ICheckCompletionMessage
   await processV2(checkCompletionMessage, context, syncResultsServiceFactory)
   finish(start, context)
 }
 
-async function processV2 (message: ICheckCompletionMessage, context: Context, syncResultsServiceFactory: SyncResultsServiceFactory): Promise<void> {
+async function processV2 (message: ICheckCompletionMessage, context: InvocationContext, syncResultsServiceFactory: SyncResultsServiceFactory): Promise<void> {
   const syncResultsService = syncResultsServiceFactory.create()
   try {
     await syncResultsService.process(message)
@@ -56,31 +63,29 @@ async function processV2 (message: ICheckCompletionMessage, context: Context, sy
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: Error syncing results for check ${message.markedCheck.checkCode}. Error:${errorMessage}`)
+    context.error(`${functionName}: Error syncing results for check ${message.markedCheck.checkCode}. Error:${errorMessage}`)
     if (isLastDeliveryAttempt(context)) {
       handleLastDeliveryAttempt(context, message)
     }
   }
 }
 
-function isLastDeliveryAttempt (context: Context): boolean {
+function isLastDeliveryAttempt (context: InvocationContext): boolean {
   // We need to know if this is the last delivery attempt. Note that deliveryCount property will not
   // be updated to the maximum until we call abandon() or complete() to release the lock.
-  if (context.bindingData.deliveryCount === (maxDeliveryAttempts - 1)) {
+  if (context.triggerMetadata?.deliveryCount === (maxDeliveryAttempts - 1)) {
     return true
   }
   return false
 }
 
-function handleLastDeliveryAttempt (context: Context, message: ICheckCompletionMessage): void {
-  context.log.error(`${functionName}: Last delivery attempt for ${message.markedCheck.checkCode} it has had ${context.bindingData.deliveryCount} deliveries already`)
+function handleLastDeliveryAttempt (context: InvocationContext, message: ICheckCompletionMessage): void {
+  context.error(`${functionName}: Last delivery attempt for ${message.markedCheck.checkCode} it has had ${context.triggerMetadata?.deliveryCount} deliveries already`)
 }
 
-function finish (start: number, context: Context): void {
+function finish (start: number, context: InvocationContext): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
-
-export default serviceBusTrigger
