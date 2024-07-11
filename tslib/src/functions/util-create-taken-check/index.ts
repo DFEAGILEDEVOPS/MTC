@@ -1,11 +1,11 @@
-import { type Context } from '@azure/functions'
+import { HttpRequest, type InvocationContext } from '@azure/functions'
 import { FakeCompletedCheckMessageGeneratorService } from '../util-submit-check/fake-submitted-check-generator.service'
 
 const checkGenerator = new FakeCompletedCheckMessageGeneratorService()
 
-export default async function (context: Context): Promise<void> {
-  const requestBody = context?.req?.body
-  if (requestBody === undefined || requestBody.checkCode === undefined) {
+export async function httpTrigger (request: HttpRequest, context: InvocationContext): Promise<void> {
+  const requestBody = request.body
+  if (requestBody === null || requestBody?.checkCode === undefined) {
     context.res = {
       status: 400,
       body: 'checkCode is required'

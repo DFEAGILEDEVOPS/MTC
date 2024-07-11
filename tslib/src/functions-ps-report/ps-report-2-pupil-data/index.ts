@@ -1,4 +1,4 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PsReportService } from './ps-report.service'
 import { PsReportLogger } from '../common/ps-report-logger'
@@ -7,31 +7,42 @@ import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bu
 import config from '../../config'
 import type { IPsychometricReportLine } from './transformer-models'
 
+const psReportExportOutputQueue = output.serviceBusQueue({
+  queueName: 'ps-report-export',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING'
+})
+
+app.serviceBusQueue('ps-report-2-pupil-data', {
+  queueName: 'ps-report-schools',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
+  handler: serviceBusQueueTrigger,
+  extraOutputs: [psReportExportOutputQueue]
+})
+
+export interface IOutputBinding {
+  psReportExportOutput: IPsychometricReportLine[]
+}
+
 /**
  * Incoming message is just the name and UUID of the school to process
  * The name is used for logging
  * The UUID is used to fetch all pupils for the school
  */
 
-export interface IOutputBinding {
-  psReportExportOutput: IPsychometricReportLine[]
-}
-
-const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
+export async function serviceBusQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
+  const incomingMessage = triggerInput as PsReportSchoolFanOutMessage
   const logger = new PsReportLogger(context, PsReportSource.PupilGenerator)
   if (config.Logging.DebugVerbosity > 1) {
-    logger.verbose(`called for school ${incomingMessage.name}`)
+    logger.trace(`called for school ${incomingMessage.name}`)
   }
-  const outputBinding: IOutputBinding = { psReportExportOutput: [] }
-  context.bindings = outputBinding
-  const psReportService = new PsReportService(outputBinding, logger)
-  await psReportService.process(incomingMessage)
+
+  const psReportService = new PsReportService(logger)
+  const output = await psReportService.process(incomingMessage)
+  context.extraOutputs.set(psReportExportOutputQueue, output.psReportExportOutput)
   const end = performance.now()
   const durationInMilliseconds = end - start
   if (config.Logging.DebugVerbosity > 1) {
-    logger.info(`processed ${outputBinding.psReportExportOutput.length} pupils, run took ${durationInMilliseconds} ms`)
+    logger.info(`processed ${output.psReportExportOutput.length} pupils, run took ${durationInMilliseconds} ms`)
   }
 }
-
-export default serviceBusQueueTrigger

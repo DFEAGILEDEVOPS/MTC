@@ -1,4 +1,4 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { type ISchoolMessageSpecification, ListSchoolsService } from './list-schools-service'
 import { PsReportLogger } from '../common/ps-report-logger'
@@ -8,9 +8,27 @@ import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
 import type { PsReportStagingStartMessage, PsReportListSchoolsIncomingMessage } from '../common/ps-report-service-bus-messages'
 
-const serviceBusTrigger: AzureFunction = async function (context: Context, jobInfo: PsReportListSchoolsIncomingMessage): Promise<void> {
+const schoolMessagesQueue = output.serviceBusQueue({
+  queueName: 'ps-report-schools',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING'
+})
+
+const stagingStartQueue = output.serviceBusQueue({
+  queueName: 'ps-report-staging-start',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING'
+})
+
+app.serviceBusQueue('serviceBusQueueTrigger', {
+  queueName: 'listSchools',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
+  handler: serviceBusQueueTrigger,
+  extraOutputs: [schoolMessagesQueue, stagingStartQueue]
+})
+
+export async function serviceBusQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const logger = new PsReportLogger(context, PsReportSource.SchoolGenerator)
-  logger.verbose(`requested at ${jobInfo.dateTimeRequested} by ${jobInfo.requestedBy}`)
+  const jobInfo = triggerInput as PsReportListSchoolsIncomingMessage
+  logger.trace(`requested at ${jobInfo.dateTimeRequested} by ${jobInfo.requestedBy}`)
   const start = performance.now()
   const meta = { processCount: 0, errorCount: 0 }
   const jobDataService = new JobDataService()
@@ -18,7 +36,7 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
     // We need to store a filename for all the data to be written to during the staging process.
     const now = moment()
     const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}.csv`
-    await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context.log)
+    await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context)
     const schoolListService = new ListSchoolsService(logger)
     const messageSpec: ISchoolMessageSpecification = {
       jobUuid: jobInfo.jobUuid,
@@ -26,7 +44,7 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
       urns: jobInfo.urns
     }
     const messages = await schoolListService.getSchoolMessages(messageSpec)
-    context.bindings.schoolMessages = messages
+    context.extraOutputs.set(schoolMessagesQueue, messages)
     meta.processCount = messages.length
 
     // Send a message to start ps-report-3b-staging (the csv assembly)
@@ -36,7 +54,7 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
       jobUuid: jobInfo.jobUuid,
       filename
     }
-    context.bindings.stagingStart = stagingStartMessage
+    context.extraOutputs.set(stagingStartQueue, stagingStartMessage)
     logger.info(`staging-start message sent: ${JSON.stringify(stagingStartMessage)}`)
   } catch (error) {
     let errorMessage = 'unknown error'
@@ -52,5 +70,3 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
   const durationInMilliseconds = end - start
   logger.info(`processed ${meta.processCount} records, run took ${durationInMilliseconds} ms`)
 }
-
-export default serviceBusTrigger

@@ -10,7 +10,11 @@ export type IContextBindingsLike = Record<string, any>
  * by the Ps Report Logger
  */
 export interface IContextLike {
-  bindings: IContextBindingsLike
-  log: ILogger
+  log (...args: any[]): void
+  trace (...args: any[]): void
+  debug (...args: any[]): void
+  info (...args: any[]): void
+  warn (...args: any[]): void
+  error (...args: any[]): void
   invocationId: string
 }
