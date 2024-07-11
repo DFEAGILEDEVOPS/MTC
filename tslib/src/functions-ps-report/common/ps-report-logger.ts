@@ -28,21 +28,21 @@ export class PsReportLogger implements ILogger {
 
   info (message: string): void {
     const formatted = this.log(message, 'info')
-    this.context.log.info(formatted)
+    this.context.info(formatted)
   }
 
   trace (message: string): void {
     const formatted = this.log(message, 'verbose')
-    this.context.log.trace(formatted)
+    this.context.trace(formatted)
   }
 
   warn (message: string): void {
     const formatted = this.log(message, 'warning')
-    this.context.log.warn(formatted)
+    this.context.warn(formatted)
   }
 
   error (message: string): void {
     const formatted = this.log(message, 'error')
-    this.context.log.error(formatted)
+    this.context.error(formatted)
   }
 }

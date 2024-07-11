@@ -1,11 +1,8 @@
 import { type IPupilLoginDataService } from './pupil-login.data.service'
-import { PupilLoginService, type IPupilLoginMessage, type IPupilLoginOutputs, type IPupilEvent } from './pupil-login.service'
+import { PupilLoginService, type IPupilLoginMessage, type IPupilEvent } from './pupil-login.service'
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService
-const bindings: IPupilLoginOutputs = {
-  pupilEventTable: []
-}
 
 const DataServiceMock = jest.fn<IPupilLoginDataService, any>(() => ({
   updateCheckWithLoginTimestamp: jest.fn()
@@ -29,7 +26,7 @@ describe('pupil-login.service', () => {
       practice: true
     }
     try {
-      await sut.process(message, bindings)
+      await sut.process(message)
       fail('error should have been thrown')
     } catch (error) {
       let errorMessage = 'unknown error'
@@ -47,7 +44,7 @@ describe('pupil-login.service', () => {
       loginAt: new Date(),
       practice: false
     }
-    await sut.process(message, bindings)
+    await sut.process(message)
     expect(dataServiceMock.updateCheckWithLoginTimestamp).toHaveBeenCalledWith(message.checkCode, message.loginAt)
   })
 
@@ -58,7 +55,7 @@ describe('pupil-login.service', () => {
       loginAt: new Date(),
       practice: true
     }
-    await sut.process(message, bindings)
+    await sut.process(message)
     expect(dataServiceMock.updateCheckWithLoginTimestamp).toHaveBeenCalledWith(message.checkCode, message.loginAt)
   })
 
@@ -69,9 +66,9 @@ describe('pupil-login.service', () => {
       loginAt: new Date(),
       practice: true
     }
-    await sut.process(message, bindings)
-    expect(bindings.pupilEventTable).toHaveLength(1)
-    const entry = bindings.pupilEventTable[0] as IPupilEvent
+    const output = await sut.process(message)
+    expect(output.pupilEventTable).toHaveLength(1)
+    const entry = output.pupilEventTable[0] as IPupilEvent
     expect(entry.PartitionKey).toStrictEqual(message.checkCode)
     expect(entry.RowKey).toBeDefined()
     expect(entry.eventType).toBe('pupil-login')

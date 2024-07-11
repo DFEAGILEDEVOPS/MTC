@@ -1,7 +1,7 @@
 import { type InvocationContext, app, input, output } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
-import { ReceivedCheckFunctionBindingEntity, type ValidateCheckMessageV1 } from '../../schemas/models'
+import { CheckValidator } from './check-validator'
+import type { ReceivedCheckFunctionBindingEntity, ValidateCheckMessageV1 } from '../../schemas/models'
 
 const validator = new CheckValidator()
 const functionName = 'check-validator'
