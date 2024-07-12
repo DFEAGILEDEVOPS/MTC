@@ -7,8 +7,8 @@ export interface ICheckMarkerFunctionBindings {
 }
 
 export interface ICheckMarkerOutputs {
-  checkNotificationQueue: unknown[]
-  checkResultTable: unknown[]
+  checkNotificationQueue: any[]
+  checkResultTable: any[]
 }
 
 export interface IMarkingEntity {

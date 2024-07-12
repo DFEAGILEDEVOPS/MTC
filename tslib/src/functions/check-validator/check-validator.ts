@@ -106,6 +106,9 @@ export class CheckValidator {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }
+    if (!RA.isArray(receivedCheckRef)) {
+      return receivedCheckRef as ReceivedCheckFunctionBindingEntity
+    }
     const checkArray = receivedCheckRef as ReceivedCheckFunctionBindingEntity[]
     return checkArray[0]
   }
