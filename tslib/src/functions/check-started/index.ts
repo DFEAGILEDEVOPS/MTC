@@ -15,7 +15,6 @@ export async function checkStartedFunction (triggerInput: unknown, context: Invo
   const checkStartedMessage = triggerInput as ICheckStartedMessage
   const version = checkStartedMessage.version
   context.info(`${functionName}: version:${version} message received for checkCode ${checkStartedMessage.checkCode}`)
-  context.info(`${functionName}: IP addresses:${getIp()}`)
 
   try {
     if (version !== 1) {
@@ -37,23 +36,4 @@ export async function checkStartedFunction (triggerInput: unknown, context: Invo
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
-}
-
-function getIp (): string {
-  const addresses = new Array<string>()
-  try {
-    const interfaces = os.networkInterfaces()
-    for (const key in interfaces) {
-      interfaces[key]?.forEach(iface => {
-        addresses.push(iface.address)
-      })
-    }
-  } catch (error) {
-    let errorMessage = 'unknown error'
-    if (error instanceof Error) {
-      errorMessage = error.message
-    }
-    return `unable to obtain IP addresses: ${errorMessage}`
-  }
-  return addresses.join(', ')
 }
