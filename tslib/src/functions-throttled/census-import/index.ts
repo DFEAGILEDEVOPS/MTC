@@ -35,8 +35,8 @@ export async function censusImportFunction (blobTriggerInput: unknown, context: 
     await pool.connect()
     const v1 = new CensusImportV1(pool, context)
     // TODO how to get this?
-    const blobUri = context.triggerMetadata?.uri ?? ''
-    meta = await v1.process(blobTriggerInput, blobUri.toString())
+    const blobUri = context.triggerMetadata?.uri as string ?? ''
+    meta = await v1.process(blobTriggerInput, blobUri)
     await pool.close()
   } catch (error) {
     if (pool?.connected === true) {
