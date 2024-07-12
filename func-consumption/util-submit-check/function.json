@@ -6,7 +6,8 @@
       "type": "httpTrigger",
       "direction": "in",
       "methods": [
-        "post"
+        "post",
+        "put"
       ]
     },
     {

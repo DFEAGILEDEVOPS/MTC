@@ -1,44 +1,52 @@
-import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
-import { SchoolPinReplenishmnentService } from '../school-pin-generator/school-pin-replenishment.service'
+import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
+import { SchoolPinReplenishmnentService } from '../../functions/school-pin-generator/school-pin-replenishment.service'
 import { performance } from 'perf_hooks'
 import config from '../../config'
 const functionName = 'school-pin-http-service'
 
-function finish (start: number, context: Context): void {
+app.http(functionName, {
+  methods: ['POST'],
+  authLevel: 'function',
+  handler: schoolPinHttpService
+})
+
+function finish (start: number, context: InvocationContext): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+export async function schoolPinHttpService (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log(`${functionName}:exiting as not enabled (default behaviour)`)
-    return
+    return {
+      status: 409,
+      body: 'feature unavailable'
+    }
   }
 
-  const schoolIdParam = req?.body?.school_id
+  const rawJson = await req.json()
+  const reqBody = JSON.parse(rawJson as string)
+  const schoolIdParam = reqBody.school_id
 
   if (schoolIdParam === undefined) {
-    context.res = {
+    return {
       status: 400,
       body: 'school_id is required'
     }
-    return
   }
 
   const start = performance.now()
   const schoolPinReplenishmentService = new SchoolPinReplenishmnentService()
   context.log(`${functionName}: requesting pin for school:${schoolIdParam}`)
-  const newPin = await schoolPinReplenishmentService.process(context.log, schoolIdParam)
+  const newPin = await schoolPinReplenishmentService.process(context, schoolIdParam)
   context.log(`${functionName}: pin:${newPin} generated for school:${schoolIdParam}`)
-  context.res = {
+  finish(start, context)
+  return {
     status: 200,
-    body: {
+    jsonBody: {
       pin: newPin
     }
   }
-  finish(start, context)
 }
-
-export default schoolPinHttpService

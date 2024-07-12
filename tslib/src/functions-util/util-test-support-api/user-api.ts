@@ -15,7 +15,7 @@ export class UserApi {
   }
 
   public async create (body: any): Promise<object> {
-    this.logger.verbose('UserAPI: create() called')
+    this.logger.trace('UserAPI: create() called')
     const { schoolUuid, identifier, password, role } = body
     if (role.toUpperCase() !== 'TEACHER') {
       throw new Error('Only the `teacher` role is supported')
@@ -37,7 +37,7 @@ export class UserApi {
                 THROW 50001, @errorMessage, 1;
             END
 
-        -- Find the role ID 
+        -- Find the role ID
         SET @roleID = (SELECT TOP 1 id
                          FROM mtc_admin.role
                         WHERE title = @roleTitle);

@@ -13,7 +13,7 @@ export class SchoolApi {
   }
 
   public async create (body: any): Promise<object> {
-    this.logger.verbose('SchoolAPI: create() called')
+    this.logger.trace('SchoolAPI: create() called')
     const { leaCode, estabCode, name, urn } = body
     const sql = `INSERT INTO mtc_admin.school (leaCode, estabCode, name, urn, dfeNumber)
                  VALUES (@leaCode, @estabCode, @name, @urn, @dfeNumber)`

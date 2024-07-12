@@ -3,7 +3,7 @@ import { type CheckQuestion, type CompleteCheckAnswer, type CompleteCheckAuditEn
 import { faker } from '@faker-js/faker'
 import moment from 'moment'
 import { type IUtilSubmitCheckConfig } from '.'
-import { type Answer } from '../check-marker/models'
+import { type Answer } from '../../functions/check-marker/models'
 
 export interface ICompletedCheckGeneratorService {
   create (preparedCheck: PreparedCheck, funcConfig?: IUtilSubmitCheckConfig): ValidCheck

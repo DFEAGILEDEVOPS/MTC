@@ -1,31 +1,30 @@
-import { app, output, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
+import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { CompressionService } from '../../common/compression-service'
+import config from '../../config'
 
 const svc = new CompressionService()
-
-const responseOutput = output.http({
-  name: 'httpResponse',
-  bindings: {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-})
 
 app.http('httpRequestTrigger', {
   methods: ['POST'],
   authLevel: 'function',
-  handler: httpRequestTrigger,
-  extraOutputs: [responseOutput]
+  handler: httpRequestTrigger
 })
 
 export async function httpRequestTrigger (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (!config.DevTestUtils.TestSupportApi) {
+    context.log('exiting as not enabled (default behaviour)')
+    return {
+      status: 409,
+      body: 'feature unavailable'
+    }
+  }
   const reqBody = request.body // TODO read stream
   if (reqBody === undefined) {
     return {
       status: 400,
-      body: 'input is required'
+      jsonBody: {
+        error: 'missing request body'
+      }
     }
   }
   let compressed: string = ''
@@ -40,18 +39,17 @@ export async function httpRequestTrigger (request: HttpRequest, context: Invocat
     if (error instanceof Error) {
       msg = error.message
     }
-    context.extraOutputs.set(responseOutput, {
-      body: {
+    return {
+      jsonBody: {
         error: msg
       },
       status: 500
-    })
-    return 
+    }
   }
 
-  context.extraOutputs.set(responseOutput, {
-    body: {
+  return {
+    jsonBody: {
       compressed
     }
-  })
+  }
 }
