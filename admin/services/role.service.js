@@ -2,7 +2,7 @@
 
 const roleDataService = require('./data-access/role.data.service')
 const roles = require('../lib/consts/roles')
-const DfeSignInError = require('../error-types/dfe-signin-error')
+const { DfeSignInError } = require('../error-types/dfe-signin-error')
 
 /**
  * @typedef UserRole

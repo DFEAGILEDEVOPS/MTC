@@ -5,7 +5,7 @@ const logger = require('../log.service').getLogger()
 const bluebird = require('bluebird')
 const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
 const axios = require('axios')
-const DfeSignInError = require('../../error-types/dfe-signin-error')
+const { DfeSignInError, dfeSignInErrorConsts } = require('../../error-types/dfe-signin-error')
 
 const service = {
 /**
@@ -21,7 +21,9 @@ const service = {
     } catch (error) {
       const err = `unable to get dfe role for user:${user.id} error:${error.message}`
       logger.error(err)
-      throw new DfeSignInError(err, 'DfE Sign-in Error: unable to determine role', error)
+      const dfeSignInError = new DfeSignInError(err, 'Dfe Sign-in error: unable to determine role', error)
+      dfeSignInError.code = dfeSignInErrorConsts.dfeRoleError
+      throw dfeSignInError
     }
   }
 }

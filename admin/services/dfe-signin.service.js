@@ -10,7 +10,7 @@ const adminLogonEventDataService = require('./data-access/admin-logon-event.data
 const { DsiSchoolNotFoundError, DsiMissingSchoolInfoError } = require('../error-types/DsiSchoolNotFoundError')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 const { SystemUnavailableError } = require('../error-types/system-unavailable-error')
-const DfeSignInError = require('../error-types/dfe-signin-error')
+const { DfeSignInError } = require('../error-types/dfe-signin-error')
 
 const service = {
   /**

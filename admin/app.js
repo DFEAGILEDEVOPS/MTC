@@ -49,6 +49,7 @@ const administrationMessageService = require('./services/administration-message.
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
 const { formAlreadySubmittedErrorCode } = require('./error-types/form-already-submitted-error')
+const { dfeSignInErrorConsts } = require('./error-types/dfe-signin-error')
 
 const app = express()
 setupLogging(app)
@@ -418,7 +419,8 @@ app.use(function (err, req, res, next) {
   if (err.name === 'DfeSignInError') {
     res.locals.pageTitle = 'Something isn\'t quite right!'
     res.status(500)
-    if (err.originalError.code === 'SCHOOL_NOT_FOUND') {
+    console.log('dfeSignInErrorConsts', dfeSignInErrorConsts)
+    if (err?.originalError?.code === userInitErrorConsts.schoolNotFound || err?.originalError?.code === dfeSignInErrorConsts.dfeRoleError) {
       return res.render('dfe-sign-in-error-missing-org')
     }
     // Catchall handling for Dfe Sign in errors.

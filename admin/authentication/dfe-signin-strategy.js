@@ -7,7 +7,7 @@ const asyncRetry = require('login.dfe.async-retry')
 const dfeSigninService = require('../services/dfe-signin.service')
 const passport = require('passport')
 const authModes = require('../lib/consts/auth-modes')
-const DfeSignInError = require('../error-types/dfe-signin-error')
+const { DfeSignInError } = require('../error-types/dfe-signin-error')
 const { DsiSchoolNotFoundError } = require('../error-types/DsiSchoolNotFoundError')
 /**
  * Asynchronous setup of DfE signin with retry strategy for issuer discovery

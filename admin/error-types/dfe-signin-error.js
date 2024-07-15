@@ -1,6 +1,10 @@
 'use strict'
 const { mtcError } = require('./mtc-error')
 
+export const dfeSignInErrorConsts = {
+  dfeRoleError: 'E_DFE_ROLE_ERROR'
+}
+
 class DfeSignInError extends mtcError {
   /**
    *
@@ -15,4 +19,4 @@ class DfeSignInError extends mtcError {
   }
 }
 
-module.exports = DfeSignInError
+module.exports = { DfeSignInError, dfeSignInErrorConsts }

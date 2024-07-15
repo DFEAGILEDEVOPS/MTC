@@ -1,5 +1,5 @@
 'use strict'
-const DfeSignInError = require('../../../error-types/dfe-signin-error')
+const { DfeSignInError } = require('../../../error-types/dfe-signin-error')
 /* global describe expect test */
 
 describe('DfeSignInError class', () => {
