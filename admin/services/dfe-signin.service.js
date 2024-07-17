@@ -10,6 +10,7 @@ const adminLogonEventDataService = require('./data-access/admin-logon-event.data
 const { DsiSchoolNotFoundError, DsiMissingSchoolInfoError } = require('../error-types/DsiSchoolNotFoundError')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 const { SystemUnavailableError } = require('../error-types/system-unavailable-error')
+const { DfeSignInError } = require('../error-types/dfe-signin-error')
 
 const service = {
   /**
@@ -19,10 +20,10 @@ const service = {
    */
   initialiseUser: async (dfeUser, tokenset) => {
     if (!dfeUser) {
-      throw new Error('dfeUser argument required')
+      throw new DfeSignInError('dfeUser argument required')
     }
     if (!tokenset) {
-      throw new Error('tokenset argument required')
+      throw new DfeSignInError('tokenset argument required')
     }
 
     dfeUser.displayName = `${dfeUser.given_name} ${dfeUser.family_name} (${dfeUser.email})`
