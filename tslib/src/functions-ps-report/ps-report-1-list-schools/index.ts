@@ -19,7 +19,7 @@ const stagingStartQueue = output.serviceBusQueue({
 })
 
 app.serviceBusQueue('psReport1ListSchools', {
-  queueName: 'listSchools',
+  queueName: 'ps-report-exec',
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   handler: psReport1ListSchools,
   extraOutputs: [schoolMessagesQueue, stagingStartQueue]
