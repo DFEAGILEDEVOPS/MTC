@@ -3,7 +3,7 @@
   "description": "runtime host for functions defined in tslib that are designed to run on a consumption plan in Azure",
   "version": "0.1.0",
   "license": "GPL-3.0",
-  "main": "dist/functions/**/*.js",
+  "main": "dist/{functions-util/**/*.js,functions/**/*.js}",
   "engines": {
     "node": ">= 18"
   },
