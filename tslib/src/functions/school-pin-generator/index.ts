@@ -4,9 +4,9 @@ import { SchoolPinReplenishmnentService } from './school-pin-replenishment.servi
 
 const functionName = 'school-pin-generator'
 
-app.timer('timerTrigger', {
+app.timer(functionName, {
   schedule: '0 0 * * * *', // every hour, on the hour
-  handler: timerTrigger
+  handler: schoolPinGenerator
 })
 
 function finish (start: number, context: InvocationContext): void {
@@ -16,7 +16,7 @@ function finish (start: number, context: InvocationContext): void {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-export async function timerTrigger (timer: Timer, context: InvocationContext): Promise<void> {
+export async function schoolPinGenerator (timer: Timer, context: InvocationContext): Promise<void> {
   const start = performance.now()
   context.log(`${functionName} starting`)
   const replenishmentService = new SchoolPinReplenishmnentService()

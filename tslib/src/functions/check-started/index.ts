@@ -3,7 +3,7 @@ import { performance } from 'perf_hooks'
 import { type ICheckStartedMessage, CheckStartedService } from './check-started.service'
 const functionName = 'check-started'
 
-app.storageQueue('checkStartedQueueTrigger', {
+app.storageQueue(functionName, {
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
   queueName: 'check-started',
   handler: checkStartedFunction

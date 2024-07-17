@@ -103,6 +103,9 @@ export class CheckValidator {
   }
 
   private findReceivedCheck (receivedCheckRef: unknown): ReceivedCheckFunctionBindingEntity {
+    if (receivedCheckRef === undefined) {
+      throw new Error(`${functionName}: received check reference is undefined`)
+    }
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }

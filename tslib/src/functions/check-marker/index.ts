@@ -23,15 +23,15 @@ const inputReceivedCheckTable = input.table({
   take: 1
 })
 
-app.serviceBusQueue('serviceBusQueueTrigger', {
+app.serviceBusQueue(functionName, {
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'check-marking',
-  handler: serviceBusQueueTrigger,
+  handler: checkMarker,
   extraOutputs: [checkNotificationOutputQueue, checkResultOutputTable],
   extraInputs: [inputReceivedCheckTable]
 })
 
-export async function serviceBusQueueTrigger (message: unknown, context: InvocationContext): Promise<void> {
+export async function checkMarker (message: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const markCheckMessage = message as MarkCheckMessageV1
   const version = markCheckMessage.version
@@ -40,7 +40,7 @@ export async function serviceBusQueueTrigger (message: unknown, context: Invocat
     if (version !== 1) {
       throw new Error(`Message schema version ${version} unsupported`)
     }
-    const tableInput = context.extraInputs.get('receivedCheck')
+    const tableInput = context.extraInputs.get(inputReceivedCheckTable)
     const receivedCheckInput = tableInput as ReceivedCheckFunctionBindingEntity
     const output = await marker.mark(receivedCheckInput, context)
     context.extraOutputs.set(checkNotificationOutputQueue, output.checkNotificationQueue)

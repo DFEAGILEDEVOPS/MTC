@@ -4,10 +4,10 @@ import { PreparedCheckSyncService } from './prepared-check-sync.service'
 import { type IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
 const functionName = 'check-sync'
 
-app.serviceBusQueue('serviceBusQueueTrigger', {
+app.serviceBusQueue(functionName, {
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'check-sync',
-  handler: serviceBusQueueTrigger
+  handler: checkSync
 })
 
 /**
@@ -15,7 +15,7 @@ app.serviceBusQueue('serviceBusQueueTrigger', {
  * @param context
  * @param preparedCheckSyncMessage
  */
-export async function serviceBusQueueTrigger (triggerMessage: unknown, context: InvocationContext): Promise<void> {
+export async function checkSync (triggerMessage: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const preparedCheckSyncMessage = triggerMessage as IPreparedCheckSyncMessage
   const version = preparedCheckSyncMessage.version

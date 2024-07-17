@@ -18,14 +18,14 @@ const stagingStartQueue = output.serviceBusQueue({
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING'
 })
 
-app.serviceBusQueue('serviceBusQueueTrigger', {
+app.serviceBusQueue('psReport1ListSchools', {
   queueName: 'listSchools',
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
-  handler: serviceBusQueueTrigger,
+  handler: psReport1ListSchools,
   extraOutputs: [schoolMessagesQueue, stagingStartQueue]
 })
 
-export async function serviceBusQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
+export async function psReport1ListSchools (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const logger = new PsReportLogger(context, PsReportSource.SchoolGenerator)
   const jobInfo = triggerInput as PsReportListSchoolsIncomingMessage
   logger.trace(`requested at ${jobInfo.dateTimeRequested} by ${jobInfo.requestedBy}`)

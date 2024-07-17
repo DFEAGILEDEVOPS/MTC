@@ -4,12 +4,12 @@ import { SqlService } from '../../sql/sql.service'
 import { CheckPinExpiryService } from './check-pin-expiry.service'
 const functionName = 'check-pin-expiry'
 
-app.timer('checkPinExpiryTrigger', {
+app.timer(functionName, {
   schedule: '0 10 18,4 * * *', // sec, min, hour, day, month, dow
-  handler: checkPinExpiryTrigger
+  handler: checkPinExpiry
 })
 
-export async function checkPinExpiryTrigger (timer: Timer, context: InvocationContext): Promise<void> {
+export async function checkPinExpiry (timer: Timer, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const checkPinExpiryService = new CheckPinExpiryService(new SqlService())
   await checkPinExpiryService.process()

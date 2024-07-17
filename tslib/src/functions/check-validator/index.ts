@@ -23,15 +23,15 @@ const inputReceivedCheckTable = input.table({
   take: 1
 })
 
-app.serviceBusQueue('serviceBusQueueTrigger', {
+app.serviceBusQueue(functionName, {
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'check-validation',
-  handler: serviceBusQueueTrigger,
+  handler: checkValidator,
   extraOutputs: [checkNotificationOutputQueue, checkMarkingOutputQueue],
   extraInputs: [inputReceivedCheckTable]
 })
 
-export async function serviceBusQueueTrigger (triggerMessage: unknown, context: InvocationContext): Promise<void> {
+export async function checkValidator (triggerMessage: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const validateCheckMessage = triggerMessage as ValidateCheckMessageV1
   const version = validateCheckMessage.version
@@ -40,7 +40,7 @@ export async function serviceBusQueueTrigger (triggerMessage: unknown, context: 
     if (version !== 1) {
       throw new Error(`Check validation message schema version ${version} unsupported`)
     }
-    const tableInput = context.extraInputs.get('receivedCheck')
+    const tableInput = context.extraInputs.get(inputReceivedCheckTable)
     const receivedCheckInput = tableInput as ReceivedCheckFunctionBindingEntity
     const output = await validator.validate(receivedCheckInput, validateCheckMessage, context)
     context.extraOutputs.set(checkNotificationOutputQueue, output.checkNotificationQueue)

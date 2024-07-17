@@ -9,14 +9,14 @@ const checkSyncQueueOutput = output.serviceBusQueue({
   queueName: 'check-sync'
 })
 
-app.storageQueue('storageQueueTrigger', {
+app.storageQueue(functionName, {
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
   queueName: 'pupil-prefs',
-  handler: storageQueueTrigger,
+  handler: pupilPrefs,
   extraOutputs: [checkSyncQueueOutput]
 })
 
-export async function storageQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
+export async function pupilPrefs (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const pupilPrefsMessage = triggerInput as IPupilPreferenceUpdate
   const version = pupilPrefsMessage.version

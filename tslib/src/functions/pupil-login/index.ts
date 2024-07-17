@@ -10,14 +10,14 @@ const outputTable = output.table({
   tableName: 'pupilEvent'
 })
 
-app.serviceBusQueue('serviceBusQueueTrigger', {
+app.serviceBusQueue(functionName, {
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'pupil-login',
-  handler: serviceBusQueueTrigger,
+  handler: pupilLogin,
   extraOutputs: [outputTable]
 })
 
-export async function serviceBusQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
+export async function pupilLogin (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const pupilLoginMessage = triggerInput as IPupilLoginMessage
   const version = pupilLoginMessage.version

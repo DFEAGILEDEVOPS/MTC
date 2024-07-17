@@ -17,14 +17,14 @@ const checkNotificationOutputQueue = output.serviceBusQueue({
   queueName: checkNotificationQueueName
 })
 
-app.storageQueue('storageQueueTrigger', {
+app.storageQueue(functionName, {
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
   queueName: 'check-submitted',
-  handler: storageQueueTrigger,
+  handler: checkReceiver,
   extraOutputs: [checkValidationOutputQueue, checkNotificationOutputQueue]
 })
 
-export async function storageQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
+export async function checkReceiver (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const submittedCheck = triggerInput as SubmittedCheckMessage
   const version = submittedCheck.version

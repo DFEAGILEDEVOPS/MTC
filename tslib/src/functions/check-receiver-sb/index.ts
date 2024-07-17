@@ -19,14 +19,14 @@ const checkNotificationOutputQueue = output.serviceBusQueue({
   queueName: checkNotificationQueueName
 })
 
-app.serviceBusQueue('serviceBusQueueTrigger', {
+app.serviceBusQueue(functionName, {
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: checkSubmissionQueueName,
-  handler: serviceBusQueueTrigger,
+  handler: checkReceiverSb,
   extraOutputs: [checkValidationOutputQueue, checkNotificationOutputQueue]
 })
 
-export async function serviceBusQueueTrigger (triggerMessage: unknown, context: InvocationContext): Promise<void> {
+export async function checkReceiverSb (triggerMessage: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const submittedCheck = triggerMessage as SubmittedCheckMessage
   const version = submittedCheck.version

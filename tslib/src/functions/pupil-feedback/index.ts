@@ -10,14 +10,14 @@ const outputTable = output.table({
   tableName: 'pupilFeedback'
 })
 
-app.storageQueue('storageQueueTrigger', {
+app.storageQueue(functionName, {
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
   queueName: 'pupil-feedback',
-  handler: storageQueueTrigger,
+  handler: pupilFeedback,
   extraOutputs: [outputTable]
 })
 
-export async function storageQueueTrigger (triggerMessage: unknown, context: InvocationContext): Promise<void> {
+export async function pupilFeedback (triggerMessage: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const feedbackMessage = triggerMessage as IPupilFeedbackMessage
   const version = feedbackMessage.version

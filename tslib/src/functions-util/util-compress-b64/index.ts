@@ -4,13 +4,13 @@ import config from '../../config'
 
 const svc = new CompressionService()
 
-app.http('httpRequestTrigger', {
+app.http('util-compress-b64', {
   methods: ['POST'],
   authLevel: 'function',
-  handler: httpRequestTrigger
+  handler: utilCompressBase64
 })
 
-export async function httpRequestTrigger (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+export async function utilCompressBase64 (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
     return {

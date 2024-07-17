@@ -15,7 +15,7 @@ const psReportExportOutputQueue = output.serviceBusQueue({
 app.serviceBusQueue('ps-report-2-pupil-data', {
   queueName: 'ps-report-schools',
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
-  handler: serviceBusQueueTrigger,
+  handler: psReport2PupilData,
   extraOutputs: [psReportExportOutputQueue]
 })
 
@@ -29,7 +29,7 @@ export interface IOutputBinding {
  * The UUID is used to fetch all pupils for the school
  */
 
-export async function serviceBusQueueTrigger (triggerInput: unknown, context: InvocationContext): Promise<void> {
+export async function psReport2PupilData (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   const incomingMessage = triggerInput as PsReportSchoolFanOutMessage
   const logger = new PsReportLogger(context, PsReportSource.PupilGenerator)
