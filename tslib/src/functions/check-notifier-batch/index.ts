@@ -9,7 +9,7 @@ import * as RA from 'ramda-adjunct'
 const functionName = 'check-notifier-batch'
 
 app.timer('checkNotifierBatch', {
-  schedule: '*/30 * * * * *',
+  schedule: '*/30 * * * * *', // execute every 30 seconds
   handler: batchCheckNotifier
 })
 /*

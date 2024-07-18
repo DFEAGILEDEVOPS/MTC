@@ -8,7 +8,7 @@ import { SyncResultsServiceFactory } from './sync-results.service.factory'
 const functionName = 'sync-results-to-sql'
 
 app.serviceBusQueue(functionName, {
-  connection: 'AZURE_SERVICEBUS_CONNECTION_STRING',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'check-completion',
   handler: syncResultsToSql
 })
