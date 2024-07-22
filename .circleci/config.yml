@@ -14,7 +14,7 @@ jobs:
       TZ: Europe/London
     steps:
       - browser-tools/install-browser-tools:
-          chrome-version: 116.0.5845.96 # TODO: remove when chromedriver downloads are fixed
+          chrome-version: 126.0.6478.182 # TODO: remove when chromedriver downloads are fixed
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - checkout
