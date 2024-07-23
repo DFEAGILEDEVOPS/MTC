@@ -18,8 +18,16 @@ export async function utilCompressBase64 (request: HttpRequest, context: Invocat
       body: 'feature unavailable'
     }
   }
-  const reqBody = request.body // TODO read stream
-  if (reqBody === undefined) {
+
+  let compressed: string = ''
+  let temp: string = ''
+
+  if (request.headers.get('content-type') === 'application/json') {
+    temp = JSON.stringify(await request.json())
+  } else {
+    temp = await request.text()
+  }
+  if (temp === undefined) {
     return {
       status: 400,
       jsonBody: {
@@ -27,12 +35,8 @@ export async function utilCompressBase64 (request: HttpRequest, context: Invocat
       }
     }
   }
-  let compressed: string = ''
-  let temp: string = ''
+
   try {
-    if (request.headers.get('content-type') === 'application/json') {
-      temp = JSON.stringify(reqBody)
-    }
     compressed = svc.compressToBase64(temp)
   } catch (error) {
     let msg = 'unknown error'
