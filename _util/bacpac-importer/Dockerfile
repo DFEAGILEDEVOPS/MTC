@@ -1,5 +1,5 @@
 # Cribbed from https://hub.docker.com/r/samuelmarks/mssql-server-fts-sqlpackage-linux/
-FROM ubuntu:16.04
+FROM ubuntu:xenial-20210416
 
 RUN apt-get update -qq && \
   apt-get install -y curl apt-transport-https software-properties-common locales
