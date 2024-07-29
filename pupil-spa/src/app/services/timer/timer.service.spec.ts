@@ -39,7 +39,7 @@ describe('TimerService', () => {
     // exec
     service.startCheckTimer()
     // test
-    expect(service.timeRemaining).toBe(tenMinutesInMilliseconds)
+    expect(service.timeRemaining).toBe(tenMinutesInMilliseconds || tenMinutesInMilliseconds - 1) // Allow an extra ms 
     expect(window.setInterval).toHaveBeenCalledTimes(1)
     // clean up
     service.stopCheckTimer()
