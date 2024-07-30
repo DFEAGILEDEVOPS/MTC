@@ -38,8 +38,9 @@ describe('TimerService', () => {
     expect(service.timeRemaining).toBeUndefined()
     // exec
     service.startCheckTimer()
-    // test
-    expect(service.timeRemaining).toBe(tenMinutesInMilliseconds || tenMinutesInMilliseconds - 1) // Allow an extra ms 
+    // test - allow ten minutes, or ten minutes minus 1 ms
+    expect(service.timeRemaining).toBeGreaterThanOrEqual(tenMinutesInMilliseconds - 1) // Allow an extra ms
+    expect(service.timeRemaining).toBeLessThanOrEqual(tenMinutesInMilliseconds)
     expect(window.setInterval).toHaveBeenCalledTimes(1)
     // clean up
     service.stopCheckTimer()
