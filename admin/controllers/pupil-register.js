@@ -75,4 +75,4 @@ const listPupils = async function listPupils (req, res, next) {
   })
 }
 
-module.exports = { listPupils, checkShowAddPupilButton, checkShowAddMultiplePupilButton }
+module.exports = { listPupils }
