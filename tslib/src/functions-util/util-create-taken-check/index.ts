@@ -10,6 +10,10 @@ app.http('util-create-taken-check', {
   handler: utilCreateTakenCheck
 })
 
+interface CreateTakenCheckRequest {
+  checkCode: string
+}
+
 export async function utilCreateTakenCheck (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
@@ -19,8 +23,11 @@ export async function utilCreateTakenCheck (request: HttpRequest, context: Invoc
     }
   }
   const rawJsonBody = await request.json()
-  const requestBody = JSON.parse(rawJsonBody as string)
-  if (requestBody === null || requestBody?.checkCode === undefined) {
+  let checkCode = ''
+  if (rawJsonBody instanceof Object && 'checkCode' in rawJsonBody) {
+    const req = (rawJsonBody as CreateTakenCheckRequest)
+    checkCode = req.checkCode
+  } else {
     return {
       status: 400,
       body: 'checkCode is required'
@@ -28,7 +35,7 @@ export async function utilCreateTakenCheck (request: HttpRequest, context: Invoc
   }
 
   try {
-    const outputPayload = await checkGenerator.createV3Message(requestBody.checkCode)
+    const outputPayload = await checkGenerator.createV3Message(checkCode)
     return {
       status: 200,
       jsonBody: outputPayload
