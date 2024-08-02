@@ -27,13 +27,27 @@
                                         data-module="govuk-button">
                                         Add pupil
                                     </a>
-                                    <% }  if (showAddMultiplePupilButton) { %>
+                                <% } else { %>
+                                    <a href="#" role="button" draggable="false" disabled aria-disabled="true"
+                                        class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-right-2"
+                                        data-module="govuk-button">
+                                    Add pupil
+                                    </a>
+                                <% } %>
+
+                                <% if (showAddMultiplePupilButton) { %>
                                     <a href="/pupil-register/pupil/add-batch-pupils/" role="button" draggable="false"
                                         class="govuk-button govuk-button--secondary govuk-form-button"
                                         data-module="govuk-button">
                                         Add multiple pupils
                                     </a>
-                                    <% } %>
+                                <% } else { %>
+                                    <a href="#" role="button" draggable="false" disabled aria-disabled="true"
+                                        class="govuk-button govuk-button--secondary govuk-form-button"
+                                        data-module="govuk-button">
+                                        Add multiple pupils
+                                    </a>
+                                <% } %>
 
 
         </div>

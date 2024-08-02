@@ -11,6 +11,13 @@ const userRoles = require('../../../lib/consts/roles')
 
 describe('pupil-register controller:', () => {
   let next
+  const mockAvailabilityDataHdfSubmitted = {
+    hdfSubmitted: true
+  }
+  const mockAvailablilityDataHdfNotSubmitted = {
+    hdfSubmitted: false
+  }
+
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -28,7 +35,7 @@ describe('pupil-register controller:', () => {
   beforeEach(() => {
     next = jest.fn()
     jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
-    jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
+    jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue(mockAvailablilityDataHdfNotSubmitted)
     jest.spyOn(pupilRegisterV2Service, 'getPupilRegister').mockImplementation()
   })
 
@@ -156,6 +163,20 @@ describe('pupil-register controller:', () => {
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
       expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
+    })
+
+    test('during the live check window the add pupil buttons are not available if the HDF is signed', async () => {
+      global.checkWindowPhase = checkWindowPhaseConsts.officialCheck
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue(mockAvailabilityDataHdfSubmitted)
+      const res = getRes()
+      const renderSpy = jest.spyOn(res, 'render')
+      const req = getReq(goodReqParamsLive)
+      req.user.role = userRoles.teacher
+      await sut.listPupils(req, res, next)
+      expect(res.render).toHaveBeenCalledTimes(1)
+      const args = renderSpy.mock.calls[0]
+      expect(args[1].showAddPupilButton).toBe(false)
       expect(args[1].showAddMultiplePupilButton).toBe(false)
     })
 

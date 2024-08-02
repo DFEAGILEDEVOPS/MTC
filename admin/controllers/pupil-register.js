@@ -6,6 +6,33 @@ const businessAvailabilityService = require('../services/business-availability.s
 const roles = require('../lib/consts/roles')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
+const checkShowAddPupilButton = function checkShowAddPupilButton (checkWindowPhase, availabilityData, userRole) {
+  if (userRole === roles.staAdmin) {
+    return true
+  }
+  const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable, checkWindowPhaseConsts.postCheckAdmin]
+  const isUnavailablePhase = unavailablePhases.some((cwp) => checkWindowPhase === cwp, checkWindowPhase)
+  if (isUnavailablePhase) {
+    return false
+  }
+  if (availabilityData.hdfSubmitted) {
+    return false
+  }
+  return true
+}
+
+const checkShowAddMultiplePupilButton = function checkShowAddMultiplePupilButton (checkWindowPhase, availabilityData) {
+  const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable, checkWindowPhaseConsts.postCheckAdmin]
+  const isUnavailablePhase = unavailablePhases.some((cwp) => checkWindowPhase === cwp, checkWindowPhase)
+  if (isUnavailablePhase) {
+    return false
+  }
+  if (availabilityData.hdfSubmitted) {
+    return false
+  }
+  return true
+}
+
 const listPupils = async function listPupils (req, res, next) {
   res.locals.pageTitle = 'View, add or edit pupils on your school\'s register'
 
@@ -34,8 +61,8 @@ const listPupils = async function listPupils (req, res, next) {
    * During the end admin phase, or the read only phase, STA ADMIN can still add single pupils.  We therefore need to
    * disable the add multiple pupils button if the role = STA-ADMIN and checkWindowPase is after the live check period.
    */
-  const showAddPupilButton = req.user.role === roles.staAdmin || (global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin)
-  const showAddMultiplePupilButton = global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin
+  const showAddPupilButton = checkShowAddPupilButton(global.checkWindowPhase, availabilityData, req.user.role)
+  const showAddMultiplePupilButton = checkShowAddMultiplePupilButton(global.checkWindowPhase, availabilityData)
 
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),
