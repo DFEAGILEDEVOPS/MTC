@@ -2,12 +2,12 @@ import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } 
 import { SchoolPinReplenishmnentService } from '../../functions/school-pin-generator/school-pin-replenishment.service'
 import { performance } from 'perf_hooks'
 import config from '../../config'
-const functionName = 'school-pin-http-service'
+const functionName = 'util-school-pin-generator'
 
 app.http(functionName, {
   methods: ['POST'],
   authLevel: 'function',
-  handler: schoolPinHttpService
+  handler: schoolPinGenerator
 })
 
 function finish (start: number, context: InvocationContext): void {
@@ -17,7 +17,7 @@ function finish (start: number, context: InvocationContext): void {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-export async function schoolPinHttpService (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+export async function schoolPinGenerator (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log(`${functionName}:exiting as not enabled (default behaviour)`)
     return {
@@ -27,7 +27,7 @@ export async function schoolPinHttpService (req: HttpRequest, context: Invocatio
   }
 
   const rawJson = await req.json()
-  const reqBody = JSON.parse(rawJson as string)
+  const reqBody = rawJson as Record<string, number>
   const schoolIdParam = reqBody.school_id
 
   if (schoolIdParam === undefined) {
