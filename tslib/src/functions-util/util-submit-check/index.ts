@@ -92,7 +92,7 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
       body: 'checkCodes array is required'
     }
   }
-  if (req.query.get('bad') !== undefined) {
+  if (req.query.get('bad') !== null) {
     throw new Error('invalid check functionality not yet implemented')
   }
   const messages = []
