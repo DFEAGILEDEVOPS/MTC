@@ -33,9 +33,11 @@ export async function schoolPinSampler (req: HttpRequest, context: InvocationCon
   const utcNow = reqBody.utcnow !== undefined ? moment(reqBody.utcnow) : moment.utc()
   const sampleSize = reqBody.samplesize as number ?? 20
   const randomise = reqBody.randomise as boolean ?? false
+  const allowedWordsParam = reqBody.allowedWords as string ?? 'foo,bar,baz,qux,quu,cor,gra,gar,wal,frd,pla,xyz'
+  const allowedWords = allowedWordsParam.split(',').map(w => w.trim())
   context.info(`creating sample of ${sampleSize} school pins generated at ${utcNow.toISOString()}`)
   const sampler = new SchoolPinSampler()
-  const sample = sampler.generateSample(sampleSize, utcNow, new Set(), randomise)
+  const sample = sampler.generateSample(sampleSize, utcNow, new Set(allowedWords), randomise)
   finish(start, context)
   return {
     jsonBody: sample,
