@@ -17,6 +17,7 @@
     "clean": "rm -rf ./dist",
     "start:host": "func start",
     "start": "yarn start:host",
+    "dev": "yarn build && yarn start",
     "start:dev": "concurrently -r 'env $(cat disable-functions.env | grep Azure | xargs ) yarn start' 'gulp watch'"
   },
   "resolutions": {

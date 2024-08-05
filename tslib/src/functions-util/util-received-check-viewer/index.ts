@@ -41,10 +41,10 @@ export async function utilReceivedCheckViewer (req: HttpRequest, context: Invoca
   const receivedCheck = await tableService.getEntity<ReceivedCheckTableEntity>('receivedCheck', schoolUUID, checkCode)
   const archive = receivedCheck.archive ?? ''
   const compressionService = new CompressionService()
-  const decompressed = compressionService.decompressFromUTF16(archive)
+  const decompressed = compressionService.decompressFromBase64(archive)
   finish(start, context)
   return {
-    jsonBody: decompressed,
+    jsonBody: JSON.parse(decompressed),
     headers: {
       'Content-Type': 'application/json'
     }
