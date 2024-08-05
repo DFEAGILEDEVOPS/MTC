@@ -45,18 +45,18 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
   }
 
   const rawJsonBody = await req.json()
-  const reqBody = JSON.parse(rawJsonBody as string)
+  const reqBody = rawJsonBody as Record<string, unknown>
   const funcConfig: IUtilSubmitCheckConfig = {
-    schoolUuid: reqBody.schoolUuid,
-    checkCodes: reqBody.checkCodes,
+    schoolUuid: reqBody.schoolUuid as string,
+    checkCodes: reqBody.checkCodes as string[],
     answers: {
-      numberFromCorrectCheckForm: reqBody.answerNumberFromCorrectCheckForm,
-      numberFromIncorrectCheckForm: reqBody.answerNumberFromIncorrectCheckForm,
-      numberOfDuplicateAnswers: reqBody.answerNumberOfDuplicates
+      numberFromCorrectCheckForm: reqBody.answerNumberFromCorrectCheckForm as number,
+      numberFromIncorrectCheckForm: reqBody.answerNumberFromIncorrectCheckForm as number,
+      numberOfDuplicateAnswers: reqBody.answerNumberOfDuplicates as number
     }
   }
 
-  const messageVersion: string = reqBody.messageVersion ?? SubmittedCheckVersion.V3
+  const messageVersion: string = reqBody.messageVersion as string ?? SubmittedCheckVersion.V3
 
   if (messageVersion.toString() !== SubmittedCheckVersion.V2.toString() &&
     messageVersion.toString() !== SubmittedCheckVersion.V3.toString()) {
