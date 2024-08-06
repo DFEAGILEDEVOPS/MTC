@@ -5,6 +5,13 @@ import * as R from 'ramda'
 // @ts-ignore - bcryptjs not very ts friendly
 import * as bcrypt from 'bcryptjs'
 
+export interface ICreateUserModel {
+  schoolUUID: string
+  identifier: string
+  password: string
+  role: string
+}
+
 export class UserApi {
   private readonly sqlService: ISqlService
   private readonly logger: ILogger
@@ -14,9 +21,9 @@ export class UserApi {
     this.sqlService = sqlService ?? new SqlService(this.logger)
   }
 
-  public async create (body: any): Promise<object> {
+  public async create (newUserInfo: ICreateUserModel): Promise<object> {
     this.logger.trace('UserAPI: create() called')
-    const { schoolUuid, identifier, password, role } = body
+    const { schoolUUID, identifier, password, role } = newUserInfo
     if (role.toUpperCase() !== 'TEACHER') {
       throw new Error('Only the `teacher` role is supported')
     }
@@ -52,17 +59,20 @@ export class UserApi {
         VALUES (@passwordHash, @schoolId, @roleId, @identifier)
     `
     const params = [
-      { name: 'urlSlug', value: schoolUuid, type: TYPES.UniqueIdentifier },
+      { name: 'urlSlug', value: schoolUUID, type: TYPES.UniqueIdentifier },
       { name: 'passwordHash', value: passwordHash, type: TYPES.NVarChar },
       { name: 'roleTitle', value: role.toUpperCase(), type: TYPES.NVarChar },
       { name: 'identifier', value: identifier, type: TYPES.NVarChar(64) }
     ]
+    this.logger.trace(`GUY: inserting user with params: ${JSON.stringify(params)}`)
     await this.sqlService.modify(sql, params)
+    this.logger.trace('GUY: user inserted, fetching from db')
     const data = await this.sqlService.query('SELECT * from mtc_admin.[user] WHERE identifier = @identifier', [{
       name: 'identifier',
       value: identifier,
       type: TYPES.NVarChar
     }])
+    this.logger.trace(`GUY: user fetched from db: ${JSON.stringify(data)}`)
     // @ts-ignore - ramda and ts don't work so well together
     return R.head(data)
   }

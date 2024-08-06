@@ -1,10 +1,9 @@
 import { app, output, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import config from '../../config'
-import { SchoolApi } from './school-api'
-import { UserApi } from './user-api'
+import { type ICreateUserModel, UserApi } from '../create-user/user-api'
 
-const functionName = 'util-test-support-api-create-school'
+const functionName = 'util-create-user'
 
 const outputCheckSubmissionStorageQueue = output.storageQueue({
   connection: 'AZURE_STORAGE_CONNECTION_STRING',
@@ -17,9 +16,9 @@ const outputCheckSubmissionServiceBusQueue = output.serviceBusQueue({
 })
 
 app.http(functionName, {
-  methods: ['POST'],
+  methods: ['PUT'],
   authLevel: 'function', // TODO this was anonymous in v3 - why? ask QA about usage context
-  handler: utilTestSupportApi,
+  handler: utilCreateUser,
   extraOutputs: [outputCheckSubmissionStorageQueue, outputCheckSubmissionServiceBusQueue]
 })
 
@@ -30,7 +29,7 @@ function finish (start: number, context: InvocationContext): void {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-export async function utilTestSupportApi (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+export async function utilCreateUser (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
     return {
@@ -38,51 +37,15 @@ export async function utilTestSupportApi (req: HttpRequest, context: InvocationC
       body: 'feature unavailable'
     }
   }
-  // Respond in 230 seconds or the load balancer will time-out
-  // https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=javascript#limits
+
+  if (req.method !== 'PUT') {
+    return generateResponse(context, 'Failed', 400, 'Bad request')
+  }
+
   const start = performance.now()
-  const entity = context.triggerMetadata?.entity
-
-  switch (entity) {
-    case 'school':
-      if (req.method === 'PUT') {
-        const response = await createSchool(context, req)
-        return response
-      }
-      break
-
-    case 'user':
-      if (req.method === 'PUT') {
-        const response = await createUser(context, req)
-        return response
-      }
-      break
-
-    default:
-      return generateResponse(context, 'Failed', 400, 'Bad request')
-  }
+  const response = await createUser(context, req)
   finish(start, context)
-  return {
-    status: 200
-  }
-}
-
-async function createSchool (context: InvocationContext, req: HttpRequest): Promise<HttpResponseInit> {
-  if (req.body === null) {
-    return generateResponse(context, 'Failed', 400, 'Missing body')
-  }
-
-  try {
-    const schoolApi = new SchoolApi(context)
-    const entity = await schoolApi.create(req.body)
-    return generateResponse(context, 'Success', 201, 'Created', entity)
-  } catch (error) {
-    let errorMessage = 'unknown error'
-    if (error instanceof Error) {
-      errorMessage = error.message
-    }
-    return generateResponse(context, 'Failed', 500, errorMessage)
-  }
+  return response
 }
 
 async function createUser (context: InvocationContext, req: HttpRequest): Promise<HttpResponseInit> {
@@ -92,9 +55,12 @@ async function createUser (context: InvocationContext, req: HttpRequest): Promis
 
   try {
     const userApi = new UserApi(context)
-    const entity = await userApi.create(req.body)
+    const newUserInfo = await req.json() as ICreateUserModel
+    const entity = await userApi.create(newUserInfo)
+    context.log(`GUY: entity created... ${JSON.stringify(entity)}`)
     return generateResponse(context, 'Success', 201, 'Created', entity)
   } catch (error) {
+    context.error(`GUY: error caught: ${error}`)
     let errorMessage = 'unknown error'
     if (error instanceof Error) {
       errorMessage = error.message
@@ -105,7 +71,7 @@ async function createUser (context: InvocationContext, req: HttpRequest): Promis
 
 const generateResponse = function (context: InvocationContext, result: 'Success' | 'Failed', statusCode: number, message: string, entity?: object): HttpResponseInit {
   return {
-    jsonBody: JSON.stringify({ result, message, entity }),
+    jsonBody: { result, message, entity },
     status: statusCode,
     headers: {
       'Content-Type': 'application/json'
