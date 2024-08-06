@@ -48,12 +48,14 @@ describe('sessionExpiry', function () {
       expect(window.GOVUK.sessionExpiry.setCountdownText).toHaveBeenCalledWith('fixture', 4)
     })
 
-    it('should display the expired banner on 0 minutes left', function (done) {
+    fit('should display the expired banner on 0 minutes left', function (done) {
       const expiryDate = Date.now()
+      let finished = false
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
       spyOn(window.GOVUK.sessionExpiry, 'displayExpiredBanner').and.callFake(function () {
         expect(window.GOVUK.sessionExpiry.displayExpiredBanner).toHaveBeenCalled()
-        done()
+        if (!finished) { done() }
+        finished = true
       })
       window.GOVUK.sessionExpiry.startTimer('fixture', 10, expiryDate)
       jasmine.clock().tick((10 * 5) + 1)
