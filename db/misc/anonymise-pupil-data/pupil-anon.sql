@@ -1,4 +1,4 @@
-UPDATE mtc_admin.pupil SET 
+UPDATE mtc_admin.pupil SET
     foreName=CAST(NEWID() AS VARCHAR(255)),
     middleNames=CAST(NEWID() AS VARCHAR(255)),
     lastName=CAST(NEWID() AS VARCHAR(255)),
