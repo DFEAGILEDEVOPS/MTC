@@ -56,13 +56,13 @@ export class SyncResultsService {
       return
     }
     const schoolId = await this.syncResultsDataService.getSchoolId(schoolUuid)
-    this.logger.verbose(`${name}: school id retrieved: [${schoolId}]`)
+    this.logger.trace(`${name}: school id retrieved: [${schoolId}]`)
     if (schoolId === undefined) {
       this.logger.error(`${name}: dropRedisSchoolResult(): schoolId not found for uuid ${schoolUuid}`)
       return
     }
     const key = redisKeyService.getSchoolResultsKey(schoolId)
-    this.logger.verbose(`${name}: redis key to drop: [${key}]`)
+    this.logger.trace(`${name}: redis key to drop: [${key}]`)
     await this.redisService.drop([key])
   }
 }

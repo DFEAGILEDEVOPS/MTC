@@ -44,12 +44,12 @@ export class SchoolImportService {
   }
 
   private async updateJobStatusToProcessing (jobSlug: string): Promise<any> {
-    this.logger.verbose(`${name}: updateJobStatusToProcessing() called`)
+    this.logger.trace(`${name}: updateJobStatusToProcessing() called`)
     return this.jobDataService.setJobStarted(jobSlug)
   }
 
   private async updateJobStatusToCompleted (jobSlug: string): Promise<any> {
-    this.logger.verbose(`${name}: updateJobStatusToCompleted() called`)
+    this.logger.trace(`${name}: updateJobStatusToCompleted() called`)
     if (this.jobResult.hasError()) {
       return this.jobDataService.setJobComplete(jobSlug, JobStatusCode.CompletedWithErrors, this.jobResult.getStandardOutput(), this.jobResult.getErrorOutput())
     } else {
@@ -58,12 +58,12 @@ export class SchoolImportService {
   }
 
   private async updateJobStatusToFailed (jobSlug: string, error: Error): Promise<any> {
-    this.logger.verbose(`${name}: updateJobStatusToFailed() called`)
+    this.logger.trace(`${name}: updateJobStatusToFailed() called`)
     return this.jobDataService.setJobComplete(jobSlug, JobStatusCode.Failed, this.jobResult.getStandardOutput(), error.message)
   }
 
   async process (blob: any, blobNameWithoutExtension: string): Promise<SchoolImportJobOutput> {
-    this.logger.verbose(`${name}: process() called`)
+    this.logger.trace(`${name}: process() called`)
     // The admin app creates a job on file upload by service manager
     // The blob name is set to the url slug of the created job.
     if (blobNameWithoutExtension === undefined || blobNameWithoutExtension === '') {
@@ -89,12 +89,12 @@ export class SchoolImportService {
         const exitMessage = `school records excluded in filtering:${exclusionCount}. No records to persist, exiting.`
         this.jobResult.stdout.push(exitMessage)
         await this.updateJobStatusToCompleted(jobSlug)
-        this.logger.verbose(`${name}: no schools found to upload. Exiting.`)
+        this.logger.trace(`${name}: no schools found to upload. Exiting.`)
         return this.jobResult
       }
-      this.logger.verbose(`${name}  school import starting`)
+      this.logger.trace(`${name}  school import starting`)
       await this.schoolDataService.individualUpload(filteredSchools)
-      this.logger.verbose(`${name}  school import complete`)
+      this.logger.trace(`${name}  school import complete`)
       await this.updateJobStatusToCompleted(jobSlug)
       return this.jobResult
     } catch (error) {

@@ -36,7 +36,7 @@ export class SchoolDataService implements ISchoolDataService {
    * @return {SchoolImportJobOutput}
    */
   async bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
-    this.logger.verbose('SchoolDataService.bulkUpload() called')
+    this.logger.trace('SchoolDataService.bulkUpload() called')
 
     const table = new mssql.Table('[mtc_admin].[school]')
     table.create = false

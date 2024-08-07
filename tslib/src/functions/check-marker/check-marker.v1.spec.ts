@@ -5,7 +5,6 @@ import * as R from 'ramda'
 import * as Subject from './check-marker.v1'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type ILogger } from '../../common/logger'
-import { type ICheckMarkerFunctionBindings } from './models'
 import answersMock from './answers-mock.json'
 import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
@@ -31,7 +30,7 @@ const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
 const LoggerMock = jest.fn<ILogger, any>(() => ({
   error: jest.fn(),
   info: jest.fn(),
-  verbose: jest.fn(),
+  trace: jest.fn(),
   warn: jest.fn()
 }))
 
@@ -54,12 +53,7 @@ describe('check-marker/v1', () => {
 
   test('error is thrown when receivedCheck reference is not found', async () => {
     try {
-      const functionBindings: ICheckMarkerFunctionBindings = {
-        receivedCheckTable: [],
-        checkNotificationQueue: [],
-        checkResultTable: []
-      }
-      await sut.mark(functionBindings, loggerMock)
+      await sut.mark([], loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error) {
       let errorMessage = 'unknown error'
@@ -82,12 +76,6 @@ describe('check-marker/v1', () => {
       answers: ''
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
@@ -95,7 +83,7 @@ describe('check-marker/v1', () => {
       actualEntity = entity
     })
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers property not populated')
@@ -114,12 +102,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify({ foo: 1 })
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
@@ -127,7 +109,7 @@ describe('check-marker/v1', () => {
       actualEntity = entity
     })
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers data is not an array')
@@ -146,12 +128,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answersMock.answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
@@ -161,7 +137,7 @@ describe('check-marker/v1', () => {
 
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode')
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm could not be found by checkCode')
@@ -180,12 +156,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answersMock.answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
@@ -197,7 +167,7 @@ describe('check-marker/v1', () => {
       return 'not JSON'
     })
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm data is not valid JSON')
@@ -216,12 +186,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answersMock.answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
@@ -234,7 +198,7 @@ describe('check-marker/v1', () => {
       throw new Error(expectedErrorMessage)
     })
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
@@ -253,12 +217,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answersMock.answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
@@ -270,7 +228,7 @@ describe('check-marker/v1', () => {
       return JSON.stringify([])
     })
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
@@ -280,7 +238,7 @@ describe('check-marker/v1', () => {
       return JSON.stringify({ not: 'array' })
     })
 
-    await sut.mark(functionBindings, loggerMock)
+    await sut.mark(validatedCheckEntity, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
@@ -317,12 +275,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -334,19 +286,15 @@ describe('check-marker/v1', () => {
           f2: 2
         }])
     })
-    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
-    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+    const output = await sut.mark(validatedCheckEntity, loggerMock)
+    const checkResult: any = output.checkResultTable[0]
     expect(checkResult.mark).toBe(2)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.processingError).toBeUndefined()
     expect(checkResult.markedAt).toBeDefined()
     expect(checkResult.markedAnswers[0].isCorrect).toBe(true)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(true)
-
-    persistMarkSpy.mockRestore()
   })
 
   test('marking updates entity with mark, maxMarks and timestamp: one answer wrong', async () => {
@@ -379,12 +327,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -396,19 +338,15 @@ describe('check-marker/v1', () => {
           f2: 2
         }])
     })
-    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
-    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+    const output = await sut.mark(validatedCheckEntity, loggerMock)
+    const checkResult: any = output.checkResultTable[0]
     expect(checkResult.mark).toBe(1)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.processingError).toBeUndefined()
     expect(checkResult.markedAt).toBeInstanceOf(Date)
     expect(checkResult.markedAnswers[0].isCorrect).toBe(true)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(false)
-
-    persistMarkSpy.mockRestore()
   })
 
   test('marking updates check result entity with mark, maxMarks and timestamp: both answers wrong', async () => {
@@ -441,12 +379,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -458,21 +390,15 @@ describe('check-marker/v1', () => {
           f2: 2
         }])
     })
-    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
-    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+    const output = await sut.mark(validatedCheckEntity, loggerMock)
+    const checkResult = output.checkResultTable[0]
     expect(checkResult.mark).toBe(0)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.markedAt).toBeInstanceOf(Date)
     expect(checkResult.markedAnswers[0].isCorrect).toBe(false)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(false)
-
-    const receivedCheckEntity = functionBindings.receivedCheckTable[0]
-    expect(receivedCheckEntity.processingError).toBeUndefined()
-
-    persistMarkSpy.mockRestore()
+    expect(validatedCheckEntity.processingError).toBeUndefined() // TODO this might fail now as we deal with outputs differently
   })
 
   test('check notification is dispatched when marking successful', async () => {
@@ -497,12 +423,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -511,9 +431,9 @@ describe('check-marker/v1', () => {
         }])
     })
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
-    const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
+    const markOutput = await sut.mark(validatedCheckEntity, loggerMock)
+    expect(markOutput.checkNotificationQueue).toHaveLength(1)
+    const notificationQueueMessage: ICheckNotificationMessage = R.head(markOutput.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBeDefined()
     expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkComplete)
   })
@@ -531,15 +451,9 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify({ foo: 1 })
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
-    await sut.mark(functionBindings, loggerMock)
-    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
-    const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
+    const markOutput = await sut.mark(validatedCheckEntity, loggerMock)
+    expect(markOutput.checkNotificationQueue).toHaveLength(1)
+    const notificationQueueMessage: ICheckNotificationMessage = R.head(markOutput.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBe(checkCode)
     expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
   })
@@ -582,12 +496,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -599,11 +507,9 @@ describe('check-marker/v1', () => {
           f2: 2
         }])
     })
-    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
-    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+    const output = await sut.mark(validatedCheckEntity, loggerMock)
+    const checkResult = output.checkResultTable[0]
 
     expect(checkResult.markedAnswers[0]).toStrictEqual({
       factor1: 2,
@@ -616,7 +522,6 @@ describe('check-marker/v1', () => {
     })
 
     expect(checkResult.mark).toBe(2)
-    persistMarkSpy.mockRestore()
   })
 
   test('marking uses the first provided answer if there are duplicates, with the same timestamp', async () => {
@@ -672,12 +577,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -689,11 +588,9 @@ describe('check-marker/v1', () => {
           f2: 2
         }])
     })
-    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
-    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+    const output = await sut.mark(validatedCheckEntity, loggerMock)
+    const checkResult = output.checkResultTable[0]
 
     expect(checkResult.markedAnswers[0]).toStrictEqual({
       factor1: 2,
@@ -711,7 +608,6 @@ describe('check-marker/v1', () => {
     })
 
     expect(checkResult.mark).toBe(1)
-    persistMarkSpy.mockRestore()
   })
 
   test('marking is correct even if an answer is missing from the input', async () => {
@@ -736,12 +632,6 @@ describe('check-marker/v1', () => {
       answers: JSON.stringify(answers)
     }
 
-    const functionBindings: ICheckMarkerFunctionBindings = {
-      receivedCheckTable: [validatedCheckEntity],
-      checkNotificationQueue: [],
-      checkResultTable: []
-    }
-
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
@@ -753,11 +643,9 @@ describe('check-marker/v1', () => {
           f2: 5
         }])
     })
-    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
 
-    await sut.mark(functionBindings, loggerMock)
-    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
-    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+    const markOutput = await sut.mark(validatedCheckEntity, loggerMock)
+    const checkResult = markOutput.checkResultTable[0]
 
     expect(checkResult.markedAnswers[0]).toStrictEqual({
       factor1: 2,
@@ -781,6 +669,5 @@ describe('check-marker/v1', () => {
 
     expect(checkResult.mark).toBe(1)
     expect(checkResult.maxMarks).toBe(2)
-    persistMarkSpy.mockRestore()
   })
 })

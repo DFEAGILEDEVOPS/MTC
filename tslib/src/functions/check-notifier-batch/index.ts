@@ -1,20 +1,24 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { type Timer, app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
 import config from '../../config'
 import { type ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { BatchCheckNotifier } from './batch-check-notifier.service'
 import * as RA from 'ramda-adjunct'
-import { type IFunctionTimer } from '../../azure/functions'
 
 const functionName = 'check-notifier-batch'
+
+app.timer('checkNotifierBatch', {
+  schedule: '*/30 * * * * *', // execute every 30 seconds
+  handler: batchCheckNotifier
+})
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
   we do not expect another receive operation to be in progress.
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const batchCheckNotifier: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
+export async function batchCheckNotifier (timer: Timer, context: InvocationContext): Promise<void> {
   if (timer.isPastDue) {
     context.log(`${functionName}: timer is past due, exiting.`)
     return
@@ -46,7 +50,7 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: unable to connect to service bus at this time:${errorMessage}`)
+    context.error(`${functionName}: unable to connect to service bus at this time:${errorMessage}`)
     throw error
   }
 
@@ -68,9 +72,9 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
   finish(start, context)
 }
 
-async function process (notifications: ICheckNotificationMessage[], context: Context, messages: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
+async function process (notifications: ICheckNotificationMessage[], context: InvocationContext, messages: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
-    const batchNotifier = new BatchCheckNotifier(undefined, context.log)
+    const batchNotifier = new BatchCheckNotifier(undefined, context)
     await batchNotifier.notify(notifications)
     await completeMessages(messages, receiver, context)
   } catch (error) {
@@ -79,7 +83,7 @@ async function process (notifications: ICheckNotificationMessage[], context: Con
   }
 }
 
-async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
+async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: InvocationContext): Promise<void> {
   // the sql updates are committed, complete the messages.
   // if any completes fail, just abandon.
   // the sql updates are idempotent and as such replaying a message
@@ -97,7 +101,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
         if (error instanceof Error) {
           errorMessage = error.message
         }
-        context.log.error(`${functionName}: unable to abandon message:${errorMessage}`)
+        context.error(`${functionName}: unable to abandon message:${errorMessage}`)
         // do nothing.
         // the lock will expire and message reprocessed at a later time
       }
@@ -105,7 +109,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
   }
 }
 
-async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
+async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: InvocationContext): Promise<void> {
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
@@ -115,12 +119,12 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
       if (error instanceof Error) {
         errorMessage = error.message
       }
-      context.log.error(`${functionName}: unable to abandon message:${errorMessage}`)
+      context.error(`${functionName}: unable to abandon message:${errorMessage}`)
     }
   }
 }
 
-function finish (start: number, context: Context): void {
+function finish (start: number, context: InvocationContext): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()

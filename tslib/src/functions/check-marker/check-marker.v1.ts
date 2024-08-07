@@ -4,7 +4,7 @@ import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import moment from 'moment'
 import { type ICheckFormService, CheckFormService } from '../../services/check-form.service'
 import { type ILogger } from '../../common/logger'
-import { type ICheckMarkerFunctionBindings, type MarkingData, type CheckResult, type MarkedAnswer } from './models'
+import type { MarkingData, CheckResult, MarkedAnswer, ICheckMarkerOutputs, IMarkingEntity } from './models'
 import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { type ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
@@ -31,45 +31,50 @@ export class CheckMarkerV1 {
 
   /**
    * This is the main entry-point called from index.ts
-   * @param functionBindings
+   * @param receivedCheckEntry
    * @param logger
    */
-  async mark (functionBindings: ICheckMarkerFunctionBindings, logger: ILogger): Promise<void> {
-    logger.verbose('mark() called')
-    const validatedCheck = this.findValidatedCheck(functionBindings.receivedCheckTable)
+  async mark (receivedCheckEntry: unknown, logger: ILogger): Promise<ICheckMarkerOutputs> {
+    const validatedCheck = this.findValidatedCheck(receivedCheckEntry)
     const markingData = await this.validateData(validatedCheck, logger)
-    functionBindings.checkResultTable = []
-    functionBindings.checkNotificationQueue = []
+    const outputs: ICheckMarkerOutputs = {
+      checkNotificationQueue: [],
+      checkResultTable: []
+    }
 
     if (markingData === undefined) {
-      this.notifyProcessingFailure(validatedCheck, functionBindings)
-      return
+      const failure = this.createProcessingFailureMessage(validatedCheck)
+      outputs.checkNotificationQueue.push(failure)
+      return outputs
     }
     let checkResult: CheckResult
     try {
       checkResult = this.markCheck(markingData, validatedCheck.RowKey)
-      logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
-      this.persistMark(checkResult, functionBindings, validatedCheck.PartitionKey)
+      logger.trace(`mark(): results ${JSON.stringify(checkResult)}`)
+      const markingEntity = this.createMarkingEntity(checkResult, validatedCheck.PartitionKey)
+      outputs.checkResultTable.push(markingEntity)
     } catch (error) {
-      this.notifyProcessingFailure(validatedCheck, functionBindings)
-      return
+      const failure = this.createProcessingFailureMessage(validatedCheck)
+      outputs.checkNotificationQueue.push(failure)
+      return outputs
     }
     const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
-    logger.verbose(`mark() setting notification msg to ${JSON.stringify(notification)}`)
-    functionBindings.checkNotificationQueue.push(notification)
+    logger.trace(`mark() setting notification msg to ${JSON.stringify(notification)}`)
+    outputs.checkNotificationQueue.push(notification)
+    return outputs
   }
 
-  private notifyProcessingFailure (validatedCheck: ReceivedCheckFunctionBindingEntity, functionBindings: ICheckMarkerFunctionBindings): void {
+  private createProcessingFailureMessage (validatedCheck: ReceivedCheckFunctionBindingEntity): ICheckNotificationMessage {
     const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkInvalid,
       version: 1
     }
-    functionBindings.checkNotificationQueue.push(notification)
+    return notification
   }
 
   private async validateData (validatedCheck: ReceivedCheckFunctionBindingEntity, logger: ILogger): Promise<MarkingData | undefined> {
@@ -96,7 +101,6 @@ export class CheckMarkerV1 {
 
     // Sort the answers by clientTimeStamp, so that we get a sequential timeline of events
     const sortedAnswers = this.answerSort(parsedAnswersJson)
-
     const checkCode = validatedCheck.RowKey
     let rawCheckForm
 
@@ -197,21 +201,22 @@ export class CheckMarkerV1 {
     return results
   }
 
-  private persistMark (checkResult: CheckResult, functionBindings: ICheckMarkerFunctionBindings, schoolUUID: string): void {
-    if (functionBindings.checkResultTable === undefined) {
-      functionBindings.checkResultTable = []
-    }
+  private createMarkingEntity (checkResult: CheckResult, schoolUUID: string): IMarkingEntity {
     const markingEntity: any = R.omit(['checkCode'], checkResult)
     markingEntity.PartitionKey = schoolUUID
     markingEntity.RowKey = checkResult.checkCode
-    functionBindings.checkResultTable.push(markingEntity)
+    return markingEntity
   }
 
-  private findValidatedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity {
+  private findValidatedCheck (receivedCheckRef: unknown): ReceivedCheckFunctionBindingEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
-    return receivedCheckRef[0]
+    if (!RA.isArray(receivedCheckRef)) {
+      return receivedCheckRef as ReceivedCheckFunctionBindingEntity
+    }
+    const checkArray = receivedCheckRef as ReceivedCheckFunctionBindingEntity[]
+    return checkArray[0]
   }
 
   private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckFunctionBindingEntity, markingError: string): Promise<void> {

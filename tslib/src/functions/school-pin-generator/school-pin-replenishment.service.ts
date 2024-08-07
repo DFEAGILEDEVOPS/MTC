@@ -46,7 +46,7 @@ export class SchoolPinReplenishmnentService {
     let schoolsToProcess: School[]
     let returnGeneratedPin = false
     let pinToReturn = ''
-    logger.verbose(`${this.logName}: process() called for schoolId [${schoolId}]`)
+    logger.trace(`${this.logName}: process() called for schoolId [${schoolId}]`)
 
     if (schoolId === undefined) {
       logger.info(`${this.logName}: generating pins for all schools`)
@@ -54,7 +54,7 @@ export class SchoolPinReplenishmnentService {
     } else {
       returnGeneratedPin = true
       const school = await this.dataService.getSchoolById(schoolId)
-      logger.verbose(`${this.logName} school found in db ${JSON.stringify(school)}`)
+      logger.trace(`${this.logName} school found in db ${JSON.stringify(school)}`)
       schoolsToProcess = []
       if (school !== undefined) {
         schoolsToProcess.push(school)

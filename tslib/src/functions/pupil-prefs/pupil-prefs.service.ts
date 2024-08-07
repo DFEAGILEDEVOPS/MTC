@@ -18,8 +18,11 @@ export class PupilPrefsService {
     this.dataService = pupilPrefsDataService
   }
 
-  async update (preferenceUpdate: IPupilPreferenceUpdate, functionBindings: IPupilPrefsFunctionBindings): Promise<void> {
+  async update (preferenceUpdate: IPupilPreferenceUpdate): Promise<IPupilPrefsFunctionBindings> {
     const dataUpdates = new Array<IPupilPreferenceDataUpdate>()
+    const output: IPupilPrefsFunctionBindings = {
+      checkSyncQueue: []
+    }
 
     if (preferenceUpdate.preferences.colourContrastCode !== undefined) {
       const colourContrastDataUpdate: IPupilPreferenceDataUpdate = {
@@ -44,11 +47,11 @@ export class PupilPrefsService {
     }
     await this.dataService.updatePupilPreferences(dataUpdates)
     const pupilUUID = await this.dataService.getPupilUUIDByCheckCode(preferenceUpdate.checkCode)
-    functionBindings.checkSyncQueue = []
-    functionBindings.checkSyncQueue.push({
+    output.checkSyncQueue.push({
       pupilUUID,
       version: 1
     })
+    return output
   }
 }
 
@@ -58,6 +61,7 @@ export interface IPupilPreferenceUpdate {
     fontSizeCode?: string
     colourContrastCode?: string
   }
+  version: number
 }
 
 export interface IPupilPreferenceDataUpdate {

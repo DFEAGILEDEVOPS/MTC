@@ -30,7 +30,7 @@ const BlobServiceMock = jest.fn<IBlobService, any>(() => ({
 const LoggerMock = jest.fn<ILogger, any>(() => ({
   error: jest.fn(),
   info: jest.fn(),
-  verbose: jest.fn(),
+  trace: jest.fn(),
   warn: jest.fn()
 }))
 

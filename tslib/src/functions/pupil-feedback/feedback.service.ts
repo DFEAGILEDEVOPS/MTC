@@ -22,11 +22,14 @@ export interface IPupilFeedbackFunctionBinding {
 }
 
 export class PupilFeedbackService {
-  process (binding: IPupilFeedbackFunctionBinding, message: IPupilFeedbackMessage): void {
+  process (message: IPupilFeedbackMessage): IPupilFeedbackFunctionBinding {
     if (message.version !== 2) {
       throw new Error(`version:${message.version} unsupported`)
     }
-    binding.feedbackTable = []
+    const output: IPupilFeedbackFunctionBinding = {
+      feedbackTable: []
+    }
+
     const entity: IPupilFeedbackTableEntity = {
       PartitionKey: message.checkCode,
       RowKey: uuidv4(),
@@ -35,6 +38,7 @@ export class PupilFeedbackService {
       inputType: message.inputType,
       satisfactionRating: message.satisfactionRating
     }
-    binding.feedbackTable.push(entity)
+    output.feedbackTable.push(entity)
+    return output
   }
 }

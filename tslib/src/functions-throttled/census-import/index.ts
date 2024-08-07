@@ -1,12 +1,18 @@
 'use strict'
 
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { CensusImportV1 } from './v1'
 import * as mssql from 'mssql'
 import config from '../../config'
 
-const blobTrigger: AzureFunction = async function (context: Context, blob: any): Promise<void> {
+app.storageBlob('census-import', {
+  handler: censusImportFunction,
+  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+  path: 'census'
+})
+
+export async function censusImportFunction (blobTriggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
   let pool: mssql.ConnectionPool | undefined
   let meta
@@ -27,15 +33,17 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
     }
     pool = new mssql.ConnectionPool(sqlConfig)
     await pool.connect()
-    const v1 = new CensusImportV1(pool, context.log)
-    meta = await v1.process(blob, context.bindingData.uri)
+    const v1 = new CensusImportV1(pool, context)
+    // TODO how to get this?
+    const blobUri = context.triggerMetadata?.uri as string ?? ''
+    meta = await v1.process(blobTriggerInput, blobUri)
     await pool.close()
   } catch (error) {
     if (pool?.connected === true) {
       await pool.close()
     }
     if (error instanceof Error) {
-      context.log.error(`census-import: ERROR: ${error.message}`)
+      context.error(`census-import: ERROR: ${error.message}`)
     }
     throw error
   }
@@ -44,5 +52,3 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
   const timeStamp = new Date().toISOString()
   context.log(`census-import: ${timeStamp} processed ${meta.processCount} pupil records, run took ${durationInMilliseconds} ms`)
 }
-
-export default blobTrigger

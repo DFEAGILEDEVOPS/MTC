@@ -38,7 +38,7 @@ export class PsReportWriterService {
       { name: 'name', value: tableName, type: mssql.NVarChar }
     ]
     const res = await this.sqlService.query(sql, params)
-    // this.logger.verbose(`${this.logPrefix()}: res: ${JSON.stringify(res)}`)
+    // this.logger.trace(`${this.logPrefix()}: res: ${JSON.stringify(res)}`)
     // empty: res => []
     if (R.isEmpty(res)) {
       return false
@@ -148,16 +148,16 @@ export class PsReportWriterService {
         PupilUPN ASC
       ) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON  ) ON [PRIMARY]
     `
-    this.logger.verbose(`${this.logPrefix()}: creating table ${newTableName}`)
+    this.logger.trace(`${this.logPrefix()}: creating table ${newTableName}`)
     await this.sqlService.modify(fullSql, [])
 
-    this.logger.verbose(`${this.logPrefix()}: Creating trigger`)
+    this.logger.trace(`${this.logPrefix()}: Creating trigger`)
     await this.sqlService.modify(triggerSql, [])
 
-    this.logger.verbose(`${this.logPrefix()}: Creating IX1`)
+    this.logger.trace(`${this.logPrefix()}: Creating IX1`)
     await this.sqlService.modify(ix1Sql, [])
 
-    this.logger.verbose(`${this.logPrefix()}: Creating IX2`)
+    this.logger.trace(`${this.logPrefix()}: Creating IX2`)
     await this.sqlService.modify(ix2Sql, [])
 
     this.logger.info(`${this.logPrefix()}: new table ${newTableName} created`)
@@ -179,7 +179,7 @@ export class PsReportWriterService {
   public async prepareForUpload (blobFile: string): Promise<void> {
     const blobService = new BlobService()
     const containerUrl = await blobService.getContainerUrl(containerName)
-    this.logger.verbose(`${this.logPrefix()}: container url is ${containerUrl}`)
+    this.logger.trace(`${this.logPrefix()}: container url is ${containerUrl}`)
     const sasToken = await blobService.getBlobReadWriteSasToken(containerName, blobFile)
     const sql = `
       IF (SELECT COUNT(*) FROM sys.database_scoped_credentials WHERE name = 'PsReportBulkUploadCredential') = 0
@@ -237,7 +237,7 @@ export class PsReportWriterService {
      * error in this block means we are running in Azure.
      */
     const result = await this.sqlService.query(sql2, [])
-    this.logger.verbose(`${this.logPrefix()}: OS is ${JSON.stringify(result)}`)
+    this.logger.trace(`${this.logPrefix()}: OS is ${JSON.stringify(result)}`)
     let sqlConfig: mssql.config
 
     if (result[0].engineEdition === 'Enterprise' || result[0].engineEdition === 'Azure SQL Edge') {

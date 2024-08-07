@@ -17,7 +17,7 @@ export interface ILogger {
   /**
    * Writes to verbose level logging.
    */
-  verbose (...args: any[]): void
+  trace (...args: any[]): void
 }
 
 export class ConsoleLogger implements ILogger {
@@ -33,7 +33,7 @@ export class ConsoleLogger implements ILogger {
     console.info(...args)
   }
 
-  verbose (...args: any[]): void {
+  trace (...args: any[]): void {
     console.log(...args)
   }
 }
@@ -42,5 +42,5 @@ export class MockLogger implements ILogger {
   error (): void {}
   warn (): void {}
   info (): void {}
-  verbose (): void {}
+  trace (): void {}
 }

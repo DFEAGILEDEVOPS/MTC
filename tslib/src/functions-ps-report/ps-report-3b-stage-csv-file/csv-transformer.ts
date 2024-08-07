@@ -16,7 +16,7 @@ export class CsvTransformer {
   constructor (logger: ILogger, psReportLineData: IPsychometricReportLine[]) {
     this.logger = logger
     this.psReportLineData = psReportLineData
-    this.logger.verbose('CsvTransformer initialised')
+    this.logger.trace('CsvTransformer initialised')
   }
 
   private transformAnswer (a: IReportLineAnswer | undefined): any[] {

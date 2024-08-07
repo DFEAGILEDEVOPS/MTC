@@ -1,26 +1,40 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { type IPupilFeedbackMessage, PupilFeedbackService, type IPupilFeedbackFunctionBinding } from './feedback.service'
+import { type IPupilFeedbackMessage, PupilFeedbackService } from './feedback.service'
 
 const functionName = 'pupil-feedback'
 const service = new PupilFeedbackService()
 
-const queueTrigger: AzureFunction = async function (context: Context, feedbackMessage: IPupilFeedbackMessage): Promise<void> {
+const outputTable = output.table({
+  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+  tableName: 'pupilFeedback'
+})
+
+app.storageQueue(functionName, {
+  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+  queueName: 'pupil-feedback',
+  handler: pupilFeedback,
+  extraOutputs: [outputTable]
+})
+
+export async function pupilFeedback (triggerMessage: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
+  const feedbackMessage = triggerMessage as IPupilFeedbackMessage
   const version = feedbackMessage.version
-  context.log.info(`${functionName}: version:${version} message received for checkCode ${feedbackMessage.checkCode}`)
+  context.info(`${functionName}: version:${version} message received for checkCode ${feedbackMessage.checkCode}`)
   try {
     if (version !== 2) {
       // dead letter the message as we no longer support below v2
       throw new Error(`Message schema version:${version} unsupported`)
     }
-    service.process(context.bindings as IPupilFeedbackFunctionBinding, feedbackMessage)
+    const output = service.process(feedbackMessage)
+    context.extraOutputs.set(outputTable, output.feedbackTable)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
+    context.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 
@@ -29,5 +43,3 @@ const queueTrigger: AzureFunction = async function (context: Context, feedbackMe
   const timeStamp = new Date().toISOString()
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
-
-export default queueTrigger
