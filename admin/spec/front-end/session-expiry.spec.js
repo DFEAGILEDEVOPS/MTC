@@ -48,7 +48,7 @@ describe('sessionExpiry', function () {
       expect(window.GOVUK.sessionExpiry.setCountdownText).toHaveBeenCalledWith('fixture', 4)
     })
 
-    fit('should display the expired banner on 0 minutes left', function (done) {
+    it('should display the expired banner on 0 minutes left', function (done) {
       const expiryDate = Date.now()
       let finished = false
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')

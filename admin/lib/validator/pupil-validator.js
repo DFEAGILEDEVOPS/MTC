@@ -106,7 +106,10 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
 
-  if (dob.isValid() && !dob.isBetween(moment.utc(`${academicYear - 11}-09-02`), moment.utc(`${academicYear - 7}-09-01`), null, '[]')) {
+  // check the pupil age is allowed
+  const startDate = moment.utc(`${academicYear - 9}-09-02`)
+  const endDate = moment.utc(`${academicYear - 6}-09-01`)
+  if (dob.isValid() && !dob.isBetween(startDate, endDate, 'day', '[]')) {
     validationError.addError('dob-day', addPupilErrorMessages.dobOutOfRange)
     validationError.addError('dob-month', addPupilErrorMessages.dobOutOfRange)
     validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)

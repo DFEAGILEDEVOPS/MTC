@@ -1,6 +1,5 @@
 'use strict'
-
-/* global beforeEach, describe, test, expect, jest */
+/* global beforeEach, afterEach, describe, test, expect, jest */
 
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')
@@ -43,11 +42,17 @@ describe('pupil validator', function () {
     jest.spyOn(laCodeService, 'getLaCodes').mockReturnValue([801, 813])
   })
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('and the pupil uniqueness check passes', () => {
     beforeEach(() => {
       jest.spyOn(pupilDataService, 'sqlFindOneByUpnAndSchoolId').mockReturnValue(undefined)
     })
-
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
     test('allows a valid request', async () => {
       req.body = getBody()
       const schoolId = 2
@@ -492,84 +497,104 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-year')).toBe(true)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil['dob-year'])
       })
+
+      describe('2024 regressions', () => {
+        test('bug 65064', async () => {
+          // bug from 2024 live cycle
+          jest
+            .useFakeTimers()
+            .setSystemTime(new Date('2024-06-13'))
+
+          req.body = getBody()
+          req.body['dob-day'] = '04'
+          req.body['dob-month'] = '12'
+          req.body['dob-year'] = '2012'
+          const schoolId = 2
+          const validationResult = await pupilValidator.validate(req.body, schoolId)
+          expect(validationResult.hasError()).toBe(true)
+
+          // clean up
+          jest.useRealTimers()
+        })
+
+        test('bug 65064', async () => {
+          // bug from 2024 live cycle
+          jest
+            .useFakeTimers()
+            .setSystemTime(new Date('2024-06-13'))
+
+          req.body = getBody()
+          req.body['dob-day'] = '26'
+          req.body['dob-month'] = '12'
+          req.body['dob-year'] = '2012'
+          const schoolId = 2
+          const validationResult = await pupilValidator.validate(req.body, schoolId)
+          expect(validationResult.hasError()).toBe(true)
+
+          // clean up
+          jest.useRealTimers()
+        })
+      })
     })
 
     describe('date of birth:', () => {
-      test('should be out of accepted range if the input date is before 2nd September of 11 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        Date.now = jest.fn(() => {
-          return baseTime
-        })
-        req.body = getBody()
-        req.body['dob-day'] = '01'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
+      describe('additional 2024 tests', () => {
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.hasError()).toBe(true)
-        expect(validationError.isError('dob-day')).toBeTruthy()
-        expect(validationError.isError('dob-month')).toBeTruthy()
-        expect(validationError.isError('dob-year')).toBeTruthy()
-        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
-        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
-        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
-      })
-      test('should be out of accepted range if the input date is after 1nd September of 7 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        Date.now = jest.fn(() => {
-          return baseTime
+        beforeEach(() => {
+          jest.useFakeTimers().setSystemTime(new Date(2024, 7, 1)) // run these tests as if on the 1-AUG-24
         })
-        req.body = getBody()
-        req.body['dob-day'] = '02'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.hasError()).toBe(true)
-        expect(validationError.isError('dob-day')).toBeTruthy()
-        expect(validationError.isError('dob-month')).toBeTruthy()
-        expect(validationError.isError('dob-year')).toBeTruthy()
-        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
-        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
-        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
-      })
-      test('should display for multiple pupils submission an error message when out of accepted range if the input date is after 1nd September of 7 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
+        afterEach(() => {
+          jest.useRealTimers()
+          jest.restoreAllMocks()
         })
-        req.body = getBody()
-        req.body['dob-day'] = '02'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId, true)
-        expect(validationError.hasError()).toBe(true)
-        expect(validationError.isError('dob-day')).toBeTruthy()
-        expect(validationError.isError('dob-month')).toBeTruthy()
-        expect(validationError.isError('dob-year')).toBeTruthy()
-        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobOutOfRange)
-        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
-        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
-      })
-      test('should be within the accepted range if the input date is after 2nd September of 11 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
+
+        test('it prevents a pupil who is too young from being added', async () => {
+          // 1 day too young: 6 years 364 days =>  2 Sep 2017
+          req.body = getBody()
+          req.body['dob-day'] = '02'
+          req.body['dob-month'] = '09'
+          req.body['dob-year'] = '2017'
+          const validationError = await pupilValidator.validate(req.body, schoolId)
+          expect(validationError.isError('dob-day')).toBe(true)
+          expect(validationError.isError('dob-month')).toBe(true)
+          expect(validationError.isError('dob-year')).toBe(true)
         })
-        req.body = getBody()
-        req.body['dob-day'] = '02'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.isError('dob-day')).toBeFalsy()
-        expect(validationError.isError('dob-month')).toBeFalsy()
-        expect(validationError.isError('dob-year')).toBeFalsy()
+
+        test('it allows the youngest allowable pupil to be added', async () => {
+          // Youngest allowable: 7 years 0 days on 1 Sep => 1 Sep 2017
+          req.body = getBody()
+          req.body['dob-day'] = '01'
+          req.body['dob-month'] = '09'
+          req.body['dob-year'] = '2017'
+          const validationError = await pupilValidator.validate(req.body, schoolId)
+          expect(validationError.isError('dob-day')).toBe(false)
+          expect(validationError.isError('dob-month')).toBe(false)
+          expect(validationError.isError('dob-year')).toBe(false)
+        })
+
+        test('it allows the oldest allowable pupil to be added', async () => {
+          // Oldest allowable age: 9 years, 364 days => 2 Sep 2014
+          req.body = getBody()
+          req.body['dob-day'] = '02'
+          req.body['dob-month'] = '09'
+          req.body['dob-year'] = '2014'
+          const validationError = await pupilValidator.validate(req.body, schoolId)
+          expect(validationError.isError('dob-day')).toBe(false)
+          expect(validationError.isError('dob-month')).toBe(false)
+          expect(validationError.isError('dob-year')).toBe(false)
+        })
+
+        test('it prevents a pupil who is too old from being added', async () => {
+          // Pupil that is too old: 10 years 0 days => 1 Sep 2014
+          req.body = getBody()
+          req.body['dob-day'] = '01'
+          req.body['dob-month'] = '09'
+          req.body['dob-year'] = '2014'
+          const validationError = await pupilValidator.validate(req.body, schoolId)
+          expect(validationError.isError('dob-day')).toBe(true)
+          expect(validationError.isError('dob-month')).toBe(true)
+          expect(validationError.isError('dob-year')).toBe(true)
+        })
       })
     })
 
@@ -852,6 +877,10 @@ describe('pupil validator', function () {
       pupil.id = '12345'
       pupil.upn = 'H801200001001'
       jest.spyOn(pupilDataService, 'sqlFindOneByUpnAndSchoolId').mockResolvedValue(pupil)
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
     })
 
     test('it ensures the UPN is unique when adding new pupil', async () => {
