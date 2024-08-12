@@ -36,7 +36,7 @@ if (!window.MTCAdmin) {
       if (inputDate !== undefined &&
         (!window.MTCAdmin.isWithinAcademicYear(inputDate, academicYear, 8)) &&
         $('#dob-year').val().length === 4) {
-          console.log('Showing age warning')
+        console.log('Showing age warning')
         // Show age consent
         $('#js-age-warning').addClass('show-age-content')
         $('#js-age-warning').removeClass('hide-age-content')
