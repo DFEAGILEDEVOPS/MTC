@@ -79,6 +79,7 @@ describe('pupil-form', function () {
     })
 
     it('should not display the age warning if a pupil is 8 years and 0 days on 1 Sep', function () {
+      console.log('env: ', process.env)
       $('#dob-day').val('01')
       $('#dob-day').trigger('input')
       $('#dob-month').val('09')
