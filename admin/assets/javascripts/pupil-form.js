@@ -30,9 +30,17 @@ if (!window.MTCAdmin) {
       console.log('Academic year', academicYear)
       var inputDate
       if (/^\d{4}-\d{2}-\d{2}$/.test(composedDate)) {
-        inputDate = new Date(composedDate)
+        inputDate = new Date(Date.UTC(
+          parseInt($('#dob-year').val(), 10),
+          parseInt($('#dob-month').val(), 10) - 1, // monthIndex
+          parseInt($('#dob-day').val(), 10),
+          0,
+          0,
+          0,
+          0)
+        )
       }
-      console.log('inputDate', inputDate)
+      console.log('inputDate', inputDate?.toUTCString())
       if (inputDate !== undefined &&
         (!window.MTCAdmin.isWithinAcademicYear(inputDate, academicYear, 8)) &&
         $('#dob-year').val().length === 4) {
@@ -51,9 +59,12 @@ if (!window.MTCAdmin) {
 
   window.MTCAdmin.determineAcademicYear = function () {
     var currentDate = new Date()
-    var currentYear = (currentDate).getFullYear()
-    var startOfJanuary = new Date(currentYear, 7, 31)
-    var endOfAugust = new Date(currentYear, 8, 31)
+    var currentYear = (currentDate).getUTCFullYear()
+    var startOfJanuary = new Date(Date.UTC(currentYear, 0, 1, 0, 0, 0))
+    var endOfAugust = new Date(Date.UTC(currentYear, 7, 31, 23, 59, 59, 0))
+    console.log('start of jan', startOfJanuary)
+    console.log('end of aug', endOfAugust)
+    console.log('current date', currentDate)
     if (currentDate >= startOfJanuary && currentDate <= endOfAugust) {
       return currentYear - 1
     }
@@ -62,8 +73,10 @@ if (!window.MTCAdmin) {
 
   window.MTCAdmin.isWithinAcademicYear = function (inputDate, academicYear, targetYear) {
     var targetAcademicYear = academicYear - targetYear
-    const startDate = new Date(targetAcademicYear, 8, 2) // 2 Sep
-    const endDate = new Date(targetAcademicYear + 1, 8, 1) // 1 Sep
+    const startDate = new Date(Date.UTC(targetAcademicYear, 8, 2, 0, 0, 0)) // 2 Sep
+    const endDate = new Date(Date.UTC(targetAcademicYear + 1, 8, 1, 23, 59, 59)) // 1 Sep
+    console.log('start date: ', startDate.toUTCString())
+    console.log('end Date: ', endDate.toUTCString())
     return inputDate >= startDate && inputDate <= endDate
   }
 })()
