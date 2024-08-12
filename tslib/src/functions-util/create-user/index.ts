@@ -57,10 +57,8 @@ async function createUser (context: InvocationContext, req: HttpRequest): Promis
     const userApi = new UserApi(context)
     const newUserInfo = await req.json() as ICreateUserModel
     const entity = await userApi.create(newUserInfo)
-    context.log(`GUY: entity created... ${JSON.stringify(entity)}`)
     return generateResponse(context, 'Success', 201, 'Created', entity)
   } catch (error) {
-    context.error(`GUY: error caught: ${error}`)
     let errorMessage = 'unknown error'
     if (error instanceof Error) {
       errorMessage = error.message

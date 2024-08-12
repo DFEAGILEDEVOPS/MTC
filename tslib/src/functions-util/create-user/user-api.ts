@@ -64,15 +64,12 @@ export class UserApi {
       { name: 'roleTitle', value: role.toUpperCase(), type: TYPES.NVarChar },
       { name: 'identifier', value: identifier, type: TYPES.NVarChar(64) }
     ]
-    this.logger.trace(`GUY: inserting user with params: ${JSON.stringify(params)}`)
     await this.sqlService.modify(sql, params)
-    this.logger.trace('GUY: user inserted, fetching from db')
     const data = await this.sqlService.query('SELECT * from mtc_admin.[user] WHERE identifier = @identifier', [{
       name: 'identifier',
       value: identifier,
       type: TYPES.NVarChar
     }])
-    this.logger.trace(`GUY: user fetched from db: ${JSON.stringify(data)}`)
     // @ts-ignore - ramda and ts don't work so well together
     return R.head(data)
   }
