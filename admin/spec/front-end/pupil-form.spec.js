@@ -49,7 +49,7 @@ describe('pupil-form', function () {
       window.MTCAdmin.pupilForm()
       spyOn(window.MTCAdmin, 'determineAcademicYear').and.returnValue(2023)
       jasmine.clock().install()
-      jasmine.clock().mockDate(new Date(2024, 8, 1)) // Make all the tests work from 2024 test cycle.
+      jasmine.clock().mockDate(new Date(2024, 7, 1)) // Make all the tests work from 2024 test cycle: 1-AUG-24
     })
 
     afterEach(() => {
@@ -79,7 +79,6 @@ describe('pupil-form', function () {
     })
 
     it('should not display the age warning if a pupil is 8 years and 0 days on 1 Sep', function () {
-      console.log('env: ', process.env)
       $('#dob-day').val('01')
       $('#dob-day').trigger('input')
       $('#dob-month').val('09')
