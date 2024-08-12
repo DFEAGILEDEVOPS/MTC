@@ -67,7 +67,7 @@
     "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.9.4",
-    "@azure/storage-blob": "^12.17.0",
+    "@azure/storage-blob": "^12.23.0",
     "@azure/storage-queue": "^12.22.0",
     "adm-zip": "^0.5.12",
     "applicationinsights": "^2.9.5",
