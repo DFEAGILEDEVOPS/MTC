@@ -25,19 +25,24 @@ if (!window.MTCAdmin) {
 
     function displayAgeTextArea () {
       var composedDate = $('#dob-year').val() + '-' + $('#dob-month').val().padStart(2, '0') + '-' + $('#dob-day').val().padStart(2, '0')
+      console.log('composed date', composedDate)
       var academicYear = window.MTCAdmin.determineAcademicYear()
+      console.log('Academic year', academicYear)
       var inputDate
       if (/^\d{4}-\d{2}-\d{2}$/.test(composedDate)) {
         inputDate = new Date(composedDate)
       }
+      console.log('inputDate', inputDate)
       if (inputDate !== undefined &&
         (!window.MTCAdmin.isWithinAcademicYear(inputDate, academicYear, 8)) &&
         $('#dob-year').val().length === 4) {
+          console.log('Showing age warning')
         // Show age consent
         $('#js-age-warning').addClass('show-age-content')
         $('#js-age-warning').removeClass('hide-age-content')
       } else if ($('.show-age-content').length > 0) {
         // hide age consent
+        console.log('Hide age warning')
         $('#js-age-warning').addClass('hide-age-content')
         $('#js-age-warning').removeClass('show-age-content')
       }
