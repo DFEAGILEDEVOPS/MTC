@@ -24,10 +24,6 @@
     "node": ">= 18"
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
-  "resolutions": {
-    "**/**/lodash": "^4.17.21",
-    "**/**/logform": "2.4.2"
-  },
   "devDependencies": {
     "@azure/functions": "^3.5.0",
     "@faker-js/faker": "^8.4.1",
