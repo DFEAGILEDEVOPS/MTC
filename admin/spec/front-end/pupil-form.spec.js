@@ -1,6 +1,6 @@
 'use strict'
 
-/* global $ describe it expect beforeEach afterEach spyOn jasmine fdescribe fit*/
+/* global $ describe it expect beforeEach afterEach spyOn jasmine */
 /* eslint-disable no-var */
 
 function initPupilFormElements () {
@@ -33,7 +33,7 @@ function initPupilFormElements () {
 }
 
 describe('pupil-form', function () {
-  fdescribe('displayAgeTextArea', function () {
+  describe('displayAgeTextArea', function () {
   /**
    * The expected age as of 1 September (start of academic year) should be greater than or equal to 8 years and less than 9 years old
    *

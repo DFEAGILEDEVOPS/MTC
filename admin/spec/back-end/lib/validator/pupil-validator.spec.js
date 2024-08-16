@@ -549,11 +549,11 @@ describe('pupil validator', function () {
         })
 
         test('it prevents a pupil who is too young from being added', async () => {
-          // 1 day too young: 6 years 364 days =>  2 Sep 2017
+          // 1 day too young: 6 years 364 days =>  2 Sep 2016
           req.body = getBody()
           req.body['dob-day'] = '02'
           req.body['dob-month'] = '09'
-          req.body['dob-year'] = '2017'
+          req.body['dob-year'] = '2016'
           const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.isError('dob-day')).toBe(true)
           expect(validationError.isError('dob-month')).toBe(true)
@@ -565,7 +565,7 @@ describe('pupil validator', function () {
           req.body = getBody()
           req.body['dob-day'] = '01'
           req.body['dob-month'] = '09'
-          req.body['dob-year'] = '2017'
+          req.body['dob-year'] = '2016'
           const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.isError('dob-day')).toBe(false)
           expect(validationError.isError('dob-month')).toBe(false)
@@ -573,11 +573,11 @@ describe('pupil validator', function () {
         })
 
         test('it allows the oldest allowable pupil to be added', async () => {
-          // Oldest allowable age: 9 years, 364 days => 2 Sep 2014
+          // Oldest allowable age: 9 years, 364 days => 2 Sep 2013
           req.body = getBody()
           req.body['dob-day'] = '02'
           req.body['dob-month'] = '09'
-          req.body['dob-year'] = '2014'
+          req.body['dob-year'] = '2013'
           const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.isError('dob-day')).toBe(false)
           expect(validationError.isError('dob-month')).toBe(false)
@@ -585,11 +585,11 @@ describe('pupil validator', function () {
         })
 
         test('it prevents a pupil who is too old from being added', async () => {
-          // Pupil that is too old: 10 years 0 days => 1 Sep 2014
+          // Pupil that is too old: 10 years 0 days => 1 Sep 2013
           req.body = getBody()
           req.body['dob-day'] = '01'
           req.body['dob-month'] = '09'
-          req.body['dob-year'] = '2014'
+          req.body['dob-year'] = '2013'
           const validationError = await pupilValidator.validate(req.body, schoolId)
           expect(validationError.isError('dob-day')).toBe(true)
           expect(validationError.isError('dob-month')).toBe(true)
