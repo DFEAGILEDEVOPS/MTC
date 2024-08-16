@@ -45,7 +45,7 @@
     "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.9.1",
     "@azure/storage-blob": "^12.17.0",
-    "@azure/storage-queue": "^12.7.0",
+    "@azure/storage-queue": "^12.23.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^2.7.0",
     "axios": "^1.6.4",
