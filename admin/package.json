@@ -37,8 +37,6 @@
     "node": ">= 18"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.21",
-    "**/**/ajv": "^6.12.6",
     "**/**/marked": "4.3.0"
   },
   "dependencies": {
