@@ -65,8 +65,8 @@ if (!window.MTCAdmin) {
 
   window.MTCAdmin.isWithinAcademicYear = function (inputDate, academicYear, targetYear) {
     var targetAcademicYear = academicYear - targetYear
-    const startDate = new Date(Date.UTC(targetAcademicYear, 8, 2, 0, 0, 0)) // 2 Sep
-    const endDate = new Date(Date.UTC(targetAcademicYear + 1, 8, 1, 23, 59, 59)) // 1 Sep
+    const startDate = new Date(Date.UTC(targetAcademicYear - 1, 8, 2, 0, 0, 0)) // 2 Sep
+    const endDate = new Date(Date.UTC(targetAcademicYear, 8, 1, 23, 59, 59)) // 1 Sep
     return inputDate >= startDate && inputDate <= endDate
   }
 })()

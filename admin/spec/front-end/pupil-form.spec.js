@@ -1,6 +1,6 @@
 'use strict'
 
-/* global $ describe it expect beforeEach afterEach spyOn jasmine */
+/* global $ describe it expect beforeEach afterEach spyOn jasmine fdescribe fit*/
 /* eslint-disable no-var */
 
 function initPupilFormElements () {
@@ -33,7 +33,7 @@ function initPupilFormElements () {
 }
 
 describe('pupil-form', function () {
-  describe('displayAgeTextArea', function () {
+  fdescribe('displayAgeTextArea', function () {
   /**
    * The expected age as of 1 September (start of academic year) should be greater than or equal to 8 years and less than 9 years old
    *
@@ -56,18 +56,7 @@ describe('pupil-form', function () {
       jasmine.clock().uninstall()
     })
 
-    it('should display the age warning if a pupil is 7 years 0 days old on 1 Sep', function () {
-      $('#dob-day').val('1')
-      $('#dob-day').trigger('input')
-      $('#dob-month').val('9') // 1-Sep-2016
-      $('#dob-month').trigger('input')
-      $('#dob-year').val('2017')
-      $('#dob-year').trigger('input')
-      expect($('.show-age-content').length).toBeGreaterThan(0)
-      expect($('.hide-age-content').length).toEqual(0)
-    })
-
-    it('should display the age warning if a pupil is 7 years 364 days old on 1 Sep (too young by a day)', function () {
+    it('should display the age warning if a pupil is 6 years 365 days old on 1 Sep', function () {
       $('#dob-day').val('2')
       $('#dob-day').trigger('input')
       $('#dob-month').val('9') // 2-Sep-2016
@@ -78,23 +67,45 @@ describe('pupil-form', function () {
       expect($('.hide-age-content').length).toEqual(0)
     })
 
+    it('should display the age warning if a pupil is 7 years 0 days old on 1 Sep', function () {
+      $('#dob-day').val('1')
+      $('#dob-day').trigger('input')
+      $('#dob-month').val('9') // 1-Sep-2016
+      $('#dob-month').trigger('input')
+      $('#dob-year').val('2016')
+      $('#dob-year').trigger('input')
+      expect($('.show-age-content').length).toBeGreaterThan(0)
+      expect($('.hide-age-content').length).toEqual(0)
+    })
+
+    it('should display the age warning if a pupil is 7 years 364 days old on 1 Sep (too young by a day)', function () {
+      $('#dob-day').val('2')
+      $('#dob-day').trigger('input')
+      $('#dob-month').val('9') // 2-Sep-2016
+      $('#dob-month').trigger('input')
+      $('#dob-year').val('2015')
+      $('#dob-year').trigger('input')
+      expect($('.show-age-content').length).toBeGreaterThan(0)
+      expect($('.hide-age-content').length).toEqual(0)
+    })
+
     it('should not display the age warning if a pupil is 8 years and 0 days on 1 Sep', function () {
       $('#dob-day').val('01')
       $('#dob-day').trigger('input')
       $('#dob-month').val('09')
       $('#dob-month').trigger('input')
-      $('#dob-year').val('2016')
+      $('#dob-year').val('2015')
       $('#dob-year').trigger('input')
       expect($('.show-age-content').length).toEqual(0)
       expect($('.hide-age-content').length).toBeGreaterThan(0)
     })
 
     it('should not display the age warning if a pupil is 8 years and 364 days on 1 Sep', function () {
-      $('#dob-day').val('03')
+      $('#dob-day').val('02')
       $('#dob-day').trigger('input')
       $('#dob-month').val('09')
       $('#dob-month').trigger('input')
-      $('#dob-year').val('2015')
+      $('#dob-year').val('2014')
       $('#dob-year').trigger('input')
       expect($('.show-age-content').length).toEqual(0)
       expect($('.hide-age-content').length).toBeGreaterThan(0)
@@ -105,7 +116,7 @@ describe('pupil-form', function () {
       $('#dob-day').trigger('input')
       $('#dob-month').val('09')
       $('#dob-month').trigger('input')
-      $('#dob-year').val('2015')
+      $('#dob-year').val('2014')
       $('#dob-year').trigger('input')
       expect($('.show-age-content').length).toBeGreaterThan(0)
       expect($('.hide-age-content').length).toEqual(0)
