@@ -32,7 +32,7 @@ describe('sas-token-expiry', () => {
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
-    let queueServiceUrl = getFullUrl(checkSubmitToken)
+    const queueServiceUrl = getFullUrl(checkSubmitToken)
     const queueServiceClient = new QueueServiceClient(queueServiceUrl)
     const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
     await queueClient.sendMessage('message')
