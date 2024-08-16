@@ -11711,10 +11711,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-winston-azure-application-insights@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/winston-azure-application-insights/-/winston-azure-application-insights-3.0.0.tgz#a0277faa35ad2477e026a84d67002bfa5b0b7277"
-  integrity sha512-ey/JDGAmUqxB/jMzP7czMC7dduaaKPDd8Yr1PYNZ8GxerKtqFQU/1zdGnNguyLHW/D3REdyH+vGSVB2Yf1naNQ==
+winston-azure-application-insights@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/winston-azure-application-insights/-/winston-azure-application-insights-4.0.0.tgz#3a1a5b4586f10dd78430ddcc8ac5a1a91eac1110"
+  integrity sha512-DzqooydrvFxkrNB0j6dzomhArCPDYXyTMp/Kiz2mYUpeOs+GzngfJZGx/rQmlE5izaJUmj2gGhOq5bt+EHxjVA==
   dependencies:
     winston-transport "^4.2.0"
 
