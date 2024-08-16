@@ -53,12 +53,20 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async function sqlDeleteOneBy
 
   const sql = `
   --
+  -- capture the pupilAttendanceId for the restart undo
+  --
+  DECLARE @pupilAttendanceTable TABLE (ID INT NULL);
+  DECLARE @pupilAttendanceId INT;
+  --
   -- Remove the attendance code
   --
   UPDATE [mtc_admin].[pupilAttendance]
   SET isDeleted=1
+  OUTPUT INSERTED.ID INTO @pupilAttendanceTable
   WHERE pupil_id = @pupilId;
-
+  --
+  -- Get the pupilAttendanceId
+  SELECT @pupilAttendanceId = ID FROM @pupilAttendanceTable;
   --
   -- Maintain the pupil state
   --
@@ -66,6 +74,16 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async function sqlDeleteOneBy
   SET attendanceId = NULL,
   lastModifiedBy_userId = @userId
   WHERE id = @pupilId;
+
+  UPDATE [mtc_admin].[pupilRestart]
+  SET isDeleted = 0,
+  deletedByUser_id = NULL,
+  deletedAt = NULL,
+  deletedBy_pupilAttendance_id = NULL
+  WHERE
+  deletedBy_pupilAttendance_id = @pupilAttendanceId
+  AND isDeleted = 1
+  AND pupil_id = @pupilId;
   `
   const params = [
     {
