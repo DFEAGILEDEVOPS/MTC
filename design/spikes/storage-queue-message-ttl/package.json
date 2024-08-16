@@ -18,6 +18,6 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "@azure/storage-queue": "^12.4.0"
+    "@azure/storage-queue": "^12.23.0"
   }
 }
