@@ -226,14 +226,18 @@ pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttendin
   SET
     pr.isDeleted = 1,
     pr.deletedByUser_id = @userId,
-    pr.deletedAt = GETUTCDATE()
+    pr.deletedAt = GETUTCDATE(),
+    pr.deletedBy_pupilAttendance_id = pa.id
   FROM
-       [mtc_admin].[pupil] p JOIN
-       #pupilsToSet t1 ON (p.id = t1.id) LEFT JOIN
-       [mtc_admin].[pupilRestart] pr ON (p.id = pr.pupil_id)
+       [mtc_admin].[pupil] p
+       JOIN #pupilsToSet t1 ON (p.id = t1.id)
+       LEFT JOIN [mtc_admin].[pupilRestart] pr ON (p.id = pr.pupil_id)
+       LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id)
   WHERE
-      pr.isDeleted  = 0
-  AND pr.check_id IS NULL -- unconsumed
+      pr.isDeleted = 0
+  AND pr.check_id IS NULL
+  AND pa.isDeleted = 0
+  -- unconsumed restarts & current attendance record
   ;`
 
   return sqlService.modifyWithTransaction(sql, params.concat(insertParams))
