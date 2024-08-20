@@ -74,7 +74,12 @@ describe('Blob Service', () => {
       const blobName = getUniqueName()
       const blobClient = containerClient.getBlockBlobClient(blobName)
       const data = Buffer.from('foo-bar-baz')
-      await blobClient.uploadData(data)
+      const response = await blobClient.uploadData(data)
+      // @ts-ignore - error response is not typed correctly at version "@azure/storage-blob": "^12.23.0"
+      if (response?.body?.Code === 'AuthenticationFailed') {
+        console.error('Upload response: ', response)
+        fail()
+      }
       await sut.deleteBlob(blobName, containerName)
       expect(await blobClient.exists()).toBe(false)
     })

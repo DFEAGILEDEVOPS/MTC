@@ -31,24 +31,22 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "8066100cea64f449580402f1ebd4ae94"
+    "assets-version": "52f87f6139c9be84407c74cb94eed104"
   },
   "engines": {
     "node": ">= 18"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.21",
-    "**/**/ajv": "^6.12.6",
     "**/**/marked": "4.3.0"
   },
   "dependencies": {
     "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.9.1",
-    "@azure/storage-blob": "^12.17.0",
-    "@azure/storage-queue": "^12.7.0",
+    "@azure/storage-blob": "12.18.0",
+    "@azure/storage-queue": "12.17.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^2.7.0",
-    "axios": "^1.6.4",
+    "axios": "^1.7.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
@@ -97,7 +95,7 @@
     "uuid-validate": "^0.0.3",
     "validator": "^13.7.0",
     "winston": "^3.1.0",
-    "winston-azure-application-insights": "^3.0.0",
+    "winston-azure-application-insights": "^4.0.0",
     "xmlbuilder2": "^3.0.2",
     "xregexp": "^5.1.1"
   },
