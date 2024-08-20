@@ -9,7 +9,7 @@
     "start": "node ./index.js"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "easy-soap-request": "^3.3.2",
     "lodash": "^4.17.21",
     "xml2js": "^0.4.23"
