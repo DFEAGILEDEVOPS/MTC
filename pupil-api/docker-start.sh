@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Starting SSH..."
-service ssh start
+/usr/sbin/sshd
 
 echo "Starting PM2..."
 pm2-docker start pm2.json
