@@ -45,6 +45,7 @@ class AddMultiplePupilPage < SitePrism::Page
       number_of_pupils.times do
         @dob += 86400
         @pupil_dob = (@dob - ((86400 * 365)*10)).strftime('%d/%m/%Y')
+        p @pupil_dob
         @name = (0...8).map {(65 + rand(26)).chr}.join
         upn = UpnGenerator.generate
         @new_upn_list << upn
