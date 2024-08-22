@@ -24,25 +24,39 @@ if (!window.MTCAdmin) {
     })
 
     function displayAgeTextArea () {
-      var composedDate = $('#dob-month').val() + '/' + $('#dob-day').val() + '/' + $('#dob-year').val()
+      var composedDate = $('#dob-year').val() + '-' + $('#dob-month').val().padStart(2, '0') + '-' + $('#dob-day').val().padStart(2, '0')
       var academicYear = window.MTCAdmin.determineAcademicYear()
-      var inputDate = new Date(composedDate)
-      if ((window.MTCAdmin.isWithinAcademicYear(inputDate, academicYear, 11) ||
-        window.MTCAdmin.isWithinAcademicYear(inputDate, academicYear, 8)) && $('#dob-year').val().length === 4) {
-        $('.hide-age-content').addClass('show-age-content')
-        $('.show-age-content').removeClass('hide-age-content')
+      var inputDate
+      if (/^\d{4}-\d{2}-\d{2}$/.test(composedDate)) {
+        inputDate = new Date(Date.UTC(
+          parseInt($('#dob-year').val(), 10),
+          parseInt($('#dob-month').val(), 10) - 1, // monthIndex
+          parseInt($('#dob-day').val(), 10),
+          0,
+          0,
+          0,
+          0)
+        )
+      }
+      if (inputDate !== undefined &&
+        (!window.MTCAdmin.isWithinAcademicYear(inputDate, academicYear, 8)) &&
+        $('#dob-year').val().length === 4) {
+        // Show age consent
+        $('#js-age-warning').addClass('show-age-content')
+        $('#js-age-warning').removeClass('hide-age-content')
       } else if ($('.show-age-content').length > 0) {
-        $('.show-age-content').addClass('hide-age-content')
-        $('.hide-age-content').removeClass('show-age-content')
+        // hide age consent
+        $('#js-age-warning').addClass('hide-age-content')
+        $('#js-age-warning').removeClass('show-age-content')
       }
     }
   }
 
   window.MTCAdmin.determineAcademicYear = function () {
     var currentDate = new Date()
-    var currentYear = (currentDate).getFullYear()
-    var startOfJanuary = new Date(currentYear, 0, 1)
-    var endOfAugust = new Date(currentYear, 7, 31)
+    var currentYear = (currentDate).getUTCFullYear()
+    var startOfJanuary = new Date(Date.UTC(currentYear, 0, 1, 0, 0, 0))
+    var endOfAugust = new Date(Date.UTC(currentYear, 7, 31, 23, 59, 59, 0))
     if (currentDate >= startOfJanuary && currentDate <= endOfAugust) {
       return currentYear - 1
     }
@@ -51,7 +65,8 @@ if (!window.MTCAdmin) {
 
   window.MTCAdmin.isWithinAcademicYear = function (inputDate, academicYear, targetYear) {
     var targetAcademicYear = academicYear - targetYear
-    return inputDate >= new Date(targetAcademicYear, 8, 2) &&
-      inputDate <= new Date(targetAcademicYear + 1, 8, 1)
+    const startDate = new Date(Date.UTC(targetAcademicYear - 1, 8, 2, 0, 0, 0)) // 2 Sep
+    const endDate = new Date(Date.UTC(targetAcademicYear, 8, 1, 23, 59, 59)) // 1 Sep
+    return inputDate >= startDate && inputDate <= endDate
   }
 })()
