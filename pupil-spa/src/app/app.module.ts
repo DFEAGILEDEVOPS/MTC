@@ -85,7 +85,7 @@ import { QrCodeArrivalComponent } from './qr-code-arrival/qr-code-arrival.compon
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 const appRoutes: Routes = [
-  // GUY - remove? is this a root default? what replaces it? {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
+  {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'access-settings', component: AASettingsComponent },
   {path: 'accessibility-statement', component: AccessibilityStatementComponent },
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard], canDeactivate: [CanExitGuard]},
