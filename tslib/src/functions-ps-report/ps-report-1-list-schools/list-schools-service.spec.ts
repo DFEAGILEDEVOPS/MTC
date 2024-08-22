@@ -1,4 +1,4 @@
-import { ListSchoolsService } from './list-schools-service'
+import { type ISchoolMessageSpecification, ListSchoolsService } from './list-schools-service'
 import { type ISqlService } from '../../sql/sql.service'
 import { type ILogger, MockLogger } from '../../common/logger'
 
@@ -6,6 +6,13 @@ describe('ListSchoolsService', () => {
   let sut: ListSchoolsService
   let mockSqlService: ISqlService
   let mockLogger: ILogger
+  const uuid = 'test-uuid'
+  const filename = 'test.dat'
+  const schoolMessageSpec: ISchoolMessageSpecification = {
+    jobUuid: uuid,
+    filename,
+    urns: undefined
+  }
 
   const mockResponse = [
     { id: 1, uuid: 'uuid1', name: 'School One' },
@@ -26,8 +33,18 @@ describe('ListSchoolsService', () => {
     expect(sut).toBeDefined()
   })
 
-  test('getSchoolMessages returns messages', async () => {
-    const resp = await sut.getSchoolMessages()
+  test('getSchoolMessages returns messages when no urns specified', async () => {
+    const resp = await sut.getSchoolMessages(schoolMessageSpec)
+    expect(resp).toHaveLength(2)
+    expect(resp[0].name).toBe('School One')
+    expect(resp[0].uuid).toBe('uuid1')
+    expect(resp[1].name).toBe('School Two')
+    expect(resp[1].uuid).toBe('uuid2')
+  })
+
+  test('getSchoolMessages returns messages when urns specified', async () => {
+    schoolMessageSpec.urns = [1, 2]
+    const resp = await sut.getSchoolMessages(schoolMessageSpec)
     expect(resp).toHaveLength(2)
     expect(resp[0].name).toBe('School One')
     expect(resp[0].uuid).toBe('uuid1')

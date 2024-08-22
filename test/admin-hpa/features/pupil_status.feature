@@ -1,4 +1,4 @@
-@pupil_status @deactivate_all_test_check_window
+@pupil_status_feature @deactivate_all_test_check_window_hook @serial
 Feature: Pupil Status Outcome
 
   Scenario: Pupil status is Not Started when a new pupil is added
@@ -19,12 +19,12 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Not started'
 
-  Scenario: Pupil status is 'Logged in' when a pupil has logged in
+  Scenario: Pupil status is 'Signed in' when a pupil has Signed in
     Given I have logged in to the check
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Logged in'
+    Then I can see the status for the pupil is 'Signed in'
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario Outline: Pupil Status is Not Taking the Check when a pupil is not taking the check
     Given I have a pupil not taking the check with the reason <reason>
     When I am on the Pupil Status page
@@ -46,13 +46,13 @@ Feature: Pupil Status Outcome
   Scenario: Pupil Status is Restart when a Restart is taken and PIN not yet Generated
     Given I submitted pupils for Restart
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Restart'
+    Then I can see the status for the pupil is 'Restart applied'
 
-  @incomplete_pupil
-  Scenario: Pupil status is 'Overdue - logged in but check not started' when a pupil logs in but has not started the check
+  @incomplete_pupil_hook
+  Scenario: Pupil status is 'Overdue - Signed in but check not started' when a pupil logs in but has not started the check
     Given there is a pupil with an incomplete status
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Overdue - logged in but check not started'
+    Then I can see the status for the pupil is 'Overdue - signed in but check not started'
     And I should see a red error box at the top of the page
 
   Scenario: Pupil status changes to Complete when pupil take 2nd check
@@ -66,7 +66,7 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Error in processing'
 
-  @processing_error_hdf
+  @processing_error_hdf_hook
   Scenario: Pupil with processing error can have a reason for NTC in order to sign HDF
     Given there is a processing error with a check
     And all other pupils are not taking the check

@@ -5,6 +5,7 @@ export interface IPsReportLogEntry {
   level: PsReportLogLevel
   source: PsReportSource
   generatedAt: moment.Moment
+  invocationId: string
 }
 
 export enum PsReportSource {

@@ -46,13 +46,15 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
-  unless status == 'Not started' || "Overdue - logged in but check not started"
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete'] } unless status == 'Error in processing' || status == 'Pupil check not received' || status == 'Logged in'
+  unless status == 'Not started' || status == "Overdue - signed in but check not started"
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete'] } unless status == 'Error in processing' || status == 'Pupil check not received' || status == 'Signed in'
     Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['processingFailed'] } if status == 'Error in processing'
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until (SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['pupilLoginDate']).is_a?(Time) } if status == 'Logged in'
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until (SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['pupilLoginDate']).is_a?(Time) } if status == 'Signed in'
   end
-  status == 'Restart' ? status = 'Not started' : status = status
+  # status == 'Restart applied' ? status = 'Not started' : status = status
+  sleep 3
   pupil_status_page.load
+
   Timeout.timeout(ENV['WAIT_TIME'].to_i) { pupil_status_page.load until pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name]) }
   pupil_row = pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
   expect(pupil_row.status.text).to include status
@@ -94,7 +96,8 @@ end
 
 Then(/^I should see the pupil register data stored in redis$/) do
   pupils_from_register = pupil_register_page.pupil_list.pupil_row.map { |x| x.names.text.split("\n")[0] }
-  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map { |x| x['fullName'] }
+  wait_until {!(REDIS_CLIENT.get("pupilRegisterViewData:#{@school_id}")).nil?}
+  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get("pupilRegisterViewData:#{@school_id}"))['value'])).map { |x| x['fullName'] }
   expect(pupils_from_redis.sort).to eql pupils_from_register.sort
 end
 
@@ -127,7 +130,7 @@ end
 
 Then(/^the optional columns along with the additional pupil info is added to the register table$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:name] }
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:name] }
   expect(db_pupil_array).to eql register_array
 end
 
@@ -143,7 +146,7 @@ end
 
 Then(/^the pupil register is sorted by name in reverse order$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:name] }.reverse
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:name] }.reverse
   expect(db_pupil_array).to eql register_array
 end
 
@@ -153,7 +156,7 @@ end
 
 Then(/^the pupil register is sorted by dob in order of oldest to newest$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:dob] }.reverse
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:dob] }.reverse
   expect(db_pupil_array.map {|p| p[:dob]}).to eql register_array.map {|p| p[:dob]}
 end
 
@@ -164,7 +167,7 @@ end
 
 Then(/^the pupil register is sorted by dob in order of newest to oldest$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:dob] }
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:dob] }
   expect(db_pupil_array.map {|p| p[:dob]}).to eql register_array.map {|p| p[:dob]}
 end
 
@@ -174,7 +177,7 @@ end
 
 Then(/^the pupil register is sorted by upn in z\-a order$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:upn] }.reverse
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:upn] }.reverse
   expect(db_pupil_array).to eql register_array
 end
 
@@ -185,7 +188,7 @@ end
 
 Then(/^the pupil register is sorted by upn in a\-z order$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:upn] }
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : @group_name) } }.sort_by { |hsh| hsh[:upn] }
   expect(db_pupil_array).to eql register_array
 end
 
@@ -203,7 +206,7 @@ end
 
 Then(/^the pupil register is sorted by group in z\-a order$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : SqlDbHelper.group_details(SqlDbHelper.pupil_details(row['upn'], @school_id)['group_id'])['name']) } }.sort_by { |hsh| hsh[:group] }.reverse
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : SqlDbHelper.group_details(SqlDbHelper.pupil_details(row['upn'], @school_id)['group_id'])['name']) } }.sort_by { |hsh| hsh[:group] }.reverse
   expect(db_pupil_array.map {|p| p[:group]}).to eql register_array.map {|p| p[:group]}
 end
 
@@ -214,7 +217,7 @@ end
 
 Then(/^the pupil register is sorted by group in a\-z order$/) do
   register_array = pupil_register_page.pupil_list.pupil_row.map { |row| { name: row.names.text, dob: row.dob.text, upn: row.upn.text, group: row.group.text } }
-  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : SqlDbHelper.group_details(SqlDbHelper.pupil_details(row['upn'], @school_id)['group_id'])['name']) } }.sort_by { |hsh| hsh[:group] }
+  db_pupil_array = SqlDbHelper.list_of_pupils_from_school(@school_id).map { |row| { name: row['foreName'] + ", " + row['foreName'], dob: row['dateOfBirth'].strftime("%-d %b %Y"), upn: row['upn'], group: (row['group_id'].nil? ? '-' : SqlDbHelper.group_details(SqlDbHelper.pupil_details(row['upn'], @school_id)['group_id'])['name']) } }.sort_by { |hsh| hsh[:group] }
   expect(db_pupil_array.map {|p| p[:group]}).to eql register_array.map {|p| p[:group]}
 end
 

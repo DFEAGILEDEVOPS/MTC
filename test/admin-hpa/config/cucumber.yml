@@ -1,7 +1,7 @@
 #default: -t ~@wip -t ~@manual ADMIN_BASE_URL='http://localhost:3001' DRIVER='chrome' --format pretty --format html --out reports/report.html
-parallel_chrome: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
-parallel: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
-default: -t 'not @wip' -t 'not @manual' -t 'not @bug' -t 'not @weekend' DRIVER='headless_chrome' --publish-quiet --out reports/report.txt --format pretty
-download_csv: -t 'not @wip' -t 'not @manual' -t '@multiple_pupil_csv_download' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
-ie11: -t 'not @remove_uploaded_forms' -t 'not @upload_pupil_census' -t 'not @upload_new_live_form' -t 'not @upload_new_fam_form' -t 'not @multiple_pupil_upload' -t 'not @ie11' -t 'not @wip' -t 'not @view_check' -t 'not @manual'
-weekend: -t '@weekend' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet
+parallel_chrome: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+parallel: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+default: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' -t 'not @bug' -t 'not @weekend_feature' DRIVER='headless_chrome' --publish-quiet --out reports/report.txt --format pretty
+download_csv: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' -t '@multiple_pupil_csv_download' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
+ie11: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @remove_uploaded_forms' -t 'not @upload_pupil_census_feature' -t 'not @upload_new_live_form_hook' -t 'not @upload_new_fam_form' -t 'not @multiple_pupil_upload' -t 'not @ie11' -t 'not @wip' -t 'not @view_check_feature' -t 'not @manual'
+weekend: SITEPRISM_DSL_VALIDATION_DISABLED=true -t '@weekend_feature' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet

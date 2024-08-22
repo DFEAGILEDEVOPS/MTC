@@ -1,14 +1,30 @@
+import roles from '../../../lib/consts/roles'
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
 export class ServiceManagerAttendanceDataService {
+  /**
+   * Fetch the TEACHERs attendance codes for the serivce manager, so the SM can set its visibility property.
+   * So role here is a static property.
+   *
+   */
   static async getAttendanceCodes (): Promise<AttendanceCode[]> {
     const sql = `
-      SELECT code, reason, [order], visible
-      FROM mtc_admin.attendanceCode
-      WHERE isPrivileged = 0
-      ORDER BY [order]`
-    return sqlService.readonlyQuery(sql)
+      SELECT
+        attendanceCode as code,
+        attendanceCodeReason as reason,
+        attendanceCodeDisplayOrder as [order],
+        attendanceCodeIsVisible as visible
+      FROM
+        mtc_admin.[vewAttendanceCodePermissions]
+      WHERE
+        roleTitle = @role
+      ORDER BY
+        [order]`
+    const params = [
+      { name: 'role', type: TYPES.NVarChar, value: roles.teacher }
+    ]
+    return sqlService.readonlyQuery(sql, params)
   }
 
   static async setVisibility (attendanceCodes: AttendanceCodeVisibility[]): Promise<void> {

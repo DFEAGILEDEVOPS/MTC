@@ -54,6 +54,9 @@ install_functions () {
 
   cd ${scriptDir}/func-ps-report
   yarn install && yarn clean && yarn build
+
+  mybanner "Synchronising local function settings with master values from .env"
+  ${scriptDir}/bin/sync-local-settings.js
 }
 
 install_service_bus () {
@@ -70,7 +73,17 @@ install_db () {
   yarn install
 }
 
+check_func_version () {
+  V=$(func --version)
+  echo "func version ${V} found"
+  MAJOR=$(echo "$V" | cut -d . -f 1)
+  if ! [[ $MAJOR -ge 4 ]]; # need 4 and above
+    then mybanner "ERROR: func should be major version 4" >&2; exit 1
+  fi
+}
+
 start=`date +%s`
+check_func_version
 install_service_bus
 install_db
 install_admin

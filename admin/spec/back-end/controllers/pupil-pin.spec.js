@@ -509,7 +509,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ livePinsAvailable: true })
-        jest.spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').mockResolvedValue([{ id: 1 }])
+        jest.spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').mockResolvedValue([{ id: 1, pinExpiresAt: moment('2024-03-12T16:00:00') }])
         jest.spyOn(groupService, 'findGroupsByPupil').mockResolvedValue([])
         jest.spyOn(groupService, 'assignGroupsToPupils').mockResolvedValue([])
         jest.spyOn(pupilPinPresenter, 'getPupilPinViewData').mockResolvedValue([])
@@ -527,6 +527,8 @@ describe('pupilPin controller:', () => {
         expect(groupService.findGroupsByPupil).toHaveBeenCalled()
         expect(groupService.assignGroupsToPupils).toHaveBeenCalled()
         expect(pupilPinPresenter.getPupilPinViewData).toHaveBeenCalled()
+        const renderArgs = res.render.mock.calls[0][1] // the object passed to the view
+        expect(renderArgs.date).toBe('Tuesday 12 March')
       })
 
       test('should not call groupService and pupilPinPresenter methods if no pupils are found', async () => {
@@ -590,8 +592,8 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
 
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
-        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ livePinsAvailable: true })
-        jest.spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').mockResolvedValue([])
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ livePinsAvailable: false, familiarisationPinsAvailable: true })
+        jest.spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').mockResolvedValue([{ id: 1, pinExpiresAt: moment('2024-03-13T16:00:00') }])
         jest.spyOn(groupService, 'findGroupsByPupil').mockResolvedValue([])
         jest.spyOn(groupService, 'assignGroupsToPupils').mockResolvedValue([])
         jest.spyOn(pinService, 'getActiveSchool').mockResolvedValue(null)
@@ -603,6 +605,8 @@ describe('pupilPin controller:', () => {
         expect(res.render).toHaveBeenCalled()
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+        const renderArgs = res.render.mock.calls[0][1] // the object passed to the view
+        expect(renderArgs.date).toBe('Wednesday 13 March')
       })
 
       test('calls next if error occurs', async () => {

@@ -1,3 +1,4 @@
+@service_manager_pupil_search_feature
 Feature:
   Service manager pupil search
 
@@ -32,7 +33,7 @@ Feature:
     Given a pupil has logged into a check
     When I am on the pupil search page
     And I search for a pupil using the upn
-    Then the summary page is displayed with the status set to Logged in along with details of the pupil
+    Then the summary page is displayed with the status set to Signed in along with details of the pupil
 
   Scenario: Status is set to restart when pupil logs in to a live check
     Given a pupil has a unconsumed restart

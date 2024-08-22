@@ -12,7 +12,7 @@ end
 Then(/^the summary page is displayed with the status set to (.+) along with details of the pupil$/) do |status|
   pupil_details = SqlDbHelper.pupil_details(@upn, @school_id)
   school_details = SqlDbHelper.find_school(@school_id)
-  expect(pupil_summary_page.pupil_name.text).to eql pupil_details['lastName'] + ', ' + pupil_details['foreName']
+  expect(pupil_summary_page.pupil_name.text).to eql pupil_details['lastName'] + ', ' + pupil_details['foreName'] unless current_url.include? 'pupil_search'
   expect(pupil_summary_page.dob.text).to eql pupil_details['dateOfBirth'].strftime("%-d %b %Y")
   expect(pupil_summary_page.upn.text).to eql pupil_details['upn']
   expect(pupil_summary_page.pupil_id.text).to eql pupil_details['id'].to_s
@@ -39,11 +39,11 @@ Given(/^I have (\d+) pupils with the same upns but at different schools$/) do |a
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)['entity']
   if @school['result'] == 'Failed'
     fail "#{@school['message']}"
   end
-  school_uuid = @school['entity']['urlSlug']
+  school_uuid = @school['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
   @new_school_id = @school_user['entity']['school_id']

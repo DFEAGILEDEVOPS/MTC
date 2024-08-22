@@ -149,8 +149,9 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   end
 
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(check_result['archive']))
+  check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
+  storage_row = AzureTableHelper.get_row('receivedCheck', storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
   storage_answers.each {|answer| expect(check['answers']).to include answer}
   storage_inputs.each {|input| expect(check['inputs']).to include input}
   [storage_school].each {|audit| expect(check['school']).to include audit}
@@ -211,7 +212,7 @@ Then(/^my score should be calculated as (\d+) and stored$/) do |expected_score|
 end
 
 When(/^I decode the JWT token$/) do
-  received_check = AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+  received_check = AzureTableHelper.wait_for_received_check(@school['urlSlug'], @check_code)
   jwt_token = JSON.parse(LZString::Base64.decompress(received_check['archive']))['tokens']['checkSubmission']['token']
   @decoded_jwt = decode_jwt_token(jwt_token)
 end

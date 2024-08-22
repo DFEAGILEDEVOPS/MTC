@@ -1,3 +1,4 @@
+@service_manager_add_school_feature
 Feature:
   Add School
 
@@ -27,12 +28,12 @@ Feature:
     When I enter details of a school which has a invalid LEA code
     Then I should see an error stating the LA code is incorrect
 
-  Scenario: Dfe number must be 7 digits
+  Scenario: Dfe number cannot be 8 digits
     Given I am on the add school page
     When I enter a Dfe number that is 8 digits exactly
     Then I should see an error stating dfe number must be 7 digits
 
-  Scenario: Dfe number must be 7 digits
+  Scenario: Dfe number cannot be be 6 digits
     Given I am on the add school page
     When I enter a Dfe number that is 6 digits exactly
     Then I should see an error stating dfe number must be 7 digits

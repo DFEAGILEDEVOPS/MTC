@@ -32,16 +32,10 @@ describe('sas-token-expiry', () => {
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
-    let queueServiceUrl
-    try {
-      // queueServiceUrl = checkSubmitToken.token.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')
-      queueServiceUrl = getFullUrl(checkSubmitToken)
-      const queueServiceClient = new QueueServiceClient(queueServiceUrl)
-      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
-      await queueClient.sendMessage('message')
-    } catch (error) {
-      fail(`${error.message}\n connection Url: ${queueServiceUrl}`)
-    }
+    const queueServiceUrl = getFullUrl(checkSubmitToken)
+    const queueServiceClient = new QueueServiceClient(queueServiceUrl)
+    const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+    await queueClient.sendMessage('message')
   })
 
   test('should return specific properties and content when attempting to submit with expired sas tokens', async () => {

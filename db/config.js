@@ -38,7 +38,6 @@ module.exports = {
   Environment: getEnvironment(),
   LINES_PER_CHECK_FORM: getLinesPerCheck(),
   Data: {
-    allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
     helplineNumber: process.env.HELPLINE_NUMBER || '0300 303 3013',
     pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024,
@@ -79,6 +78,8 @@ module.exports = {
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || threeMinutesInMilliseconds
     },
     Azure: {
+      // https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-single-databases?view=azuresql
+      // https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-service-objectives-azure-sql-database?view=azuresqldb-current
       Scale: process.env.SQL_AZURE_SCALE
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,

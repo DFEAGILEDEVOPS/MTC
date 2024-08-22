@@ -19,7 +19,7 @@
                 <% sbQueueInfo.forEach((queue)=> { %>
                   <tr class="govuk-table__row">
                     <td>
-                      <%= queue.name %>
+                      <a href="/tech-support/clear-service-bus-queue/<%= queue.name %>"><%= queue.name %></a>
                     </td>
                     <td>
                       <%= queue.activeMessageCount %>
@@ -67,10 +67,10 @@
           <nav role="navigation" aria-labelledby="subsection-title">
             <ul class="govuk-list govuk-!-font-size-16">
               <li>
-                <a class="govuk-link" href="/tech-support/queues/summary">Summary</a>
+                <a class="govuk-link" href="/tech-support/sb-queue-submit">Submit Queue Message</a>
               </li>
               <li>
-                <a class="govuk-link" href="/tech-support/queues/replay">Replay Messages</a>
+                <a class="govuk-link" href="/tech-support/ps-report-run">Run PS Report</a>
               </li>
             </ul>
           </nav>

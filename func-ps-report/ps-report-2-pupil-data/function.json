@@ -8,10 +8,10 @@
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     },
     {
-      "name": "psReportPupilMessage",
+      "name": "psReportExportOutput",
       "type": "serviceBus",
       "direction": "out",
-      "queueName": "ps-report-staging",
+      "queueName": "ps-report-export",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],

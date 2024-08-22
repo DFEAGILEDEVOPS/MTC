@@ -1,4 +1,4 @@
-@contact
+@contact_feature
 Feature:
   Contact
 

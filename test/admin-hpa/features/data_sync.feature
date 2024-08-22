@@ -1,4 +1,4 @@
-@weekend
+@data_sync_feature @weekend_feature
 Feature: Data Sync
 
   Scenario: Update check status on hard failures

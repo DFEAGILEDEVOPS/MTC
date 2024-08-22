@@ -24,17 +24,15 @@ When(/^I have chosen a file to submit$/) do
   @old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name1 = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@school['entity']['leaCode'].to_s, @school['entity']['estabCode'].to_s, @upn, @pupil_name1, @pupil_name1, @pupil_name1, "F", @old_date1]
+  pupil_detail_array = [@school['leaCode'].to_s, @school['estabCode'].to_s, @upn, @pupil_name1, @pupil_name1, @pupil_name1, "F", @old_date1]
 
   @upn2 = UpnGenerator.generate
   @pupil_name2 = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array2 = [@school['entity']['leaCode'].to_s, @school['entity']['estabCode'].to_s, @upn2, @pupil_name2, @pupil_name2, @pupil_name2, "M", @old_date2]
-
+  pupil_detail_array2 = [@school['leaCode'].to_s, @school['estabCode'].to_s, @upn2, @pupil_name2, @pupil_name2, @pupil_name2, "M", @old_date2]
   upload_pupil_census_page.upload__pupil_census(@file_name, pupil_detail_array, pupil_detail_array2)
   upload_pupil_census_page.upload.click
 
   upload_and_view_forms_page.delete_csv_file(@file_path)
-
 end
 
 Then(/^I should see the file uploaded$/) do
@@ -200,11 +198,11 @@ When(/^I upload pupils via the census upload using a temporary upn$/) do
   @old_date2 = dobs[1]
   @upn = UpnGenerator.generate_temporary
   @pupil_name1 = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@school['entity']['leaCode'].to_s, @school['entity']['estabCode'].to_s, @upn, @pupil_name1, @pupil_name1, @pupil_name1, "F", @old_date1]
+  pupil_detail_array = [@school['leaCode'].to_s, @school['estabCode'].to_s, @upn, @pupil_name1, @pupil_name1, @pupil_name1, "F", @old_date1]
 
   @upn2 = UpnGenerator.generate
   @pupil_name2 = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array2 = [@school['entity']['leaCode'].to_s, @school['entity']['estabCode'].to_s, @upn2, @pupil_name2, @pupil_name2, @pupil_name2, "M", @old_date2]
+  pupil_detail_array2 = [@school['leaCode'].to_s, @school['estabCode'].to_s, @upn2, @pupil_name2, @pupil_name2, @pupil_name2, "M", @old_date2]
 
   upload_pupil_census_page.upload__pupil_census(@file_name, pupil_detail_array, pupil_detail_array2)
   upload_pupil_census_page.upload.click

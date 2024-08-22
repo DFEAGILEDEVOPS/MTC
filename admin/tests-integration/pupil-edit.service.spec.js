@@ -40,7 +40,6 @@ function fakePupilData () {
     foreNameAlias: '',
     lastNameAlias: '',
     gender,
-    ageReason: '',
     'dob-year': dob.year().toString(),
     'dob-month': (dob.month() + 1).toString().padStart(2, '0'), // months are zero-indexed
     'dob-day': dob.date().toString().padStart(2, '0')
@@ -74,7 +73,7 @@ describe('pupilEditService', () => {
     expect(newPupilData.foreName).toBe('Testforename')
   })
 
-  test('it sets the isEdited flag when the middlesNames change', async () => {
+  test('it does NOT set the isEdited flag when the middlesNames change', async () => {
     // setup - add a fresh pupil
     const pupilData = fakePupilData()
     await pupilAddService.addPupil(pupilData, schoolId, userId)
@@ -88,7 +87,7 @@ describe('pupilEditService', () => {
 
     // Check the isEdited flag is now applied.  As it is a trigger it will run on changes from the admin app, and even DB Admin.
     const newPupilData = await pupilTestService.findPupilByUPN(pupilData.upn)
-    expect(newPupilData.isEdited).toBe(true)
+    expect(newPupilData.isEdited).toBe(false)
     expect(newPupilData.middleNames).toBe('New Middle Names')
   })
 

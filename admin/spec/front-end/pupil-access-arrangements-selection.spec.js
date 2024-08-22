@@ -35,34 +35,7 @@ function initAAElements () {
     }
   ]
 
-  const questionReaderReasons = [
-    {
-      title: 'English as an additional language (EAL)',
-      code: 'EAL'
-    },
-    {
-      title: 'Slow processing',
-      code: 'SLP'
-    },
-    {
-      title: 'Visual impairments',
-      code: 'VIM'
-    },
-    {
-      title: 'Other',
-      code: 'OTH'
-    }
-  ]
-
   const $inputAssistanceTextArea = `<div class="hide-checkbox-content">
-            <div class="govuk-inset-text">
-                <div class="form-group">
-                    <div class="form-label">Please explain why the pupil needs this arrangement</div>
-                    <textarea id="inputAssistanceInformation" name="inputAssistanceInformation"
-                              class="form-control form-control-3-4 restart-reason-info" rows="3"
-                              maxlength="1000"></textarea>
-                </div>
-            </div>
             <br>
             <div class="notice">
                 <i class="icon icon-important small">
@@ -73,29 +46,6 @@ function initAAElements () {
                 </strong>
             </div>
         </div>`
-
-  const $questionReaderOtherTextArea = `<div class="govuk-inset-text govuk-visually-hidden">
-              <div class="form-group">
-                <div class="form-label">Please explain why the pupil needs this arrangement</div>
-                    <textarea id="questionReaderOtherInformation" name="questionReaderOtherInformation"
-                                    class="form-control form-control-3-4 restart-reason-info" rows="3"
-                                    maxlength="1000"></textarea>
-                      </div>
-                  </div>`
-
-  const $questionReaderReasons =
-    `<div class="hide-checkbox-content">
-      <div class="form-group">${questionReaderReasons.map(function (qrr, i) {
-    return `<div class="multiple-choice">
-      <input id="questionReaderReason-${i}" type="radio" name="questionReaderReason"
-      class="question-reader-reason" value="${qrr.code}">
-        <label for="questionReaderReason-${i}">${qrr.title}</label>
-      </div>
-        ${qrr.code === 'OTH' ? $questionReaderOtherTextArea : ''}`
-  }
-  )}
-    </div>
-  </div>`
 
   const $accessArrangementsListItems = accessArrangements.map(function (aa, i) {
     return `<li>
@@ -109,10 +59,10 @@ function initAAElements () {
                        aria-label="Tick accessArrangement ${aa.title}." aria-checked="false" role="checkbox">
                 <div></div>
             </div>
-            ${aa.code === 'ITA' ? $inputAssistanceTextArea : ''}          
-            ${aa.code === 'QNR' ? $questionReaderReasons : ''}          
+            ${aa.code === 'ITA' ? $inputAssistanceTextArea : ''}
         </li>`
   })
+
   $accessArrangementsList.append($accessArrangementsListItems)
   $(document.body).append($accessArrangementsList)
   const $formButtons = `<div class="form-buttons">
@@ -156,34 +106,6 @@ describe('pupil-access-arrangements-selection', function () {
       const el = $('.checkbox-list').find('input:checkbox')[3]
       el.checked = false
       expect($($(el).closest('li').find('.hide-checkbox-content')[0]).length).toBe(1)
-      $(el).trigger('click')
-      expect($($(el).closest('li').find('.show-checkbox-content')[0]).length).toBe(1)
-    })
-
-    it('should remove govuk-visually-hidden class to reveal textarea once the last radio button is checked', function () {
-      const el = $('.checkbox-list').find('input:checkbox')[5]
-      $(el).trigger('click')
-      const otherRadioButton = $($($(el).closest('li')).children()[2]).find('input:radio')[3]
-      expect($(otherRadioButton).parent().siblings('.govuk-inset-text').hasClass('govuk-visually-hidden')).toBeTruthy()
-      $(otherRadioButton).trigger('click')
-      expect($(otherRadioButton).parent().siblings('.govuk-inset-text').hasClass('govuk-visually-hidden')).toBeFalsy()
-      $(otherRadioButton).trigger('click')
-      $(el).trigger('click')
-    })
-
-    it('should clear the text input once the checkbox is unchecked', function () {
-      const el = $('.checkbox-list').find('input:checkbox')[3]
-      const el2 = $('.checkbox-list').find('input:checkbox')[5]
-      $(el).trigger('click')
-      $(el2).trigger('click')
-      const textArea1 = $($(el).closest('li').find('textarea')[0])
-      const textArea2 = $($(el2).closest('li').find('textarea')[0])
-      textArea1.val('text1')
-      textArea2.val('text2')
-      $(el).trigger('click')
-      $(el2).trigger('click')
-      expect(textArea2.val()).toBe('')
-      expect(textArea2.val()).toBe('')
     })
 
     it('it should show the modal when the user submits with no checkboxes are checked', function () {

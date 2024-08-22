@@ -18,7 +18,7 @@ import {
   type Pupil,
   type PupilResult, type RestartReasonCode,
   type School
-} from './models'
+} from './pupil-data.models'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import type moment from 'moment'
@@ -96,20 +96,22 @@ export class PsReportDataService {
   public async getPupils (schoolUuid: string): Promise<readonly Pupil[]> {
     const sql = `
         SELECT
-                        p.id,
-                        p.foreName,
-                        p.lastName,
-                        p.upn,
-                        p.gender,
-                        p.dateOfBirth,
-                        p.checkComplete,
-                        p.currentCheckId,
-                        p.school_id,
-                        p.urlSlug,
-                        p.job_id,
-                        p.restartAvailable,
-                        ac.reason as notTakingCheckReason,
-                        ac.code as notTakingCheckCode
+                p.id,
+                p.foreName,
+                p.middleNames,
+                p.lastName,
+                p.upn,
+                p.gender,
+                p.dateOfBirth,
+                p.checkComplete,
+                p.currentCheckId,
+                p.school_id,
+                p.urlSlug,
+                p.job_id,
+                p.restartAvailable,
+                p.isEdited,
+                ac.reason as notTakingCheckReason,
+                ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
@@ -126,8 +128,10 @@ export class PsReportDataService {
       foreName: string
       gender: 'M' | 'F'
       id: number
+      isEdited: boolean
       job_id: number
       lastName: string
+      middleNames: string
       notTakingCheckReason: string | null
       notTakingCheckCode: NotTakingCheckCode
       restartAvailable: boolean
@@ -146,8 +150,10 @@ export class PsReportDataService {
         forename: o.foreName,
         gender: o.gender,
         id: o.id,
+        isEdited: o.isEdited,
         jobId: o.job_id,
         lastname: o.lastName,
+        middlenames: o.middleNames,
         restartAvailable: o.restartAvailable,
         notTakingCheckReason: o.notTakingCheckReason,
         notTakingCheckCode: o.notTakingCheckCode,
@@ -253,8 +259,9 @@ export class PsReportDataService {
     }
 
     // Deal with pupils marked as not attending that may have a currentCheckId
-    const NotTakingCheckAnnulledCode: NotTakingCheckCode = 'ANLLD'
-    if (pupil.notTakingCheckCode !== null && pupil.notTakingCheckCode !== NotTakingCheckAnnulledCode) {
+    const maladminAnnulledCode: NotTakingCheckCode = 'ANLLQ'
+    const cheatingAnnulledCode: NotTakingCheckCode = 'ANLLH'
+    if (pupil.notTakingCheckCode !== null && (pupil.notTakingCheckCode !== maladminAnnulledCode && pupil.notTakingCheckCode !== cheatingAnnulledCode)) {
       return null
     }
 

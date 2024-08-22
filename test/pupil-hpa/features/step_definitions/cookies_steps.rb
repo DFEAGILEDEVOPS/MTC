@@ -14,6 +14,13 @@ When(/^the data sync function has run$/) do
   (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_check(@check_code)['complete'] == true}) unless @check_code.nil?
   response = FunctionsHelper.sync_check_code(@check_code)
   expect(response.code).to eql 202
+  sleep 60
+end
+
+When(/^the data sync function has run for a check$/) do
+  (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_check(@check_code)['complete'] == true}) unless @check_code.nil?
+  response = FunctionsHelper.sync_check_code(@check_code)
+  expect(response.code).to eql 202
 end
 
 Then(/^the device cookie is stored$/) do

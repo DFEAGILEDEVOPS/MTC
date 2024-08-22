@@ -187,26 +187,12 @@ if (formData.urlSlug) {
                                 </div>
                             </div>
                         </div>
-                        <div class="<%= formData['ageReason'] || err.isError('ageReason') ? 'show-age-content' : 'hide-age-content' %>">
+                        <div id='js-age-warning' class='hide-age-content'>
                             <div class="govuk-inset-text">
-                                <div class="govuk-form-group <%= err.isError('ageReason') ? 'govuk-form-group--error' : '' %>">
-                                    <label class="govuk-label govuk-!-width-three-quarters" for="ageReason">
-                                        The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-!-width-three-quarters">
+                                        The expected age range of pupils taking the check is 8 to 9 years old.
                                     </label>
-                                    <% if (err.isError('ageReason')) { %>
-                                        <span id="age-reason-error" class="govuk-error-message">
-                                            <%= err.get('ageReason') %>
-                                        </span>
-                                    <% } %>
-                                        <textarea
-                                                id="ageReason"
-                                                name="ageReason"
-                                                class="govuk-!-margin-bottom-0 <%= err.isError('ageReason')
-                                                        ? 'govuk-textarea govuk-textarea--error'
-                                                        : 'govuk-textarea' %>"
-                                                aria-describedby="ageReason-hint <%= err.isError('ageReason') ? 'exceeding-characters-error' : '' %>"
-                                                rows="3"
-                                                maxlength="1000"><%= formData['ageReason'] && formData['ageReason'].trim() %></textarea>
                                 </div>
                             </div>
                         </div>
@@ -215,7 +201,7 @@ if (formData.urlSlug) {
 
                 <div class="govuk-form-group <%= err.isError('gender') ? 'govuk-form-group--error' : '' %>" id="gender">
                     <fieldset class="govuk-fieldset" role="radiogroup">
-                        <legend class="govuk-label govuk-!-font-weight-bold">Gender
+                        <legend class="govuk-label govuk-!-font-weight-bold">Sex
                             <% if (err.isError('gender')) { %>
                                 <span class="govuk-error-message"><%= err.get('gender') %></span>
                             <% } %>

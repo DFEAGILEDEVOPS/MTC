@@ -242,7 +242,7 @@ describe('result.service', () => {
         lastName: 'Programmer',
         middleNames: 'bbb',
         score: 9,
-        status: 'Did not participate',
+        status: 'Incomplete',
         urlSlug: 'aaa',
         attendanceCode: 'LEFTT'
       }))
@@ -278,7 +278,7 @@ describe('result.service', () => {
     test('describes pupils who did not take a check', () => {
       const pupil = { restartAvailable: false, currentCheckId: null, checkComplete: false, attendanceId: false }
       const status = sut(pupil)
-      expect(status).toBe('Did not participate')
+      expect(status).toBe('Incomplete')
     })
 
     test('describes pupils who are marked as not attending', () => {
@@ -299,6 +299,19 @@ describe('result.service', () => {
         checkComplete: true,
         attendanceReason: null,
         complete: true,
+        mark: null
+      }
+      const status = sut(pupil)
+      expect(status).toBe('Incomplete')
+    })
+
+    test('it shows a pupil as Incomplete if they have never had a pin generated at all', () => {
+      const pupil = {
+        restartAvailable: false,
+        currentCheckId: null,
+        checkComplete: false,
+        attendanceReason: null,
+        complete: false,
         mark: null
       }
       const status = sut(pupil)

@@ -1,5 +1,7 @@
 # MTC load testing
 
+See [/docs](./docs) directory for more help files
+
 ## JMeter setup
 
 We use JMeter 5, as this is now the default for flood.io
@@ -71,11 +73,11 @@ MTC Specific parameters, commonly used in the jmx files...
 - **`duration`** test run duration, in seconds. defaults to 300 (5 minutes)
 - **`port`** the port of the admin app. defaults to `3001`
 - **`protocol`** the protocol of the admin app. defaults to `http`
-- **`proxyFunctionHost`** the domain of the function proxy api. defaults to `localhost`
-- **`proxyFunctionPort`** the port of the function proxy api. defaults to `7073`
 - **`pupilApiHost`** the domain of the pupil auth Api. defaults to `localhost`
 - **`pupilApiPort`** the port of the pupil auth Api. defaults to `3003`
-- **`queueDomain`** host for Azure storage queues
+- **`funcConsHost`** the domain of the consumption functions API. defaults to `localhost`
+- **`funcConsPort`** the port of the consumption functions API. defaults to `7071`
+- **`storageAccountHost`** domain for Azure storage queues (typically https://mystorageaccountname.queue.core.windows.net)
 - **`rampup`** ramp up period, in seconds. defaults to 5
 - **`threads`** number of threads to run. defaults to 5
 - **`waitTimeMs`** the time to wait in milliseconds at each defined pause step. defaults to `5000`

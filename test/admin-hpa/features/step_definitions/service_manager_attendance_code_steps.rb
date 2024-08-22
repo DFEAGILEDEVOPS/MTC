@@ -1,6 +1,8 @@
 When(/^I view all the attendance codes$/) do
   pupil_reason_page.load
-  expect(pupil_reason_page.attendance_codes.size).to eql pupil_reason_page.attendance_code_mapping.size
+  db_attend_codes = pupil_reason_page.attendance_code_mapping.keys.sort
+  db_attend_codes.delete 'attendance-code-NOABA' if db_attend_codes.include? 'attendance-code-NOABA'
+  expect(pupil_reason_page.attendance_codes.size).to eql db_attend_codes.size
 end
 
 Then(/^I should be able to disable the (.*) code$/) do |reason|

@@ -189,7 +189,7 @@ When(/^I have generated a familiarisation pin$/) do
   generate_pins_familiarisation_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_print_pins_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
 end
 
 When(/^I have generated a live pin$/) do
@@ -200,7 +200,7 @@ When(/^I have generated a live pin$/) do
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
 end
 
 Given(/^I navigate to the pupil spa$/) do
@@ -213,4 +213,14 @@ end
 
 And(/^if successful should be taken to the sign in page$/) do
   Timeout.timeout(8){sleep 0.2 until current_url.include? sign_in_page.url}
+end
+
+Given(/^I navigate to the sign in page with local storage disabled$/) do
+  sign_in_page.load
+end
+
+Then(/^I should see the local storage error page$/) do
+  expect(local_storage_error_page).to be_displayed
+  expect(local_storage_error_page).to have_heading
+  expect(local_storage_error_page).to have_teacher_instructions
 end

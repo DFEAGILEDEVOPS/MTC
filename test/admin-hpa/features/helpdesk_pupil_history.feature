@@ -1,3 +1,4 @@
+@helpdesk_view_pupil_history_feature
 Feature:
   Helpdesk user can view pupils' check history
 
@@ -67,3 +68,7 @@ Feature:
     Given a pupil has consumed a discretionary restart
     When I view the pupils history using the helpdesk role
     Then I should see a list of all checks including the consumed discretionary restart in the helpdesk view
+
+  Scenario: Helpdesk impersonations of schools are audited
+    Given I am on the school landing page for a school using an account with the helpdesk role
+    Then I should see the helpdesk impersonation is audited

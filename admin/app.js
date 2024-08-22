@@ -44,9 +44,12 @@ const redisCacheService = require('./services/data-access/redis-cache.service')
 const { CheckWindowPhaseService } = require('./services/check-window-phase/check-window-phase.service')
 const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
 const userInitErrorConsts = require('./lib/errors/user')
+const administrationMessageService = require('./services/administration-message.service')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
+const { formAlreadySubmittedErrorCode } = require('./error-types/form-already-submitted-error')
+const { dfeSignInErrorConsts } = require('./error-types/dfe-signin-error')
 
 const app = express()
 setupLogging(app)
@@ -288,6 +291,18 @@ app.use(async function (req, res, next) {
   next()
 })
 
+app.use(async function (req, res, next) {
+  // fetch system messages so they can be shown to the users.
+  // do this for every request.
+  try {
+    const serviceMessages = await administrationMessageService.getFilteredMessagesForRequest(req.path)
+    res.locals.serviceMessages = serviceMessages
+  } catch (error) {
+    logger.error('Error setting the serviceMessages: ' + error.message)
+  }
+  next()
+})
+
 // CSRF setup - needs to be set up after session()
 // also exclude if url in the csrfExcludedPaths
 const csrf = csurf()
@@ -355,6 +370,7 @@ app.use(async function (req, res, next) {
       res.locals.pageTitle = 'The service is currently closed'
       return res.render('availability/admin-window-unavailable', {})
     }
+    next()
   } catch (error) {
     next(error)
   }
@@ -362,15 +378,15 @@ app.use(async function (req, res, next) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  const err = new Error('Not Found')
-  // @ts-ignore
-  err.status = 404
+  const err = { message: 'Page not found', statusCode: 404 }
   next(err)
 })
 
 // error handler
 app.use(function (err, req, res, next) {
   const errorId = uuidv4()
+  res.locals.errorId = errorId
+
   // set locals, only providing error in development
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
@@ -383,19 +399,40 @@ app.use(function (err, req, res, next) {
     return res.render('availability/admin-window-unavailable', {})
   }
 
+  if (err.code === formAlreadySubmittedErrorCode) {
+    res.locals.pageTitle = 'Form already submitted'
+    return res.render('form-already-submitted', {})
+  }
+
   // catch school not found errors and redirect to the relevant page
   if (err.code === userInitErrorConsts.schoolNotFound) {
     res.locals.pageTitle = 'School not found'
     return res.render('availability/school-not-found', {})
   }
 
+  if (err.statusCode === 404) {
+    res.locals.pageTitle = 'Page not found'
+    res.status(404)
+    return res.render('availability/page-not-found', {})
+  }
+
+  if (err.name === 'DfeSignInError') {
+    res.locals.pageTitle = 'Something isn\'t quite right!'
+    res.status(500)
+    console.log('dfeSignInErrorConsts', dfeSignInErrorConsts)
+    if (err?.originalError?.code === userInitErrorConsts.schoolNotFound || err?.originalError?.code === dfeSignInErrorConsts.dfeRoleError) {
+      return res.render('dfe-sign-in-error-missing-org')
+    }
+    // Catchall handling for Dfe Sign in errors.
+    return res.render('dfe-sign-in-error', { userMessage: err.userMessage ?? '' })
+  }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}
-  res.locals.errorId = errorId
   res.locals.errorCode = ''
-  res.status(err.status || 500)
+  res.status(err.statusCode || 500)
   res.locals.pageTitle = 'Error'
   res.render('error')
 })

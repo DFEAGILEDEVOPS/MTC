@@ -2,11 +2,10 @@
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
+        <%- partial('partials/_service_message', { serviceMessages }) %>
         <% if (pupilStatusViewData.pupilsRequireActionCount> 0) { %>
           <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
-            <%= pupilStatusViewData.pupilsRequireActionCount %>
-              <%= pupilStatusViewData.pupilsRequireActionCount> 1 ? 'Checks' : 'Check' %>
-                with errors
+            <%= pupilStatusViewData.pupilsRequireActionCount %> checks that require action
           </div>
           <% } %>
             <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
@@ -321,7 +320,7 @@
               </div>
               <div class="app-step-nav__panel js-panel" id="step-panel-1">
                 <p class="app-step-nav__paragraph">
-                  <span class="govuk-!-font-weight-bold">Overdue - logged in check not started:</span> the pupil logged
+                  <span class="govuk-!-font-weight-bold">Overdue - signed in check not started:</span> the pupil signed
                   in over 30 minutes ago and has not yet started the official check questions.
                   <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
                     The PIN has now expired, and the pupil will need a new PIN to start the official check.
@@ -337,7 +336,7 @@
                 </p>
                 <p class="app-step-nav__paragraph">
                   <span class="govuk-!-font-weight-bold">Overdue - check started but not received:</span> the pupil has
-                  logged in, started the official check but the data has not been received.
+                  signed in, started the official check but the data has not been received.
                   The pupil may have closed the tab or browser before their check was submitted.
                   You may find the check is still held on the device the pupil used to take the check.
                   If this device is known, you should go to the check home page and the device will attempt to recover
@@ -410,11 +409,11 @@
                 </p>
                 <p class="app-step-nav__paragraph">
                   <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
-                    <span class="govuk-!-font-weight-bold">Restart</span>: you have generated a restart for this pupil.
+                    <span class="govuk-!-font-weight-bold">Restart applied</span>: you have generated a restart for this pupil.
                     <br />When the pupil is ready to take the check again you must <a
                       href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the official check.
                     <% } else { %>
-                      <span class="govuk-!-font-weight-bold">Restart</span>: When the pupil is ready to take the check
+                      <span class="govuk-!-font-weight-bold">Restart applied</span>: When the pupil is ready to take the check
                       again you must <a href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the
                       official check.
                       <br /> The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a
@@ -451,12 +450,12 @@
                 <p class="app-step-nav__paragraph">
                   <span class="govuk-!-font-weight-bold">PIN generated</span>: An official check PIN has been generated
                   for this pupil,
-                  but the pupil has not yet logged in to the official check.
+                  but the pupil has not yet signed in to the official check.
                 </p>
                 <p class="app-step-nav__paragraph">
-                  <span class="govuk-!-font-weight-bold">Logged in</span>: the pupil has logged in but has not yet
+                  <span class="govuk-!-font-weight-bold">Signed in</span>: the pupil has signed in but has not yet
                   started the official check questions.
-                  The pupil has 30 minutes from logging in to complete the official check.
+                  The pupil has 30 minutes from signing in to complete the official check.
                 </p>
                 <p class="app-step-nav__paragraph">
                   <span class="govuk-!-font-weight-bold">Check in progress</span>: the pupil is currently taking their
@@ -498,7 +497,7 @@
                   <span class="govuk-!-font-weight-bold">Complete</span>: The pupil has successfully completed the check.
                 </p>
                 <p class="app-step-nav__paragraph">
-                  <span class="govuk-!-font-weight-bold">Not taking the check:</span> The pupil has been recorded as not taking the check,
+                  <span class="govuk-!-font-weight-bold">Reason for pupil not taking the check:</span> The pupil has been recorded as not taking the check,
                   you can <a href="/pupils-not-taking-the-check/pupils-list">remove the reason if required.</a>
                 </p>
                 <p class="app-step-nav__paragraph">Once all pupils have completed the check or have a reason for not

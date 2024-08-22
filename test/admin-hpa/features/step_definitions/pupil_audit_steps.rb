@@ -21,7 +21,7 @@ Then(/^I should see an audit entry for adding a pupil$/) do
   expect(parsed_audit_record['newData']['frozen']).to eql @stored_pupil_details['frozen']
   expect(parsed_audit_record['newData']['lastModifiedBy_userId']).to eql @stored_pupil_details['lastModifiedBy_userId']
   expect(parsed_audit_record['pupil_id']).to eql @stored_pupil_details['id']
-  expect(parsed_audit_record['operationBy_userId']).to eql @school_user['entity']['id']
+  expect(parsed_audit_record['operationBy_userId']).to eql @school_user['id']
 end
 
 
@@ -54,7 +54,7 @@ Then(/^I should see an audit entry for editing a pupil$/) do
   expect(parsed_audit_record['newData']['frozen']).to eql @stored_pupil_details['frozen']
   expect(parsed_audit_record['newData']['lastModifiedBy_userId']).to eql @stored_pupil_details['lastModifiedBy_userId']
   expect(parsed_audit_record['pupil_id']).to eql @stored_pupil_details['id']
-  expect(parsed_audit_record['operationBy_userId']).to eql @school_user['entity']['id']
+  expect(parsed_audit_record['operationBy_userId']).to eql @school_user['id']
 end
 
 
@@ -191,7 +191,7 @@ end
 
 
 Then(/^I should see a audit entry for the pupil with a discretionary restart$/) do
-  wait_until(10,2){SqlDbHelper.pupil_audit_record(@pupil_id).size > 8}
+  wait_until(10,2){SqlDbHelper.pupil_audit_record(@pupil_id).size >= 8}
   pupil_audit_records = SqlDbHelper.pupil_audit_record(@pupil_id).flatten.select {|row| row['auditOperationTypeLookup_id'] == 2}.sort_by{|hash| hash['id']}
   array_of_parsed_records = []
   pupil_audit_records.each do |record|

@@ -1,4 +1,4 @@
-@ps_report @weekend
+@ps_report_feature @weekend_feature
 Feature:
   PS Report
 
@@ -115,6 +115,7 @@ Feature:
     And the data sync and ps report function has run
     Then I should see the ps report showing the first input
 
+  @manual
   Scenario: Test schools do not have a ps report record
     Given I have completed the check for a pupil attending a test school
     When the data sync and ps report function has run for the test school

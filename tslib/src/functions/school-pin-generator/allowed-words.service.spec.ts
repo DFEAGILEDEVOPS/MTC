@@ -1,19 +1,31 @@
 import { AllowedWordsService } from './allowed-words.service'
+import { type IPinConfigProvider } from './pin-config-provider'
+import { type ISchoolPinDataService } from './school-pin-data-service'
 
 let sut: AllowedWordsService
+const schoolPinDataServiceMock: ISchoolPinDataService = {
+  getAllowedWords: jest.fn()
+}
+const pinConfigProviderMock: IPinConfigProvider = {
+  BannedWords: 'gem',
+  OverridePinExpiry: false,
+  PinUpdateMaxAttempts: 5,
+  DigitChars: '23456'
+}
 
 describe('allowed-words.service', () => {
   beforeEach(() => {
-    sut = new AllowedWordsService()
+    sut = new AllowedWordsService(pinConfigProviderMock, schoolPinDataServiceMock)
   })
 
   test('subject should be defined', () => {
     expect(sut).toBeInstanceOf(AllowedWordsService)
   })
 
-  test('allowed words must be a minimum set of 5', () => {
+  test('allowed words must be a minimum set of 5', async () => {
     try {
-      sut.parse('foo,bar,baz,qix', '')
+      jest.spyOn(schoolPinDataServiceMock, 'getAllowedWords').mockResolvedValue(['foo', 'bar', 'baz', 'qix'])
+      await sut.getAllowedWords()
       fail('error should have thrown')
     } catch (error) {
       let errorMessage = 'unknown error'
@@ -24,8 +36,9 @@ describe('allowed-words.service', () => {
     }
   })
 
-  test('allowed words must be sanitised for banned words before use', () => {
-    const actual = sut.parse('foo,bar,baz,qix,pix,gem', 'gem')
+  test('allowed words must be sanitised for banned words before use', async () => {
+    jest.spyOn(schoolPinDataServiceMock, 'getAllowedWords').mockResolvedValue(['foo', 'bar', 'baz', 'qix', 'pix', 'gem'])
+    const actual = await sut.getAllowedWords()
     const expected = new Set<string>(['foo', 'bar', 'baz', 'qix', 'pix'])
     expect(actual).toStrictEqual(expected)
   })

@@ -1,0 +1,15 @@
+{
+  "browsers": [],
+  "drivers": [],
+  "stats": [
+    {
+      "browser": "chrome",
+      "browser_version": "127",
+      "os": "macos",
+      "arch": "x86_64",
+      "lang": "ruby",
+      "selenium_version": "4.23",
+      "stats_ttl": 1724162592
+    }
+  ]
+}

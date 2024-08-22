@@ -1,17 +1,18 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-    <main class="govuk-main-wrapper" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <% if (messages && messages.info && messages.info.length) { %>
-                    <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                        <%= messages.info %>
-                    </div>
-                    <% } %>
-                        <%- partial('partials/_readonly', {availabilityData}) %>
-                            <h1 class="govuk-heading-xl">View, add or edit pupils on your school's register</h1>
-                            <%- partial('partials/_gds_session_expiry') %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_service_message', { serviceMessages }) %>
+            <% if (messages && messages.info && messages.info.length) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <%= messages.info %>
+                </div>
+            <% } %>
+            <%- partial('partials/_readonly', {availabilityData}) %>
+            <h1 class="govuk-heading-xl">View, add or edit pupils on your school's register</h1>
+            <%- partial('partials/_gds_session_expiry') %>
 
-                                <% if (showAddPupilButtons) { %>
+                                <% if (showAddPupilButton) { %>
                                     <div class="govuk-!-margin-bottom-7">
                                         <p class="govuk-body-l">
                                             You can review and add pupils on this page.
@@ -26,6 +27,7 @@
                                         data-module="govuk-button">
                                         Add pupil
                                     </a>
+                                    <% }  if (showAddMultiplePupilButton) { %>
                                     <a href="/pupil-register/pupil/add-batch-pupils/" role="button" draggable="false"
                                         class="govuk-button govuk-button--secondary govuk-form-button"
                                         data-module="govuk-button">
@@ -34,7 +36,7 @@
                                     <% } %>
 
 
-            </div>
+        </div>
             <div class="govuk-grid-column-one-third" aria-label="sidebar">
                 <aside class="app-related-items" role="complementary">
                     <h2 class="govuk-heading-m" id="subsection-title">

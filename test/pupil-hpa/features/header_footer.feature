@@ -1,4 +1,4 @@
-@header_footer
+@header_footer_feature
 Feature: Header and Footer tests
 
   Scenario: Sign in has a global header

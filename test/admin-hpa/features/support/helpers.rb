@@ -25,14 +25,6 @@ module Helpers
     academic_year
   end
 
-  def get_highest_estab_code
-    SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
-  end
-
-  def get_highest_urn
-    SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last
-  end
-
   def calculate_ctf_reason_code(reason)
     case reason
     when 'Working below expectation'
@@ -134,7 +126,7 @@ module Helpers
   end
 
 
-  def annul_pupil(upn, school_id)
+  def annul_pupil(upn, school_id, annul_reason='maladmin')
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
     step 'I have signed in with service-manager'
     admin_page.pupil_search.click
@@ -142,6 +134,7 @@ module Helpers
     pupil_search_page.search.click
     pupil_summary_page.annul_results.click
     pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.send(annul_reason).click
     pupil_annulment_confirmation_page.confirm.click
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   end
@@ -159,7 +152,7 @@ module Helpers
   end
 
   def create_dfe_number
-    @lea_code = '999'
+    @lea_code = SqlDbHelper.get_list_of_la_codes.sample
     if SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last == 9999
       estab_counter = 1000
       lea_code_change = true

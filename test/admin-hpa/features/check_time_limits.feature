@@ -1,5 +1,4 @@
-#These tests are having issues with travis
-@timer_reset @check_time_limits
+@check_time_limits_feature @timer_reset_hook @serial
 Feature: Check time limit tests
   I want to be able to vary the time limit for the MTC check
   As a STA Researcher

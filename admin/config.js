@@ -60,7 +60,6 @@ module.exports = {
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   WaitTimeBeforeMetaRedirectInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_REDIRECT, 10) || 2,
   Data: {
-    allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
     helplineNumber: process.env.HELPLINE_NUMBER || '0300 303 3013',
     pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024,
@@ -95,7 +94,8 @@ module.exports = {
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
     Azure: {
-      // TODO: check whether we can delete this section from the admin app
+      // https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-single-databases?view=azuresql
+      // https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-service-objectives-azure-sql-database?view=azuresqldb-current
       Scale: process.env.SQL_AZURE_SCALE
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,

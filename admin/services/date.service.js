@@ -2,6 +2,7 @@
 const moment = require('moment')
 const momentTz = require('moment-timezone')
 const logger = require('./log.service').getLogger()
+const config = require('../config')
 
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
@@ -15,7 +16,7 @@ const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 const iso8601WithMsPrecisionWithoutTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSS'
 const filenameFriendly = 'YYYY-MM-DD-HHmm'
-const config = require('../config')
+const pupilHistoryDateTime = 'D MMM H:mm z'
 
 const dateService = {
   formatYear: function (date) {
@@ -40,6 +41,35 @@ const dateService = {
 
   formatDateAndTime: function (date) {
     return dateService.checkAndFormat(date, dateAndTimeFormat)
+  },
+
+  formatPupilHistoryDateAndTime: function (date) {
+    return dateService.checkAndFormat(date, pupilHistoryDateTime)
+  },
+
+  /**
+   *
+   * @param Date|Moment.moment date in GMT
+   * @param string tz
+   * @returns string i.e 'Monday 12 March'
+   */
+  formatPinDate: function (date, tz = 'Europe/London') {
+    return momentTz(date).tz(tz).format('dddd D MMMM')
+  },
+
+  /**
+   *
+   * @param Date|Moment.moment date in GMT
+   * @param string tz
+   * @returns string i.e. '4 pm' or '11:59 pm'
+   */
+  formatPinExpiryTime: function (date, tz = 'Europe/London') {
+    const m = momentTz(date).tz(tz)
+    if (m.minute() !== 0) {
+      return m.format('h:mm a')
+    } else {
+      return m.format('h a')
+    }
   },
 
   formatUKDate: function (date) {

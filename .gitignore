@@ -76,6 +76,8 @@ test/pupil/*.html
 test/pupil-hpa/reports/
 test/pupil-hpa/screenshots/*.png
 test/pupil-hpa/data/school_testschool*
+test/pupil-hpa/data/ps_report_data_set_1.csv
+test/pupil-hpa/data/ps_report_data_set_2.csv
 test/pupil-hpa/test/screenshots/*.html
 test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/screenshots/*/*.png
@@ -87,6 +89,8 @@ test/pupil-hpa/rerun.txt
 
 
 #admin
+test/se_manager/.cache/selenium/chrome/*
+test/se_manager/.cache/selenium/chromedriver/*
 test/admin-hpa/reports/
 test/admin-hpa/data/fixtures/pupil-census-data-*
 test/admin-hpa/data/school_testschool*
@@ -102,6 +106,7 @@ test-output/*/*
 
 
 *.log
+func.out
 
 .env*
 *.env
@@ -134,3 +139,9 @@ deploy.zip
 
 # Emacs save files
 *~
+test/pupil-hpa/data/*.csv
+test/pupil-hpa/data/*.csv
+
+# E2E Test output
+test/admin-hpa/out
+test/pupil-hpa/out

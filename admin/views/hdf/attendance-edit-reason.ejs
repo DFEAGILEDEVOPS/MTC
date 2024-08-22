@@ -4,36 +4,27 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Edit reason for not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <div class="govuk-inset-text">
+            <div class="govuk-inset-text govuk-heading-xl">
                 <%= pupil.lastName %>, <%= pupil.foreName %>
             </div>
             <form method="post" action="/attendance/submit-edit-reason">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <input type="hidden" name="urlSlug" value="<%= pupil.urlSlug %>" />
-                <div class="govuk-form-group">
-                    <% if (attendanceCodes && attendanceCodes.length > 1) { %>
-                    <h3 class="govuk-heading-m">Select reason</h3>
-                    <ul class="govuk-list attendance-code-list">
-                    <% attendanceCodes.forEach( (aValues) => { %>
-                        <li>
-                            <div class="multiple-choice">
-                                <input id="attendance-code-<%= aValues.code %>"
-                                       class="govuk-radios__input"
-                                       type="radio"
-                                       role="radio"
-                                <% if(aValues.code == pupil.reasonCode) { %>
-                                       checked="true"
-                                        <% } %>
-                                       name="attendanceCode"
-                                       value="<%= aValues.code %>">
-                                <label for="attendance-code-<%= aValues.code %>"><%= aValues.reason %></label>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <% if (attendanceCodes && attendanceCodes.length > 0) { %>
+                        <h3 class="govuk-heading-m">Select reason</h3>
+                        <% attendanceCodes.forEach( (aValues) => { %>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="attendance-code-<%= aValues.code %>" name="attendanceCode" type="radio" value="<%= aValues.code %>" <%= aValues.code ===  pupil.reasonCode ? 'checked' : '' %>>
+                                <label class="govuk-label govuk-radios__label" for="attendance-code-<%= aValues.code %>">
+                                    <%= aValues.reason %>
+                                </label>
                             </div>
-                        </li>
-                    <% }) %>
-                    </ul>
+                        <% }) %>
                     <% } %>
-                    <%- partial('partials/_attendance_code_reasons') %>
                 </div>
+                <br>
+                <%- partial('partials/_attendance_code_reasons') %>
                 <input type="submit" class="govuk-button govuk-!-margin-right-2" value="Save" />
                 <a class="govuk-button govuk-button--secondary" href="/attendance/review-pupil-details">Cancel</a>
             </form>

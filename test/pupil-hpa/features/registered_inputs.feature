@@ -1,4 +1,4 @@
-@registered_inputs
+@registered_inputs_feature
 Feature: Registered Inputs
 
 

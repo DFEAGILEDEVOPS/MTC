@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp build",
     "build:watch": "yarn tsc --watch",
+    "dev": "yarn start:dev",
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
@@ -30,39 +31,37 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "f851de6df574116d072fa2d6717f93ad"
+    "assets-version": "fa63a2e94a724a41857c2c3c7d3081a4"
   },
   "engines": {
     "node": ">= 18"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.21",
-    "**/**/ajv": "^6.12.6",
     "**/**/marked": "4.3.0"
   },
   "dependencies": {
     "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.9.1",
-    "@azure/storage-blob": "^12.17.0",
-    "@azure/storage-queue": "^12.7.0",
+    "@azure/storage-blob": "12.18.0",
+    "@azure/storage-queue": "12.17.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^2.7.0",
-    "axios": "^1.6.0",
+    "axios": "^1.7.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
     "connect-redis": "^6.1.3",
-    "expressjs-csurf": "https://github.com/DFEAGILEDEVOPS/expressjs-csurf#v2.0.1",
     "dompurify": "^2.4.2",
     "dotenv": "^16.0.3",
     "edit-json-file": "^1.4.0",
     "ejs": "^3.1.8",
-    "express": "^4.16.2",
+    "express": "^4.19.2",
     "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
     "express-busboy": "^9.0.0",
     "express-partials": "^0.3.0",
     "express-session": "^1.17.3",
     "express-winston": "^4.1.0",
+    "expressjs-csurf": "https://github.com/DFEAGILEDEVOPS/expressjs-csurf#v2.0.1",
     "fast-csv": "^4.1.1",
     "feature-toggles": "^1.4.0",
     "font-awesome": "^4.7.0",
@@ -79,7 +78,7 @@
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.37",
     "morgan": "~1.10.0",
-    "mssql": "8.0.0",
+    "mssql": "10.0.2",
     "nocache": "^3.0.4",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
@@ -96,7 +95,7 @@
     "uuid-validate": "^0.0.3",
     "validator": "^13.7.0",
     "winston": "^3.1.0",
-    "winston-azure-application-insights": "^3.0.0",
+    "winston-azure-application-insights": "^4.0.0",
     "xmlbuilder2": "^3.0.2",
     "xregexp": "^5.1.1"
   },

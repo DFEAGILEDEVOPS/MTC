@@ -11,11 +11,11 @@ class EditSchoolPage < SitePrism::Page
   element :discard, '.govuk-button', text: 'Discard edits and view organisation'
 
   def edit_details(hash)
-    name.set hash.fetch(:name, nil)
-    dfe.set hash.fetch(:dfe, nil)
-    urn.set hash.fetch(:urn, nil)
-    lea_code.set hash.fetch(:lea_code, nil)
-    estab_code.set hash.fetch(:estab_code, nil)
+    name.set hash.fetch(:name, name.value)
+    dfe.set hash.fetch(:dfe, dfe.value)
+    urn.set hash.fetch(:urn, urn.value)
+    lea_code.set hash.fetch(:lea_code, lea_code.value)
+    estab_code.set hash.fetch(:estab_code, estab_code.value)
     type_of_establishment.select hash.fetch(:type_of_establishment, nil)
   end
 

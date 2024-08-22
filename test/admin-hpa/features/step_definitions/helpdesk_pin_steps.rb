@@ -72,7 +72,7 @@ end
 
 Given(/^I am on the school landing page for a school$/) do
   step 'I have signed in with helpdesk'
-  step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
+  step "I enter and submit a valid #{@school['dfeNumber']} for impersonation"
 end
 
 
@@ -101,10 +101,16 @@ Given(/^I am on the school landing page for a school using an account with the (
   else
     fail role + " role not found "
   end
-  p @school['entity']['dfeNumber']
-  step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
+  p @school['dfeNumber']
+  step "I enter and submit a valid #{@school['dfeNumber']} for impersonation"
 end
 
 Then(/^the school password should be unmasked$/) do
   expect(view_and_print_live_pins_page.pupil_list.rows.first.school_password.text).to eql SqlDbHelper.find_school(@school_id)['pin']
+end
+
+Then(/^I should see the helpdesk impersonation is audited$/) do
+  user_id = SqlDbHelper.find_teacher(@teacher)['id']
+  audit_record = SqlDbHelper.get_school_impersonation_audit(user_id,@school['id'])
+  expect(audit_record).to_not be_nil
 end

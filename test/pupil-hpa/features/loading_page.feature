@@ -1,4 +1,4 @@
-@loading_page @generate_live_pin
+@loading_page_feature @generate_live_pin_hook
 Feature: Loading Page
 
   Scenario: Warm up questions start after a 2 second delay
@@ -7,7 +7,7 @@ Feature: Loading Page
     Then I should have 3 seconds before I see the first question
 
   Scenario: Next button appears after 2 second delay
-    Given I logged in with user with access arrangement 'Pause - 'next' button between questions (reason required)'
+    Given I logged in with user with access arrangement 'Pause - 'next' button between questions'
     Given I have read the instructions and seen the settings page
     When I choose to start the warm up questions
     When I have been idle for 2 seconds
@@ -15,7 +15,7 @@ Feature: Loading Page
 
   @wip
   Scenario: Idle modal appears after delay
-    Given I logged in with user with access arrangement 'Pause - 'next' button between questions (reason required)'
+    Given I logged in with user with access arrangement 'Pause - 'next' button between questions'
     Given I have read the instructions and seen the settings page
     Given I choose to start the warm up questions
     Given I complete the warm up questions using the numpad
@@ -26,7 +26,7 @@ Feature: Loading Page
 
   @wip
   Scenario: Redirect occurs when check timer expires
-    Given I logged in with user with access arrangement 'Pause - 'next' button between questions (reason required)'
+    Given I logged in with user with access arrangement 'Pause - 'next' button between questions'
     Given I have read the instructions and seen the settings page
     Given I choose to start the warm up questions
     Given I complete the warm up questions using the numpad

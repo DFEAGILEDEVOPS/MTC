@@ -43,12 +43,12 @@
               "budgets": [
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "22kb"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,

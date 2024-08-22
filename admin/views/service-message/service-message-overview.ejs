@@ -7,22 +7,18 @@
                     <%= messages.info[0] %>
                 </div>
             <% } %>
-            <%- partial('partials/_service_message', { serviceMessage }) %>
+            <%- partial('partials/_service_message', { serviceMessages }) %>
             <h1 class="govuk-heading-xl">Service message</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Add or delete a global service message for the school homepage
+                Add or delete a service message for any area of the site.
             </p>
-            <%if (serviceMessage) { %>
-            <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-top-4" data-module="govuk-button">
-                Create service message
-            </button>
-            <% } else { %>
+
             <a href="/service-message/service-message-form" role="button" draggable="false" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
                 Create service message
             </a>
-            <% } %>
-            <%if (serviceMessage) { %>
+
+            <%if (Array.isArray(rawServiceMessages) && rawServiceMessages.length > 0) { %>
                 <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                     <caption class="govuk-body govuk-table__caption">Service Message</caption>
                     <thead class="govuk-table__head">
@@ -33,36 +29,30 @@
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
+                        <% for (let msg of rawServiceMessages) { %>
                         <tr class="govuk-table__row">
                             <td scope="row">
                                 <div>
                                     <span class="govuk-!-font-weight-bold name-text-wrap"
-                                       ><%= serviceMessage.title %></span>
+                                       ><%= msg.title %></span>
                                 </div>
                             </td>
                             <td>
-                                <a href="/service-message/edit-service-message">Edit</a>
+                                <a href="/service-message/edit/<%= msg.urlSlug.toLowerCase() %>">Edit</a>
                             </td>
                             <td>
-                                <form action="/service-message/remove-service-message" id="js-modal-form" method="post" autocomplete="off">
+                                <form action="/service-message/remove/<%= msg.urlSlug.toLowerCase() %>" id="js-modal-form" method="post" autocomplete="off">
                                     <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                                     <button class="govuk-button-as-link no-underline govuk-!-font-size-16 modal-link" id="js-modal-link" type="submit">Remove</button>
                                 </form>
                             </td>
                         </tr>
+                        <% } %>
                     </tbody>
                 </table>
             <% } else { %>
-                <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No service message created</p>
+                <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">There are no current service messages.</p>
             <% } %>
         </div>
     </div>
 </main>
-<%- partial('partials/_gds_modal_box', {
-    modalTitle: 'Remove service message',
-    modalText: 'Are you sure you want to remove the current service message?',
-    modalConfirmationLabel: 'Yes',
-    modalConfirmationUrl: '#',
-    modalCancelLabel: 'No',
-    modalCancelUrl: '#'
-}) %>

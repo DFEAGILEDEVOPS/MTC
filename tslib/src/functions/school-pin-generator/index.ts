@@ -13,6 +13,7 @@ function finish (start: number, context: Context): void {
 
 const schoolPinGenerator: AzureFunction = async function (context: Context): Promise<void> {
   const start = performance.now()
+  context.log(`${functionName} starting`)
   const replenishmentService = new SchoolPinReplenishmnentService()
   await replenishmentService.process(context.log)
   finish(start, context)

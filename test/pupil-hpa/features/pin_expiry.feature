@@ -1,4 +1,4 @@
-@pin_expiry
+@pin_expiry_feature
 Feature:
   Pin expiry after check has started
 
@@ -8,7 +8,7 @@ Feature:
     When I start the check
     And I should see the check start time is recorded
 
-  @local_storage
+  @local_storage_hook
   Scenario: Pin is expired when pupil has started the check
     Given I have completed the check using the numpad
     Then I should have an expired pin

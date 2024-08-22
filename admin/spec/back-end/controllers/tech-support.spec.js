@@ -4,8 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
-const administrationMessageService = require('../../../services/administration-message.service')
-const queueMgmtService = require('../../../services/tech-support-queue-management.service')
+const queueMgmtService = require('../../../services/queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../../../services/tech-support/check-submit/check-submit.service')
@@ -50,7 +49,6 @@ describe('tech-support controller', () => {
     test('GET: should render the home page', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
-      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(Promise.resolve(''))
       jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getHomePage(req, res, next)
       expect(res.statusCode).toBe(200)
@@ -127,6 +125,36 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
       expect(queueMgmtService.getServiceBusQueueSummary).toHaveBeenCalledTimes(1)
       expect(queueMgmtService.getStorageAccountQueueSummary).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('/clear-service-bus-queue', () => {
+    test('GET: should render the page', async () => {
+      const reqParams = getReqParams('/tech-support/clear-service-bus-queue', 'GET')
+      const req = getRequest(reqParams)
+      const queueName = 'test-queue'
+      req.params.queueName = queueName
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      await sut.getClearServiceBusQueue(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe(`Clear Service Bus Queue: ${queueName}`)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should return validation error if queue name does not match', async () => {
+      const reqParams = getReqParams('/tech-support/clear-service-bus-queue', 'POST')
+      const req = getRequest(reqParams)
+      req.body.confirmedQueueName = 'test-queue'
+      req.params.queueName = 'wrong-queue'
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(sut, 'getClearServiceBusQueue').mockResolvedValue()
+      await sut.postClearServiceBusQueue(req, res, next)
+      expect(sut.getClearServiceBusQueue).toHaveBeenCalledTimes(1)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
     })
   })
 
@@ -280,7 +308,8 @@ describe('tech-support controller', () => {
       const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
       const req = getRequest(reqParams)
       req.body = {
-        runReport: 'true'
+        runReport: 'true',
+        urns: undefined
       }
       const userId = 4359
       req.user = {
@@ -297,7 +326,33 @@ describe('tech-support controller', () => {
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId)
+      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId, undefined)
+    })
+
+    test('POST: should pass URNs if inputted', async () => {
+      const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
+      const req = getRequest(reqParams)
+      const urnList = '12345,67890'
+      req.body = {
+        runReport: 'true',
+        urns: urnList
+      }
+      const userId = 4359
+      req.user = {
+        id: userId
+      }
+      const res = getResponse()
+      let responseMessage = 'not set'
+      jest.spyOn(PsReportExecService, 'requestReportGeneration').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation((view, data) => {
+        responseMessage = data.response
+      })
+      await sut.postPsReportRun(req, res, next)
+      expect(responseMessage).toEqual('PS Report Requested')
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId, urnList)
     })
   })
 
@@ -332,6 +387,60 @@ describe('tech-support controller', () => {
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.isJson, req.body.payload)
+    })
+  })
+
+  describe('/sb-queue-submit', () => {
+    test('GET: should render page', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'GET')
+      const req = getRequest(reqParams)
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getSbQueueSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should submit message to service and redirect to overview', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        message: 'sfsdfkdsf',
+        queueName: 'myqueue',
+        contentType: 'application/json'
+      }
+      const res = getResponse()
+      jest.spyOn(queueMgmtService, 'sendServiceBusQueueMessage').mockImplementation()
+      jest.spyOn(res, 'redirect').mockImplementation()
+      await sut.postSbQueueSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.redirect).toHaveBeenCalledWith('/tech-support/queue-overview')
+      expect(next).not.toHaveBeenCalled()
+      expect(queueMgmtService.sendServiceBusQueueMessage)
+        .toHaveBeenCalledWith(req.body.queueName, req.body.message, req.body.contentType)
+    })
+
+    test('POST: if error thrown it should render error message', async () => {
+      const reqParams = getReqParams('/tech-support/sb-queue-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        message: 'sfsdfkdsf',
+        queueName: 'myqueue',
+        contentType: 'application/json'
+      }
+      const res = getResponse()
+      const errorMessage = 'mock error'
+      jest.spyOn(queueMgmtService, 'sendServiceBusQueueMessage').mockRejectedValue(new Error(errorMessage))
+      jest.spyOn(res, 'render').mockImplementation((url, objs) => {
+        console.log(`url: ${url}, objs: ${JSON.stringify(objs)}`)
+      })
+      jest.spyOn(res, 'redirect').mockImplementation()
+      await sut.postSbQueueSubmit(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
     })
   })
 })

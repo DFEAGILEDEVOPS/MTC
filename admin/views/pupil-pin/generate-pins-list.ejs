@@ -2,6 +2,7 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_service_message', { serviceMessages }) %>
             <h1 class="govuk-heading-xl">Select pupils to generate <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <h3 class="govuk-heading-m">Filter by name</h3>

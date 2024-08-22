@@ -7,10 +7,10 @@ export enum ServiceBusQueueName {
   checkValidation = 'check-validation',
   psReportSchools = 'ps-report-schools',
   psReportStaging = 'ps-report-staging',
+  psReportStagingStart = 'ps-report-staging-start',
   psReportExport = 'ps-report-export',
   pupilLogin = 'pupil-login',
   queueReplay = 'queue-replay',
-  schoolResultsCache = 'school-results-cache',
   syncResultsToDbComplete = 'sync-results-to-db-complete',
   psReportExec = 'ps-report-exec'
 }

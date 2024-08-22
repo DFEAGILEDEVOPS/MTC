@@ -37,8 +37,8 @@ Then(/^I can see the declaration submitted form page not confirmed as per the de
 end
 
 Given(/^I have no pupils not taking the check for the school$/) do
-  SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(@school_user['entity']['school_id'], 'null')
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
+  SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
 end
 
 Given(/^I have some pupils that have completed the check$/) do
@@ -63,7 +63,7 @@ Given(/^I have some pupils that have completed the check$/) do
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     @check_code = check_entry['checkCode']
     FunctionsHelper.complete_check_via_check_code([@check_code])
-    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+    SqlDbHelper.wait_for_received_check(@check_code)
   end
 end
 

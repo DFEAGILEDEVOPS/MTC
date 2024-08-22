@@ -1,31 +1,43 @@
 import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ListSchoolsService } from './list-schools-service'
+import { type ISchoolMessageSpecification, ListSchoolsService } from './list-schools-service'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
+import moment from 'moment'
+import type { PsReportStagingStartMessage, PsReportListSchoolsIncomingMessage } from '../common/ps-report-service-bus-messages'
 
-interface IncomingMessage {
-  requestedBy: string
-  dateTimeRequested: string
-  jobUuid: string
-}
-
-const serviceBusTrigger: AzureFunction = async function (context: Context, jobInfo: IncomingMessage): Promise<void> {
+const serviceBusTrigger: AzureFunction = async function (context: Context, jobInfo: PsReportListSchoolsIncomingMessage): Promise<void> {
   const logger = new PsReportLogger(context, PsReportSource.SchoolGenerator)
   logger.verbose(`requested at ${jobInfo.dateTimeRequested} by ${jobInfo.requestedBy}`)
   const start = performance.now()
   const meta = { processCount: 0, errorCount: 0 }
   const jobDataService = new JobDataService()
   try {
-    await jobDataService.setJobStarted(jobInfo.jobUuid)
+    // We need to store a filename for all the data to be written to during the staging process.
+    const now = moment()
+    const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}.csv`
+    await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context.log)
     const schoolListService = new ListSchoolsService(logger)
-    const messages = await schoolListService.getSchoolMessages()
+    const messageSpec: ISchoolMessageSpecification = {
+      jobUuid: jobInfo.jobUuid,
+      filename,
+      urns: jobInfo.urns
+    }
+    const messages = await schoolListService.getSchoolMessages(messageSpec)
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
-    await jobDataService.setJobComplete(jobInfo.jobUuid,
-      JobStatusCode.CompletedSuccessfully, `processed ${meta.processCount} records`)
+
+    // Send a message to start ps-report-3b-staging (the csv assembly)
+    // service-bus queue = stagingStart
+    const stagingStartMessage: PsReportStagingStartMessage = {
+      startTime: new Date(),
+      jobUuid: jobInfo.jobUuid,
+      filename
+    }
+    context.bindings.stagingStart = stagingStartMessage
+    logger.info(`staging-start message sent: ${JSON.stringify(stagingStartMessage)}`)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {

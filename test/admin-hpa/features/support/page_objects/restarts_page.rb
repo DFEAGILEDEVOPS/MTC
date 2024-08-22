@@ -86,4 +86,9 @@ class RestartsPage < SitePrism::Page
     pupil_list.rows.find {|pupil| pupil.text.include? name}
   end
 
+  section :service_message, 'div[class^="mtc-notification-banner"]' do
+    element :service_message_heading, '#govuk-notification-banner-title'
+    element :service_message_text, '.govuk-notification-banner__content'
+  end
+
 end

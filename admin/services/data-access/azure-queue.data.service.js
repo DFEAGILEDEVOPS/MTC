@@ -20,6 +20,13 @@ const service = {
     return Promise.all(queueInfo)
   },
 
+  getQueueMessageCount: async function getQueueMessageCount (queueName) {
+    const queueServiceClient = QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
+    const queueClient = queueServiceClient.getQueueClient(queueName)
+    const props = await queueClient.getProperties()
+    return props.approximateMessagesCount
+  },
+
   createQueues: async function createQueues (queueNames) {
     const queueCreates = queueNames.map(q => {
       const queueServiceClient = QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)

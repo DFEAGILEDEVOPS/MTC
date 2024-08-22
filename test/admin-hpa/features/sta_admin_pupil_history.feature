@@ -1,3 +1,4 @@
+@sta_admin_view_pupil_history_feature
 Feature:
   STA Admin user can view pupils' check history
 
@@ -36,7 +37,7 @@ Feature:
     Examples:
       | type       |
       | Official   |
-      | Try it out |
+      | Try it out | 
 
   Scenario Outline: Pupil logged in is displayed in the check history for a pupil
     Given pupil has logged in to a <type> check
@@ -68,3 +69,7 @@ Feature:
     Given a pupil has consumed a discretionary restart
     When I view the pupils history using the sta admin role
     Then I should see a list of all checks including the consumed discretionary restart
+
+  Scenario: STA Admin impersonations of schools are audited
+    Given I am on the school landing page for a school using an account with the sta admin role
+    Then I should see the sta admin impersonation is audited

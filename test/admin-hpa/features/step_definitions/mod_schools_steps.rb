@@ -6,7 +6,7 @@ Then(/^i should see that the MOD schools page matches design$/) do
   expect(mod_schools_page).to have_heading
   expect(mod_schools_page).to have_info_text
   expect(mod_schools_page).to have_update_to_mod_school_button
-  expect(mod_schools_page).to have_disabled_save
+  expect(mod_schools_page).to have_save
   expect(mod_schools_page).to have_cancel
 end
 
@@ -54,7 +54,7 @@ end
 
 
 Then(/^I should see a list of schools with the LEA code of (\d+)$/) do |code|
-  db_mod_schools = SqlDbHelper.get_mod_schools.map {|school| school['name'] + '\nURN: ' + school['urn'].to_s}
+  db_mod_schools = SqlDbHelper.get_mod_schools.map {|school| school['name'] + "\nURN: " + school['urn'].to_s}
   expect(mod_schools_page.school_list.rows.map {|row| row.school_name.text}.sort).to eql db_mod_schools.sort unless db_mod_schools.empty?
 end
 

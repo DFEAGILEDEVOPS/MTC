@@ -1,7 +1,6 @@
 const R = require('ramda')
 const accessArrangementsDataService = require('../services/data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
-const questionReaderReasonsDataService = require('../services/data-access/question-reader-reasons.data.service')
 const preparedCheckSyncService = require('../services/prepared-check-sync.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
@@ -39,56 +38,48 @@ const accessArrangementsService = {
     await preparedCheckSyncService.addMessages(urlSlug)
     return displayData
   },
+
   /**
- * Prepares access arrangements data for submission to the database
- * @param {Object} requestData
- * @param {Object} pupil
- * @param {Number} schoolId
- * @param {Number} userId
- * @returns {Promise<Object>}
- */
+   * Prepares access arrangements data for submission to the database
+   * @param {Object} requestData
+   * @param {Object} pupil
+   * @param {Number} schoolId
+   * @param {Number} userId
+   * @returns {Promise<Object>}
+   */
   prepareData: async function prepareData (requestData, pupil, schoolId, userId) {
-    const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
+    const { accessArrangements: accessArrangementsCodes } = requestData
     const pupilAccessArrangements = R.clone(requestData)
     pupilAccessArrangements.accessArrangementsIdsWithCodes = await accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes(accessArrangementsCodes)
-    let questionReaderReasonId
+    // let questionReaderReasonId
+
     if (pupilAccessArrangements.accessArrangements.length === 0) {
       throw new Error('No access arrangements found')
     }
+
     if (!pupil) {
       throw new Error('Pupil object is not found')
     }
+
     const omittedFields = []
     pupilAccessArrangements.pupil_id = pupil.id
     pupilAccessArrangements.recordedBy_user_id = userId
-    pupilAccessArrangements.questionReaderReasonCode = questionReaderReason
-    if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.INPUT_ASSISTANCE)) {
-      omittedFields.push('inputAssistanceInformation')
-    }
-    if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS)) {
-      omittedFields.push('nextButtonInformation')
-    }
-    if (pupilAccessArrangements.questionReaderReason !== questionReaderReasonsDataService.CODES.OTHER) {
-      omittedFields.push('questionReaderOtherInformation')
-    }
-    if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.QUESTION_READER)) {
-      questionReaderReasonId = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode(pupilAccessArrangements.questionReaderReasonCode)
-    }
+
     if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.COLOUR_CONTRAST)) {
       const pupilColourContrastAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'CCT')
       pupilColourContrastAA.colourContrastLookup_Id = await pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId(pupil.id, pupilColourContrastAA.id)
     }
+
     if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.FONT_SIZE)) {
       const pupilFontSizeAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'FTS')
       pupilFontSizeAA.fontSizeLookup_Id = await pupilAccessArrangementsDataService.sqlFindPupilFontSizesId(pupil.id, pupilFontSizeAA.id)
     }
-    if (questionReaderReasonId) {
-      pupilAccessArrangements.questionReaderReasons_id = questionReaderReasonId
-    }
-    omittedFields.push('accessArrangements', 'questionReaderReason', 'pupilUrlSlug')
+
+    omittedFields.push('accessArrangements', 'pupilUrlSlug')
     omittedFields.forEach(field => {
       delete pupilAccessArrangements[field]
     })
+
     return pupilAccessArrangements
   },
   /**

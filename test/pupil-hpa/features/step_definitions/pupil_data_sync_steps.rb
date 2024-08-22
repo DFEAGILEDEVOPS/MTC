@@ -11,11 +11,14 @@ Given(/^I have completed the check with only (\d+) correct answers$/) do |correc
   expect(complete_page).to have_heading
   @check_code = @storage_pupil['checkCode']
   p @check_code
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end
 
 Then(/^all answers events and inputs match$/) do
-  check_result = AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
-  @archive = JSON.parse(LZString::Base64.decompress(check_result['archive']))
+
+  check_result = SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
+  storage_row = AzureTableHelper.get_row('receivedCheck', @school['urlSlug'], @storage_pupil['checkCode'])
+  @archive = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
@@ -87,7 +90,7 @@ end
 Then(/^I should see all inputs recorded$/) do
   @storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   @storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
+  SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
@@ -164,7 +167,7 @@ end
 Then(/^I should see the following QR code related events$/) do |table|
   check_id = SqlDbHelper.get_check_id(@check_code)
   p check_id
-  step 'the data sync function has run'
+  step 'the data sync function has run for a check'
   (wait_until(ENV['WAIT_TIME'].to_i,2){!SqlDbHelper.get_check_result(check_id).nil?})
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   events = SqlDbHelper.get_event_types_for_check(check_result_id)
@@ -242,7 +245,7 @@ end
 Then(/^I should see no QR code events$/) do
   check_id = SqlDbHelper.get_check_id(@check_code)
   p check_id
-  step 'the data sync function has run'
+  step 'the data sync function has run for a check'
   (wait_until(ENV['WAIT_TIME'].to_i,2){!SqlDbHelper.get_check_result(check_id).nil?})
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   events = SqlDbHelper.get_event_types_for_check(check_result_id)

@@ -26,14 +26,19 @@ require 'lz_string'
 require_relative '../../features/support/app'
 require 'dotenv'
 require 'jwt'
+require 'csv'
 
 require_relative 'helpers'
 include Helpers
 
 Dotenv.load('../../.env')
 
+logger = Selenium::WebDriver.logger
+logger.level = :info
+
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
 
+ENV['SE_CACHE_PATH'] ||=File.expand_path("#{File.dirname(__FILE__)}/../../../se_manager/.cache/selenium")
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
@@ -54,37 +59,41 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
+  seconds = 7
+  config.default_max_wait_time = seconds
 end
-Capybara.default_max_wait_time = 7
 
 Capybara.register_driver(:chrome) do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
-
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
 Capybara.register_driver :headless_chrome do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new
-  browser_options.args << '--headless'
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
+  browser_options.args << '--headless=new'
+  browser_options.args << '--no-sandbox'
+  browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+end
+
+Capybara.register_driver :no_local_storage do |app|
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
+  browser_options.args << '--headless=new'
   browser_options.args << '--no-sandbox'
-  browser_options.args << '--window-size=1280,1696'
+  browser_options.args << '--disable-local-storage'
+  browser_options.args << '--disable-dev-shm-usage'
+  browser_options.args << '--disable-gpu'
+  browser_options.args << '--allow-insecure-localhost'
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
-Capybara.javascript_driver = :headless
-
-Mongo::Logger.logger.level = ::Logger::FATAL
-
-if ENV['MONGO_CONNECTION_STRING']
-  CLIENT = Mongo::Client.new(ENV['MONGO_CONNECTION_STRING'])
-else
-  CLIENT = Mongo::Client.new('mongodb://mongo/mtc')
-end
+Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
@@ -131,7 +140,7 @@ AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_
 AZURE_QUEUE_CLIENT = Azure::Storage::Queue::QueueService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
-AzureBlobHelper.remove_old_containers
+# AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
 
 redis_key = ENV['REDIS_KEY'] || ''
@@ -149,10 +158,8 @@ else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
 end
 
-# BrowserStack env vars
-if (File.exist?('../../.env')) && (File.read('../../.env').include? 'BROWSERSTACK')
-  ENV['BROWSERSTACK_ACCESS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_ACCESS_KEY'))}.split('=').last
-  ENV['BROWSERSTACK_USERNAME'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_USERNAME'))}.split('=').last
-  fail 'Browserstack access key should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_ACCESS_KEY'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
-  fail 'Browserstack username should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_USERNAME'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
+begin
+  REDIS_CLIENT.ping
+rescue Redis::BaseError => e
+  fail "REDIS connection issue - #{e.inspect}"
 end

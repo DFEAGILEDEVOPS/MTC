@@ -48,6 +48,20 @@ const service = {
       WHERE sa.id=@auditEntryId
     `
     return sqlService.readonlyQuery(sql, params)
+  },
+
+  auditImpersonation: async function auditImpersonation (userId, schoolId) {
+    const params = [{
+      name: 'userId',
+      type: TYPES.Int,
+      value: userId
+    }, {
+      name: 'schoolId',
+      type: TYPES.Int,
+      value: schoolId
+    }]
+    const sql = 'INSERT mtc_admin.schoolImpersonationAudit (user_id, school_id) VALUES (@userId, @schoolId)'
+    return sqlService.modify(sql, params)
   }
 }
 
