@@ -13,6 +13,21 @@ export class SchoolApi {
   }
 
   public async create (newSchoolInfo: INewSchoolModel): Promise<object> {
+    if (newSchoolInfo === undefined) {
+      throw new Error('school to be created is required')
+    }
+    if (newSchoolInfo.leaCode === undefined) {
+      throw new Error('leaCode is required')
+    }
+    if (newSchoolInfo.estabCode === undefined) {
+      throw new Error('estabCode is required')
+    }
+    if (newSchoolInfo.name === undefined) {
+      throw new Error('name is required')
+    }
+    if (newSchoolInfo.urn === undefined) {
+      throw new Error('urn is required')
+    }
     this.logger.trace('SchoolAPI: create() called')
     const { leaCode, estabCode, name, urn } = newSchoolInfo
     const sql = `INSERT INTO mtc_admin.school (leaCode, estabCode, name, urn, dfeNumber)

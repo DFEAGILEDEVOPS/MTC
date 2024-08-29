@@ -22,6 +22,18 @@ export class UserApi {
   }
 
   public async create (newUserInfo: ICreateUserModel): Promise<object> {
+    if (newUserInfo === undefined) {
+      throw new Error('user to be created is required')
+    }
+    if (newUserInfo.schoolUUID === undefined) {
+      throw new Error('schoolUUID is required')
+    }
+    if (newUserInfo.identifier === undefined) {
+      throw new Error('identifier is required')
+    }
+    if (newUserInfo.role === undefined) {
+      throw new Error('role is required')
+    }
     this.logger.trace('UserAPI: create() called')
     const { schoolUUID, identifier, password, role } = newUserInfo
     if (role.toUpperCase() !== 'TEACHER') {
