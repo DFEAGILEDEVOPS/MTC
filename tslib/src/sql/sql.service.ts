@@ -160,8 +160,8 @@ export class SqlService implements ISqlService {
         throw new Error('parameter type invalid')
       }
       const options: any = {}
-      if (R.pathEq(['type', 'name'], 'Decimal', param) ||
-        R.pathEq(['type', 'name'], 'Numeric', param)) {
+      if (R.pathEq('Decimal', ['type', 'name'], param) ||
+        R.pathEq('Numeric', ['type', 'name'], param)) {
         options.precision = param.precision ?? 28
         options.scale = param.scale ?? 5
       }
