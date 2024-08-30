@@ -16,7 +16,14 @@ export class CsvTransformer {
   constructor (logger: ILogger, psReportLineData: IPsychometricReportLine[]) {
     this.logger = logger
     this.psReportLineData = psReportLineData
-    this.logger.verbose('CsvTransformer initialised')
+    // If I remove this call to the logger the linter insists the logge is not used, but the
+    // next developer on this file will certainly be glad to have logging, so this next construction
+    // is weird.
+    // eslint-disable-next-line no-constant-condition
+    if (false) {
+      // @ts-ignore: Unreachable code error
+      this.logger.verbose('CsvTransformer initialised')
+    }
   }
 
   private transformAnswer (a: IReportLineAnswer | undefined): any[] {

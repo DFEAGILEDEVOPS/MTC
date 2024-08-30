@@ -71,7 +71,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${logPrefix}: unable to connect to service bus at this time: ${errorMessage}`)
+    context.log.error(`${logPrefix}: ${errorMessage}`)
     throw error
   }
 

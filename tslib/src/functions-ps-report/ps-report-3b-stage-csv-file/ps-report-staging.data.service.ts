@@ -1,4 +1,4 @@
-import { BlobServiceClient } from '@azure/storage-blob'
+import { BlobServiceClient, type AppendBlobClient } from '@azure/storage-blob'
 import type { ILogger } from '../../common/logger'
 import config from '../../config'
 
@@ -16,19 +16,37 @@ export class PsReportStagingDataService {
     this.blobName = blobName
     this.containerName = containerName
     this.logger.verbose(`${this.logName} constructor entered`)
+    this.logger.verbose(`Con Str ${config.AzureStorage.ConnectionString}`)
     this.blobService = BlobServiceClient.fromConnectionString(config.AzureStorage.ConnectionString)
+  }
+
+  public async getAppendBlobService (): Promise<AppendBlobClient> {
+    this.logger.info('container name', this.containerName)
+    this.logger.info('blob service', this.blobName)
+    const containerService = this.blobService.getContainerClient(this.containerName)
+    // Create the container if missing
+    await containerService.createIfNotExists()
+    const appendBlobService = containerService.getAppendBlobClient(this.blobName)
+    return appendBlobService
   }
 
   /**
    * Create a zero sized append block.
    */
   public async createAppendBlock (): Promise<void> {
-    const containerService = this.blobService.getContainerClient(this.containerName)
-    // Create the container if missing
-    await containerService.createIfNotExists()
-    const appendBlobService = containerService.getAppendBlobClient(this.blobName)
-    // Create the CSV file.
-    await appendBlobService.createIfNotExists()
+    const appendBlobService = await this.getAppendBlobService()
+    await appendBlobService.deleteIfExists()
+    const res = await appendBlobService.createIfNotExists()
+    // @azure/storage-blob v12.24.0
+    // Will return an error value rather than throw an error as well as give a 'succeeded=true'.  This version does not work.
+    /* eslint-disable */
+    // @ts-ignore broken type on @azure/storage-blob
+    if (res?.body?.Code === 'AuthenticationFailed') {
+      console.error('Error response', res)
+      // @ts-ignore broken type on @azure/storage-blob
+      throw new Error(`Failed to create append blob: ${res?.body?.Message}`)
+    }
+    /* eslint-enable */
   }
 
   /**
@@ -40,10 +58,10 @@ export class PsReportStagingDataService {
       if (data.slice(-this.csvLineTerminator.length) !== this.csvLineTerminator) {
         data += this.csvLineTerminator
       }
-      const containerService = this.blobService.getContainerClient(this.containerName)
-      const appendBlobService = containerService.getAppendBlobClient(this.blobName)
+      const appendBlobService = await this.getAppendBlobService()
       await appendBlobService.appendBlock(data, data.length)
     } catch (e: any) {
+      console.warn('Error writing to append block: ', e?.message)
       this.logger.error(`${this.logName}: Failed to append data to ${this.blobName}\n${e?.message}\n`)
     }
   }
