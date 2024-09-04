@@ -1,11 +1,15 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { type Timer, app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service'
-import { type IFunctionTimer } from '../../azure/functions'
-
+import './../../common/bigint'
 const functionName = 'sync-results-init'
 
-const timerTrigger: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
+app.timer(functionName, {
+  schedule: '0 0 17 * * *',
+  handler: syncResultsInit
+})
+
+export async function syncResultsInit (timer: Timer, context: InvocationContext): Promise<void> {
   if (timer.isPastDue) {
     // This function could potentially deliver a lot of work to do to the functions, and none of it is urgent. No surprises!
     context.log(`${functionName}: timer is past due, exiting.`)
@@ -13,9 +17,10 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
   }
   const start = performance.now()
   try {
-    const syncResultsInitService = new SyncResultsInitService(context.log)
+    const syncResultsInitService = new SyncResultsInitService(context)
     // If called via http there could be a message passed in
-    const options: ISyncResultsInitServiceOptions = context.bindingData.syncResultsInit !== undefined ? context.bindingData.syncResultsInit : {}
+    // TODO this might not be the correct way to access the http inputs
+    const options: ISyncResultsInitServiceOptions = context.triggerMetadata !== undefined ? context.triggerMetadata : {}
     const meta = await syncResultsInitService.processBatch(options)
     const memoryUsage = process.memoryUsage()
     const heapUsed = memoryUsage.heapUsed / 1024 / 1024
@@ -28,9 +33,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
+    context.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 }
-
-export default timerTrigger

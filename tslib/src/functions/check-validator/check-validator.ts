@@ -18,7 +18,6 @@ const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'
 
 export interface ICheckValidatorFunctionBindings {
-  receivedCheckTable: any[]
   checkMarkingQueue: any[]
   checkNotificationQueue: ICheckNotificationMessage[]
 }
@@ -36,10 +35,14 @@ export class CheckValidator {
     this.receivedCheckTransformer = new ReceivedCheckBindingEntityTransformer()
   }
 
-  async validate (functionBindings: ICheckValidatorFunctionBindings, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<void> {
+  async validate (receivedCheckTable: unknown, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<ICheckValidatorFunctionBindings> {
+    const output: ICheckValidatorFunctionBindings = {
+      checkMarkingQueue: [],
+      checkNotificationQueue: []
+    }
     // this should fail outside of the catch as we wont be able to update the entity
     // without a reference to it and should rightly go on the dead letter queue
-    const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
+    const receivedCheck = this.findReceivedCheck(receivedCheckTable)
     logger.info(`${functionName}: received check to validate. checkVersion:${receivedCheck.checkVersion}`)
     let checkData
 
@@ -67,9 +70,9 @@ export class CheckValidator {
         notificationType: CheckNotificationType.checkInvalid,
         version: 1
       }
-      functionBindings.checkNotificationQueue = [validationFailure]
+      output.checkNotificationQueue = [validationFailure]
       logger.error(error.message)
-      return
+      return output
     }
 
     await this.setReceivedCheckAsValid(receivedCheck, checkData)
@@ -79,7 +82,8 @@ export class CheckValidator {
       checkCode: validateCheckMessage.checkCode,
       version: 1
     }
-    functionBindings.checkMarkingQueue = [markingMessage]
+    output.checkMarkingQueue = [markingMessage]
+    return output
   }
 
   private async setReceivedCheckAsValid (receivedCheckEntity: ReceivedCheckFunctionBindingEntity, checkData: any): Promise<void> {
@@ -98,11 +102,18 @@ export class CheckValidator {
     await this.tableService.mergeUpdateEntity(tableStorageTableName, transformedEntity)
   }
 
-  private findReceivedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity {
+  private findReceivedCheck (receivedCheckRef: unknown): ReceivedCheckFunctionBindingEntity {
+    if (receivedCheckRef === undefined) {
+      throw new Error(`${functionName}: received check reference is undefined`)
+    }
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }
-    return receivedCheckRef[0]
+    if (!RA.isArray(receivedCheckRef)) {
+      return receivedCheckRef as ReceivedCheckFunctionBindingEntity
+    }
+    const checkArray = receivedCheckRef as ReceivedCheckFunctionBindingEntity[]
+    return checkArray[0]
   }
 
   private async validateCheckStructure (submittedCheck: any): Promise<void> {
