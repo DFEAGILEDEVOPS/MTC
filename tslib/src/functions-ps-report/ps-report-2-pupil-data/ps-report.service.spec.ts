@@ -29,7 +29,7 @@ describe('PsReportService', () => {
     }
     outputBindings.psReportExportOutput = []
 
-    sut = new PsReportService(outputBindings, logger, psReportDataService)
+    sut = new PsReportService(logger, psReportDataService)
   })
 
   test('it is defined', () => {
