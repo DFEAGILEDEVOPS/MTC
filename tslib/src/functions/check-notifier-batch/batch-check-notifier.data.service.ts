@@ -5,11 +5,8 @@ import { ConsoleLogger, type ILogger } from '../../common/logger'
 
 export interface IBatchCheckNotifierDataService {
   createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]>
-
   createProcessingFailedRequest (checkCode: string): ITransactionRequest
-
   createCheckReceivedRequest (checkCode: string): ITransactionRequest
-
   executeRequestsInTransaction (requests: ITransactionRequest[]): Promise<void>
 }
 
@@ -24,7 +21,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
   }
 
   async createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]> {
-    this.logService?.verbose(`${this.serviceName}.checkCompleteRequest(): starting for checkCode [${checkCode}]`)
+    this.logService?.trace(`${this.serviceName}.checkCompleteRequest(): starting for checkCode [${checkCode}]`)
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -51,39 +48,39 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
     // Pupil Verification: we need to find the check id of the currentCheckId for the pupil, so that IF this checkCode that is now complete,
     // and it is the same as the currentCheckId THEN we can consider setting the pupil to checkComplete as long as the other checks succeed.
     const checkCodeSql: string = `
-      SELECT 
+      SELECT
         id
       FROM
-         mtc_admin.[check] 
+         mtc_admin.[check]
       WHERE
         checkCode = @checkCode
     `
     const checkData = await this.sqlService.query(checkCodeSql, [checkCodeParam])
-    this.logService.verbose(`checkData: ${JSON.stringify(checkData)}`)
+    this.logService.trace(`checkData: ${JSON.stringify(checkData)}`)
     let checkIdToComplete: undefined | number
     if (isNonEmptyArray(checkData)) {
       checkIdToComplete = checkData[0]?.id
-      this.logService.verbose(`checkIdToComplete: ${checkIdToComplete}`)
+      this.logService.trace(`checkIdToComplete: ${checkIdToComplete}`)
     }
 
     const pupilSql: string = `
-        SELECT 
-            p.attendanceId, 
+        SELECT
+            p.attendanceId,
             p.restartAvailable,
             p.currentCheckId
-        FROM 
+        FROM
             mtc_admin.pupil p JOIN mtc_admin.[check] c on (c.pupil_id = p.id)
-        WHERE 
+        WHERE
             c.checkCode = @checkCode`
 
     let pupil: undefined | { attendanceId: number, restartAvailable: boolean, currentCheckId: number }
     try {
       const pupilData = await this.sqlService.query(pupilSql, [checkCodeParam])
-      this.logService.verbose(`pupilData: ${JSON.stringify(pupilData)}`)
+      this.logService.trace(`pupilData: ${JSON.stringify(pupilData)}`)
       if (isNonEmptyArray(pupilData)) {
         pupil = pupilData[0]
       }
-      this.logService.verbose(`pupil: ${JSON.stringify(pupil)}`)
+      this.logService.trace(`pupil: ${JSON.stringify(pupil)}`)
     } catch (error: any) {
       this.logService.warn(`ERROR: ${error.message}`)
     }
