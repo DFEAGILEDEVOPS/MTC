@@ -10,6 +10,7 @@
     "build": "yarn sync && yarn run gulp",
     "prod:clean": "rm -rf ./node_modules && yarn install --frozen-lockfile --production",
     "rebuild": "yarn clean && yarn build",
+    "cleanbuild": "yarn rebuild",
     "sync": "node ./sync-tslib-deps.js && yarn install",
     "sync:settings": "node ./sync-local-settings.js",
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
