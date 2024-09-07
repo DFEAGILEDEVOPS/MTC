@@ -1,7 +1,6 @@
 import { BlobServiceClient, type AppendBlobClient } from '@azure/storage-blob'
 import type { ILogger } from '../../common/logger'
 import config from '../../config'
-
 export class PsReportStagingDataService {
   private readonly logName = 'PsReportStagingDataService'
   private readonly blobService: BlobServiceClient
@@ -47,6 +46,8 @@ export class PsReportStagingDataService {
       throw new Error(`Failed to create append blob: ${res?.body?.Message}`)
     }
     /* eslint-enable */
+    // Write a BOM to indicate this file is utf-16le
+    await appendBlobService.appendBlock('\ufeff', 2) // zero width no break space character is the accepted BOM for utf-16le FE FF
   }
 
   /**
@@ -58,8 +59,12 @@ export class PsReportStagingDataService {
       if (data.slice(-this.csvLineTerminator.length) !== this.csvLineTerminator) {
         data += this.csvLineTerminator
       }
+
+      // convert string to utf16le
+      const utf16Buf = Buffer.from(data, 'utf16le')
+
       const appendBlobService = await this.getAppendBlobService()
-      await appendBlobService.appendBlock(data, data.length)
+      await appendBlobService.appendBlock(utf16Buf, utf16Buf.length)
     } catch (e: any) {
       console.warn('Error writing to append block: ', e?.message)
       this.logger.error(`${this.logName}: Failed to append data to ${this.blobName}\n${e?.message}\n`)

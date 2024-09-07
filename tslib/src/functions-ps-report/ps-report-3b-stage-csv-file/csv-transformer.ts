@@ -3,6 +3,41 @@ import * as CSV from 'csv-string'
 import moment from 'moment'
 import { type ILogger } from '../../common/logger'
 
+export interface CsvData {
+  PupilDatabaseId: number
+  PupilUPN: string
+  createdAt: string
+  updatedAt: string
+  DOB: string
+  Gender: string
+  Forename: string
+  MiddleNames: string | null
+  Surname: string
+  FormMark: number | null
+  QDisplayTime: number | null
+  PauseLength: number | null
+  AccessArr: string | null
+  RestartReason: string | null
+  RestartNumber: number | null
+  PupilStatus: string | null
+  DeviceID: string | null
+  BrowserType: string | null
+  SchoolName: string | null
+  Estab: number
+  SchoolURN: number
+  LAnum: number
+  AttemptID: string | null
+  FormID: string | null
+  TestDate: string | null
+  TimeStart: string | null
+  TimeComplete: string | null
+  TimeTaken: number | null
+  ReasonNotTakingCheck: string | null
+  ToECode: number
+  ImportedFromCensus: number
+  IsEdited: number
+}
+
 /**
  * CsvTransformer
  *

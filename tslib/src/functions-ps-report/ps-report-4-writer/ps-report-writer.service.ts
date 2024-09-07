@@ -278,9 +278,8 @@ export class PsReportWriterService {
       BULK INSERT mtc_results.[${sTablename}]
       FROM '${sFilename}'
       WITH (DATA_SOURCE = 'PsReportData',
-                 FORMAT = 'CSV',
-        FIELDTERMINATOR = ',',
-          ROWTERMINATOR = '\r\n')
+           DATAFILETYPE = 'widechar',
+        FIELDTERMINATOR = ',')
       ;`
     await mssql.query(sql)
     // await this.cleanup(sFilename)
