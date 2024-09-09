@@ -31,7 +31,7 @@ delete_old_blobs() {
     if [ -z "$blobs" ]
     then
       echo "Deleting empty container: $container"
-      az storage container delete --name $container --account-name "$STORAGE_ACCOUNT_NAME" --auth-mode login --yes
+      az storage container delete --name $container --account-name "$STORAGE_ACCOUNT_NAME" --auth-mode login
     fi
 }
 
@@ -40,7 +40,13 @@ containers=$(az storage container list --account-name "$STORAGE_ACCOUNT_NAME" --
 
 # Loop through each container and process blobs
 for container in $containers; do
-    delete_old_blobs "$container"
+    # Check if the container name starts with "azure-webjobs"
+    if [[ $container != azure-webjobs* ]]; then
+        echo "Deleting container: $container"
+        delete_old_blobs "$container"
+    else
+        echo "Skipping container: $container as it is used exclusively by Azure Functions."
+    fi
 done
 
 
