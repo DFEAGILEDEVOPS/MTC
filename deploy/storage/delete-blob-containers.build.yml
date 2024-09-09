@@ -5,11 +5,11 @@ pool:
 
 steps:
 - task: AzureCLI@2
-  displayName: 'Add Build Server IPv4 Address to PreProd KeyVault'
+  displayName: 'Purge Stale BLOBs from Azure Storage Account'
   inputs:
-    azureSubscription: $(PreProdServiceConnection)
+    azureSubscription: $(ServiceConnection)
     scriptType: bash
-    scriptPath: 'deploy/build-defs/add-key-vault-ip.sh'
+    scriptPath: 'deploy/storage/delete-old-blobs.sh'
     arguments: $(PreProdKeyVaultName) $(PreProdResourceGroup) $(IpAddress) $(IpAddress2) $(IpAddress3)
 - task: AzureCLI@2
   displayName: 'Add Build Server IPv4 Address to Prod KeyVault'
