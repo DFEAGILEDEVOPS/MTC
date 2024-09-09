@@ -8,7 +8,7 @@ CUTOFF_DATE=$(date -u -v-7d "+%Y-%m-%d")
 
 # Function to delete old blobs
 delete_old_blobs() {
-    local container_name=$2
+    local container_name=$1
 
     echo "Checking container: $container_name in storage account: $STORAGE_ACCOUNT_NAME"
 
@@ -26,12 +26,12 @@ delete_old_blobs() {
     fi
 
     # Check if the container is empty
-    blobs=$(az storage blob list --container-name $container --account-name <storage-account-name> --auth-mode login --query "[].name" -o tsv)
+    blobs=$(az storage blob list --container-name $container --account-name "$STORAGE_ACCOUNT_NAME" --auth-mode login --query "[].name" -o tsv)
 
     if [ -z "$blobs" ]
     then
       echo "Deleting empty container: $container"
-      az storage container delete --name $container --account-name <storage-account-name> --auth-mode login --yes
+      az storage container delete --name $container --account-name "$STORAGE_ACCOUNT_NAME" --auth-mode login --yes
     fi
 }
 
@@ -40,7 +40,7 @@ containers=$(az storage container list --account-name "$STORAGE_ACCOUNT_NAME" --
 
 # Loop through each container and process blobs
 for container in $containers; do
-    delete_old_blobs "$storage_account" "$container"
+    delete_old_blobs "$container"
 done
 
 
