@@ -19,8 +19,8 @@ end
 Then(/^teachers can only have read only access$/) do
   step 'I am logged in'
   pupil_register_page.load
-  expect(pupil_register_page).to have_no_add_pupil
-  expect(pupil_register_page).to have_no_add_multiple_pupil
+  expect(pupil_register_page).to have_add_pupil_disabled
+  expect(pupil_register_page).to have_add_multiple_pupil_disabled
   pupils_not_taking_check_page.load
   find(".govuk-button--disabled", text: 'Select pupils and reason')
   access_arrangements_page.load
