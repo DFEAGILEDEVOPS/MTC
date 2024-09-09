@@ -138,6 +138,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "^3.0.0",
+    "iconv-lite": "^0.6.3",
     "jest": "^27.0.6",
     "karma": "~6.3.4",
     "karma-chrome-launcher": "~3.1.0",

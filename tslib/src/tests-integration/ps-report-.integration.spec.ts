@@ -1,5 +1,6 @@
 import { PsReportStagingDataService } from '../functions-ps-report/ps-report-3b-stage-csv-file/ps-report-staging.data.service'
 import { ConsoleLogger, type ILogger } from '../common/logger'
+import * as iconv from 'iconv-lite'
 
 describe('PS Report 3b Stage CSV File Data Service', () => {
   let logger: ILogger
@@ -29,8 +30,10 @@ describe('PS Report 3b Stage CSV File Data Service', () => {
     const appendBlobClient = await sut.getAppendBlobService()
     const data = 'test, one, three\r\n' // must end in \r\n - for CSV files - or the services appends this to the data
     await sut.appendDataToBlob(data)
+    // the CSV file is in UTF16-le encoding
     const buffer = await appendBlobClient.downloadToBuffer()
-    const returnedData = buffer.toString()
+    // decode it to utf8 for compare
+    const returnedData = iconv.decode(buffer, 'utf16', { stripBOM: true })
     expect(returnedData).toStrictEqual(data)
   })
 })
