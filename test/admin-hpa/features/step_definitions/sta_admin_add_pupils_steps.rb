@@ -12,5 +12,7 @@ end
 
 Then(/^I should not be able to add a pupil$/) do
   school_landing_page.pupil_register.click
-  expect(find('h1').text).to eql 'Section unavailable'
+  expect(find('h1').text).to eql "View, add or edit pupils on your school's register"
+  expect(pupil_register_page).to have_add_pupil_disabled
+  expect(pupil_register_page).to have_add_multiple_pupil_disabled
 end
