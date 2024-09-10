@@ -5,7 +5,13 @@ STORAGE_ACCOUNT_NAME=$1
 STORAGE_ACCOUNT_KEY=$2
 
 # Get the current date in UTC and subtract 7 days
-CUTOFF_DATE=$(date -u -v-7d "+%Y-%m-%d")
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    CUTOFF_DATE=$(date -u -v-7d "+%Y-%m-%d")
+else
+    # Linux and others
+    CUTOFF_DATE=$(date -d "7 days ago" +%Y-%m-%d)
+fi
 
 # Function to delete old blobs
 delete_old_blobs() {
