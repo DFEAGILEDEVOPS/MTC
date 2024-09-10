@@ -4,7 +4,7 @@ import { type IPsReportDataService } from './ps-report.data.service'
 import { type IOutputBinding } from '.'
 import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 
-describe.skip('PsReportService', () => {
+describe('PsReportService', () => {
   let sut: PsReportService
   let logger: ILogger
   let psReportDataService: IPsReportDataService
@@ -29,7 +29,7 @@ describe.skip('PsReportService', () => {
     }
     outputBindings.psReportExportOutput = []
 
-    sut = new PsReportService(outputBindings, logger, psReportDataService)
+    sut = new PsReportService(logger, psReportDataService)
   })
 
   test('it is defined', () => {
@@ -62,7 +62,7 @@ describe.skip('PsReportService', () => {
     expect(psReportDataService.getPupilData).toHaveBeenCalledTimes(3)
   })
 
-  test('it outputs the results from getPupilData() once per pupil onto the outputBinding', async () => {
+  test.skip('it outputs the results from getPupilData() once per pupil onto the outputBinding', async () => {
     (psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
     ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
     ;(psReportDataService.getPupilData as jest.Mock)
