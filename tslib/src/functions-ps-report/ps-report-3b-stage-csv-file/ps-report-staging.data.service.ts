@@ -35,7 +35,7 @@ export class PsReportStagingDataService {
   public async createAppendBlock (): Promise<void> {
     const appendBlobService = await this.getAppendBlobService()
     await appendBlobService.deleteIfExists()
-    const res = await appendBlobService.createIfNotExists({blobHTTPHeaders: { blobContentType: 'text/csv', blobContentEncoding: 'UTF-16LE'}})
+    const res = await appendBlobService.createIfNotExists({ blobHTTPHeaders: { blobContentType: 'text/csv', blobContentEncoding: 'UTF-16LE' } })
     // @azure/storage-blob v12.24.0
     // Will return an error value rather than throw an error as well as give a 'succeeded=true'.  This version does not work.
     /* eslint-disable */
