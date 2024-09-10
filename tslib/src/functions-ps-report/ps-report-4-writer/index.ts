@@ -1,4 +1,4 @@
-import { type AzureFunction, type Context } from '@azure/functions'
+import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PsReportWriterService } from './ps-report-writer.service'
 import { type PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
@@ -6,23 +6,30 @@ import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 let funcName = 'ps-report-4-writer'
 
-const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
+app.serviceBusQueue(funcName, {
+  queueName: 'ps-report-staging-complete',
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
+  handler: psReport4Writer
+})
+
+export async function psReport4Writer (triggerInput: unknown, context: InvocationContext): Promise<void> {
   const start = performance.now()
+  const incomingMessage = triggerInput as PsReportStagingCompleteMessage
   await bulkUpload(context, incomingMessage)
   const end = performance.now()
   const durationInMilliseconds = end - start
   context.log(`${funcName} complete:run took ${durationInMilliseconds} ms`)
 }
 
-async function bulkUpload (context: Context, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
+async function bulkUpload (context: InvocationContext, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
   let dbTable: string = ''
-  const service = new PsReportWriterService(context.log, context.invocationId)
+  const service = new PsReportWriterService(context, context.invocationId)
   const jobDataService = new JobDataService()
-  funcName = funcName + ': ' + context.invocationId
+  funcName = `${funcName}: ${context.invocationId}`
   try {
-    context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
+    context.trace(`${funcName}: creating new destination table in SQL Server`)
     dbTable = await service.createDestinationTableAndViewIfNotExists(incomingMessage)
-    context.log.verbose(`${funcName}: new table created ${dbTable}`)
+    context.trace(`${funcName}: new table created ${dbTable}`)
 
     await service.prepareForUpload(incomingMessage.filename)
     context.log(`${funcName}: starting bulk upload from ${incomingMessage.filename} into table ${dbTable}`)
@@ -35,12 +42,10 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
     await service.recreateView(dbTable)
   } catch (error: any) {
     if (error instanceof Error) {
-      context.log.warn(`${funcName}: bulkUpload() failed: ${error.message}`)
-      context.log.warn(`${funcName}: ${JSON.stringify(error)}`)
+      context.warn(`${funcName}: bulkUpload() failed: ${error.message}`)
+      context.warn(`${funcName}: ${JSON.stringify(error)}`)
       await jobDataService.setJobComplete(incomingMessage.jobUuid,
         JobStatusCode.Failed, JSON.stringify(error))
     }
   }
 }
-
-export default serviceBusQueueTrigger

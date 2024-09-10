@@ -14,8 +14,7 @@ export class PsReportStagingDataService {
     }
     this.blobName = blobName
     this.containerName = containerName
-    this.logger.verbose(`${this.logName} constructor entered`)
-    this.logger.verbose(`Con Str ${config.AzureStorage.ConnectionString}`)
+    this.logger.trace(`${this.logName} constructor entered`)
     this.blobService = BlobServiceClient.fromConnectionString(config.AzureStorage.ConnectionString)
   }
 

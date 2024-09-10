@@ -12,7 +12,6 @@ const pupilController = require('../controllers/pupil')
 router.get(
   ['/', '/pupils-list'],
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  ifNotRole(roles.staAdmin, isPostLiveOrLaterCheckPhase),
   pupilRegister.listPupils
 )
 router.get(

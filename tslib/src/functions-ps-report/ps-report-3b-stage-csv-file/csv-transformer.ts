@@ -57,7 +57,7 @@ export class CsvTransformer {
     // eslint-disable-next-line no-constant-condition
     if (false) {
       // @ts-ignore: Unreachable code error
-      this.logger.verbose('CsvTransformer initialised')
+      this.logger.trace('CsvTransformer initialised')
     }
   }
 
