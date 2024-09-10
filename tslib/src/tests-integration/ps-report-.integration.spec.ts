@@ -33,7 +33,8 @@ describe('PS Report 3b Stage CSV File Data Service', () => {
     // the CSV file is in UTF16-le encoding
     const buffer = await appendBlobClient.downloadToBuffer()
     // decode it to utf8 for compare
-    const returnedData = iconv.decode(buffer, 'utf16', { stripBOM: true })
+    const returnedData = iconv.decode(buffer, 'utf16le', {stripBOM: true})
+    // const expectedBuffer = Buffer.from('\ufeff' + data + '\r\n', 'utf16le') // potentially useful debug
     expect(returnedData).toStrictEqual(data)
   })
 })

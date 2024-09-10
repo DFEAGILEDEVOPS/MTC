@@ -35,7 +35,7 @@ export class PsReportStagingDataService {
   public async createAppendBlock (): Promise<void> {
     const appendBlobService = await this.getAppendBlobService()
     await appendBlobService.deleteIfExists()
-    const res = await appendBlobService.createIfNotExists()
+    const res = await appendBlobService.createIfNotExists({blobHTTPHeaders: { blobContentType: 'text/csv', blobContentEncoding: 'UTF-16LE'}})
     // @azure/storage-blob v12.24.0
     // Will return an error value rather than throw an error as well as give a 'succeeded=true'.  This version does not work.
     /* eslint-disable */
@@ -47,7 +47,8 @@ export class PsReportStagingDataService {
     }
     /* eslint-enable */
     // Write a BOM to indicate this file is utf-16le
-    await appendBlobService.appendBlock('\ufeff', 2) // zero width no break space character is the accepted BOM for utf-16le FE FF
+    const utf16leBOM = Buffer.from([0xFF, 0xFE])
+    await appendBlobService.appendBlock(utf16leBOM, utf16leBOM.length) // zero width no break space character is the accepted BOM for utf-16le FE FF
   }
 
   /**
