@@ -191,7 +191,7 @@ if (!config.Redis.useTLS) {
   logger.warn('redis running in non-secure mode')
 }
 
-const RedisStore = require('connect-redis')(session)
+const RedisStore = require('connect-redis').default
 const sessionStore = new RedisStore({ client: redisClient })
 
 const sessionOptions = {
