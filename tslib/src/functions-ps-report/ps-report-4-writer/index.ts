@@ -31,6 +31,8 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
     context.log(`${funcName}: bulk upload complete.`)
     await jobDataService.setJobComplete(incomingMessage.jobUuid,
       JobStatusCode.CompletedSuccessfully, 'bulk upload complete')
+
+    await service.recreateView(dbTable)
   } catch (error: any) {
     if (error instanceof Error) {
       context.log.warn(`${funcName}: bulkUpload() failed: ${error.message}`)
@@ -38,7 +40,6 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
       await jobDataService.setJobComplete(incomingMessage.jobUuid,
         JobStatusCode.Failed, JSON.stringify(error))
     }
-    // await service.cleanup(incomingMessage.filename)
   }
 }
 
