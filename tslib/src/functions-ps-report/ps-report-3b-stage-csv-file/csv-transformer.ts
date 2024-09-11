@@ -36,6 +36,7 @@ export interface CsvData {
   ToECode: number
   ImportedFromCensus: number
   IsEdited: number
+  // TODO: add fields for Q1-25 - the bulk of the structure
 }
 
 /**
