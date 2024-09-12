@@ -42,7 +42,7 @@ class Logger {
 
     this.logger = winston.createLogger(baseLogOptions)
 
-    if (config.Logging.SendToAppInsights) {
+    if (config.Logging.SendToAppInsights === true) {
       console.log('app insights config enabled')
       const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
       const appInsights = require('applicationinsights')
