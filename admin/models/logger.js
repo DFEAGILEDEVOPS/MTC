@@ -41,22 +41,6 @@ class Logger {
     }
 
     this.logger = winston.createLogger(baseLogOptions)
-
-    if (config.Logging.SendToAppInsights === true) {
-      console.log('app insights config enabled')
-      const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
-      const appInsights = require('applicationinsights')
-
-      appInsights.setup(config.Monitoring.ApplicationInsights.Key).start()
-
-      this.logger
-        .clear() // remove all transports
-        .add(new AzureApplicationInsightsLogger({
-          insights: appInsights,
-          sendErrorsAsExceptions: true,
-          level: this.level
-        }))
-    }
   }
 
   log (level, msg, exception) {
