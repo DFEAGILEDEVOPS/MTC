@@ -12,6 +12,7 @@
     "test": "yarn genconfig && ng test",
     "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
     "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
+    "test:single": "yarn test-single",
     "genconfig": "./gen_config.sh && mv config.json src/assets/config.json",
     "lint": "ng lint",
     "runUnsupportedBrowserTests": "./unsupported-browser-tests/run-unsupported-browser-tests.sh"

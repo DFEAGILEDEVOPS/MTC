@@ -104,8 +104,8 @@ describe('SpokenPracticeQuestionComponent', () => {
 
   describe('handleKeyboardEvent', () => {
     function dispatchKeyEvent(keyboardDict) {
-      const event = new KeyboardEvent('keydown', keyboardDict);
-      event.initEvent('keydown', true, true);
+      const event = new KeyboardEvent('keyup', keyboardDict);
+      event.initEvent('keyup', true, true);
       document.dispatchEvent(event);
       return event;
     }
