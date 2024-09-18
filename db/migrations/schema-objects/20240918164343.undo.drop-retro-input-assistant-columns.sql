@@ -3,6 +3,5 @@ ALTER TABLE [mtc_admin].[pupilAccessArrangements]
         [retroInputAssistantLastName]  NVARCHAR (50) NULL,
         [retroInputAssistant_check_id] INT           NULL;
 
-ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH NOCHECK
-    ADD CONSTRAINT [FK_pupilAccessArrangements_check] FOREIGN KEY ([retroInputAssistant_check_id]) REFERENCES [mtc_admin].[check] ([id]);
-ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK CHECK CONSTRAINT [FK_pupilAccessArrangements_check];
+ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK
+    ADD CONSTRAINT [FK_pupilAccessArrangements_check_id] FOREIGN KEY ([retroInputAssistant_check_id]) REFERENCES [mtc_admin].[check] ([id]);
