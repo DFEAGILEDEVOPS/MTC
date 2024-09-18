@@ -1,7 +1,7 @@
 import { type IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
 import { v4 as uuid } from 'uuid'
 import moment = require('moment')
-import { type IModifyResult } from '../../sql/sql.service'
+
 export interface IPupilLoginMessage {
   version: number
   checkCode: string
@@ -9,7 +9,7 @@ export interface IPupilLoginMessage {
   practice: boolean
 }
 
-export interface IPupilLoginFunctionBindings {
+export interface IPupilLoginOutputs {
   pupilEventTable: any[]
 }
 
@@ -31,12 +31,14 @@ export class PupilLoginService {
     this.dataService = dataService
   }
 
-  async process (message: IPupilLoginMessage, bindings: IPupilLoginFunctionBindings): Promise<IModifyResult> {
+  async process (message: IPupilLoginMessage): Promise<IPupilLoginOutputs> {
     if (message.version !== 1) {
       throw new Error(`pupil-login message version:${message.version} unsupported`)
     }
-    bindings.pupilEventTable = []
-    bindings.pupilEventTable.push({
+    const output: IPupilLoginOutputs = {
+      pupilEventTable: []
+    }
+    output.pupilEventTable.push({
       PartitionKey: message.checkCode.toLowerCase(),
       RowKey: uuid(),
       eventType: 'pupil-login',
@@ -44,6 +46,7 @@ export class PupilLoginService {
       processedAt: moment().toDate()
     })
     const loginDate = new Date(message.loginAt)
-    return this.dataService.updateCheckWithLoginTimestamp(message.checkCode, loginDate)
+    await this.dataService.updateCheckWithLoginTimestamp(message.checkCode, loginDate)
+    return output
   }
 }

@@ -38,6 +38,7 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
   p @check_code
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end
 
 Then(/^I should have an expired pin$/) do

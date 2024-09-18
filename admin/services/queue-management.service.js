@@ -31,6 +31,13 @@ const service = {
     const activeMessageCount = await serviceBusQueueAdminService.getQueueActiveMessageCount(queueName)
     if (activeMessageCount === 0) return
     return serviceBusQueueAdminService.clearQueue(queueName, activeMessageCount)
+  },
+
+  sendServiceBusQueueMessage: async function sendServiceBusQueueMessage (queueName, message, contentType) {
+    if (contentType === 'application/json') {
+      message = JSON.parse(message)
+    }
+    await serviceBusQueueAdminService.sendMessageToQueue(queueName, message, contentType)
   }
 }
 

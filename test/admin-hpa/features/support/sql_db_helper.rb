@@ -844,4 +844,12 @@ class SqlDbHelper
     audit
   end
 
+  def self.get_last_urn
+    sql = "SELECT TOP 1 urn FROM mtc_admin.school ORDER by urn DESC"
+    result = SQL_CLIENT.execute(sql)
+    urn = result.first
+    result.cancel
+    urn
+  end
+
 end

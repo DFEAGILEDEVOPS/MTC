@@ -45,7 +45,7 @@ export class ListSchoolsService implements IListSchoolsService {
   }
 
   public async getSchoolMessages (specification: ISchoolMessageSpecification): Promise<PsReportSchoolFanOutMessage[]> {
-    this.logger.verbose('ListSchoolsService called - retrieving all schools')
+    this.logger.trace('ListSchoolsService called - retrieving all schools')
     const schools = await this.getSchools(specification.urns)
     const schoolMessages: PsReportSchoolFanOutMessage[] = schools.map(school => {
       return {

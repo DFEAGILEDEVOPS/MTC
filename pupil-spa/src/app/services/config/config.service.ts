@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { default as connectivityErrorMessages } from '../connectivity-service/connectivity-error-messages'
 
 /**
  * Declaration of config class
@@ -12,8 +11,6 @@ export interface IAppConfig {
   checkStartAPIErrorMaxAttempts: number;
   checkSubmissionAPIErrorMaxAttempts: number;
   checkSubmissionApiErrorDelay: number;
-  connectivityCheckEnabled: boolean;
-  connectivityCheckViewMinDisplay: number
   feedbackAPIErrorDelay: number;
   feedbackAPIErrorMaxAttempts: number;
   loginPendingViewMinDisplay: number
@@ -23,12 +20,7 @@ export interface IAppConfig {
   submissionPendingViewMinDisplay: number;
   submitsToCheckReceiver: boolean;
   supportNumber: string;
-   testPupilConnectionDelay: number
-   testPupilConnectionMaxAttempts: number
-   testPupilConnectionQueueName: string
-   testPupilConnectionQueueToken: string
-   testPupilConnectionQueueUrl: string
-   websiteOffline: boolean
+  websiteOffline: boolean
 }
 
 export class AppConfig implements IAppConfig {
@@ -38,8 +30,6 @@ export class AppConfig implements IAppConfig {
   readonly checkStartAPIErrorMaxAttempts: number
   readonly checkSubmissionAPIErrorMaxAttempts: number
   readonly checkSubmissionApiErrorDelay: number
-  readonly connectivityCheckEnabled: boolean
-  readonly connectivityCheckViewMinDisplay: number
   readonly feedbackAPIErrorDelay: number
   readonly feedbackAPIErrorMaxAttempts: number
   readonly loginPendingViewMinDisplay: number
@@ -49,11 +39,6 @@ export class AppConfig implements IAppConfig {
   readonly submissionPendingViewMinDisplay: number
   readonly submitsToCheckReceiver: boolean
   readonly supportNumber: string
-  readonly testPupilConnectionDelay: number
-  readonly testPupilConnectionMaxAttempts: number
-  readonly testPupilConnectionQueueName: string
-  readonly testPupilConnectionQueueToken: string
-  readonly testPupilConnectionQueueUrl: string
   readonly websiteOffline: boolean
 }
 
@@ -64,8 +49,6 @@ class MockAppConfig implements IAppConfig {
   checkStartAPIErrorMaxAttempts = 3
   checkSubmissionAPIErrorMaxAttempts = 3
   checkSubmissionApiErrorDelay = 10
-  connectivityCheckEnabled = false
-  connectivityCheckViewMinDisplay = 20
   feedbackAPIErrorDelay = 10
   feedbackAPIErrorMaxAttempts = 11
   loginPendingViewMinDisplay = 2
@@ -75,11 +58,6 @@ class MockAppConfig implements IAppConfig {
   submissionPendingViewMinDisplay = 14
   submitsToCheckReceiver = false
   supportNumber = '000'
-  testPupilConnectionDelay = 15
-  testPupilConnectionMaxAttempts = 3
-  testPupilConnectionQueueName = 'testPupilConnectionQueueName'
-  testPupilConnectionQueueToken = 'testPupilConnectionQueueToken'
-  testPupilConnectionQueueUrl = 'testPupilConnectionQueueUrl'
   websiteOffline = false
 }
 
@@ -130,7 +108,7 @@ export class AppConfigService {
       APP_CONFIG = Object.assign(t, data)
       return true
     } catch (error) {
-      this.errorMessages.push(connectivityErrorMessages.settingsError)
+      this.errorMessages.push('There was a problem getting the settings')
       return false
     }
   }

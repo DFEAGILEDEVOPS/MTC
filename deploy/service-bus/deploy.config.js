@@ -80,7 +80,7 @@ const config = {
     },
     {
       name: 'ps-report-export',
-      defaultMessageTimeToLive: sixHours,
+      defaultMessageTimeToLive: oneDay,
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT, 10) : eightyGigabytes
     },
     {

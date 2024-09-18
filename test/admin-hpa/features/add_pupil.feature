@@ -184,24 +184,34 @@ Feature:
     When I submit valid details with a temporary UPN has a lowercase alpha character
     Then the pupil details should be stored
 
-  Scenario: 11 year old pupils cannot be added
-    Given I am on the add pupil page
-    When I submit the form with the pupil dob 11 years ago
-    Then I should see an error with the DOB
-
-  Scenario: 10 year old pupils can be added
+  Scenario: 10 year old pupils cannot be added
     Given I am on the add pupil page
     When I submit the form with the pupil dob 10 years ago
+    Then I should see an error with the DOB
+
+  Scenario: 9 year 364 days pupils old pupils can be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 9 years and 364 days ago
     Then the pupil details should be stored
 
-  Scenario: 9 year old pupils can be added
+  Scenario: 9 year pupils old pupils can be added
     Given I am on the add pupil page
     When I submit the form with the pupil dob 9 years ago
     Then the pupil details should be stored
 
-  Scenario: 8 year old pupils can be added
+  Scenario: 8 year 364 days old pupils can be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 8 years and 364 days ago
+    Then the pupil details should be stored
+
+  Scenario: 8 year pupils old pupils can be added
     Given I am on the add pupil page
     When I submit the form with the pupil dob 8 years ago
+    Then the pupil details should be stored
+
+  Scenario: 7 year 364 days old pupils can be added
+    Given I am on the add pupil page
+    When I submit the form with the pupil dob 7 years and 364 days ago
     Then the pupil details should be stored
 
   Scenario: 7 year old pupils can be added by adding a reason
@@ -209,9 +219,9 @@ Feature:
     When I submit the form with the pupil dob 7 years ago
     Then the pupil details should be stored
 
-  Scenario: 6 year old pupils cannot be added
+  Scenario: 6 year 364 days old pupils cannot be added
     Given I am on the add pupil page
-    When I submit the form with the pupil dob 6 years ago
+    When I submit the form with the pupil dob 6 years and 364 days ago
     Then I should see an error with the DOB
 
   @pupil_register_v2_hook

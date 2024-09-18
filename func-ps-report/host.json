@@ -32,7 +32,7 @@
       "messageHandlerOptions": {
         "autoComplete": true,
         "maxConcurrentCalls": 1,
-        "maxAutoRenewDuration": "00:05:00"
+        "maxAutoRenewDuration": "23:00:00"
       },
       "sessionHandlerOptions": {
         "autoComplete": false,
@@ -44,6 +44,6 @@
   },
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
-    "version": "[2.*, 3.0.0)"
+    "version": "[4.0.0, 5.0.0)"
   }
 }

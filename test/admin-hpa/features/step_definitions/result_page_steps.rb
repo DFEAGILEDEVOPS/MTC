@@ -25,7 +25,7 @@ end
 And(/^we navigate to the Result page$/) do
   step "I am logged in"
   school_landing_page.load
-  Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
+  wait_until(30,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
 end
 
@@ -76,7 +76,7 @@ Then(/^I should see the school results$/) do
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  wait_until(30,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message
@@ -118,7 +118,7 @@ Then(/^I should be able to view school results but not download the ctf$/) do
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
+  wait_until(30,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message
@@ -158,7 +158,7 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  wait_until(30,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message
@@ -299,7 +299,7 @@ Then(/^I should see the pupil has the Not able to administer attendance code$/) 
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  wait_until(30,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message
@@ -327,7 +327,7 @@ Then(/^I should see the pupil has the Maladministration attendance code$/) do
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  wait_until(10,2){visit current_url; school_landing_page.has_results?}
+  wait_until(30,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message

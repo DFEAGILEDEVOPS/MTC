@@ -37,7 +37,6 @@ export class PupilHistoryService {
       const transCheck = R.assoc('checkStatus', status, check)
       return transCheck
     })
-
     return {
       school: rawPupilHistory.school,
       restarts: rawPupilHistory.restarts,

@@ -1,4 +1,4 @@
-import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-3-transformer/models'
+import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
 import * as CSV from 'csv-string'
 import moment from 'moment'
 import { type ILogger } from '../../common/logger'
@@ -16,7 +16,7 @@ export class CsvTransformer {
   constructor (logger: ILogger, psReportLineData: IPsychometricReportLine[]) {
     this.logger = logger
     this.psReportLineData = psReportLineData
-    this.logger.verbose('CsvTransformer initialised')
+    this.logger.trace('CsvTransformer initialised')
   }
 
   private transformAnswer (a: IReportLineAnswer | undefined): any[] {

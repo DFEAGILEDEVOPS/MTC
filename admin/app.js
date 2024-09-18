@@ -49,6 +49,7 @@ const administrationMessageService = require('./services/administration-message.
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
 const { formAlreadySubmittedErrorCode } = require('./error-types/form-already-submitted-error')
+const { dfeSignInErrorConsts } = require('./error-types/dfe-signin-error')
 
 const app = express()
 setupLogging(app)
@@ -384,6 +385,8 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
   const errorId = uuidv4()
+  res.locals.errorId = errorId
+
   // set locals, only providing error in development
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
@@ -413,11 +416,21 @@ app.use(function (err, req, res, next) {
     return res.render('availability/page-not-found', {})
   }
 
+  if (err.name === 'DfeSignInError') {
+    res.locals.pageTitle = 'Something isn\'t quite right!'
+    res.status(500)
+    console.log('dfeSignInErrorConsts', dfeSignInErrorConsts)
+    if (err?.originalError?.code === userInitErrorConsts.schoolNotFound || err?.originalError?.code === dfeSignInErrorConsts.dfeRoleError) {
+      return res.render('dfe-sign-in-error-missing-org')
+    }
+    // Catchall handling for Dfe Sign in errors.
+    return res.render('dfe-sign-in-error', { userMessage: err.userMessage ?? '' })
+  }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}
-  res.locals.errorId = errorId
   res.locals.errorCode = ''
   res.status(err.statusCode || 500)
   res.locals.pageTitle = 'Error'

@@ -19,7 +19,7 @@ function initPupilFormElements () {
               <input class="form-control " id="dob-year" name="dob-year" type="number" min="0" max="2019" value="">
           </div>
       </div>
-      <div class="hide-age-content">
+      <div id='js-age-warning' class="hide-age-content">
           <div class="panel panel-border-wide">
               <div class="">
                   <div class="form-label"><div>The expected age range of pupils taking the check is 8 to 9 years old.</div>
@@ -34,55 +34,92 @@ function initPupilFormElements () {
 
 describe('pupil-form', function () {
   describe('displayAgeTextArea', function () {
+  /**
+   * The expected age as of 1 September (start of academic year) should be greater than or equal to 8 years and less than 9 years old
+   *
+   * If an age as of 1 September is entered that is between 7 years and 0 days AND 7 years 364 days or between 9 years and 0 days AND
+   * 9 years and 364 days, then a warning message should be raised (see the current system for this message).
+   *
+   * If the age as of 1 September is outside the above e.g. younger than 7 years or older than 10 years then the
+   * pupil must not be added to the system.
+   **/
     beforeEach(function () {
       $('body').empty()
       initPupilFormElements()
       window.MTCAdmin.pupilForm()
-      spyOn(window.MTCAdmin, 'determineAcademicYear').and.returnValue((new Date()).getFullYear())
+      spyOn(window.MTCAdmin, 'determineAcademicYear').and.returnValue(2023)
+      jasmine.clock().install()
+      jasmine.clock().mockDate(new Date(2024, 7, 1)) // Make all the tests work from 2024 test cycle: 1-AUG-24
     })
-    it('should display the age content if the pupils input dob is within the academic year of aged 7', function () {
-      var pupilAgeSevenYear = ((new Date()).getFullYear() - 7).toString()
-      $('#dob-day').val('01')
+
+    afterEach(() => {
+      jasmine.clock().uninstall()
+    })
+
+    it('should display the age warning if a pupil is 6 years 365 days old on 1 Sep', function () {
+      $('#dob-day').val('2')
       $('#dob-day').trigger('input')
-      $('#dob-month').val('09')
+      $('#dob-month').val('9') // 2-Sep-2016
       $('#dob-month').trigger('input')
-      $('#dob-year').val(pupilAgeSevenYear)
+      $('#dob-year').val('2016')
       $('#dob-year').trigger('input')
       expect($('.show-age-content').length).toBeGreaterThan(0)
       expect($('.hide-age-content').length).toEqual(0)
     })
-    it('should not display the age content if the pupils input dob is not within the academic year of aged 7', function () {
-      var pupilAgeSevenYear = ((new Date()).getFullYear() - 7).toString()
-      $('#dob-day').val('02')
+
+    it('should display the age warning if a pupil is 7 years 0 days old on 1 Sep', function () {
+      $('#dob-day').val('1')
       $('#dob-day').trigger('input')
-      $('#dob-month').val('09')
+      $('#dob-month').val('9') // 1-Sep-2016
       $('#dob-month').trigger('input')
-      $('#dob-year').val(pupilAgeSevenYear)
-      $('#dob-year').trigger('input')
-      expect($('.show-age-content').length).toEqual(0)
-      expect($('.hide-age-content').length).toBeGreaterThan(0)
-    })
-    it('should display the age content if the pupils input dob is within the academic year of aged 10', function () {
-      var pupilAgeTenYear = ((new Date()).getFullYear() - 10).toString()
-      $('#dob-day').val('01')
-      $('#dob-day').trigger('input')
-      $('#dob-month').val('09')
-      $('#dob-month').trigger('input')
-      $('#dob-year').val(pupilAgeTenYear)
+      $('#dob-year').val('2016')
       $('#dob-year').trigger('input')
       expect($('.show-age-content').length).toBeGreaterThan(0)
       expect($('.hide-age-content').length).toEqual(0)
     })
-    it('should not display the age content if the pupils input dob is not within the academic year of aged 10', function () {
-      var pupilAgeSevenYear = ((new Date()).getFullYear() - 10).toString()
+
+    it('should display the age warning if a pupil is 7 years 364 days old on 1 Sep (too young by a day)', function () {
+      $('#dob-day').val('2')
+      $('#dob-day').trigger('input')
+      $('#dob-month').val('9') // 2-Sep-2016
+      $('#dob-month').trigger('input')
+      $('#dob-year').val('2015')
+      $('#dob-year').trigger('input')
+      expect($('.show-age-content').length).toBeGreaterThan(0)
+      expect($('.hide-age-content').length).toEqual(0)
+    })
+
+    it('should not display the age warning if a pupil is 8 years and 0 days on 1 Sep', function () {
+      $('#dob-day').val('01')
+      $('#dob-day').trigger('input')
+      $('#dob-month').val('09')
+      $('#dob-month').trigger('input')
+      $('#dob-year').val('2015')
+      $('#dob-year').trigger('input')
+      expect($('.show-age-content').length).toEqual(0)
+      expect($('.hide-age-content').length).toBeGreaterThan(0)
+    })
+
+    it('should not display the age warning if a pupil is 8 years and 364 days on 1 Sep', function () {
       $('#dob-day').val('02')
       $('#dob-day').trigger('input')
       $('#dob-month').val('09')
       $('#dob-month').trigger('input')
-      $('#dob-year').val(pupilAgeSevenYear)
+      $('#dob-year').val('2014')
       $('#dob-year').trigger('input')
       expect($('.show-age-content').length).toEqual(0)
       expect($('.hide-age-content').length).toBeGreaterThan(0)
+    })
+
+    it('should display the age warning if a pupil is 9 years old and 0 days on 1 Sep', function () {
+      $('#dob-day').val('01')
+      $('#dob-day').trigger('input')
+      $('#dob-month').val('09')
+      $('#dob-month').trigger('input')
+      $('#dob-year').val('2014')
+      $('#dob-year').trigger('input')
+      expect($('.show-age-content').length).toBeGreaterThan(0)
+      expect($('.hide-age-content').length).toEqual(0)
     })
   })
   describe('determineAcademicYear', function () {
@@ -105,20 +142,6 @@ describe('pupil-form', function () {
       jasmine.clock().mockDate(baseTime)
       const academicYear = window.MTCAdmin.determineAcademicYear()
       expect(academicYear).toBe(currentYear)
-    })
-  })
-  describe('isWithinAcademicYear', function () {
-    it('should return true if the input date is within second day of September on the target year until the first day of September of the next year from the target year', function () {
-      const currentYear = (new Date()).getFullYear()
-      const inputDate = new Date(currentYear - 11, 11, 31)
-      const isWithinAcademicYear = window.MTCAdmin.isWithinAcademicYear(inputDate, currentYear, 11)
-      expect(isWithinAcademicYear).toBeTruthy()
-    })
-    it('should return false if the input date is not within second day of September on the target year until the first day of September of the next year from the target year', function () {
-      const currentYear = (new Date()).getFullYear()
-      const inputDate = new Date(currentYear - 11, 1, 1)
-      const isWithinAcademicYear = window.MTCAdmin.isWithinAcademicYear(inputDate, currentYear, 11)
-      expect(isWithinAcademicYear).toBeFalsy()
     })
   })
 })
