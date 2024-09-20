@@ -1,5 +1,4 @@
 import { CompressorService } from './compressor.service';
-import { strFromU8, strToU8, gunzipSync } from 'fflate';
 
 describe('CompressorService', () => {
 
