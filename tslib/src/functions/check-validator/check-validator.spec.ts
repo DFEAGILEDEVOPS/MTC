@@ -39,7 +39,9 @@ describe('check-validator', () => {
       compressToUTF16: jest.fn(),
       decompressFromUTF16: jest.fn(),
       compressToBase64: jest.fn(),
-      decompressFromBase64: jest.fn()
+      decompressFromBase64: jest.fn(),
+      compressToGzip: jest.fn(),
+      decompressFromGzip: jest.fn()
     }
     checkFormServiceMock = {
       getCheckFormForCheckCode: jest.fn(),

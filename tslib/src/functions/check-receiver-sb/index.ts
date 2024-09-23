@@ -30,7 +30,7 @@ export async function checkReceiverSb (triggerMessage: unknown, context: Invocat
   const start = performance.now()
   const submittedCheck = triggerMessage as SubmittedCheckMessage
   const version = submittedCheck.version
-  const expectedVersion = SubmittedCheckVersion.V3
+  const expectedVersion = SubmittedCheckVersion.V4
   context.info(`${functionName}: version:${version} message received for checkCode ${submittedCheck.checkCode}`)
   const receiver = new CheckReceiverServiceBus()
   try {

@@ -58,6 +58,10 @@ export class CheckValidator {
         // base64 compressed archive payload
         const decompressedArchive = this.compressionService.decompressFromBase64(receivedCheck.archive)
         checkData = JSON.parse(decompressedArchive)
+      } else if (receivedCheck.checkVersion === SubmittedCheckVersion.V4) {
+        // base64 compressed gzip archive payload
+        const decompressedArchive = this.compressionService.decompressFromGzip(receivedCheck.archive)
+        checkData = decompressedArchive
       } else {
         throw new Error(`${functionName}: unsupported check version:'${receivedCheck.checkVersion}'`)
       }

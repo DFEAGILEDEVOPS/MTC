@@ -20,7 +20,9 @@ const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
   compressToUTF16: jest.fn(),
   decompressFromUTF16: jest.fn(),
   compressToBase64: jest.fn(),
-  decompressFromBase64: jest.fn()
+  decompressFromBase64: jest.fn(),
+  compressToGzip: jest.fn(),
+  decompressFromGzip: jest.fn()
 }))
 
 const PreparedCheckServiceMock = jest.fn<IPreparedCheckService, any>(() => ({
