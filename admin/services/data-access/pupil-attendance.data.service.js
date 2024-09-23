@@ -53,12 +53,20 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async function sqlDeleteOneBy
 
   const sql = `
   --
+  -- capture the pupilAttendanceId for the restart undo
+  --
+  DECLARE @pupilAttendanceTable TABLE (ID INT NULL);
+  DECLARE @pupilAttendanceId INT;
+  --
   -- Remove the attendance code
   --
   UPDATE [mtc_admin].[pupilAttendance]
   SET isDeleted=1
+  OUTPUT INSERTED.ID INTO @pupilAttendanceTable
   WHERE pupil_id = @pupilId;
-
+  --
+  -- Get the pupilAttendanceId
+  SELECT @pupilAttendanceId = ID FROM @pupilAttendanceTable;
   --
   -- Maintain the pupil state
   --
@@ -66,6 +74,16 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async function sqlDeleteOneBy
   SET attendanceId = NULL,
   lastModifiedBy_userId = @userId
   WHERE id = @pupilId;
+
+  UPDATE [mtc_admin].[pupilRestart]
+  SET isDeleted = 0,
+  deletedByUser_id = NULL,
+  deletedAt = NULL,
+  deletedBy_pupilAttendance_id = NULL
+  WHERE
+  deletedBy_pupilAttendance_id = @pupilAttendanceId
+  AND isDeleted = 1
+  AND pupil_id = @pupilId;
   `
   const params = [
     {
@@ -226,14 +244,18 @@ pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttendin
   SET
     pr.isDeleted = 1,
     pr.deletedByUser_id = @userId,
-    pr.deletedAt = GETUTCDATE()
+    pr.deletedAt = GETUTCDATE(),
+    pr.deletedBy_pupilAttendance_id = pa.id
   FROM
-       [mtc_admin].[pupil] p JOIN
-       #pupilsToSet t1 ON (p.id = t1.id) LEFT JOIN
-       [mtc_admin].[pupilRestart] pr ON (p.id = pr.pupil_id)
+       [mtc_admin].[pupil] p
+       JOIN #pupilsToSet t1 ON (p.id = t1.id)
+       LEFT JOIN [mtc_admin].[pupilRestart] pr ON (p.id = pr.pupil_id)
+       LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id)
   WHERE
-      pr.isDeleted  = 0
-  AND pr.check_id IS NULL -- unconsumed
+      pr.isDeleted = 0
+  AND pr.check_id IS NULL
+  AND pa.isDeleted = 0
+  -- unconsumed restarts & current attendance record
   ;`
 
   return sqlService.modifyWithTransaction(sql, params.concat(insertParams))
