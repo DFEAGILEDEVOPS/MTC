@@ -68,11 +68,9 @@ export class CompressionService implements ICompressionService {
     const comp = atob(b64Data)
 
     // decompress gzip
-    const uncompData = gunzipSync(strToU8(comp, true))
-    const uncomp = strFromU8(uncompData)
-
-    const obj = JSON.parse(uncomp)
-    return obj
+    const decompData = gunzipSync(strToU8(comp, true))
+    const decompString = strFromU8(decompData)
+    return decompString
   }
 }
 
