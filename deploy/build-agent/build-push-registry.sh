@@ -12,4 +12,4 @@ fi
 
 GIT_COMMIT_SHORT=$(git log -1 --format=%h)
 docker build -t $REGISTRY_NAME.azurecr.io/devops-build-agent:latest -t $REGISTRY_NAME.azurecr.io/devops-build-agent:$GIT_COMMIT_SHORT --platform linux/amd64 .
-docker push --all-tags $REGISTRY_NAME.azurecr.io/devops-build-agent:latest
+docker push --all-tags $REGISTRY_NAME.azurecr.io/devops-build-agent
