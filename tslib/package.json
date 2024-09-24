@@ -4,21 +4,22 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "build": "tsc -b --v",
     "build:watch": "tsc -b --v -w",
-    "rebuild": "yarn clean && yarn build",
-    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
+    "build": "tsc -b --v",
+    "clean": "rm -rf ./dist",
+    "coverage": "yarn test:coverage",
     "lint:fix": "yarn eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "test": "yarn lint && yarn jest",
+    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
+    "rebuild": "yarn clean && yarn build",
+    "test:coverage": "yarn jest --coverage",
+    "test:integration": "yarn jest --config ./src/tests-integration/jest.integration.config.js",
     "test:throttle": "yarn lint && yarn jest --maxWorkers=2",
     "test:watch": "yarn watch",
-    "watch:all": "yarn jest --watchAll",
-    "watch": "yarn jest --watch",
-    "clean": "rm -rf ./dist",
-    "coverage": "yarn jest --coverage",
+    "test": "yarn lint && yarn jest",
     "tests:integration": "yarn test:integration",
-    "test:integration": "yarn jest --config ./src/tests-integration/jest.integration.config.js",
-    "watch:integration": "yarn jest --watch --config ./src/tests-integration/jest.integration.config.js"
+    "watch:all": "yarn jest --watchAll",
+    "watch:integration": "yarn jest --watch --config ./src/tests-integration/jest.integration.config.js",
+    "watch": "yarn jest --watch"
   },
   "engines": {
     "node": ">= 18"
