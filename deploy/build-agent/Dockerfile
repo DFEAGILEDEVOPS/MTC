@@ -97,7 +97,7 @@ RUN apt-get update && apt-get install -y dotnet-sdk-7.0
 # Update the list of packages
 RUN apt-get update
 # Download the Microsoft repository GPG keys
-RUN wget -q "https://packages.microsoft.com/config/ubuntu/$VERSION_ID/packages-microsoft-prod.deb"
+RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
 # Register the Microsoft repository GPG keys
 RUN dpkg -i packages-microsoft-prod.deb
 # Delete the the Microsoft repository GPG keys file
