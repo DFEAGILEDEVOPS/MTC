@@ -272,6 +272,7 @@ export class PsReportWriterService {
       BULK INSERT mtc_results.[${sTablename}]
       FROM '${sFilename}'
       WITH (DATA_SOURCE = 'PsReportData',
+                 FORMAT = 'CSV',
            DATAFILETYPE = 'widechar',
         FIELDTERMINATOR = ',')
       ;`
