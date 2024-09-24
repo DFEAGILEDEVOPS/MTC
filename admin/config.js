@@ -119,8 +119,7 @@ module.exports = {
     DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1,
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
-    },
-    SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
+    }
   },
   Monitoring: {
     ApplicationInsights: {

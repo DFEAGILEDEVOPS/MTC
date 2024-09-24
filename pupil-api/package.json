@@ -41,8 +41,7 @@
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^1.0.36",
     "uuid": "^9.0.1",
-    "winston": "^3.13.0",
-    "winston-azure-application-insights": "^4.0.0"
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "edit-json-file": "^1.7.0",

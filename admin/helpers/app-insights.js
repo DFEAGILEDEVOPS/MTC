@@ -12,7 +12,7 @@ const startInsightsIfConfigured = async () => {
     appInsights.setup()
       .setAutoCollectRequests(true)
       // setAutoCollectPerformance() - for some reason this next call causes a configuration warning 'Extended metrics are no longer supported. ...'
-      .setAutoCollectPerformance(true, true)
+      .setAutoCollectPerformance(true, false)
       .setAutoCollectExceptions(config.Monitoring.ApplicationInsights.CollectExceptions)
       .setAutoCollectDependencies(config.Monitoring.ApplicationInsights.CollectDependencies)
       .setAutoCollectConsole(false)
