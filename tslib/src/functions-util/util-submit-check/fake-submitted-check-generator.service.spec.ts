@@ -111,4 +111,32 @@ describe('fake-submitted-check-message-builder-service', () => {
       }
     })
   })
+
+  describe('v4 message', () => {
+    test('produces a v4 message', async () => {
+      const compressedString = 'compressed-string'
+      jest.spyOn(compressionServiceMock, 'compressToGzip').mockReturnValue(compressedString)
+      const version4Spec = SubmittedCheckVersion.V4
+      const actual = await sut.createV4Message(checkCode)
+      expect(actual).toBeDefined()
+      expect(actual.version).toStrictEqual(version4Spec)
+      expect(actual.archive).toStrictEqual(compressedString)
+      expect(compressionServiceMock.compressToGzip).toHaveBeenCalledTimes(1)
+    })
+
+    test('fetches prepared check with expected check code', async () => {
+      await sut.createV4Message(checkCode)
+      expect(preparedCheckServiceMock.fetch).toHaveBeenCalledWith(checkCode)
+    })
+
+    test('if prepared check not found an error should be thrown', async () => {
+      jest.spyOn(preparedCheckServiceMock, 'fetch').mockReturnValue(Promise.resolve())
+      try {
+        await sut.createV3Message(checkCode)
+        fail('error should have been thrown due to prepared check not being found in redis')
+      } catch (error: any) {
+        expect(error.message).toBe(`prepared check not found in redis with checkCode:${checkCode}`)
+      }
+    })
+  })
 })

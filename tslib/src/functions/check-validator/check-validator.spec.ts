@@ -175,6 +175,23 @@ describe('check-validator', () => {
     expect(compressionServiceMock.decompressFromBase64).toHaveBeenCalledWith('foo')
   })
 
+  test('v4 archive is decompressesed from gzip', async () => {
+    const receivedCheckEntity: ReceivedCheckTableEntity = {
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: SubmittedCheckVersion.V4
+    }
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(receivedCheckEntity, message, loggerMock)
+    expect(compressionServiceMock.decompressFromGzip).toHaveBeenCalledWith('foo')
+  })
+
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       partitionKey: uuid.v4(),
