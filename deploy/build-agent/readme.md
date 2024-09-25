@@ -9,6 +9,7 @@
 ## Prerequisites
 - Azure CLI is required, as it used to create the container instance in Azure
 - Docker is required, as it is used to push the docker images to the Azure Container Registry
+- Docker Desktop is recommended, as it automatically provides a secure credential store for registry credentials.
 - Any changes to the Dockerfile must be committed before running this script, as the commit hash is used for the image tag.
 - You must be logged into your target registry before you run this script.
 
@@ -19,7 +20,7 @@ If you are building the image locally on an Apple Silicon device during developm
 1. update the `$AGENT_VERSION` variable in `./Dockerfile` to the [latest full release](https://github.com/microsoft/azure-pipelines-agent/releases)
 2. commit changes to ensure commit hash is aligned
 3. [login to the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli), ensuring to target the appropriate subscription
-4. login to the Azure Container Registry with [`docker login`](https://docs.docker.com/reference/cli/docker/login/)
+4. login to the Azure Container Registry with `az acr login --name <registry-name>`
 5. execute `./build-push-registry.sh` to push new image
 6. run `./create-instance.sh` to create new build servers
 7. delete any outdated build server container instances in azure
