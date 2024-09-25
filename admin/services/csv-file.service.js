@@ -1,6 +1,6 @@
 'use strict'
-
 const blobDataService = require('./data-access/azure-blob.data.service')
+const R = require('ramda')
 
 const csvBlobContainerName = 'csvuploads'
 
@@ -11,6 +11,9 @@ const service = {
    * @returns {Promise<Buffer>}
    */
   getCsvFileAsBuffer: function getCsvFileAsBuffer (remoteFileName) {
+    if (R.isNil(remoteFileName)) {
+      throw new Error('Missing remoteFilename param')
+    }
     return blobDataService.getBlobDataAsBuffer(csvBlobContainerName, remoteFileName)
   }
 }

@@ -162,13 +162,6 @@ export class PsReportWriterService {
 
     this.logger.info(`${this.logPrefix()}: new table ${newTableName} created`)
 
-    const viewSql = `
-        CREATE OR ALTER VIEW [mtc_results].[vewPsychometricReport]
-        AS
-          SELECT * FROM [mtc_results].[${newTableName}]
-    `
-    await this.sqlService.modify(viewSql, [])
-    this.logger.info(`${this.logPrefix()}: psychometricReport view recreated`)
     return newTableName
   }
 
@@ -274,23 +267,28 @@ export class PsReportWriterService {
     // This file format is extremely finicky.
     // 1. The row must end in '\r\n'
     // 2. Dates should be in ISO format: YYYY-MM-DD
+    // 3. It should be in UTF16le encoding with BOM
     const sql = `
       BULK INSERT mtc_results.[${sTablename}]
       FROM '${sFilename}'
       WITH (DATA_SOURCE = 'PsReportData',
                  FORMAT = 'CSV',
-        FIELDTERMINATOR = ',',
-          ROWTERMINATOR = '\r\n')
+           DATAFILETYPE = 'widechar',
+        FIELDTERMINATOR = ',')
       ;`
     await mssql.query(sql)
-    // await this.cleanup(sFilename)
   }
 
-  public async cleanup (filename: string): Promise<void> {
-    this.logger.info(`${this.logPrefix()}: cleanup() called`)
-    // Remove CSV file
-    const blobService = new BlobService()
-    await blobService.deleteBlob(filename, containerName)
-    this.logger.info(`${this.logPrefix()}: csv file ${filename} deleted.`)
+  /**
+   * Point the ps report view to the newly created table
+   */
+  public async recreateView (newTableName: string): Promise<void> {
+    const viewSql = `
+      CREATE OR ALTER VIEW [mtc_results].[vewPsychometricReport]
+        AS
+        SELECT * FROM [mtc_results].[${newTableName}]
+    `
+    await this.sqlService.modify(viewSql, [])
+    this.logger.info(`${this.logPrefix()}: psychometricReport view recreated`)
   }
 }

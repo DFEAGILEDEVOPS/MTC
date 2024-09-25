@@ -65,11 +65,11 @@
     "moment-timezone": "^0.5.40",
     "morgan": "^1.10.0",
     "mssql": "^10.0.2",
-    "ramda": "^0.28.0",
-    "ramda-adjunct": "^3.4.0",
+    "ramda": "^0.30.1",
+    "ramda-adjunct": "^5.1.0",
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^1.0.36",
-    "uuid": "^9.0.1",
+    "uuid": "^10.0.0",
     "winston": "^3.13.0"
   },
   "function-settings": {

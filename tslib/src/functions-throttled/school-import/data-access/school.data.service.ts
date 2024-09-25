@@ -89,7 +89,7 @@ export class SchoolDataService implements ISchoolDataService {
   }
 
   private async getEstabTypeId (estabTypeCode: number, estabTypeName: string, existingEstabTypes: Array<Record<string, number>>): Promise<number> {
-    const estabTypeEntry = R.find(R.propEq('code', estabTypeCode), existingEstabTypes)
+    const estabTypeEntry = R.find(R.propEq(estabTypeCode, 'code'), existingEstabTypes)
     if (estabTypeEntry === undefined) {
       this.logInfo(`no estabType found with code ${estabTypeCode}, attempting to add...`)
       const newId = await this.addEstabType(estabTypeCode, estabTypeName)
