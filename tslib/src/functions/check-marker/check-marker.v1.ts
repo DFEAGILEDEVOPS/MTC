@@ -50,7 +50,6 @@ export class CheckMarkerV1 {
     let checkResult: CheckResult
     try {
       checkResult = this.markCheck(markingData, validatedCheck.RowKey)
-      logger.trace(`mark(): results ${JSON.stringify(checkResult)}`)
       const markingEntity = this.createMarkingEntity(checkResult, validatedCheck.PartitionKey)
       outputs.checkResultTable.push(markingEntity)
     } catch (error) {
@@ -63,7 +62,6 @@ export class CheckMarkerV1 {
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
-    logger.trace(`mark() setting notification msg to ${JSON.stringify(notification)}`)
     outputs.checkNotificationQueue.push(notification)
     return outputs
   }

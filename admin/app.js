@@ -50,6 +50,7 @@ const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
 const { formAlreadySubmittedErrorCode } = require('./error-types/form-already-submitted-error')
 const { dfeSignInErrorConsts } = require('./error-types/dfe-signin-error')
+const RedisStore = require('connect-redis').default
 
 const app = express()
 setupLogging(app)
@@ -191,7 +192,6 @@ if (!config.Redis.useTLS) {
   logger.warn('redis running in non-secure mode')
 }
 
-const RedisStore = require('connect-redis')(session)
 const sessionStore = new RedisStore({ client: redisClient })
 
 const sessionOptions = {
