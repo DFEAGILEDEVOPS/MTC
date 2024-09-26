@@ -61,6 +61,9 @@ export class PupilPrefsService {
     if (inputAssistant) {
       payload.inputAssistant = inputAssistant;
     }
+    else {
+      payload.inputAssistant = undefined
+    }
     try {
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICalled());
       await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
