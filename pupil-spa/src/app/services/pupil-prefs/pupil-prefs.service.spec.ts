@@ -9,6 +9,8 @@ import { AuditService } from '../audit/audit.service';
 import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { AccessArrangements } from '../../access-arrangements';
+import { first } from 'rxjs/operators'
+import { Pupil } from '../../pupil'
 
 let azureQueueServiceSpy: {
   addMessageToQueue: jasmine.Spy
@@ -60,7 +62,19 @@ describe('PupilPrefsService', () => {
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
-      spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
+      const pupil: Pupil = {
+        firstName: 'first',
+        firstNameAlias: '',
+        lastName: 'last',
+        lastNameAlias: '',
+        dob: '',
+        checkCode: 'checkCode',
+        inputAssistant: {
+          firstName: 'first',
+          lastName: 'last'
+        }
+      }
+      spyOn(storageService, 'getPupil').and.returnValue(pupil);
       await pupilPrefsService.storePupilPrefs();
       expect(auditService.addEntry).toHaveBeenCalledTimes(2);
       expect(storageService.getAccessArrangements).toHaveBeenCalled();
@@ -71,6 +85,7 @@ describe('PupilPrefsService', () => {
           fontSizeCode: 'LRG',
           colourContrastCode: 'YOB'
         },
+        inputAssistant: pupil.inputAssistant,
         checkCode: 'checkCode',
         version: 1
       };

@@ -5,6 +5,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
+import { Pupil } from '../pupil'
 
 @Component({
   selector: 'app-aa-settings',
@@ -66,7 +67,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
       if (!this.inputAssistantForm.valid) {
         return;
       } else {
-        const pupilData = this.storageService.getPupil();
+        const pupilData = this.storageService.getPupil() as Pupil;
         pupilData.inputAssistant = {
           firstName: this.inputAssistantForm.value.inputAssistantFirstName,
           lastName: this.inputAssistantForm.value.inputAssistantLastName,
