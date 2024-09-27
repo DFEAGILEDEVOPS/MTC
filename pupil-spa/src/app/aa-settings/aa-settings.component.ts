@@ -5,7 +5,8 @@ import { StorageService } from '../services/storage/storage.service';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
 import { NgForm } from '@angular/forms';
-import { Pupil } from '../pupil'
+import { Pupil } from '../pupil';
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 @Component({
   selector: 'app-aa-settings',
@@ -25,7 +26,8 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
     private elRef: ElementRef,
     private questionService: QuestionService,
     private storageService: StorageService,
-    private speechService: SpeechService
+    private speechService: SpeechService,
+    private pupilPrefsService: PupilPrefsService,
   ) {
     this.config = this.questionService.getConfig();
   }
@@ -73,6 +75,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
           lastName: this.inputAssistantForm.value.inputAssistantLastName,
         };
         this.storageService.setPupil(pupilData);
+        this.pupilPrefsService.storePupilPrefs();
       }
     }
     this.router.navigate(['check-start']);

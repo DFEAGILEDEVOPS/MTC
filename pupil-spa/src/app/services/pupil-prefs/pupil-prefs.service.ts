@@ -49,7 +49,7 @@ export class PupilPrefsService {
         colourContrastCode: ''
       },
       inputAssistant: {},
-      version: 1,
+      version: 2,
       checkCode: pupil.checkCode
     };
     if (fontSetting) {

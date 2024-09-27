@@ -87,7 +87,7 @@ describe('PupilPrefsService', () => {
         },
         inputAssistant: pupil.inputAssistant,
         checkCode: 'checkCode',
-        version: 1
+        version: 2
       };
       const retryConfig: QueueMessageRetryConfig = {
         DelayBetweenRetries: pupilPrefsService.pupilPrefsAPIErrorDelay,
