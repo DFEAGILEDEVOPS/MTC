@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
-import { ApplicationInsights, IExceptionTelemetry, ITelemetryItem } from '@microsoft/applicationinsights-web'
+import { ApplicationInsights, ICustomProperties, IExceptionTelemetry, ITelemetryItem } from '@microsoft/applicationinsights-web'
 import { Router, NavigationEnd } from '@angular/router'
 import { filter } from 'rxjs/operators'
 import { APP_CONFIG } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
 import { StorageService } from '../storage/storage.service'
 
-export interface MtcCustomProperties {
+export interface MtcCustomProperties extends ICustomProperties {
   mtcCheckCode: string
   mtcSchoolUUID: string
   mtcSpaBuildNumber: string
