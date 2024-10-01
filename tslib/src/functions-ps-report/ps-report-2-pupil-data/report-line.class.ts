@@ -192,9 +192,8 @@ export class ReportLine {
       // @ts-ignore - ignore, we know that the key is `true`, see `map`
       if (map[k] === 4 && this._inputAssistant !== null) {
         arrangements.push('[4]')
-      }
-      // @ts-ignore - ignore, `map` is badly typed
-      if (this.checkConfig[k] === true) {
+        // @ts-ignore - ignore, `map` is badly typed
+      } else if (this.checkConfig[k] === true) {
         // @ts-ignore - ignore, we know that the key is `true`, see `map`
         const s = `[${map[k]}]`
         arrangements.push(s)
