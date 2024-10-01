@@ -58,6 +58,13 @@ describe('dfe-signin.service', () => {
       .toThrowError(expectedErrorMessage)
   })
 
+  test('throws system unavailable error if teacher logging on when system is not available', async () => {
+    jest.spyOn(dfeDataService, 'getDfeRole').mockResolvedValue('mtc_teacher')
+    jest.spyOn(roleService, 'findByTitle').mockResolvedValue({ id: 3, title: roles.teacher })
+    global.checkWindowPhase = checkWindowPhaseConsts.unavailable
+    await expect(sut.initialiseUser({ organisation: { urn: 12345 } }, token)).rejects.toThrowError('The system is unavailable at this time')
+  })
+
   test('does look up school if role is teacher', async () => {
     jest.spyOn(dfeDataService, 'getDfeRole').mockResolvedValue('mtc_teacher')
     jest.spyOn(roleService, 'findByTitle').mockResolvedValue({ id: 3, title: roles.teacher })
