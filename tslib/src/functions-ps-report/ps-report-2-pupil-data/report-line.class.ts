@@ -6,7 +6,8 @@ import {
   type CheckOrNull, type DeviceOrNull, type EventsOrNull,
   type Event,
   type Pupil,
-  type School, type Answer, type NotTakingCheckCode, type RestartReasonCode
+  type School, type Answer, type NotTakingCheckCode, type RestartReasonCode,
+  type InputAssistantOrNull
 } from './pupil-data.models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
@@ -21,6 +22,7 @@ export class ReportLine {
   private readonly _events: EventsOrNull
   private readonly _pupil: Pupil
   private readonly _school: School
+  private readonly _inputAssistant: InputAssistantOrNull
   private readonly _report: WorkingReportLine = {
     // Pupil fields
     PupilDatabaseId: -1,
@@ -78,7 +80,8 @@ export class ReportLine {
     device: DeviceOrNull,
     events: EventsOrNull,
     pupil: Pupil,
-    school: School
+    school: School,
+    inputAssistant: InputAssistantOrNull
   ) {
     this._answers = deepFreeze(answers)
     this._check = deepFreeze(check)
@@ -88,6 +91,7 @@ export class ReportLine {
     this._events = deepFreeze(events)
     this._pupil = deepFreeze(pupil)
     this._school = deepFreeze(school)
+    this._inputAssistant = deepFreeze(inputAssistant)
   }
 
   get answers (): AnswersOrNull {
@@ -162,9 +166,17 @@ export class ReportLine {
   }
 
   private getAccessArrangements (): string {
-    if (this.checkConfig === null) {
+    if (this.checkConfig === null && this._inputAssistant === null) {
       return ''
     }
+
+    /*
+    * input assistant and retrospectively added input assistant are now combined
+    * into a single row in the checkInputAssistant table
+    * ignore older checkConfig for input assistant so we can safely remove this in the future
+    * No distiction is made in the PS report for retrospectively added input assistant
+    */
+    const arrangements: string[] = []
 
     const map = {
       audibleSounds: 1,
@@ -176,8 +188,11 @@ export class ReportLine {
       numpadRemoval: 7
     }
 
-    const arrangements: string[] = []
     Object.keys(map).forEach(k => {
+      // @ts-ignore - ignore, we know that the key is `true`, see `map`
+      if (map[k] === 4 && this._inputAssistant !== null) {
+        arrangements.push('[4]')
+      }
       // @ts-ignore - ignore, `map` is badly typed
       if (this.checkConfig[k] === true) {
         // @ts-ignore - ignore, we know that the key is `true`, see `map`
