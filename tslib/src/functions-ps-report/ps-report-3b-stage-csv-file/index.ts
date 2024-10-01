@@ -82,7 +82,7 @@ export async function PsReportStageCsvFile (triggerInput: unknown, context: Invo
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.error(`${logPrefix}: unable to connect to service bus at this time: ${errorMessage}`)
+    context.error(`${logPrefix}: ${errorMessage}`)
     throw error
   }
 
