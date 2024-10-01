@@ -120,8 +120,10 @@ export default {
   },
   ApplicationInsights: {
     Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+    ConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING,
     InstanceId: `${os.hostname()}:${process.pid}`,
     CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+    CollectDependencies: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_DEPENDENCIES') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_DEPENDENCIES) : true,
     LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
   },
   Logging: {

@@ -41,6 +41,8 @@ export default {
     ApplicationInsights: {
       LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER ?? false,
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+      ConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING,
+      CollectDependencies: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_DEPENDENCIES') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_DEPENDENCIES) : true,
       InstanceId: `${os.hostname()}:${process.pid}`,
       CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
       LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true

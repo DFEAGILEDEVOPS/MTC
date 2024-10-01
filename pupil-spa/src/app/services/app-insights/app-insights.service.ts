@@ -23,16 +23,17 @@ export class ApplicationInsightsService {
 
 
   constructor (private router: Router, private meta: Meta, private storageService: StorageService) {
-    if (!APP_CONFIG.applicationInsightsInstrumentationKey) {
+    if (APP_CONFIG.applicationInsightsConnectionString !== undefined) {
+      console.log('AppInsights is not enabled')
       return
     }
-
+    console.log('Loading app insights')
     this.appInsights = new ApplicationInsights({
       config: {
-        instrumentationKey: APP_CONFIG.applicationInsightsInstrumentationKey
+        connectionString: APP_CONFIG.applicationInsightsConnectionString
       }
     })
-
+    console.log('Appinsights loaded.')
     this.appInsights.loadAppInsights()
     this.loadCustomTelemetryProperties()
     this.createRouterSubscription()

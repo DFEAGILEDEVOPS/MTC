@@ -9,7 +9,7 @@ const config = require('../config')
 const startInsightsIfConfigured = async () => {
   if (config.Monitoring.ApplicationInsights.ConnectionString) {
     console.log('initialising application insights module')
-    appInsights.setup()
+    appInsights.setup(config.Monitoring.ApplicationInsights.ConnectionString)
       .setAutoCollectRequests(true)
       // setAutoCollectPerformance() - for some reason this next call causes a configuration warning 'Extended metrics are no longer supported. ...'
       .setAutoCollectPerformance(true, false)
