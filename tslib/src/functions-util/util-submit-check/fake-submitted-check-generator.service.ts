@@ -75,4 +75,17 @@ export class FakeCompletedCheckMessageGeneratorService {
     }
     return submittedCheck
   }
+
+  async createV4Message (checkCode: string): Promise<SubmittedCheckMessage> {
+    const validCheck = await this.getValidCheck(checkCode)
+    const stringifiedJsonPayload = JSON.stringify(validCheck)
+    const archive = this.compressionService.compressToGzip(stringifiedJsonPayload)
+    const submittedCheck: SubmittedCheckMessage = {
+      checkCode: validCheck.checkCode,
+      archive,
+      schoolUUID: validCheck.schoolUUID,
+      version: SubmittedCheckVersion.V4
+    }
+    return submittedCheck
+  }
 }

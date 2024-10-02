@@ -61,7 +61,7 @@ export class CheckComponent implements OnInit, CanExit {
    * @param {KeyboardEvent} event
    * @return {boolean}
    */
-  @HostListener('document:keydown', [ '$event' ])
+  @HostListener('document:keyup', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log('check.component: handleKeyboardEvent(): key: ' + event.key);
     switch (event.key) {

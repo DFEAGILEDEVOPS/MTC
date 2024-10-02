@@ -177,4 +177,12 @@ module Helpers
     JWT.decode token, ENV['CHECK_SUBMIT_JWT_SECRET'], true, { algorithm: 'HS256' }
   end
 
+  def compress_archive(payload)
+    Base64.encode64(ActiveSupport::Gzip.compress(payload.to_json))
+  end
+
+  def decompress_archive(archive)
+    ActiveSupport::Gzip.decompress(Base64.decode64(archive))
+  end
+
 end

@@ -528,7 +528,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * @param {KeyboardEvent} event
    * @return {boolean}
    */
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent (event: KeyboardEvent) {
     event.preventDefault();
     event.stopPropagation();

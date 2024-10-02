@@ -39,7 +39,9 @@ describe('check-validator', () => {
       compressToUTF16: jest.fn(),
       decompressFromUTF16: jest.fn(),
       compressToBase64: jest.fn(),
-      decompressFromBase64: jest.fn()
+      decompressFromBase64: jest.fn(),
+      compressToGzip: jest.fn(),
+      decompressFromGzip: jest.fn()
     }
     checkFormServiceMock = {
       getCheckFormForCheckCode: jest.fn(),
@@ -171,6 +173,23 @@ describe('check-validator', () => {
     }
     await sut.validate(receivedCheckEntity, message, loggerMock)
     expect(compressionServiceMock.decompressFromBase64).toHaveBeenCalledWith('foo')
+  })
+
+  test('v4 archive is decompressesed from gzip', async () => {
+    const receivedCheckEntity: ReceivedCheckTableEntity = {
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: SubmittedCheckVersion.V4
+    }
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(receivedCheckEntity, message, loggerMock)
+    expect(compressionServiceMock.decompressFromGzip).toHaveBeenCalledWith('foo')
   })
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
