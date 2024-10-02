@@ -58,7 +58,7 @@ const initSignOnAsync = async () => {
       // The SystemUnavailableError is generated from `initialiseUser` when the role is TEACHER and
       // the system is not available (as defined in the SM Settings page).  This is not a sign-on error
       // so we don't wrap it up as a DfeSIgnInError.  Instead, let app.js handle it and render the correct error
-      // page. 
+      // page.
       if (error instanceof SystemUnavailableError) {
         done(SystemUnavailableError)
         return
