@@ -9,8 +9,7 @@ import { AuditService } from '../audit/audit.service';
 import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { AccessArrangements } from '../../access-arrangements';
-import { first } from 'rxjs/operators'
-import { Pupil } from '../../pupil'
+import { Pupil } from '../../pupil';
 
 let azureQueueServiceSpy: {
   addMessageToQueue: jasmine.Spy
