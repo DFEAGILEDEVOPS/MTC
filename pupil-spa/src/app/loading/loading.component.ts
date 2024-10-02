@@ -71,7 +71,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
    *
    * @param {KeyboardEvent} event
    */
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here

@@ -118,7 +118,6 @@ GEM
       addressable (~> 2.8)
       childprocess (~> 5.0)
     logger (1.6.0)
-    lz_string (0.2.0)
     matrix (0.4.2)
     method_source (1.1.0)
     mini_mime (1.1.5)
@@ -221,7 +220,6 @@ DEPENDENCIES
   dotenv
   httparty (>= 0.21.0)
   jwt
-  lz_string
   mongo
   numbers_in_words (>= 0.4.0)
   parallel_tests

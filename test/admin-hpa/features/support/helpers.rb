@@ -169,4 +169,12 @@ module Helpers
     {estab_code: @estab_code, lea_code: @lea_code}
   end
 
+  def compress_archive(payload)
+    Base64.encode64(ActiveSupport::Gzip.compress(payload.to_json))
+  end
+
+  def decompress_archive(archive)
+    ActiveSupport::Gzip.decompress(Base64.decode64(received_check[archive]))
+  end
+
 end

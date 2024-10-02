@@ -32,7 +32,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "fa63a2e94a724a41857c2c3c7d3081a4"
+    "assets-version": "6a569a48061e8e7844eee749fb4527b3"
   },
   "engines": {
     "node": ">= 18"
@@ -65,6 +65,7 @@
     "expressjs-csurf": "https://github.com/DFEAGILEDEVOPS/expressjs-csurf#v2.0.1",
     "fast-csv": "^4.1.1",
     "feature-toggles": "^1.4.0",
+    "fflate": "^0.8.2",
     "font-awesome": "^4.7.0",
     "fs-extra": "^11.1.0",
     "govuk-frontend": "^3.2.0",
