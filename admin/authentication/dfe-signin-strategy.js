@@ -9,6 +9,7 @@ const passport = require('passport')
 const authModes = require('../lib/consts/auth-modes')
 const { DfeSignInError } = require('../error-types/dfe-signin-error')
 const { DsiSchoolNotFoundError } = require('../error-types/DsiSchoolNotFoundError')
+const { SystemUnavailableError } = require('../error-types/system-unavailable-error')
 /**
  * Asynchronous setup of DfE signin with retry strategy for issuer discovery
  * @returns {Promise<Strategy>} configured Passport Strategy
@@ -53,6 +54,14 @@ const initSignOnAsync = async () => {
       let userMessage = ''
       if (error instanceof DsiSchoolNotFoundError) {
         userMessage = error.message
+      }
+      // The SystemUnavailableError is generated from `initialiseUser` when the role is TEACHER and
+      // the system is not available (as defined in the SM Settings page).  This is not a sign-on error
+      // so we don't wrap it up as a DfeSIgnInError.  Instead, let app.js handle it and render the correct error
+      // page. 
+      if (error instanceof SystemUnavailableError) {
+        done(SystemUnavailableError)
+        return
       }
       const dfeSignInError = new DfeSignInError(systemErrorMessage, userMessage, error)
       done(dfeSignInError)
