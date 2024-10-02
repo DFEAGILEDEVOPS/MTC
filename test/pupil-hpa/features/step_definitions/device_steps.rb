@@ -9,7 +9,7 @@ Then(/^the device information should be persisted to the DB$/) do
   school_uuid = JSON.parse(page.evaluate_script('window.localStorage.getItem("school");'))['uuid']
   check_result = SqlDbHelper.wait_for_received_check(check_code)
   storage_row = AzureTableHelper.get_row('receivedCheck', school_uuid,check_code)
-  device_info_from_ts = JSON.parse(LZString::Base64.decompress(storage_row['archive']))['device']
+  device_info_from_ts = JSON.parse(decompress_archive(storage_row['archive']))['device']
   expect(device_info).to eql device_info_from_ts
 end
 
@@ -57,7 +57,7 @@ end
 Then(/^the app counter should be set to (\d+)$/) do |count|
   check_result = SqlDbHelper.wait_for_received_check(@check_code)
   storage_row = AzureTableHelper.get_row('receivedCheck', @school_uuid,@check_code)
-  app_usage_from_ts = JSON.parse(LZString::Base64.decompress(storage_row['archive']))['device']['appUsageCounter']
+  app_usage_from_ts = JSON.parse(decompress_archive(storage_row['archive']))['device']['appUsageCounter']
   expect(app_usage_from_ts).to eql count
 end
 
