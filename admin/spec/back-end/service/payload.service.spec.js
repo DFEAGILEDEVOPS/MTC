@@ -26,11 +26,12 @@ describe('payload.service', () => {
         inputs: [],
         audit: []
       }
-      jest.spyOn(compressionService, 'decompressFromUTF16').mockReturnValueOnce(JSON.stringify(mockArchive))
+      jest.spyOn(compressionService, 'decompressFromGzip').mockReturnValueOnce(JSON.stringify(mockArchive))
       jest.spyOn(payloadDataService, 'sqlFindOneByCheckCode').mockResolvedValue({
         inputs: [],
         audit: [],
-        archive: 'mocked'
+        archive: 'mocked',
+        checkVersion: 4
       })
       await service.getPayload(mockCheckCode)
       expect(service.addRelativeTimings).toHaveBeenCalled()

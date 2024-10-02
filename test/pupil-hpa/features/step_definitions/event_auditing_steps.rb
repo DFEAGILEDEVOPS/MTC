@@ -29,7 +29,7 @@ Then(/^all the events should be captured$/) do
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
 
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(check_result['archive']))
+  check = JSON.parse(decompress_archive(check_result['archive']))
   local_storage = check['audit']
 
   expect(local_storage.first['type']).to eql 'WarmupStarted'
