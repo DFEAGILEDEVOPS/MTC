@@ -3,15 +3,14 @@
 # Set the resource group and storage account name (you can also loop through multiple accounts if needed)
 STORAGE_ACCOUNT_NAME=$1
 STORAGE_ACCOUNT_KEY=$2
-CONTAINER_NAME=$3
 
 # Get the current date in UTC and subtract 7 days
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
-    CUTOFF_DATE=$(date -u -v-1d "+%Y-%m-%d")
+    CUTOFF_DATE=$(date -u -v-7d "+%Y-%m-%d")
 else
     # Linux and others
-    CUTOFF_DATE=$(date -d "1 days ago" +%Y-%m-%d)
+    CUTOFF_DATE=$(date -d "7 days ago" +%Y-%m-%d)
 fi
 
 # Function to delete old blobs
@@ -24,7 +23,7 @@ delete_old_blobs() {
     blobs=$(az storage blob list --account-name "$STORAGE_ACCOUNT_NAME" --account-key $STORAGE_ACCOUNT_KEY --container-name "$container_name" --query "[?properties.lastAccessedOn < '$CUTOFF_DATE'].name" --output tsv)
 
     if [[ -z "$blobs" ]]; then
-        echo "No blobs found older than 1 days in container $container_name"
+        echo "No blobs found older than 7 days in container $container_name"
     else
         echo "Deleting blobs not accessed since $CUTOFF_DATE in container $container_name"
         for blob in $blobs; do
@@ -43,6 +42,19 @@ delete_old_blobs() {
     fi
 }
 
-delete_old_blobs $CONTAINER_NAME
+# Get the list of containers in the storage account
+containers=$(az storage container list --account-name "$STORAGE_ACCOUNT_NAME" --account-key $STORAGE_ACCOUNT_KEY --query "[].name" --output tsv)
 
-echo "Completed deletion of old blobs in $CONTAINER_NAME container."
+# Loop through each container and process blobs
+for container in $containers; do
+    # Check if the container name starts with "azure-webjobs"
+    if [[ $container != azure-webjobs* ]]; then
+        echo "Deleting container: $container"
+        delete_old_blobs "$container"
+    else
+        echo "Skipping container: $container as it is used exclusively by Azure Functions."
+    fi
+done
+
+
+echo "Completed processing all storage accounts and containers."
