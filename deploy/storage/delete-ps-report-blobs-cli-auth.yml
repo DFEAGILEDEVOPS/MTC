@@ -9,5 +9,5 @@ steps:
   inputs:
     azureSubscription: $(ServiceConnection)
     scriptType: bash
-    scriptPath: 'deploy/storage/delete-old-blobs-key-auth.sh'
+    scriptPath: 'deploy/storage/delete-old-blobs-cli-auth.sh'
     arguments: $(StorageAccountName) $(StorageAccountKey) ps-report-bulk-upload
