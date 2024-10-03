@@ -394,7 +394,7 @@ app.use(function (err, req, res, next) {
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
   // catch system unavailable errors and redirect to the relevant page
-  if (err.code === 'SYSTEM_UNAVAILABLE') {
+  if (err.name === 'SystemUnavailableError' || err.code === 'SYSTEM_UNAVAILABLE') {
     res.locals.pageTitle = 'The service is currently closed'
     return res.render('availability/admin-window-unavailable', {})
   }
