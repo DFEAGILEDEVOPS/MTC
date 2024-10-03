@@ -1,0 +1,13 @@
+trigger: none
+
+pool:
+  name: 'Azure Pipelines'
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Purge Stale BLOBs created by PS report'
+  inputs:
+    azureSubscription: $(ServiceConnection)
+    scriptType: bash
+    scriptPath: 'deploy/storage/delete-old-blobs.sh'
+    arguments: $(StorageAccountName) $(StorageAccountKey) ps-report-bulk-upload
