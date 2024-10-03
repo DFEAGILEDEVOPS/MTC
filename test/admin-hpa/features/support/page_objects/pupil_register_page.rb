@@ -3,7 +3,9 @@ class PupilRegisterPage < SitePrism::Page
 
   element :heading, '.govuk-heading-xl', text: "View, add or edit pupils on your school's register"
   element :add_pupil, 'a', text: 'Add pupil'
+  element :add_pupil_disabled, 'a[aria-disabled="true"]', text: "Add pupil"
   element :add_multiple_pupil, 'a', text: 'Add multiple pupils'
+  element :add_multiple_pupil_disabled, 'a[aria-disabled="true"]', text: 'Add multiple pupils'
   element :info_message, '.govuk-info-message', text: 'Changes to pupil details have been saved'
   element :new_pupil_info_message, '.govuk-info-message', text: '1 new pupil has been added'
   element :add_multiple_pupil_info_message, '.govuk-info-message'

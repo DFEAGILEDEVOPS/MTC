@@ -21,8 +21,6 @@ import { CheckCompleteService} from './services/check-complete/check-complete.se
 import { CheckComponent } from './check/check.component';
 import { CheckStartService } from './services/check-start/check-start.service';
 import { CheckStatusService } from './services/check-status/check-status.service';
-import { ConnectivityCheckGuard } from './connectivity-check.guard';
-import { ConnectivityService } from './services/connectivity-service/connectivity-service';
 import { ContactComponent } from './contact/contact.component';
 import { DeviceService } from './services/device/device.service';
 import { FeedbackComponent } from './feedback/feedback.component';
@@ -58,8 +56,6 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AAColoursComponent } from './aa-colours/aa-colours.component';
 import { AAFontsComponent } from './aa-fonts/aa-fonts.component';
 import { AASettingsComponent } from './aa-settings/aa-settings.component';
-import { ConnectivityCheckComponent } from './connectivity-check/connectivity-check.component';
-import { ConnectivityErrorComponent } from './connectivity-error/connectivity-error.component';
 import { IdleModalComponent } from './modal/idle.modal.component';
 import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { OutOfTimeComponent } from './out-of-time/out-of-time.component';
@@ -89,15 +85,13 @@ import { QrCodeArrivalComponent } from './qr-code-arrival/qr-code-arrival.compon
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 const appRoutes: Routes = [
-  {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
+  {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'access-settings', component: AASettingsComponent },
   {path: 'accessibility-statement', component: AccessibilityStatementComponent },
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard], canDeactivate: [CanExitGuard]},
   {path: 'check-complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard] },
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'colour-choice', component: AAColoursComponent },
-  {path: 'connectivity-check', component: ConnectivityCheckComponent, canActivate: [ConnectivityCheckGuard]},
-  {path: 'connectivity-error', component: ConnectivityErrorComponent},
   {path: 'contact', component: ContactComponent },
   {path: 'feedback', component: FeedbackComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback-thanks', component: FeedbackThanksComponent, canActivate: [LoggedInGuard]},
@@ -126,8 +120,6 @@ const appRoutes: Routes = [
         BreadcrumbsComponent,
         CheckCompleteComponent,
         CheckComponent,
-        ConnectivityCheckComponent,
-        ConnectivityErrorComponent,
         ContactComponent,
         FeedbackComponent,
         FeedbackThanksComponent,
@@ -188,8 +180,6 @@ const appRoutes: Routes = [
         CheckCompleteService,
         CheckStartService,
         CheckStatusService,
-        ConnectivityCheckGuard,
-        ConnectivityService,
         CookieService,
         DeviceService,
         FeedbackService,

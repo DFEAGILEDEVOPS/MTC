@@ -59,7 +59,9 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
   const messageVersion: string = reqBody.messageVersion as string ?? SubmittedCheckVersion.V3
 
   if (messageVersion.toString() !== SubmittedCheckVersion.V2.toString() &&
-    messageVersion.toString() !== SubmittedCheckVersion.V3.toString()) {
+    messageVersion.toString() !== SubmittedCheckVersion.V3.toString() &&
+    messageVersion.toString() !== SubmittedCheckVersion.V4.toString()
+  ) {
     return {
       status: 400,
       body: 'unknown messageVersion specified'
@@ -101,8 +103,11 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
     if (messageVersion === SubmittedCheckVersion.V2.toString()) {
       messages.push(await fakeSubmittedCheckBuilder.createV2Message(checkCode))
       context.extraOutputs.set(outputSubmittedCheckStorageQueue, messages)
-    } else {
+    } else if (messageVersion === SubmittedCheckVersion.V3.toString()) {
       messages.push(await fakeSubmittedCheckBuilder.createV3Message(checkCode))
+      context.extraOutputs.set(outputCheckSubmissionServiceBusQueue, messages)
+    } else {
+      messages.push(await fakeSubmittedCheckBuilder.createV4Message(checkCode))
       context.extraOutputs.set(outputCheckSubmissionServiceBusQueue, messages)
     }
   }

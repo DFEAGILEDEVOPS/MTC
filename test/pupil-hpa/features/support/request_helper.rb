@@ -2010,9 +2010,9 @@ class RequestHelper
     @payload[:config] = @payload[:config].each { |k, v| @payload[:config][:practice] = true } if validator_opts[:practice]
 
     check_code = validator_opts[:check_code_not_uuid] ? parsed_response_pupil_auth['checkCode'].gsub('-', '') : parsed_response_pupil_auth['checkCode']
-    { payload: @payload, submission_message: { "version": 3, "checkCode": check_code,
+    { payload: @payload, submission_message: { "version": 4, "checkCode": check_code,
                                                "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
-                                               "archive": LZString::Base64.compress(@payload.to_json) } }
+                                               "archive": compress_archive(@payload) } }
   end
 end
 

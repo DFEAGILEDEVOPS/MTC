@@ -3,6 +3,42 @@ import * as CSV from 'csv-string'
 import moment from 'moment'
 import { type ILogger } from '../../common/logger'
 
+export interface CsvData {
+  PupilDatabaseId: number
+  PupilUPN: string
+  createdAt: string
+  updatedAt: string
+  DOB: string
+  Gender: string
+  Forename: string
+  MiddleNames: string | null
+  Surname: string
+  FormMark: number | null
+  QDisplayTime: number | null
+  PauseLength: number | null
+  AccessArr: string | null
+  RestartReason: string | null
+  RestartNumber: number | null
+  PupilStatus: string | null
+  DeviceID: string | null
+  BrowserType: string | null
+  SchoolName: string | null
+  Estab: number
+  SchoolURN: number
+  LAnum: number
+  AttemptID: string | null
+  FormID: string | null
+  TestDate: string | null
+  TimeStart: string | null
+  TimeComplete: string | null
+  TimeTaken: number | null
+  ReasonNotTakingCheck: string | null
+  ToECode: number
+  ImportedFromCensus: number
+  IsEdited: number
+  // TODO: add fields for Q1-25 - the bulk of the structure
+}
+
 /**
  * CsvTransformer
  *
@@ -16,7 +52,14 @@ export class CsvTransformer {
   constructor (logger: ILogger, psReportLineData: IPsychometricReportLine[]) {
     this.logger = logger
     this.psReportLineData = psReportLineData
-    this.logger.trace('CsvTransformer initialised')
+    // If I remove this call to the logger the linter insists the logge is not used, but the
+    // next developer on this file will certainly be glad to have logging, so this next construction
+    // is weird.
+    // eslint-disable-next-line no-constant-condition
+    if (false) {
+      // @ts-ignore: Unreachable code error
+      this.logger.trace('CsvTransformer initialised')
+    }
   }
 
   private transformAnswer (a: IReportLineAnswer | undefined): any[] {

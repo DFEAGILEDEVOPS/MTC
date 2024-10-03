@@ -151,3 +151,8 @@ Feature:
     When the data sync and ps report function has run
     Then the restart number should be zero
     And the pupil status set to incomplete
+
+  Scenario: Pupils who have non utf8 characters in their name can be seen correctly in the PS report
+    Given I have completed the check with a pupil who has non utf8 characters in their name
+    When the data sync and ps report function has run
+    Then I should see a record for the pupil in the ps report table

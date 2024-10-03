@@ -4,6 +4,8 @@ import * as apiResponse from '../helpers/api-response'
 import { type IJwtService, JwtService } from '../../services/jwt.service'
 import { CheckSubmitService, type ICheckSubmitService } from '../../services/check-submit.service'
 
+export const MaxPayloadSize = 1024 * 64 // 64 KB
+
 export class SubmitController {
   private readonly jwtService: IJwtService
   private readonly checkSubmitService: ICheckSubmitService
@@ -38,6 +40,11 @@ export class SubmitController {
     } catch (error: any) {
       logger.error(`JWT verification failed: ${error.message} for check:${req.body.checkCode}}`)
       return apiResponse.unauthorised(res)
+    }
+    // The largest payload we can actually store in an Azure Storage Table value is 64KB
+    if (req?.body?.archive?.length > MaxPayloadSize) {
+      logger.error(`ERROR: pupil payload rejected: message too large: size is ${req?.body?.archive?.length}`)
+      return apiResponse.messageTooLarge(res)
     }
     try {
       await this.checkSubmitService.submit(req.body)

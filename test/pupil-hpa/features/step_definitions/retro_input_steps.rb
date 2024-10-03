@@ -52,7 +52,7 @@ Then(/^I should not have any retro input assistant recorded against the current 
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   storage_row = AzureTableHelper.get_row('receivedCheck', storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
+  check = JSON.parse(decompress_archive(storage_row['archive']))
   expect(check['pupil']['inputAssistant']['firstName']).to eql 'James'
   expect(check['pupil']['inputAssistant']['lastName']).to eql 'Elliot'
 end
