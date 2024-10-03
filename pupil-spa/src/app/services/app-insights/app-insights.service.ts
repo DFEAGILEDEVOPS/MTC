@@ -23,7 +23,7 @@ export class ApplicationInsightsService {
 
 
   constructor (private router: Router, private meta: Meta, private storageService: StorageService) {
-    if (APP_CONFIG.applicationInsightsConnectionString !== undefined) {
+    if (APP_CONFIG.applicationInsightsConnectionString === undefined) {
       console.log('AppInsights is not enabled')
       return
     }
