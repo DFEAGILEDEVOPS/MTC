@@ -8,7 +8,7 @@ const checkWindowController = require('../controllers/check-window')
 const featureToggles = require('feature-toggles')
 
 if (featureToggles.isFeatureEnabled('newCheckWindow')) {
-  /* Check Window routing */
+  /* Check Window routing  - SM feature */
   router.get('/manage-check-windows',
     isAuthenticated(roles.serviceManager),
     checkWindowController.getManageCheckWindows
