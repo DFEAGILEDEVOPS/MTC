@@ -52,4 +52,15 @@ describe('compression-service', () => {
       expect(parsed).toStrictEqual(largeCheck)
     })
   })
+
+  describe('gzip', () => {
+    test('it can compress and uncompress to the same result', () => {
+      const stringified = JSON.stringify(largeCheck)
+      const compressed = sut.compressToGzip(stringified)
+      expect(compressed).toBeDefined()
+      const decompressed = sut.decompressFromGzip(compressed)
+      const obj = JSON.parse(decompressed)
+      expect(obj).toStrictEqual(largeCheck)
+    })
+  })
 })

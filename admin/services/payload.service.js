@@ -99,8 +99,10 @@ const payloadService = {
     let payloadString = ''
     if (entity.checkVersion !== undefined && entity.checkVersion === 3) {
       payloadString = compressionService.decompressFromBase64(archive)
-    } else {
+    } else if (entity.checkVersion === 2) {
       payloadString = compressionService.decompressFromUTF16(archive)
+    } else if (entity.checkVersion === 4) {
+      payloadString = compressionService.decompressFromGzip(archive)
     }
     const payload = JSON.parse(payloadString)
     payload.checkVersion = entity.checkVersion

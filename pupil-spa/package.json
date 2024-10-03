@@ -12,6 +12,7 @@
     "test": "yarn genconfig && ng test",
     "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
     "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
+    "test:single": "yarn test-single",
     "genconfig": "./gen_config.sh && mv config.json src/assets/config.json",
     "lint": "ng lint",
     "runUnsupportedBrowserTests": "./unsupported-browser-tests/run-unsupported-browser-tests.sh"
@@ -38,6 +39,7 @@
     "@microsoft/applicationinsights-web": "^2.8.18",
     "core-js": "2.6.12",
     "dotenv": "^16.0.3",
+    "fflate": "^0.8.2",
     "lz-string": "^1.5.0",
     "ngx-cookie-service": "^14.0.1",
     "polly-js": "^1.8.2",

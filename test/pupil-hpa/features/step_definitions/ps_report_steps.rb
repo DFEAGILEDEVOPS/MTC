@@ -392,7 +392,7 @@ end
 
 Then(/^I should see the ps report showing the first input$/) do
   @recieved_check = AzureTableHelper.get_row('receivedCheck', @school['urlSlug'], @check_code)
-  @answers = JSON.parse(LZString::Base64.decompress(@recieved_check['archive']))['answers']
+  @answers = JSON.parse(decompress_archive(@recieved_check['archive']))['answers']
   grouped = @answers.group_by { |row| [row['sequenceNumber'], row['question']] }
   duplicates = grouped.values.select { |a| a.size > 1 }
   expected_answers = duplicates.map { |d| d.first['answer'] }

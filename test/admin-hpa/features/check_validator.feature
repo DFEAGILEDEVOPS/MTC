@@ -54,9 +54,9 @@ Feature:
     Given a pupil has completed the check with the tokens property not being an object
     Then I should see an error stating validation failed as the tokens property is not a object
 
-  Scenario: Check version is set to version 3
+  Scenario: Check version is set to version 4
     Given a pupil has completed a check
-    Then I should see the check is recieved and is set to version 3
+    Then I should see the check is recieved and is set to version 4
 
   Scenario: 200 response when check submission message is under 24kb
     Given I submit a check submission message under 24KB
