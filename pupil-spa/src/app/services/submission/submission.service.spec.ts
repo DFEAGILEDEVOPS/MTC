@@ -5,20 +5,26 @@ import { APP_INITIALIZER } from '@angular/core'
 import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
 import { CompressorService } from '../compressor/compressor.service'
 import * as lzString from 'lz-string';
+import { ApplicationInsightsService } from '../app-insights/app-insights.service'
 
 describe('submission service', () => {
   let sut: SubmissionService
   let httpServiceSpy: {
     post: jasmine.Spy
   }
+  let appInsightsServiceSpy: {
+    trackTrace: jasmine.Spy
+  }
 
   beforeEach(() => {
     httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
+    appInsightsServiceSpy= jasmine.createSpyObj('ApplicationInsightsService', ['trackTrace'])
     TestBed.configureTestingModule({
       providers: [
         SubmissionService,
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        { provide: HttpService, useValue: httpServiceSpy }
+        { provide: HttpService, useValue: httpServiceSpy },
+        { provide: ApplicationInsightsService, useValue: appInsightsServiceSpy }
       ]
     })
     .compileComponents()
@@ -83,10 +89,10 @@ describe('submission service', () => {
       }
     }
     const stringifiedPayload = JSON.stringify(payload)
-    const compressedPayload = CompressorService.compressToBase64(stringifiedPayload)
+    const compressedPayload = CompressorService.compressToGzip(stringifiedPayload)
     const expectedPostBody = {
       archive: compressedPayload,
-      version: SubmissionService.SubmittedCheckVersion3,
+      version: SubmissionService.SubmittedCheckVersion4,
       checkCode: payload.checkCode,
       schoolUUID: payload.school.uuid
     }
@@ -95,7 +101,7 @@ describe('submission service', () => {
   })
 
   it('should set correct attributes on posted Http body', async () => {
-    const expectedPayloadVersion = SubmissionService.SubmittedCheckVersion3
+    const expectedPayloadVersion = SubmissionService.SubmittedCheckVersion4
     const payloadUrl = 'http://my-url'
     const payload = {
       checkCode: 'check-code',
@@ -110,11 +116,11 @@ describe('submission service', () => {
       }
     }
     httpServiceSpy.post.and.callFake((url: string, postBody: any) => {
-      const stringifiedPayload = lzString.decompressFromBase64(postBody.archive)
-      const jsonPayload = JSON.parse(stringifiedPayload)
+      const jsonPayload = CompressorService.decompressFromGzip(postBody.archive)
+      //const jsonPayload = JSON.parse(stringifiedPayload)
       expect(postBody.version).toEqual(expectedPayloadVersion)
-      expect(postBody.checkCode).toEqual(jsonPayload.checkCode)
-      expect(postBody.schoolUUID).toEqual(jsonPayload.school.uuid)
+      expect(postBody.checkCode).toEqual(payload?.checkCode)
+      expect(postBody.schoolUUID).toEqual(payload?.school?.uuid)
     })
     await sut.submit(payload)
     expect(httpServiceSpy.post).toHaveBeenCalled()

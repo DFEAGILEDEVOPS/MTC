@@ -1,7 +1,6 @@
-import { BlobServiceClient } from '@azure/storage-blob'
+import { BlobServiceClient, type AppendBlobClient } from '@azure/storage-blob'
 import type { ILogger } from '../../common/logger'
 import config from '../../config'
-
 export class PsReportStagingDataService {
   private readonly logName = 'PsReportStagingDataService'
   private readonly blobService: BlobServiceClient
@@ -19,16 +18,36 @@ export class PsReportStagingDataService {
     this.blobService = BlobServiceClient.fromConnectionString(config.AzureStorage.ConnectionString)
   }
 
-  /**
-   * Create a zero sized append block.
-   */
-  public async createAppendBlock (): Promise<void> {
+  public async getAppendBlobService (): Promise<AppendBlobClient> {
+    this.logger.info('container name', this.containerName)
+    this.logger.info('blob service', this.blobName)
     const containerService = this.blobService.getContainerClient(this.containerName)
     // Create the container if missing
     await containerService.createIfNotExists()
     const appendBlobService = containerService.getAppendBlobClient(this.blobName)
-    // Create the CSV file.
-    await appendBlobService.createIfNotExists()
+    return appendBlobService
+  }
+
+  /**
+   * Create a zero sized append block.
+   */
+  public async createAppendBlock (): Promise<void> {
+    const appendBlobService = await this.getAppendBlobService()
+    await appendBlobService.deleteIfExists()
+    const res = await appendBlobService.createIfNotExists({ blobHTTPHeaders: { blobContentType: 'text/csv', blobContentEncoding: 'UTF-16LE' } })
+    // @azure/storage-blob v12.24.0
+    // Will return an error value rather than throw an error as well as give a 'succeeded=true'.  This version does not work.
+    /* eslint-disable */
+    // @ts-ignore broken type on @azure/storage-blob
+    if (res?.body?.Code === 'AuthenticationFailed') {
+      console.error('Error response', res)
+      // @ts-ignore broken type on @azure/storage-blob
+      throw new Error(`Failed to create append blob: ${res?.body?.Message}`)
+    }
+    /* eslint-enable */
+    // Write a BOM to indicate this file is utf-16le
+    const utf16leBOM = Buffer.from([0xFF, 0xFE])
+    await appendBlobService.appendBlock(utf16leBOM, utf16leBOM.length) // zero width no break space character is the accepted BOM for utf-16le FE FF
   }
 
   /**
@@ -40,10 +59,14 @@ export class PsReportStagingDataService {
       if (data.slice(-this.csvLineTerminator.length) !== this.csvLineTerminator) {
         data += this.csvLineTerminator
       }
-      const containerService = this.blobService.getContainerClient(this.containerName)
-      const appendBlobService = containerService.getAppendBlobClient(this.blobName)
-      await appendBlobService.appendBlock(data, data.length)
+
+      // convert string to utf16le
+      const utf16Buf = Buffer.from(data, 'utf16le')
+
+      const appendBlobService = await this.getAppendBlobService()
+      await appendBlobService.appendBlock(utf16Buf, utf16Buf.length)
     } catch (e: any) {
+      console.warn('Error writing to append block: ', e?.message)
       this.logger.error(`${this.logName}: Failed to append data to ${this.blobName}\n${e?.message}\n`)
     }
   }

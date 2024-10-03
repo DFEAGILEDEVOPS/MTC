@@ -392,7 +392,7 @@ end
 
 Then(/^I should see the ps report showing the first input$/) do
   @recieved_check = AzureTableHelper.get_row('receivedCheck', @school['urlSlug'], @check_code)
-  @answers = JSON.parse(LZString::Base64.decompress(@recieved_check['archive']))['answers']
+  @answers = JSON.parse(decompress_archive(@recieved_check['archive']))['answers']
   grouped = @answers.group_by { |row| [row['sequenceNumber'], row['question']] }
   duplicates = grouped.values.select { |a| a.size > 1 }
   expected_answers = duplicates.map { |d| d.first['answer'] }
@@ -611,4 +611,35 @@ end
 
 And(/^the pupil status set to incomplete$/) do
   expect(@ps_report_record["PupilStatus"]).to eql 'Incomplete'
+end
+
+Given(/^I have completed the check with a pupil who has non utf8 characters in their name$/) do
+  input_type = 'numpad'
+  step 'I add a pupil who has non utf characters in their name'
+  step 'I login to the admin app'
+  navigate_to_pupil_list_for_pin_gen('live')
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  p @pupil_credentials
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  step 'I have logged in'
+  confirmation_page.read_instructions.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  step "I complete the warm up questions using the #{input_type}"
+  warm_up_complete_page.start_check.click
+  start_mtc
+  @mark = 10
+  @storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  @storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  wrong_answers = questions.size - @mark
+  @answers = check_page.complete_check_with_wrong_answers(wrong_answers, 'keyboard')
+  @answers = check_page.complete_check_with_correct_answers(@mark, 'keyboard')
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_heading
+  @check_code = @storage_pupil['checkCode']
+  p @check_code
+  @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
 end

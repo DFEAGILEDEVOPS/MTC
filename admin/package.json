@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp build",
     "build:watch": "yarn tsc --watch",
+    "cleanbuild": "yarn clean && yarn build",
     "dev": "yarn start:dev",
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
@@ -31,7 +32,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "fa63a2e94a724a41857c2c3c7d3081a4"
+    "assets-version": "6a569a48061e8e7844eee749fb4527b3"
   },
   "engines": {
     "node": ">= 18"
@@ -45,12 +46,12 @@
     "@azure/storage-blob": "12.18.0",
     "@azure/storage-queue": "12.17.0",
     "adm-zip": "^0.5.10",
-    "applicationinsights": "^2.7.0",
+    "applicationinsights": "^3.2.2",
     "axios": "^1.7.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
-    "connect-redis": "^6.1.3",
+    "connect-redis": "^7.1.1",
     "dompurify": "^2.4.2",
     "dotenv": "^16.0.3",
     "edit-json-file": "^1.4.0",
@@ -64,6 +65,7 @@
     "expressjs-csurf": "https://github.com/DFEAGILEDEVOPS/expressjs-csurf#v2.0.1",
     "fast-csv": "^4.1.1",
     "feature-toggles": "^1.4.0",
+    "fflate": "^0.8.2",
     "font-awesome": "^4.7.0",
     "fs-extra": "^11.1.0",
     "govuk-frontend": "^3.2.0",
@@ -85,8 +87,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "qrcode": "^1.5.1",
-    "ramda": "^0.28.0",
-    "ramda-adjunct": "^3.4.0",
+    "ramda": "^0.30.1",
+    "ramda-adjunct": "^5.1.0",
     "random-number-csprng": "^1.0.2",
     "sass": "^1.69.5",
     "simplemde": "^1.11.2",
@@ -95,7 +97,6 @@
     "uuid-validate": "^0.0.3",
     "validator": "^13.7.0",
     "winston": "^3.1.0",
-    "winston-azure-application-insights": "^4.0.0",
     "xmlbuilder2": "^3.0.2",
     "xregexp": "^5.1.1"
   },
@@ -111,7 +112,7 @@
     "@types/jsdom": "^16.2.13",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "18.11.9",
-    "@types/ramda": "^0.27.6",
+    "@types/ramda": "^0.30.2",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
@@ -137,6 +138,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "^3.0.0",
+    "iconv-lite": "^0.6.3",
     "jest": "^27.0.6",
     "karma": "~6.3.4",
     "karma-chrome-launcher": "~3.1.0",
@@ -196,7 +198,8 @@
     "verbose": false,
     "testRunner": "jest-circus",
     "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
+      "axios": "axios/dist/node/axios.cjs",
+      "connect-redis": "connect-redis/dist/cjs/index.js"
     }
   }
 }

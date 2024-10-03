@@ -1,7 +1,5 @@
 import * as winston from 'winston'
 import config from '../config'
-import { AzureApplicationInsightsLogger } from 'winston-azure-application-insights'
-import * as appInsights from 'applicationinsights'
 
 /*
 const syslogLevels = {
@@ -46,19 +44,6 @@ export class Logger {
     }
 
     this.logger = winston.createLogger(baseLogOptions)
-
-    if (config.Logging.ApplicationInsights.LogToWinston === true) {
-      console.log('app insights config enabled')
-      appInsights.setup(config.Logging.ApplicationInsights.Key).start()
-
-      this.logger
-        .clear() // remove all transports
-        .add(new AzureApplicationInsightsLogger({
-          insights: appInsights,
-          sendErrorsAsExceptions: true,
-          level: this.level
-        }))
-    }
   }
 
   log (level: string, msg: string, exception?: any): void {

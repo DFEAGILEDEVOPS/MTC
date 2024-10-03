@@ -67,6 +67,25 @@ describe('Blob Service', () => {
   })
 
   describe('deleteBlob()', () => {
+    test('the underlying microsoft library can actually upload a blob', async () => {
+      const containerName = await createContainer()
+      const client = BlobServiceClient.fromConnectionString(connectionString)
+      const containerClient = client.getContainerClient(containerName)
+      const blobName = getUniqueName()
+      const blobClient = containerClient.getBlockBlobClient(blobName)
+      const data = Buffer.from('a random string\n')
+      const response = await blobClient.uploadData(data)
+      // @ts-ignore - error response is not typed correctly at version "@azure/storage-blob": "^12.23.0"
+      if (response?.body?.Code === 'AuthenticationFailed') {
+        console.error('Upload response: ', response)
+        fail()
+      }
+      const isUploaded = await blobClient.exists()
+      expect(isUploaded).toBe(true)
+      // @ts-ignore - Test
+      expect(response).toHaveProperty('etag')
+    })
+
     test('it deletes blob when it exists', async () => {
       const containerName = await createContainer()
       const client = BlobServiceClient.fromConnectionString(connectionString)
@@ -80,7 +99,10 @@ describe('Blob Service', () => {
         console.error('Upload response: ', response)
         fail()
       }
+      // SUT - test we can delete the blob
       await sut.deleteBlob(blobName, containerName)
+
+      // Test - the blob has been deleted
       expect(await blobClient.exists()).toBe(false)
     })
 

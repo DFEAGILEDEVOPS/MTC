@@ -119,14 +119,14 @@ module.exports = {
     DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1,
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
-    },
-    SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
+    }
   },
   Monitoring: {
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
       CollectDependencies: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_DEPS') ? toBool(process.env.APPINSIGHTS_COLLECT_DEPS) : true,
       CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+      ConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
       LiveMetrics: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_LIVE_METRICS') ? toBool(process.env.APPINSIGHTS_LIVE_METRICS) : true,
       InstanceId: `${os.hostname()}:${process.pid}`
     }

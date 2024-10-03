@@ -11,7 +11,7 @@ Then(/^I should see all my number pad inputs recorded$/) do
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   storage_row = AzureTableHelper.get_row('receivedCheck', storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
+  check = JSON.parse(decompress_archive(storage_row['archive']))
   local_storage = check['inputs']
 
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map {|x| x['factor1'].to_s + 'x' + x['factor2'].to_s}
@@ -37,7 +37,7 @@ Then(/^I should see all my keyboard inputs recorded$/) do
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   storage_row = AzureTableHelper.get_row('receivedCheck', storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
+  check = JSON.parse(decompress_archive(storage_row['archive']))
 
   local_storage = check['inputs']
 
@@ -66,7 +66,7 @@ Then(/^I should see backspace numpad event recorded$/) do
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   storage_row = AzureTableHelper.get_row('receivedCheck', storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
+  check = JSON.parse(decompress_archive(storage_row['archive']))
   local_storage = check['inputs']
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
@@ -92,7 +92,7 @@ Then(/^I should see backspace keyboard event recorded$/) do
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   storage_row = AzureTableHelper.get_row('receivedCheck', storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
+  check = JSON.parse(decompress_archive(storage_row['archive']))
   local_storage = check['inputs']
 
   inputs1 = local_storage.compact

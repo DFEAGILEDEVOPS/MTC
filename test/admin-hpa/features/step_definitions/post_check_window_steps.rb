@@ -19,8 +19,8 @@ end
 Then(/^teachers can only have read only access$/) do
   step 'I am logged in'
   pupil_register_page.load
-  expect(pupil_register_page).to have_no_add_pupil
-  expect(pupil_register_page).to have_no_add_multiple_pupil
+  expect(pupil_register_page).to have_add_pupil_disabled
+  expect(pupil_register_page).to have_add_multiple_pupil_disabled
   pupils_not_taking_check_page.load
   find(".govuk-button--disabled", text: 'Select pupils and reason')
   access_arrangements_page.load
@@ -49,5 +49,5 @@ end
 
 Then(/^teachers should see the service unavailable page$/) do
   step 'I am logged in'
-  expect(page.text).to include "\nThe multiplication tables check service is currently closed\nThe multiplication tables check service opens on Monday 8 April 2024 for maintained schools, special schools and academies (including free schools) with year 4 pupils.\nFurther information is available on GOV.UK: https://www.gov.uk/government/collections/multiplication-tables-check\nSign out"
+  expect(page.text).to include "\nThe multiplication tables check service is currently closed\nThe multiplication tables check service opens on Monday 28 April 2025 for maintained schools, special schools and academies (including free schools) with year 4 pupils.\nFurther information is available on GOV.UK: https://www.gov.uk/government/collections/multiplication-tables-check\nSign out"
 end

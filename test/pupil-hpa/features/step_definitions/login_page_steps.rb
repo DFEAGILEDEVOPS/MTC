@@ -176,6 +176,14 @@ When(/^I add a pupil$/) do
   step "the pupil details should be stored"
 end
 
+When(/^I add a pupil who has non utf characters in their name$/) do
+  @name = "Güneş"
+  step 'I login to the admin app'
+  visit ENV['ADMIN_BASE_URL'] + add_pupil_page.url
+  step "I submit the form with the name fields set as #{@name}"
+  step "the pupil details should be stored"
+end
+
 When(/^I login to the admin app$/) do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
