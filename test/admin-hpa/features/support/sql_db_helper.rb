@@ -852,4 +852,12 @@ class SqlDbHelper
     urn
   end
 
+  def self.get_check_input_assistant(pupil_id,check_id)
+    sql = "SELECT * FROM mtc_admin.checkInputAssistant WHERE pupil_id = #{pupil_id} and check_id = #{check_id}"
+    result = SQL_CLIENT.execute(sql)
+    row = result.first
+    result.cancel
+    row
+  end
+
 end
