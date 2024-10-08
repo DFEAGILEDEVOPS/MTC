@@ -25,7 +25,6 @@ gem 'azure-storage-table', '>= 2.0.4'
 gem 'azure-storage-queue', '>= 2.0.4'
 gem 'numbers_in_words', '>= 0.4.0'
 gem 'colorize'
-gem 'lz_string'
 gem 'redis'
 gem "rack", ">= 3.1.5"
 gem 'dotenv'

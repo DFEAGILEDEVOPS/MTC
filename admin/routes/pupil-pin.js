@@ -14,33 +14,33 @@ const {
 
 router.get(
   '/select-official-or-try-it-out',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   getSelectOfficialOrTryItOutPinGen
 )
 
 router.get(
   '/generate-:pinEnv-pins-overview',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   getGeneratePinsOverview
 )
 router.get(
   '/generate-:pinEnv-pins-list/:groupIds?',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   getGeneratePinsList
 )
 router.post(
   '/generate-:pinEnv-pins',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   postGeneratePins
 )
 router.get(
   '/view-and-custom-print-:pinEnv-pins',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   getViewAndCustomPrintPins
 )
 

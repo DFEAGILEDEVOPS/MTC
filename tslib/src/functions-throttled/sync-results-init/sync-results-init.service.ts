@@ -62,6 +62,8 @@ export class SyncResultsInitService {
       payloadString = this.compressionService.decompressFromUTF16(archive)
     } else if (version === 3) {
       payloadString = this.compressionService.decompressFromBase64(archive)
+    } else if (version === 4) {
+      payloadString = this.compressionService.decompressFromGzip(archive)
     }
     if (payloadString === '' || payloadString === null) {
       throw new Error('Decompressed receivedCheck archive payload is null or empty')

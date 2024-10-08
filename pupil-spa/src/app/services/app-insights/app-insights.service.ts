@@ -71,6 +71,15 @@ export class ApplicationInsightsService {
     this.appInsights.trackException(exception, customTracking)
   }
 
+  trackTrace(message: string) {
+    if (!this.appInsights) {
+      console.debug(message)
+      return
+    }
+    const customTracking = this.getCustomProperties()
+    this.appInsights.trackTrace({ message, properties: customTracking })
+  }
+
   getCustomProperties (): MtcCustomProperties {
     return {
       mtcCheckCode: this.storageService.getPupil()?.checkCode,

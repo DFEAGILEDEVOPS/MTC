@@ -7,40 +7,40 @@ const restartController = require('../controllers/restart')
 
 router.get(
   '/overview',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   restartController.getRestartOverview
 )
 router.get(
   '/select-restart-list',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   restartController.getSelectRestartList
 )
 router.post(
   '/submit-restart-list',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   restartController.postSubmitRestartList
 )
 router.post(
   '/delete',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   restartController.postDeleteRestart
 )
 
 router.post(
   '/allow-discretionary-restart',
-  isAuthenticated([roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.staAdmin]),
   restartController.postSubmitAllowDiscretionaryRestart
 )
 
 router.post(
   '/remove-discretionary-restart',
-  isAuthenticated([roles.staAdmin]),
   isAdminWindowAvailable,
+  isAuthenticated([roles.staAdmin]),
   restartController.postSubmitRevokeDiscretionaryRestart
 )
 
