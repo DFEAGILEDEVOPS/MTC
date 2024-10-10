@@ -57,11 +57,12 @@ export class PsReportService {
           device: result.device,
           events: result.events,
           pupil: result.pupil,
-          school: result.school
+          school: result.school,
+          inputAssistant: result.inputAssistant
         }
 
         // Now we have the pupil data we can transform it into the report format
-        const reportLine = new ReportLine(pupilResult.answers, pupilResult.check, pupilResult.checkConfig, pupilResult.checkForm, pupilResult.device, pupilResult.events, pupilResult.pupil, pupilResult.school)
+        const reportLine = new ReportLine(pupilResult.answers, pupilResult.check, pupilResult.checkConfig, pupilResult.checkForm, pupilResult.device, pupilResult.events, pupilResult.pupil, pupilResult.school, pupilResult.inputAssistant)
         const outputData = reportLine.transform()
         output.psReportExportOutput.push(outputData)
         // Send the transformed pupil data onto the ps-report-export queue using the output bindings.

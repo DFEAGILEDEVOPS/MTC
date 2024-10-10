@@ -125,14 +125,14 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
     p.dateOfBirth,
     aa.description,
     p.checkcomplete AS hasCompletedCheck,
-    CAST(CASE WHEN (chk.id IS NOT NULL) THEN 1 ELSE 0 END AS bit) AS [retroInputAssistant]
+    ISNULL(cia.isRetrospective, 0) AS [retroInputAssistant]
   FROM [mtc_admin].pupilaccessarrangements paa
     INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
     INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
-    LEFT OUTER JOIN [mtc_admin].[check] chk ON chk.id = paa.retroInputAssistant_check_id
+    LEFT OUTER JOIN [mtc_admin].checkInputAssistant cia ON cia.pupil_id = p.id
   WHERE p.school_id = @schoolId
-  ORDER BY retroInputAssistant DESC
-  ` // order by is a dirty hack in order to ensure that the retro input assistant flag is preserved during the reduction
+  ORDER BY [retroInputAssistant] DESC`
+  // order by is a dirty hack in order to ensure that the retro input assistant flag is preserved during the reduction
   // that takes place in pupilAccessArrangementsService.getPupils.  This should be refactored.
   return sqlService.readonlyQuery(sql, params)
 }

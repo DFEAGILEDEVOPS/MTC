@@ -1,4 +1,4 @@
-import { SqlService, type ITransactionRequest } from '../../sql/sql.service'
+import { type IModifyResult, SqlService, type ITransactionRequest } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
 import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 import { RedisService } from '../../caching/redis-service'
@@ -45,7 +45,12 @@ export class PupilPrefsService {
       }
       dataUpdates.push(fontSizeDataUpdate)
     }
-    await this.dataService.updatePupilPreferences(dataUpdates)
+    if (dataUpdates.length > 0) {
+      await this.dataService.updatePupilPreferences(dataUpdates)
+    }
+    if (preferenceUpdate.inputAssistant !== undefined) {
+      await this.dataService.addInputAssistant(preferenceUpdate.checkCode, preferenceUpdate.inputAssistant)
+    }
     const pupilUUID = await this.dataService.getPupilUUIDByCheckCode(preferenceUpdate.checkCode)
     output.checkSyncQueue.push({
       pupilUUID,
@@ -55,8 +60,17 @@ export class PupilPrefsService {
   }
 }
 
+export interface InputAssistant {
+  firstName: string
+  lastName: string
+}
+
 export interface IPupilPreferenceUpdate {
   checkCode: string
+  inputAssistant?: {
+    firstName: string
+    lastName: string
+  }
   preferences: {
     fontSizeCode?: string
     colourContrastCode?: string
@@ -75,6 +89,7 @@ export interface IPupilPreferenceDataUpdate {
 export interface IPupilPrefsDataService {
   updatePupilPreferences (dataUpdates: IPupilPreferenceDataUpdate[]): Promise<void>
   getPupilUUIDByCheckCode (checkCode: string): Promise<any>
+  addInputAssistant (checkCode: string, inputAssistant: InputAssistant): Promise<IModifyResult>
 }
 
 export class PupilPrefsDataService implements IPupilPrefsDataService {
@@ -84,6 +99,37 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
   constructor (logger?: ILogger) {
     this.sqlService = new SqlService(logger)
     this.redisService = new RedisService()
+  }
+
+  async addInputAssistant (checkCode: string, inputAssistant: InputAssistant): Promise<IModifyResult> {
+    const sql = `
+    DECLARE @pupilId INT;
+    DECLARE @checkId INT;
+    SELECT @pupilId = c.pupil_id, @checkId = c.id
+    FROM mtc_admin.[check] c
+    WHERE c.checkCode = @checkCode;
+
+    INSERT mtc_admin.checkInputAssistant (pupil_id, check_id, foreName, lastName)
+    VALUES (@pupilId, @checkId, @firstName, @lastName);
+    `
+    const params = [
+      {
+        name: 'checkCode',
+        type: TYPES.UniqueIdentifier,
+        value: checkCode
+      },
+      {
+        name: 'firstName',
+        type: TYPES.NVarChar,
+        value: inputAssistant.firstName
+      },
+      {
+        name: 'lastName',
+        type: TYPES.NVarChar,
+        value: inputAssistant.lastName
+      }
+    ]
+    return this.sqlService.modify(sql, params)
   }
 
   async updatePupilPreferences (dataUpdates: IPupilPreferenceDataUpdate[]): Promise<void> {

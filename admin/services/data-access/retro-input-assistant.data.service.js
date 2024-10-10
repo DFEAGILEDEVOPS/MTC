@@ -23,15 +23,22 @@ const service = {
     const arrangementType = await aaDataService.sqlFindAccessArrangementsIdsWithCodes([aaDataService.CODES.INPUT_ASSISTANCE])
     const inputAssistantTypeId = arrangementType[0].id
 
-    const insertData = {
+    const paaTableInsertData = {
       pupil_id: data.pupilId,
       recordedBy_user_id: data.userId,
       accessArrangements_id: inputAssistantTypeId,
-      retroInputAssistantFirstName: data.firstName,
-      retroInputAssistantLastName: data.lastName,
-      retroInputAssistant_check_id: data.checkId
+      inputAssistanceInformation: data.reason
     }
-    return sqlService.create('pupilAccessArrangements', insertData)
+    await sqlService.create('pupilAccessArrangements', paaTableInsertData)
+
+    const ciaInsertData = {
+      pupil_id: data.pupilId,
+      foreName: data.firstName,
+      lastName: data.lastName,
+      check_id: data.checkId,
+      isRetrospective: true
+    }
+    return sqlService.create('checkInputAssistant', ciaInsertData)
   },
   /**
    * @description looks up pupil id and current check id via url slug
@@ -66,13 +73,12 @@ const service = {
     FROM
       [mtc_admin].[pupil] p
       INNER JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
-      LEFT JOIN [mtc_admin].pupilAccessArrangements paa ON (chk.id = paa.retroInputAssistant_check_id)
-      LEFT JOIN [mtc_admin].checkConfig cc ON (chk.id = cc.check_id)
+      LEFT JOIN [mtc_admin].checkInputAssistant cia ON (chk.id = cia.check_id)
+      LEFT JOIN [mtc_admin].pupilAccessArrangements paa ON (cia.pupil_id = paa.pupil_id)
     WHERE p.school_id = @schoolId
       AND p.attendanceId IS NULL
-      AND paa.id IS NULL
       AND chk.complete = 1
-      AND JSON_VALUE(cc.payload, '$.inputAssistance') = 'false'
+      AND p.id NOT IN (SELECT pupil_id FROM [mtc_admin].[checkInputAssistant] WHERE isRetrospective = 1)
     ORDER BY lastName;
     `
     return sqlService.readonlyQuery(sql, params)
@@ -100,13 +106,18 @@ const service = {
       }
     ]
     const sql = `
-      DELETE [mtc_admin].[pupilAccessArrangements] WHERE id = (
-        SELECT paa.id FROM [mtc_admin].[pupilAccessArrangements] paa
-        INNER JOIN [mtc_admin].[pupil] p ON paa.retroInputAssistant_check_id = p.currentCheckId
-        WHERE p.urlSlug = @pupilUrlSlug
-      )
+      DECLARE @pupilId INT = (SELECT id FROM [mtc_admin].[pupil] WHERE urlSlug = @pupilUrlSlug);
+      DECLARE @inputAssistantTypeId INT = (SELECT id FROM [mtc_admin].[accessArrangements] WHERE code = '${aaDataService.CODES.INPUT_ASSISTANCE}');
+      DECLARE @pupilAccessArrangementsId INT =
+        (SELECT id FROM [mtc_admin].[pupilAccessArrangements]
+        WHERE pupil_id = @pupilId
+        AND accessArrangements_id = @inputAssistantTypeId);
+
+      DELETE [mtc_admin].[pupilAccessArrangements] WHERE id = @pupilAccessArrangementsId;
+      DELETE [mtc_admin].[checkInputAssistant] WHERE pupil_id = @pupilId AND isRetrospective = 1;
     `
-    return sqlService.modify(sql, params)
+
+    return sqlService.modifyWithTransaction(sql, params)
   }
 }
 
