@@ -20,6 +20,7 @@ export class ApplicationInsightsService {
   private appInsights: ApplicationInsights
   private buildNumber: string
   private commitId: string
+  private cloudRoleName = 'Pupil-SPA'
 
 
   constructor (private router: Router, private meta: Meta, private storageService: StorageService) {
@@ -107,6 +108,8 @@ export class ApplicationInsightsService {
   public loadCustomTelemetryProperties () {
     const mtcTelemetryInitializer = (envelope: ITelemetryItem) => {
       const baseData = envelope.data
+      envelope.tags = envelope.tags || {}
+      envelope.tags['ai.cloud.role'] = this.cloudRoleName
       const customProps = this.getCustomProperties()
       for (const [key, val] of Object.entries(customProps)) {
         baseData[key] = val
