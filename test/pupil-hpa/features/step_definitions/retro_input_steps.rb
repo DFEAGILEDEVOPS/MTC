@@ -10,11 +10,11 @@ Given(/^I have retrospectively added an input assistant$/) do
   retro_input_page.enter_input_assistant_details
   retro_input_page.save.click
   @pupil_id = SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])['id']
-  db_record = SqlDbHelper.get_access_arrangements_for_a_pupil(@pupil_id)
-  expect(db_record.first['retroInputAssistantFirstName']).to eql 'Input'
-  expect(db_record.first['retroInputAssistantLastName']).to eql 'Assistant'
   check_id = SqlDbHelper.check_details(@pupil_id)['id']
-  expect(db_record.first['retroInputAssistant_check_id']).to eql check_id
+  db_record = SqlDbHelper.get_check_input_assistant(@pupil_id,check_id)
+  expect(db_record['isRetrospective']).to eql true
+  expect(db_record['foreName']).to eql 'Input'
+  expect(db_record['lastName']).to eql 'Assistant'
 end
 
 When(/^I complete a check after a restart$/) do

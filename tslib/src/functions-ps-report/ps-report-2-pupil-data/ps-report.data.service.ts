@@ -1,6 +1,7 @@
 import { type ISqlService, SqlService } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
 import {
+  type InputAssistantOrNull,
   type Answer,
   type AnswersOrNull,
   type Check,
@@ -219,6 +220,34 @@ export class PsReportDataService {
       typeOfEstablishmentCode: data.typeOfEstablishmentCode
     }
     return Object.freeze(school)
+  }
+
+  /**
+   * Retrieve the input assistant data for the check from the database
+   * @param checkId
+  */
+  public async getInputAssistantData (checkId: number | null): Promise<InputAssistantOrNull> {
+    if (checkId === null) {
+      return null
+    }
+    const sql = `
+        SELECT
+            ia.isRetrospective
+          FROM mtc_admin.checkInputAssistant ia
+         WHERE ia.check_id = @checkId
+    `
+    interface DBInputAssistant {
+      isRetrospective: boolean
+    }
+
+    const res: DBInputAssistant[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    const data = R.head(res)
+    if (data === undefined) {
+      return null
+    }
+    return Object.freeze({
+      isRetrospective: data.isRetrospective
+    })
   }
 
   /**
@@ -646,15 +675,17 @@ export class PsReportDataService {
       Promise<CheckOrNull>,
       Promise<AnswersOrNull>,
       Promise<DeviceOrNull>,
-      Promise<EventsOrNull>
+      Promise<EventsOrNull>,
+      Promise<InputAssistantOrNull>
     ] = [
       this.getCheckConfig(pupil.currentCheckId),
       this.getCheck(pupil),
       this.getAnswers(pupil.currentCheckId),
       this.getDevice(pupil.currentCheckId),
-      this.getEvents(pupil.currentCheckId)
+      this.getEvents(pupil.currentCheckId),
+      this.getInputAssistantData(pupil.currentCheckId)
     ]
-    const [checkConfig, check, answers, device, events] = await Promise.all(promises)
+    const [checkConfig, check, answers, device, events, inputAssistant] = await Promise.all(promises)
     let checkForm: CheckFormOrNull = null
     if (check !== null) {
       checkForm = await this.getCheckForm(check.checkFormId)
@@ -667,7 +698,8 @@ export class PsReportDataService {
       checkForm,
       answers,
       device,
-      events
+      events,
+      inputAssistant
     })
   }
 }

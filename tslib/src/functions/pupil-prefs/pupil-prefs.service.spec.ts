@@ -8,7 +8,8 @@ import {
 const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
   updatePupilPreferences: jest.fn(),
   getPupilUUIDByCheckCode: jest.fn(),
-  closeDataService: jest.fn()
+  closeDataService: jest.fn(),
+  addInputAssistant: jest.fn()
 }))
 
 let sut: PupilPrefsService
@@ -81,5 +82,22 @@ describe('pupil-prefs.service', () => {
     expect(dataUpdates).toHaveLength(1)
     expect(dataUpdates[0].prefTable).toBe('[fontSizeLookUp]')
     expect(dataUpdates[0].prefField).toBe('fontSizeLookUp_Id')
+  })
+
+  test('input assistant added when data is present', async () => {
+    jest.spyOn(dataServiceMock, 'updatePupilPreferences')
+    jest.spyOn(dataServiceMock, 'addInputAssistant')
+    const prefUpdate: IPupilPreferenceUpdate = {
+      checkCode: 'check-code',
+      preferences: {},
+      version: 123,
+      inputAssistant: {
+        firstName: 'first',
+        lastName: 'last'
+      }
+    }
+    await sut.update(prefUpdate)
+    expect(dataServiceMock.updatePupilPreferences).not.toHaveBeenCalled()
+    expect(dataServiceMock.addInputAssistant).toHaveBeenCalledTimes(1)
   })
 })
