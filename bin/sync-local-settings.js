@@ -40,6 +40,7 @@ function syncDir (dir){
   const fname = path.join(__dirname, '..', dir, targetFilename)
   console.log(`\nEditing file ${fname}`)
   let file = editJsonFile(fname)
+  file.set('IsEncrypted', false)
 
   const AzureWebJobsStorageKey = makeValuesKey(AzureWebJobsStorage)
   const AzureStorageConnectionStringKey = makeValuesKey(AZURE_STORAGE_CONNECTION_STRING)

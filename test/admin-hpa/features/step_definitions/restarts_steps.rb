@@ -264,15 +264,15 @@ end
 Given(/^pupil logs in and completed the check$/) do
   pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   @pupil_id = pupil_detail['id']
-  check_entry = SqlDbHelper.check_details(@pupil_id)
-  pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
+  @check_entry = SqlDbHelper.check_details(@pupil_id)
+  pupil_pin_detail = SqlDbHelper.get_pupil_pin(@check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   RequestHelper.auth(school_password, pupil_pin)
-  @check_code = check_entry['checkCode']
-  FunctionsHelper.complete_check_via_check_code([@check_code]) if check_entry["isLiveCheck"]
-  SqlDbHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
+  @check_code = @check_entry['checkCode']
+  FunctionsHelper.complete_check_via_check_code([@check_code]) if @check_entry["isLiveCheck"]
+  SqlDbHelper.wait_for_received_check(@check_code) if @check_entry["isLiveCheck"]
 end
 
 And(/^I generate a pin for that pupil$/) do
