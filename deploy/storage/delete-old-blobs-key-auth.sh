@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Set the resource group and storage account name (you can also loop through multiple accounts if needed)
 STORAGE_ACCOUNT_NAME=$1
@@ -6,7 +6,7 @@ STORAGE_ACCOUNT_KEY=$2
 CONTAINER_NAME=$3
 
 # Get the current date in UTC and subtract 7 days
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ $(uname) == "Darwin" ]]; then
     # macOS
     CUTOFF_DATE=$(date -u -v-1d "+%Y-%m-%d")
 else
