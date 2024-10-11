@@ -6,7 +6,7 @@ import { isNotNil } from 'ramda'
 // const pingService = new PingService()
 
 const appInsightsHelper = {
-  startInsightsIfConfigured: async () => {
+  startInsightsIfConfigured: (): void => {
     if (isNotNil(config.Logging.ApplicationInsights.ConnectionString)) {
       console.log('initialising application insights module')
       appInsights.setup(config.Logging.ApplicationInsights.ConnectionString)
@@ -15,7 +15,7 @@ const appInsightsHelper = {
         .setAutoCollectPerformance(true, false)
         .setAutoCollectExceptions(config.Logging.ApplicationInsights.CollectExceptions)
         .setAutoCollectDependencies(config.Logging.ApplicationInsights.CollectDependencies)
-        .setAutoCollectConsole(false)
+        .setAutoCollectConsole(true)
         .setAutoCollectPreAggregatedMetrics(true)
         .setSendLiveMetrics(config.Logging.ApplicationInsights.LiveMetrics)
         .setInternalLogging(false, true)

@@ -1,16 +1,15 @@
-import * as http from 'http'
-import debug from 'debug'
-import logger from './services/log.service'
+// import * as appInsights from './helpers/app-insights'
 import config from './config'
-
+import * as http from 'http'
+import logger from './services/log.service'
 import App from './App'
 
-debug('check-submission:server')
-
+// appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
 const port = normalizePort(config.PORT)
 App.set('port', port)
+const startDate = new Date()
 
-logger.info(`${config.Environment} server listening on port ${port}`)
+logger.info(`pupil-api: ${startDate.toISOString()} [${config.Environment}] server listening on port ${port}`)
 
 const server = http.createServer(App)
 server.listen(port)
@@ -44,5 +43,5 @@ function onError (error: NodeJS.ErrnoException): void {
 function onListening (): void {
   const addr = server.address()
   const bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr?.port}`
-  debug(`Listening on ${bind}`)
+  logger.info(`pupil-api up on ${bind}`)
 }

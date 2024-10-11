@@ -1,8 +1,9 @@
+import * as appInsights from 'applicationinsights'
 import * as winston from 'winston'
 import config from '../config'
+import { isNotNil } from 'ramda'
 
-/*
-const syslogLevels = {
+const loggingLevels = {
   emerg: 0,
   alert: 1,
   crit: 2,
@@ -12,41 +13,52 @@ const syslogLevels = {
   info: 6,
   debug: 7
 }
-*/
+
+const cloudRoleName = 'Pupil-API'
+
+export type LogLevel = 'emerg' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug'
+
+export const startInsightsIfConfigured = (): void => {
+  if (isNotNil(config.Logging.ApplicationInsights.ConnectionString)) {
+    console.debug('initialising application insights module')
+
+    appInsights.setup(config.Logging.ApplicationInsights.ConnectionString)
+      .setAutoCollectRequests(true)
+      // setAutoCollectPerformance() - for some reason this next call causes a configuration warning 'Extended metrics are no longer supported. ...'
+      .setAutoCollectPerformance(true, false)
+      .setAutoCollectExceptions(config.Logging.ApplicationInsights.CollectExceptions)
+      .setAutoCollectDependencies(config.Logging.ApplicationInsights.CollectDependencies)
+      .setAutoCollectConsole(config.Logging.LogLevel === 'debug')
+      .setAutoCollectPreAggregatedMetrics(true)
+      .setSendLiveMetrics(config.Logging.ApplicationInsights.LiveMetrics)
+      .setInternalLogging(true, true)
+      .enableWebInstrumentation(false)
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
+    appInsights.start()
+  }
+}
+
+startInsightsIfConfigured()
 
 export class Logger {
-  private readonly level: string
+  private readonly level: LogLevel
   private readonly logger
 
   constructor () {
     this.level = config.Logging.LogLevel
 
-    let format
-    if (config.Logging.ApplicationInsights.LogToWinston === true) {
-      format = winston.format.simple()
-    } else {
-      format = winston.format.combine(
-        winston.format.colorize({ all: true }),
-        winston.format.simple()
-      )
-    }
-
     const baseLogOptions = {
-      levels: winston.config.syslog.levels,
+      levels: loggingLevels,
       level: this.level,
-      format,
+      format: winston.format.json(),
       transports: [
-        new winston.transports.Console({ level: this.level, silent: false, consoleWarnLevels: ['warn', 'error'] })
-      ],
-      meta: true,
-      expressFormat: true,
-      colorize: false
+        new winston.transports.Console()
+      ]
     }
-
     this.logger = winston.createLogger(baseLogOptions)
   }
 
-  log (level: string, msg: string, exception?: any): void {
+  log (level: LogLevel, msg: string, exception?: any): void {
     this.logger.log(level, msg, exception)
   }
 
@@ -72,7 +84,15 @@ export class Logger {
    * AI -> notice
    * @param {string} msg
    */
-  info (msg: string, exception = null): void { this.log('info', msg, exception) }
+  info (msg: string, exception = null): void {
+    this.log('info', msg, exception)
+    // console.info(`console.log(): ${msg}`, exception ?? '')
+    // if (appInsights.defaultClient !== undefined) {
+    //   console.debug('making appinsights trace call')
+    //   appInsights.defaultClient.trackTrace({ message: msg })
+    //   console.debug('trace call complete')
+    // }
+  }
 
   /**
    * AI -> verbose
