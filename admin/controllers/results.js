@@ -96,7 +96,7 @@ controller.getCtfDownload = async function getCtfDownload (req, res, next) {
     const xml = await ctfService.getSchoolResultDataAsXmlString(req.user.schoolId, req.user.timezone)
     const dfeNumber = req.user.School
     if (!req.query.inline) {
-      res.attachment(`${dfeNumber}_KS2_${dfeNumber}_001.xml`)
+      res.attachment(`${dfeNumber}_MTC_${dfeNumber}_001.xml`)
     }
     res.header('Content-type', 'text/xml')
     res.send(xml)

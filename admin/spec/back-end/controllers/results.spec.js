@@ -262,7 +262,7 @@ describe('results controller:', () => {
       req.user = { schoolId: 42, School: 9991001 }
       jest.spyOn(ctfService, 'getSchoolResultDataAsXmlString').mockReturnValue('<CTfile>mock</CTfile>')
       await controller.getCtfDownload(req, res, next)
-      expect(res.attachment).toHaveBeenCalledWith('9991001_KS2_9991001_001.xml')
+      expect(res.attachment).toHaveBeenCalledWith('9991001_MTC_9991001_001.xml')
     })
 
     test('sets the Content-type to text/xml', async () => {
