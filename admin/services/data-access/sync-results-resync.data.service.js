@@ -2,10 +2,8 @@
 
 const sqlService = require('./sql.service')
 const R = require('ramda')
-const axios = require('axios')
 const config = require('../../config')
-const http = require('http')
-axios.defaults.httpAgent = new http.Agent({ family: 4 })
+const axios = require('axios')
 
 const functionUrl = `${config.Functions.Throttled.BaseAdminUrl}/sync-results-init`
 const requestConfig = {
