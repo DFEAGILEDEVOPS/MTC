@@ -33,4 +33,4 @@ const apiResponse = {
   }
 }
 
-export = apiResponse
+export default apiResponse

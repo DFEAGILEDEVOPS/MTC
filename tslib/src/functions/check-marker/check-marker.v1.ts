@@ -1,4 +1,3 @@
-import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
 import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import moment from 'moment'
@@ -8,6 +7,7 @@ import type { MarkingData, CheckResult, MarkedAnswer, ICheckMarkerOutputs, IMark
 import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { type ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
+const RA = require('ramda-adjunct')
 
 export class CheckMarkerV1 {
   private readonly tableService: ITableService
@@ -76,7 +76,7 @@ export class CheckMarkerV1 {
   }
 
   private async validateData (validatedCheck: ReceivedCheckFunctionBindingEntity, logger: ILogger): Promise<MarkingData | undefined> {
-    if (RA.isNilOrEmpty(validatedCheck.answers)) {
+    if (RA.isNilOrEmpty(validatedCheck.answers) === true) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
     }
@@ -92,7 +92,7 @@ export class CheckMarkerV1 {
       return
     }
 
-    if (!RA.isArray(parsedAnswersJson)) {
+    if (RA.isArray(parsedAnswersJson) === false) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not an array')
       return
     }
@@ -129,7 +129,7 @@ export class CheckMarkerV1 {
       return
     }
 
-    if (!RA.isArray(checkForm) || RA.isEmptyArray(checkForm)) {
+    if (RA.isArray(checkForm) === false || RA.isEmptyArray(checkForm) === true) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'check form data is either empty or not an array')
       return
     }
@@ -207,10 +207,10 @@ export class CheckMarkerV1 {
   }
 
   private findValidatedCheck (receivedCheckRef: unknown): ReceivedCheckFunctionBindingEntity {
-    if (RA.isEmptyArray(receivedCheckRef)) {
+    if (RA.isEmptyArray(receivedCheckRef) === true) {
       throw new Error('received check reference is empty')
     }
-    if (!RA.isArray(receivedCheckRef)) {
+    if (RA.isArray(receivedCheckRef) === false) {
       return receivedCheckRef as ReceivedCheckFunctionBindingEntity
     }
     const checkArray = receivedCheckRef as ReceivedCheckFunctionBindingEntity[]
@@ -225,7 +225,7 @@ export class CheckMarkerV1 {
   }
 
   private answerSort (answers: MarkedAnswer[]): MarkedAnswer[] {
-    if (!RA.isArray(answers)) {
+    if (RA.isArray(answers) === false) {
       throw new Error('answers is not an array')
     }
     const cmp = (a: MarkedAnswer, b: MarkedAnswer): number => {

@@ -1,6 +1,6 @@
 import { type IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
 import { v4 as uuid } from 'uuid'
-import moment = require('moment')
+import moment from 'moment'
 
 export interface IPupilLoginMessage {
   version: number

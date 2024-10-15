@@ -4,7 +4,7 @@ import * as sb from '@azure/service-bus'
 import config from '../../config'
 import { type ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { BatchCheckNotifier } from './batch-check-notifier.service'
-import * as RA from 'ramda-adjunct'
+const RA = require('ramda-adjunct')
 
 const functionName = 'check-notifier-batch'
 
@@ -12,6 +12,7 @@ app.timer('checkNotifierBatch', {
   schedule: '*/30 * * * * *', // execute every 30 seconds
   handler: batchCheckNotifier
 })
+
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
   we do not expect another receive operation to be in progress.
@@ -57,7 +58,7 @@ export async function batchCheckNotifier (timer: Timer, context: InvocationConte
   for (let batchIndex = 0; batchIndex < config.CheckNotifier.BatchesPerExecution; batchIndex++) {
     context.log(`${functionName}: starting batch ${batchIndex + 1} of ${config.CheckNotifier.BatchesPerExecution}...`)
     const messageBatch = await receiver.receiveMessages(config.CheckNotifier.MessagesPerBatch)
-    if (RA.isNilOrEmpty(messageBatch)) {
+    if (RA.isNilOrEmpty(messageBatch) === true) {
       context.log(`${functionName}: no messages to process`)
       await disconnect()
       finish(start, context)

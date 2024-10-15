@@ -19,8 +19,8 @@ try {
 // telemetry
 // fallback to app insights, if configured
 const appInsights = require('./helpers/app-insights')
-// intentionally not awaited...
 appInsights.startInsightsIfConfigured()
+console.info(`Admin-app started at ${(new Date()).toISOString()}`)
 
 // non priority modules...
 const breadcrumbs = require('express-breadcrumbs')

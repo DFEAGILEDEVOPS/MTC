@@ -2,12 +2,12 @@ import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
 import config from '../../config'
-import * as RA from 'ramda-adjunct'
 import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
 import { jsonReviver } from '../../common/json-reviver'
 import { PsReportStagingDataService } from './ps-report-staging.data.service'
 import { CsvTransformer } from './csv-transformer'
 import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
+const RA = require('ramda-adjunct')
 
 const functionName = 'ps-report-3b-stage-csv-file'
 let logPrefix = functionName
@@ -92,7 +92,7 @@ export async function PsReportStageCsvFile (triggerInput: unknown, context: Invo
   while (!done) {
     context.log(`${logPrefix}: starting batch ${batchIndex + 1}`)
     const messageBatch = await receiver.receiveMessages(config.PsReport.StagingFile.ReadMessagesPerBatch)
-    if (RA.isNilOrEmpty(messageBatch)) {
+    if (RA.isNilOrEmpty(messageBatch) === true) {
       context.log(`${logPrefix}: no messages to process`)
       if (emptyPollTime === undefined) {
         context.log(`${logPrefix}: Setting flag to mark the time since no messages were found.`)
