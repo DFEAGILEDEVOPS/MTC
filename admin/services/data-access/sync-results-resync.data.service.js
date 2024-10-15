@@ -4,6 +4,8 @@ const sqlService = require('./sql.service')
 const R = require('ramda')
 const axios = require('axios')
 const config = require('../../config')
+const http = require('http')
+axios.defaults.httpAgent = new http.Agent({ family: 4 })
 
 const functionUrl = `${config.Functions.Throttled.BaseAdminUrl}/sync-results-init`
 const requestConfig = {
@@ -32,7 +34,7 @@ const service = {
   },
 
   callSyncResultsInitFunction: async function callSyncResultsInitFunction (message) {
-    const response = await axios.post(functionUrl, { input: JSON.stringify(message) }, requestConfig)
+    const response = await axios.post(functionUrl, message, requestConfig)
     if (response.status !== 202) {
       throw new Error(`request to ${functionUrl} failed: ${response.status} - ${response.statusText}`)
     }
