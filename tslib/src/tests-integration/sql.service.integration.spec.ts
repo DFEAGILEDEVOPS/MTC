@@ -1,9 +1,9 @@
 import * as sql from '../sql/sql.service'
-import * as RA from 'ramda-adjunct'
-import { isMoment } from 'moment'
 import * as mssql from 'mssql'
 import { v4 as uuidv4 } from 'uuid'
-import moment = require('moment')
+import moment, { isMoment } from 'moment'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const RA = require('ramda-adjunct')
 
 let sut: sql.SqlService
 

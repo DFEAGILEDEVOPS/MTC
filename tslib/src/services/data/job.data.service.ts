@@ -2,8 +2,9 @@ import { TYPES, MAX } from 'mssql'
 import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
-import { isArray } from 'ramda-adjunct'
 import { type ILogger } from '../../common/logger'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { isArray } = require('ramda-adjunct')
 
 export type JobStatusOutcomes = (JobStatusCode.Failed | JobStatusCode.CompletedWithErrors | JobStatusCode.CompletedSuccessfully)
 
@@ -105,7 +106,7 @@ export class JobDataService implements IJobDataService {
     }]
     const result = await this.sqlService.query(sql, params)
     if (result === undefined) return undefined
-    if (!isArray(result)) return undefined
+    if (isArray(result) === false) return undefined
     if (result.length === 0) return undefined
     return result[0].id
   }

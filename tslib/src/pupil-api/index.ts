@@ -1,10 +1,8 @@
-// import * as appInsights from './helpers/app-insights'
 import config from './config'
 import * as http from 'http'
 import logger from './services/log.service'
 import App from './App'
 
-// appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
 const port = normalizePort(config.PORT)
 App.set('port', port)
 const startDate = new Date()

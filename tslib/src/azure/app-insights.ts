@@ -33,4 +33,4 @@ const appInsightsHelper = {
   }
 }
 
-export = appInsightsHelper
+export default appInsightsHelper

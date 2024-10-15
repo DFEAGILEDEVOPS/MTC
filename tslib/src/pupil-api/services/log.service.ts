@@ -1,7 +1,6 @@
-import * as appInsights from 'applicationinsights'
 import * as winston from 'winston'
 import config from '../config'
-import { isNotNil } from 'ramda'
+export type LogLevel = 'emerg' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug'
 
 const loggingLevels = {
   emerg: 0,
@@ -13,32 +12,6 @@ const loggingLevels = {
   info: 6,
   debug: 7
 }
-
-const cloudRoleName = 'Pupil-API'
-
-export type LogLevel = 'emerg' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug'
-
-export const startInsightsIfConfigured = (): void => {
-  if (isNotNil(config.Logging.ApplicationInsights.ConnectionString)) {
-    console.debug('initialising application insights module')
-
-    appInsights.setup(config.Logging.ApplicationInsights.ConnectionString)
-      .setAutoCollectRequests(true)
-      // setAutoCollectPerformance() - for some reason this next call causes a configuration warning 'Extended metrics are no longer supported. ...'
-      .setAutoCollectPerformance(true, false)
-      .setAutoCollectExceptions(config.Logging.ApplicationInsights.CollectExceptions)
-      .setAutoCollectDependencies(config.Logging.ApplicationInsights.CollectDependencies)
-      .setAutoCollectConsole(config.Logging.LogLevel === 'debug')
-      .setAutoCollectPreAggregatedMetrics(true)
-      .setSendLiveMetrics(config.Logging.ApplicationInsights.LiveMetrics)
-      .setInternalLogging(true, true)
-      .enableWebInstrumentation(false)
-    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
-    appInsights.start()
-  }
-}
-
-startInsightsIfConfigured()
 
 export class Logger {
   private readonly level: LogLevel

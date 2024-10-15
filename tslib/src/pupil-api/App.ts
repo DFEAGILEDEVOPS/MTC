@@ -1,7 +1,6 @@
 import express from 'express'
 import * as bodyParser from 'body-parser'
 import cors from 'cors'
-import helmet from 'helmet'
 import { v4 as uuidv4 } from 'uuid'
 import logger from './services/log.service'
 import authRoutes from './routes/auth'
@@ -12,6 +11,7 @@ import * as corsOptions from './helpers/cors-options'
 import { initLogger } from './helpers/logger'
 import { JwtSecretValidator } from '../services/jwt-secret.validator'
 import config from '../config'
+const helmet = require('helmet')
 
 // Creates and configures an ExpressJS web server.
 class App {

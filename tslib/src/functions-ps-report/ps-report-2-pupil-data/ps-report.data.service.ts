@@ -20,9 +20,9 @@ import {
   type School
 } from './pupil-data.models'
 import * as R from 'ramda'
-import * as RA from 'ramda-adjunct'
 import type moment from 'moment'
 import { type ILogger } from '../../common/logger'
+const RA = require('ramda-adjunct')
 
 const functionName = 'ps-report-2-pupil-data'
 
@@ -351,7 +351,9 @@ export class PsReportDataService {
       restartReason: data.restartReason
     }
 
-    if (RA.isInteger(check.restartNumber) && check.restartNumber > 0 && R.isNil(check.restartReason)) {
+    if (RA.isInteger(check.restartNumber) === true &&
+      check.restartNumber > 0 &&
+      R.isNil(check.restartReason)) {
       // One or more restarts has been used, but the restart reason was not found using the lookup
       // provided in the `pupilRestart` table.  This can happen when the pin generated after the restart
       // is not used, so it expires.
