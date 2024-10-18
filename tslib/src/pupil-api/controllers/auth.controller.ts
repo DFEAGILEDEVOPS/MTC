@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 import logger from '../services/log.service'
-import * as apiResponse from '../helpers/api-response'
+import apiResponse from '../helpers/api-response'
 import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service'
 import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
 

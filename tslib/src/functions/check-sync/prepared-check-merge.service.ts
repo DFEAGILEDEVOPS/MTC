@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { SqlService } from '../../sql/sql.service'
-import moment = require('moment')
+import type moment from 'moment'
 
 export interface IPreparedCheckMergeDataService {
   getAccessArrangementsCodesByIds (aaIds: number[]): Promise<string[]>
