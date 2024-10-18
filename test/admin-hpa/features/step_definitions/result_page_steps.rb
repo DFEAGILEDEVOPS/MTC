@@ -346,7 +346,6 @@ Then(/^I should see the pupil has the Maladministration attendance code$/) do
   expect(pupil_result[:mark]).to eql 'Q'
 end
 
-
 Given(/^I have a pupil who has the Pupil cheating attendance code$/) do
   step 'the service manager has set a pupil to be annulled because of pupil_cheating'
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
