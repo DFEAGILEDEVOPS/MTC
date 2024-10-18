@@ -185,7 +185,6 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   complete_results = (pupil_results_with_code + pupil_results_with_mark).sort_by {|hsh| hsh[:name]}
   ctf_results_hash = @doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
   expect(complete_results).to eql ctf_results_hash
-  binding.pry
 end
 
 Given(/^I have multiple pupils with no score or reason for not taking the check$/) do
