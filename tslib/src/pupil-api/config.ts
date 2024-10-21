@@ -61,7 +61,6 @@ export default {
     },
     ApplicationInsights: {
       ConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING,
-      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
       CollectDependencies: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_DEPENDENCIES') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_DEPENDENCIES) : true,
       InstanceId: `${os.hostname()}:${process.pid}`,
       CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
