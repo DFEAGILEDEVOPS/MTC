@@ -119,6 +119,7 @@ export default {
     DisablePreparedCheckCacheDrop: parser.propertyExists(process.env, 'TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP) : false
   },
   ApplicationInsights: {
+    Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
     ConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING,
     InstanceId: `${os.hostname()}:${process.pid}`,
     CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,

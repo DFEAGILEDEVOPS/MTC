@@ -4,7 +4,7 @@ import { isNotNil } from 'ramda'
 
 const appInsightsHelper = {
   startInsightsIfConfigured: (cloudRole: string) => {
-    if (isNotNil(config.ApplicationInsights.ConnectionString)) {
+    if (isNotNil(config.ApplicationInsights.Key)) {
       console.log('initialising application insights module')
       appInsights.setup(config.ApplicationInsights.ConnectionString)
         .setAutoCollectRequests(true)
@@ -12,7 +12,7 @@ const appInsightsHelper = {
         .setAutoCollectPerformance(true, false)
         .setAutoCollectExceptions(config.ApplicationInsights.CollectExceptions)
         .setAutoCollectDependencies(config.ApplicationInsights.CollectDependencies)
-        .setAutoCollectConsole(false)
+        .setAutoCollectConsole(true)
         .setAutoCollectPreAggregatedMetrics(true)
         .setSendLiveMetrics(config.ApplicationInsights.LiveMetrics)
         .setInternalLogging(false, true)
