@@ -3,7 +3,6 @@ import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } 
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
 import { type ILogger } from '../../common/logger'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { isArray } = require('ramda-adjunct')
 
 export type JobStatusOutcomes = (JobStatusCode.Failed | JobStatusCode.CompletedWithErrors | JobStatusCode.CompletedSuccessfully)
