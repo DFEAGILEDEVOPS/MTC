@@ -7,12 +7,14 @@ import { SpeechService } from '../services/speech/speech.service'
 import { SpeechServiceMock } from '../services/speech/speech.service.mock'
 import { FormsModule } from '@angular/forms'
 import { StorageServiceMock } from '../services/storage/mock-storage.service'
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
 
 import { AASettingsComponent } from './aa-settings.component'
 
 describe('AASettingsComponent', () => {
   let mockRouter
   let mockQuestionService
+  let mockPupilPrefsService
   let component: AASettingsComponent
   let fixture: ComponentFixture<AASettingsComponent>
   let mockStorageService: IStorageService
@@ -23,6 +25,9 @@ describe('AASettingsComponent', () => {
     }
     mockQuestionService = jasmine.createSpyObj('QuestionService', ['getConfig'])
     mockStorageService = new StorageServiceMock()
+    mockPupilPrefsService = {
+      storePupilPrefs: jasmine.createSpy('storePupilPrefs')
+    }
 
     TestBed.configureTestingModule({
       declarations: [AASettingsComponent],
@@ -31,7 +36,8 @@ describe('AASettingsComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useValue: mockQuestionService },
         { provide: SpeechService, useClass: SpeechServiceMock },
-        { provide: StorageService, useValue: mockStorageService }
+        { provide: StorageService, useValue: mockStorageService },
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService }
       ],
       imports: [FormsModule]
     })
@@ -88,6 +94,15 @@ describe('AASettingsComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start'])
         expect(getPupilSpy).toHaveBeenCalled()
         expect(setPupilSpy.calls.all()[0].args[0]).toEqual(updatedPupilData)
+      })
+
+      it('should call the pupil prefs service to store the input assistant data', async () => {
+        const getPupilSpy = spyOn(mockStorageService, 'getPupil').and.returnValue({ checkCode: 'checkCode', inputAssistant: {} })
+        await fixture.whenStable()
+        component.inputAssistantForm.controls.inputAssistantFirstName.setValue('FirstName')
+        component.inputAssistantForm.controls.inputAssistantLastName.setValue('LastName')
+        component.onClick()
+        expect(mockPupilPrefsService.storePupilPrefs).toHaveBeenCalled()
       })
 
       it('should not redirect to the sign-in-success when a disallowed special character(exclamation) is detected', async () => {

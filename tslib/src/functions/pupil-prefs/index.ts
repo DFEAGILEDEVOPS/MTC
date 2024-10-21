@@ -22,7 +22,7 @@ export async function pupilPrefs (triggerInput: unknown, context: InvocationCont
   const version = pupilPrefsMessage.version
   context.info(`${functionName}: version:${version} message received for checkCode ${pupilPrefsMessage.checkCode}`)
   try {
-    if (version !== 1) {
+    if (version !== 2) {
       // dead letter the message as we only support v1
       throw new Error(`Message schema version:${version} unsupported`)
     }

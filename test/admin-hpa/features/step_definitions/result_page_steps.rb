@@ -87,7 +87,7 @@ Then(/^I should see the school results$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_MTC_#{@school['dfeNumber']}_001.xml")
   wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -176,7 +176,7 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results.sort_by {|hsh| hsh[:id]}
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_MTC_#{@school['dfeNumber']}_001.xml")
   wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   @doc = Nokogiri::XML ctf_file
@@ -221,7 +221,7 @@ end
 
 Then('the results reflect these changes') do
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_MTC_#{@school['dfeNumber']}_001.xml")
   wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -308,7 +308,7 @@ Then(/^I should see the pupil has the Not able to administer attendance code$/) 
   @name = @details_hash[:first_name] + ', ' +@details_hash[:last_name]
   expect(results_page.results.pupil_list.find {|row| row.name.text == @name}.status.text).to eql 'Not able to administer'
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_MTC_#{@school['dfeNumber']}_001.xml")
   wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -336,7 +336,7 @@ Then(/^I should see the pupil has the Maladministration attendance code$/) do
   @name = @pupil_details["foreName"] + ', ' + @pupil_details['lastName']
   expect(results_page.results.pupil_list.find {|row| row.name.text == @name}.status.text).to eql 'Maladministration'
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_MTC_#{@school['dfeNumber']}_001.xml")
   wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -344,7 +344,6 @@ Then(/^I should see the pupil has the Maladministration attendance code$/) do
   pupil_result = ctf_results_hash.find{|h| h[:name].include? @name}
   expect(pupil_result[:mark]).to eql 'Q'
 end
-
 
 Given(/^I have a pupil who has the Pupil cheating attendance code$/) do
   step 'the service manager has set a pupil to be annulled because of pupil_cheating'
@@ -365,7 +364,7 @@ Then(/^I should see the pupil has the Pupil cheating attendance code$/) do
   @name = @pupil_details["foreName"] + ', ' + @pupil_details['lastName']
   expect(results_page.results.pupil_list.find {|row| row.name.text == @name}.status.text).to eql 'Pupil cheating'
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_MTC_#{@school['dfeNumber']}_001.xml")
   wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file

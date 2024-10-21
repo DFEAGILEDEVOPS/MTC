@@ -34,12 +34,12 @@ class ReportLineTest extends ReportLine {
 describe('report line class', () => {
   describe('constructor', () => {
     test('it stores the answers', () => {
-      const sut = new ReportLine(answers, null, null, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(answers, null, null, null, null, null, pupilCompletedCheck, school, null)
       expect(sut.answers).toBe(answers)
     })
 
     test('the answers are readonly', () => {
-      const sut = new ReportLine(answers, null, null, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(answers, null, null, null, null, null, pupilCompletedCheck, school, null)
       // the compiler prevents re-assignment
       // sut.answers = {}
 
@@ -53,7 +53,7 @@ describe('report line class', () => {
     })
 
     test('the inputs are readonly', () => {
-      const sut = new ReportLine(answers, null, null, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(answers, null, null, null, null, null, pupilCompletedCheck, school, null)
       // What about modification?
       if (Array.isArray(sut.answers) && sut.answers.length > 1) {
         try {
@@ -64,12 +64,12 @@ describe('report line class', () => {
     })
 
     test('it stores the check', () => {
-      const sut = new ReportLine(null, check, null, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, check, null, null, null, null, pupilCompletedCheck, school, null)
       expect(sut.check).toBe(check)
     })
 
     test('the check is readonly', () => {
-      const sut = new ReportLine(null, check, null, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, check, null, null, null, null, pupilCompletedCheck, school, null)
       if (sut.check !== null) {
         try {
           sut.check.mark = 26 // attempt modification - compiler/interpreter should throw
@@ -79,12 +79,12 @@ describe('report line class', () => {
     })
 
     test('it stores the checkConfig', () => {
-      const sut = new ReportLine(null, null, checkConfig, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, checkConfig, null, null, null, pupilCompletedCheck, school, null)
       expect(sut.checkConfig).toBe(checkConfig)
     })
 
     test('the checkConfig is readonly', () => {
-      const sut = new ReportLine(null, null, checkConfig, null, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, checkConfig, null, null, null, pupilCompletedCheck, school, null)
       if (sut.checkConfig !== null) {
         try {
           sut.checkConfig.audibleSounds = true // attempt modification - compiler/interpreter should throw
@@ -94,12 +94,12 @@ describe('report line class', () => {
     })
 
     test('it stores the checkForm', () => {
-      const sut = new ReportLine(null, null, null, checkForm, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, null, checkForm, null, null, pupilCompletedCheck, school, null)
       expect(sut.checkForm).toBe(checkForm)
     })
 
     test('the checkForm is readonly', () => {
-      const sut = new ReportLine(null, null, null, checkForm, null, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, null, checkForm, null, null, pupilCompletedCheck, school, null)
       if (sut.checkForm !== null) {
         try {
           sut.checkForm.items[0].f1 = 9 // attempt modification - compiler/interpreter should throw
@@ -109,12 +109,12 @@ describe('report line class', () => {
     })
 
     test('it stores the device', () => {
-      const sut = new ReportLine(null, null, null, null, device, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, null, null, device, null, pupilCompletedCheck, school, null)
       expect(sut.device).toBe(device)
     })
 
     test('the device is readonly', () => {
-      const sut = new ReportLine(null, null, null, null, device, null, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, null, null, device, null, pupilCompletedCheck, school, null)
       if (sut.device !== null) {
         try {
           sut.device.browserFamily = 'TEST' // attempt modification - compiler/interpreter should throw
@@ -124,12 +124,12 @@ describe('report line class', () => {
     })
 
     test('it stores the events', () => {
-      const sut = new ReportLine(null, null, null, null, null, events, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, null, null, null, events, pupilCompletedCheck, school, null)
       expect(sut.events).toBe(events)
     })
 
     test('the events are readonly', () => {
-      const sut = new ReportLine(null, null, null, null, null, events, pupilCompletedCheck, school)
+      const sut = new ReportLine(null, null, null, null, null, events, pupilCompletedCheck, school, null)
       if (sut.events !== null) {
         try {
           sut.events[0].type = 'QuestionIntroRendered' // attempt modification - compiler/interpreter should throw
@@ -152,7 +152,8 @@ describe('report line class', () => {
         null,
         null,
         pupilCompletedCheck,
-        school
+        school,
+        null
       )
     })
 
@@ -190,7 +191,8 @@ describe('report line class', () => {
           null,
           null,
           pupilCompletedCheck,
-          school
+          school,
+          null
         )
       })
 
@@ -240,6 +242,123 @@ describe('report line class', () => {
       })
     })
 
+    describe('retro input assistant in table takes precedence over checkConfig payload', () => {
+      let sut: ReportLine
+      const thisCheckConfig = {
+        audibleSounds: false,
+        checkTime: 30,
+        colourContrast: false,
+        fontSize: false,
+        inputAssistance: false,
+        loadingTime: 3,
+        nextBetweenQuestions: false,
+        numpadRemoval: false,
+        practice: false,
+        questionReader: false,
+        questionTime: 6,
+        compressCompletedCheck: true
+      }
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          null,
+          thisCheckConfig,
+          null,
+          null,
+          null,
+          pupilCompletedCheck,
+          school,
+          {
+            isRetrospective: true
+          }
+        )
+      })
+
+      test('it maps the retro input assistant exactly the same as the input assistant', () => {
+        const out = sut.transform()
+        expect(out.AccessArr).toBe('[4]')
+      })
+    })
+
+    describe('input assistant in table takes precedence over checkConfig payload', () => {
+      let sut: ReportLine
+      const thisCheckConfig = {
+        audibleSounds: false,
+        checkTime: 30,
+        colourContrast: false,
+        fontSize: false,
+        inputAssistance: false,
+        loadingTime: 3,
+        nextBetweenQuestions: false,
+        numpadRemoval: false,
+        practice: false,
+        questionReader: false,
+        questionTime: 6,
+        compressCompletedCheck: true
+      }
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          null,
+          thisCheckConfig,
+          null,
+          null,
+          null,
+          pupilCompletedCheck,
+          school,
+          {
+            isRetrospective: false
+          }
+        )
+      })
+
+      test('it maps the standard input assistant exactly the same as the input assistant', () => {
+        const out = sut.transform()
+        expect(out.AccessArr).toBe('[4]')
+      })
+    })
+
+    describe('other checkConfig payload settings and order are preserved', () => {
+      let sut: ReportLine
+      const thisCheckConfig = {
+        audibleSounds: false,
+        checkTime: 30,
+        colourContrast: true,
+        fontSize: true,
+        inputAssistance: false,
+        loadingTime: 3,
+        nextBetweenQuestions: false,
+        numpadRemoval: false,
+        practice: false,
+        questionReader: false,
+        questionTime: 6,
+        compressCompletedCheck: true
+      }
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          null,
+          thisCheckConfig,
+          null,
+          null,
+          null,
+          pupilCompletedCheck,
+          school,
+          {
+            isRetrospective: false
+          }
+        )
+      })
+
+      test('it preserves the order of all check config and input assistant', () => {
+        const out = sut.transform()
+        expect(out.AccessArr).toBe('[3][4][5]')
+      })
+    })
+
     describe('settings', () => {
       let sut: ReportLine
 
@@ -252,7 +371,8 @@ describe('report line class', () => {
           null,
           null,
           pupilCompletedCheck,
-          school
+          school,
+          null
         )
       })
 
@@ -284,7 +404,8 @@ describe('report line class', () => {
           null,
           events,
           pupilCompletedCheck,
-          school
+          school,
+          null
         )
       })
 
@@ -346,7 +467,8 @@ describe('report line class', () => {
           device,
           null,
           pupilCompletedCheck,
-          school
+          school,
+          null
         )
       })
 
@@ -373,7 +495,8 @@ describe('report line class', () => {
           null,
           events,
           pupilCompletedCheck,
-          school
+          school,
+          null
         )
       })
 
@@ -499,7 +622,8 @@ describe('report line class', () => {
           null,
           null,
           pupilIncomplete,
-          school
+          school,
+          null
         )
       })
 
@@ -552,7 +676,8 @@ describe('report line class', () => {
           null,
           null,
           pupilIncompleteCorrupt,
-          school
+          school,
+          null
         )
         const out = report.transform()
         expect(out.PupilStatus).toBe('Not taking the Check')
@@ -567,7 +692,8 @@ describe('report line class', () => {
           null,
           null,
           pupilCompleteRestartAvailableCorrupt,
-          school
+          school,
+          null
         )
         const out = report.transform()
         expect(out.PupilStatus).toBe('Incomplete')
@@ -586,7 +712,8 @@ describe('report line class', () => {
           null,
           null,
           pupilIncomplete,
-          school
+          school,
+          null
         )
       })
 
@@ -648,7 +775,8 @@ describe('report line class', () => {
           null,
           null,
           pupilIncomplete,
-          school
+          school,
+          null
         )
       })
 
@@ -675,7 +803,8 @@ describe('report line class', () => {
           null,
           null,
           pupilIncomplete,
-          school
+          school,
+          null
         )
       })
 
@@ -697,7 +826,8 @@ describe('report line class', () => {
         device,
         events,
         pupilAnnulled,
-        school
+        school,
+        null
       )
     })
 
@@ -743,7 +873,8 @@ describe('report line class', () => {
           device,
           events,
           pupilNotAttending,
-          school
+          school,
+          null
         )
       })
 
@@ -823,7 +954,8 @@ describe('report line class', () => {
           null,
           null,
           pupilNotAttending,
-          school
+          school,
+          null
         )
       })
       test('the amount of time the question is displayed for is mapped', () => {
@@ -854,7 +986,8 @@ describe('report line class', () => {
           null,
           null,
           pupilNotAttending,
-          school
+          school,
+          null
         )
       })
 
@@ -911,7 +1044,8 @@ describe('report line class', () => {
           null,
           null,
           pupilNotAttending,
-          school
+          school,
+          null
         )
       })
 
@@ -938,7 +1072,8 @@ describe('report line class', () => {
           null,
           null,
           pupilIncomplete,
-          school
+          school,
+          null
         )
       })
 
@@ -1038,7 +1173,8 @@ describe('report line class', () => {
         null,
         null,
         pupilCompletedCheck,
-        school)
+        school,
+        null)
       const outputData = sut.transform()
       expect(outputData.BrowserType).toBeNull()
     })
@@ -1060,7 +1196,8 @@ describe('report line class', () => {
         },
         null,
         pupilCompletedCheck,
-        school)
+        school,
+        null)
       const outputData = sut.transform()
       expect(outputData.BrowserType).toBeNull()
     })
@@ -1082,7 +1219,8 @@ describe('report line class', () => {
         },
         null,
         pupilCompletedCheck,
-        school)
+        school,
+        null)
       const outputData = sut.transform()
       expect(outputData.BrowserType).toBe('5.4')
     })
@@ -1104,7 +1242,8 @@ describe('report line class', () => {
         },
         null,
         pupilCompletedCheck,
-        school)
+        school,
+        null)
       const outputData = sut.transform()
       expect(outputData.BrowserType).toBe('Browser')
     })

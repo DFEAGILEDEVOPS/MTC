@@ -18,11 +18,10 @@ When(/^I add an input assistant after taking the check$/) do
 end
 
 Then(/^the input assistant should be stored$/) do
-  db_record = SqlDbHelper.get_access_arrangements_for_a_pupil(@pupil_id)
-  expect(db_record.first['retroInputAssistantFirstName']).to eql 'Input'
-  expect(db_record.first['retroInputAssistantLastName']).to eql 'Assistant'
-  check_id = SqlDbHelper.check_details(@pupil_id)['id']
-  expect(db_record.first['retroInputAssistant_check_id']).to eql check_id
+  db_record = SqlDbHelper.get_check_input_assistant(@pupil_id,@check_entry['id'])
+  expect(db_record['isRetrospective']).to eql true
+  expect(db_record['foreName']).to eql 'Input'
+  expect(db_record['lastName']).to eql 'Assistant'
 end
 
 When(/^I am on the retro input page$/) do

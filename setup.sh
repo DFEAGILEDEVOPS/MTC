@@ -47,13 +47,13 @@ install_functions () {
   yarn install && yarn clean && yarn build
 
   cd ${scriptDir}/func-consumption
-  yarn install && yarn clean && yarn build
+  yarn install && yarn clean && yarn sync:settings && yarn build
 
   cd ${scriptDir}/func-throttled
-  yarn install && yarn clean && yarn build
+  yarn install && yarn clean && yarn sync:settings && yarn build
 
   cd ${scriptDir}/func-ps-report
-  yarn install && yarn clean && yarn build
+  yarn install && yarn clean && yarn sync:settings && yarn build
 
   mybanner "Synchronising local function settings with master values from .env"
   ${scriptDir}/bin/sync-local-settings.js

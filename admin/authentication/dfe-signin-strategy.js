@@ -60,7 +60,7 @@ const initSignOnAsync = async () => {
       // so we don't wrap it up as a DfeSIgnInError.  Instead, let app.js handle it and render the correct error
       // page.
       if (error instanceof SystemUnavailableError) {
-        done(SystemUnavailableError)
+        done(error)
         return
       }
       const dfeSignInError = new DfeSignInError(systemErrorMessage, userMessage, error)
