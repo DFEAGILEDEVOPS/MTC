@@ -59,12 +59,6 @@ export class Logger {
    */
   info (msg: string, exception = null): void {
     this.log('info', msg, exception)
-    // console.info(`console.log(): ${msg}`, exception ?? '')
-    // if (appInsights.defaultClient !== undefined) {
-    //   console.debug('making appinsights trace call')
-    //   appInsights.defaultClient.trackTrace({ message: msg })
-    //   console.debug('trace call complete')
-    // }
   }
 
   /**
