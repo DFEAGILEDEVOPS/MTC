@@ -66,6 +66,6 @@
   "function-settings": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "FUNCTIONS_EXTENSION_VERSION": "~4",
-    "WEBSITE_NODE_DEFAULT_VERSION": "~18"
+    "WEBSITE_NODE_DEFAULT_VERSION": "~20"
   }
 }

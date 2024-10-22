@@ -35,6 +35,10 @@ The Circle CI base image for pull request testing must be updated to include the
 
 https://learn.microsoft.com/en-us/azure/azure-functions/functions-versions?tabs=azure-cli%2Cwindows%2Cin-process%2Cv4&pivots=programming-language-javascript#changing-version-of-apps-in-azure
 
+### Update sync settings in package.json
+
+Each function app has a `functionSettings` node in its package.json.  These properties are used when generating the `local.settings.json` files for local development and maintain parity with the Node runtime.
+
 ### Update the release pipeline variables to the new Node JS version and function runtime
 
 within the VSO release library for each environment there are variables that cover the function runtime and node version respectively...
