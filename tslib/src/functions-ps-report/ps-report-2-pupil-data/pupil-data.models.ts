@@ -44,6 +44,10 @@ export interface CheckConfig {
   compressCompletedCheck: boolean
 }
 
+export interface InputAssistant {
+  isRetrospective: boolean
+}
+
 interface Item {
   f1: number
   f2: number
@@ -114,6 +118,7 @@ export interface Event {
   type: string
 }
 
+export type InputAssistantOrNull = InputAssistant | null
 export type CheckConfigOrNull = CheckConfig | null
 export type CheckOrNull = Check | null
 export type CheckFormOrNull = CheckForm | null
@@ -143,6 +148,7 @@ export interface PupilResult {
   events: EventsOrNull
   pupil: Pupil
   school: School
+  inputAssistant: InputAssistantOrNull
 }
 
 /**

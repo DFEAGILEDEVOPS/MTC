@@ -37,6 +37,7 @@ export class PupilPrefsService {
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
     const pupil = this.storageService.getPupil() as Pupil;
+    const inputAssistant = pupil.inputAssistant;
     const {url, token} = this.tokenService.getToken('pupilPreferences');
     const retryConfig: QueueMessageRetryConfig = {
       DelayBetweenRetries: this.pupilPrefsAPIErrorDelay,
@@ -47,7 +48,8 @@ export class PupilPrefsService {
         fontSizeCode: '',
         colourContrastCode: ''
       },
-      version: 1,
+      inputAssistant: {},
+      version: 2,
       checkCode: pupil.checkCode
     };
     if (fontSetting) {
@@ -55,6 +57,12 @@ export class PupilPrefsService {
     }
     if (contrastSetting) {
       payload.preferences.colourContrastCode = contrastSetting.code;
+    }
+    if (inputAssistant) {
+      payload.inputAssistant = inputAssistant;
+    }
+    else {
+      payload.inputAssistant = undefined
     }
     try {
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICalled());

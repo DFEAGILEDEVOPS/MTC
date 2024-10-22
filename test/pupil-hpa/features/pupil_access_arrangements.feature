@@ -9,6 +9,11 @@ Feature: Access Arrangements
       | Remove number pad       |
       | Time alert              |
 
+  Scenario: Input assistant information is stored
+    Given I logged in with user with access arrangement 'Input assistance'
+    And I complete the check
+    Then the input assistant info should be stored
+
   Scenario: Setting page is displayed as per design for Input Assistance access arrangement
     Given I logged in with user with access arrangement 'Input assistance'
     Then I can see setting page for input assistance as per design

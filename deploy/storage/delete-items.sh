@@ -20,7 +20,7 @@ az storage cors clear --services q --account-name $storageAccountName --account-
 
 declare -a queuenames=( $(jq -r '.queues[]' $jsonSource) )
 
-# create queues if they do not exist
+# delete queues if they exist
 for q in "${queuenames[@]}"
 do
 	echo "deleting $q queue in $storageAccountName"
@@ -29,7 +29,7 @@ done
 
 declare -a tablenames=( $(jq -r '.tables[]' $jsonSource) )
 
-# create tables if they do not exist
+# delete tables if they exist
 for t in "${tablenames[@]}"
 do
 	echo "deleting $t table in $storageAccountName"
