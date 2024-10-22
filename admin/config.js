@@ -123,7 +123,6 @@ module.exports = {
   },
   Monitoring: {
     ApplicationInsights: {
-      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY, // @deprecated
       CollectDependencies: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_DEPS') ? toBool(process.env.APPINSIGHTS_COLLECT_DEPS) : true,
       CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
       ConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING,
