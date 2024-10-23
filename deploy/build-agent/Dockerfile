@@ -96,8 +96,10 @@ RUN apt-get update && apt-get install -y dotnet-sdk-7.0
 # powershell
 # Update the list of packages
 RUN apt-get update
+
 # Download the Microsoft repository GPG keys
 RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+
 # Register the Microsoft repository GPG keys
 RUN dpkg -i packages-microsoft-prod.deb
 # Delete the the Microsoft repository GPG keys file
@@ -149,12 +151,18 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/$RUBY_VERSION" >> ~
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
 ENV CURRENT_NODE_VERSION=20.18.0
 ENV PREVIOUS_NODE_VERSION=18.12.1
+ENV OPTIONAL_SUPPORT_NODE_VERSION=16.17.1
 
 RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \
   && nvm install $CURRENT_NODE_VERSION \
   && nvm install $PREVIOUS_NODE_VERSION \
   && nvm alias default $CURRENT_NODE_VERSION
+
+RUN if [ "$OPTIONAL_SUPPORT_NODE_VERSION" != "" ]; then \
+      $NVM_DIR/nvm.sh && nvm install $OPTIONAL_SUPPORT_NODE_VERSION \
+    fi;
+
 
 # install azuredevops agent service
 # https://github.com/microsoft/azure-pipelines-agent/releases
