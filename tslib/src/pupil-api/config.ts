@@ -3,7 +3,11 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import * as parser from './helpers/parsing'
+import { type LogLevel } from './services/log.service'
+
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+export const LocalDev = 'Local-Dev'
+
 try {
   if (fs.existsSync(globalDotEnvFile)) {
     console.log('globalDotEnvFile found', globalDotEnvFile)
@@ -16,7 +20,24 @@ try {
 }
 
 const getEnvironment = (): string => {
-  return process.env.ENVIRONMENT_NAME ?? 'Local-Dev'
+  return process.env.ENVIRONMENT_NAME ?? LocalDev
+}
+
+const parseLogLevel = (levelToParse: string | undefined | null): LogLevel => {
+  const defaultLevel = 'warning' // default to a safe value for production
+  switch (levelToParse) {
+    case 'emerg':
+    case 'alert':
+    case 'crit':
+    case 'error':
+    case 'warning':
+    case 'notice':
+    case 'info':
+    case 'debug':
+      return levelToParse
+  }
+  console.log('parseLogLevel(): log level of %s is invalid; defaulting to %s', levelToParse, defaultLevel)
+  return defaultLevel
 }
 
 function parseToInt (value: string | undefined, radix: number | undefined): number | undefined {
@@ -34,13 +55,13 @@ export default {
     Whitelist: process.env.CORS_WHITELIST ?? ''
   },
   Logging: {
-    LogLevel: process.env.LOG_LEVEL ?? 'debug',
+    LogLevel: parseLogLevel(process.env.LOG_LEVEL),
     Express: {
       UseWinston: parser.propertyExists(process.env, 'EXPRESS_LOGGING_WINSTON') ? parser.primitiveToBoolean(process.env.EXPRESS_LOGGING_WINSTON) : false
     },
     ApplicationInsights: {
-      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER ?? false,
-      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+      ConnectionString: process.env.APPINSIGHTS_CONNECTION_STRING,
+      CollectDependencies: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_DEPENDENCIES') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_DEPENDENCIES) : true,
       InstanceId: `${os.hostname()}:${process.pid}`,
       CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
       LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
@@ -50,7 +71,7 @@ export default {
     Host: process.env.REDIS_HOST ?? 'localhost',
     Port: parseToInt(process.env.REDIS_PORT, 10) ?? 6379,
     Key: process.env.REDIS_KEY,
-    useTLS: getEnvironment() !== 'Local-Dev'
+    useTLS: getEnvironment() !== LocalDev
   },
   RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) ?? 1800,
   FeatureToggles: {},

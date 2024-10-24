@@ -6,21 +6,25 @@ const config = require('../config')
 //   getBuildNumber
 // } = require('./healthcheck')
 
-const startInsightsIfConfigured = async () => {
+const cloudRoleName = 'Admin-App'
+
+const startInsightsIfConfigured = () => {
   if (config.Monitoring.ApplicationInsights.ConnectionString) {
     console.log('initialising application insights module')
-    appInsights.setup()
+    appInsights.setup(config.Monitoring.ApplicationInsights.ConnectionString)
       .setAutoCollectRequests(true)
       // setAutoCollectPerformance() - for some reason this next call causes a configuration warning 'Extended metrics are no longer supported. ...'
       .setAutoCollectPerformance(true, false)
       .setAutoCollectExceptions(config.Monitoring.ApplicationInsights.CollectExceptions)
       .setAutoCollectDependencies(config.Monitoring.ApplicationInsights.CollectDependencies)
-      .setAutoCollectConsole(false)
+      .setAutoCollectConsole(config.Logging.LogLevel === 'debug')
       .setAutoCollectPreAggregatedMetrics(true)
       .setSendLiveMetrics(config.Monitoring.ApplicationInsights.LiveMetrics)
       .setInternalLogging(false, true)
       .enableWebInstrumentation(false)
-      .start()
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Monitoring.ApplicationInsights.InstanceId
+    appInsights.start()
 
     // Commented out in ticket #65031 as part of maintenance upgrades
     // V3 of the appinsights sdk does not support context/commonProperties

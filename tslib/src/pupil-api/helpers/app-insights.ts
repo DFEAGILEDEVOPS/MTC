@@ -1,37 +1,49 @@
-import * as appInsights from 'applicationinsights'
 import { PingService } from '../services/ping.service'
 import config from '../config'
-import * as parser from './parsing'
+import { isNil } from 'ramda'
+const appInsights = require('applicationinsights')
 
-const pingService = new PingService()
+const cloudRoleName = 'Pupil-API'
+
+const connectionString = config.Logging.ApplicationInsights.ConnectionString
+if (isNil(connectionString)) {
+  console.log('App Insights connection string not configured - app insights is disabled')
+} else {
+  console.log(`App insights config found: ${connectionString}`)
+  appInsights.setup(connectionString)
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true, true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true, false)
+    .setUseDiskRetryCaching(true)
+    .setAutoCollectPreAggregatedMetrics(true)
+    .setSendLiveMetrics(false)
+    .setAutoCollectHeartbeat(false)
+    .setAutoCollectIncomingRequestAzureFunctions(true)
+    .setInternalLogging(false, true)
+    .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
+    .enableWebInstrumentation(false)
+  appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
+  appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
+}
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
-    if (parser.propertyExists(process.env, 'APPINSIGHTS_INSTRUMENTATIONKEY')) {
-      appInsights.setup()
-        .setAutoDependencyCorrelation(true)
-        .setAutoCollectRequests(true)
-        .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(config.Logging.ApplicationInsights.CollectExceptions)
-        .setAutoCollectDependencies(true)
-        .setAutoCollectConsole(false)
-        .setUseDiskRetryCaching(true)
-        .setSendLiveMetrics(config.Logging.ApplicationInsights.LiveMetrics)
-        .start()
-
-      let buildNumber
-      try {
-        buildNumber = await pingService.getBuildNumber()
-      } catch (error) {
-        buildNumber = 'NOT FOUND'
-      }
-      appInsights.defaultClient.commonProperties = {
-        buildNumber
-      }
-      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'Pupil-Auth-Api'
-      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
+    appInsights.start()
+    console.log('Application insights: started')
+    const pingService = new PingService()
+    let buildNumber
+    try {
+      buildNumber = await pingService.getBuildNumber()
+    } catch (error) {
+      buildNumber = 'NOT FOUND'
+    }
+    appInsights.defaultClient.commonProperties = {
+      buildNumber
     }
   }
 }
 
-export = appInsightsHelper
+export default appInsightsHelper

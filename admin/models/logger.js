@@ -1,8 +1,7 @@
 const winston = require('winston')
 const config = require('../config')
 
-/*
-const syslogLevels = {
+const loggingLevels = {
   emerg: 0,
   alert: 1,
   crit: 2,
@@ -12,11 +11,11 @@ const syslogLevels = {
   info: 6,
   debug: 7
 }
-*/
 
 class Logger {
   constructor () {
     this.level = config.Logging.LogLevel
+    console.info('Log level is set to `%s`', this.level)
 
     let format
     if (config.Logging.SendToAppInsights) {
@@ -29,11 +28,11 @@ class Logger {
     }
 
     const baseLogOptions = {
-      levels: winston.config.syslog.levels,
+      levels: loggingLevels,
       level: this.level,
       format,
       transports: [
-        new winston.transports.Console({ level: this.level, silent: false, consoleWarnLevels: ['warn', 'error'] })
+        new winston.transports.Console()
       ],
       meta: true,
       expressFormat: true,
@@ -43,45 +42,50 @@ class Logger {
     this.logger = winston.createLogger(baseLogOptions)
   }
 
-  log (level, msg, exception) {
-    this.logger.log(level, msg + ' ', exception)
+  //  Private method
+  #log (level, msg, exception = null) {
+    let exString
+    if (exception && exception.toString) {
+      exString = `'${exception.toString()}'`
+    }
+    this.logger.log(level, exString ? msg.concat(': ', exString) : msg)
   }
 
   /**
    * AI -> critical
    * @param {string} msg
    */
-  alert (msg, exception = null) { this.log('alert', msg, exception) }
+  alert (msg, exception = null) { this.#log('alert', msg, exception) }
 
   /**
    * AI -> error
    * @param {string} msg
    */
-  error (msg, exception = null) { this.log('error', msg, exception) }
+  error (msg, exception = null) { this.#log('error', msg, exception) }
 
   /**
    * AI -> warning
    * @param {string} msg
    */
-  warn (msg, exception = null) { this.log('warning', msg, exception) }
+  warn (msg, exception = null) { this.#log('warning', msg, exception) }
 
   /**
    * AI -> notice
    * @param {string} msg
    */
-  info (msg, exception = null) { this.log('info', msg, exception) }
+  info (msg, exception = null) { this.#log('info', msg, exception) }
 
   /**
    * AI -> verbose
    * @param {string} msg
    */
-  debug (msg, exception = null) { this.log('debug', msg, exception) }
+  debug (msg, exception = null) { this.#log('debug', msg, exception) }
 
   /**
-   * @description 'pretty' prints an object with indentiation.
+   * @description pretty prints an object.
    * @param {object} obj
    */
-  debugObject (obj) { this.log('debug', JSON.stringify(obj, null, 2)) }
+  debugObject (obj) { this.#log('debug', JSON.stringify(obj, null, 2)) }
 
   /**
    * Return the underlying `winston` logger

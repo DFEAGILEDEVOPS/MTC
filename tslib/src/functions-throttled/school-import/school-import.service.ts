@@ -8,9 +8,9 @@ import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
 import { type ISchoolRecord } from './data-access/ISchoolRecord'
 import * as R from 'ramda'
-import * as RA from 'ramda-adjunct'
 import { type IJobDataService, JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
+const RA = require('ramda-adjunct')
 
 const name = 'school-import'
 const targetAge = 9
@@ -121,16 +121,16 @@ export class SchoolImportService {
         filteredSchools.push(schoolRecord)
       } else {
         exclusionCount++
-        if (RA.isNotNilOrEmpty(isOpen.message)) {
+        if (RA.isNotNilOrEmpty(isOpen.message) === true) {
           this.jobResult.stdout.push(SchoolImportService.createLogEntry(isOpen.message))
         }
-        if (RA.isNotNilOrEmpty(isCorrectTypeGroup.message)) {
+        if (RA.isNotNilOrEmpty(isCorrectTypeGroup.message) === true) {
           this.jobResult.stdout.push(SchoolImportService.createLogEntry(isCorrectTypeGroup.message))
         }
-        if (RA.isNotNilOrEmpty(isCorrectAgeRange.message)) {
+        if (RA.isNotNilOrEmpty(isCorrectAgeRange.message) === true) {
           this.jobResult.stdout.push(SchoolImportService.createLogEntry(isCorrectAgeRange.message))
         }
-        if (RA.isNotNilOrEmpty(hasRequiredFields.message)) {
+        if (RA.isNotNilOrEmpty(hasRequiredFields.message) === true) {
           this.jobResult.stdout.push(SchoolImportService.createLogEntry(hasRequiredFields.message))
         }
       }

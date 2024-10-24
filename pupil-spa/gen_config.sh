@@ -6,7 +6,7 @@ set -e
 scriptDir="$( cd "$( dirname "$0" )" >/dev/null && pwd )"
 envFile=${scriptDir}/../.env
 [[ -f ${envFile} ]] && source ${envFile}
-applicationInsightsCode=${APPINSIGHTS_INSTRUMENTATIONKEY}
+applicationInsightsConnectionString=${APPINSIGHTS_CONNECTION_STRING}
 apiBaseUrl=${PUPIL_API_BASE_URL:-"http://localhost:3003"}
 checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}
 checkStartAPIErrorMaxAttempts=${CHECK_START_MAX_ATTEMPTS:-"3"}
@@ -25,7 +25,7 @@ websiteOffline=${WEBSITE_OFFLINE:-"false"}
 
 cat <<EOF > config.json
 {
-  "applicationInsightsInstrumentationKey": "$applicationInsightsCode",
+  "applicationInsightsConnectionString": "$applicationInsightsConnectionString",
   "apiBaseUrl": "$apiBaseUrl",
   "checkStartAPIErrorDelay": $checkStartAPIErrorDelay,
   "checkStartAPIErrorMaxAttempts": $checkStartAPIErrorMaxAttempts,

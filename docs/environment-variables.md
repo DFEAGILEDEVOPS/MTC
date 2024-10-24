@@ -21,10 +21,9 @@ Env Var | Type | Default value | Required | Components | Description
  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS | Int | 600 | Optional | AA | The session will expire after this many seconds of inactivity.
  APPINSIGHTS_COLLECT_DEPS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collect dependency information.
  APPINSIGHTS_COLLECT_EXCEPTIONS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collect exception information.
- APPINSIGHTS_INSTRUMENTATIONKEY | String | NULL | Optional | AA,PA | The Azure Application Insights account key, required for logging / monitoring.
  APPINSIGHTS_LIVE_METRICS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collection live metrics.
  APPINSIGHTS_WINSTON_LOGGER | Boolean | false | Optional | AA | Boolean flag.  Set to 1 to allow the winston logger to send to Application Insights, or 0 to disable. If enabled, you should also set `EXPRESS_LOGGING_WINSTON`to `1` and `APPINSIGHTS_INSTRUMENTATIONKEY` to the Azure-specified value.
- APPLICATIONINSIGHTS_CONNECTION_STRING | String | '' | Optional, but should be set for Prod | AA (Others to follow in v3 rollout) | Connection string for v3 of Application Insights node package.  This env var name is automatically supported by AI.
+ APPINSIGHTS_CONNECTION_STRING | String | '' | Optional, but should be set for Prod | AA, FT, FC, FP, PAPI | Connection string for v3 of Application Insights node package.
  ASSET_PATH | String | / | Required | AA | The URL to the admin container that serves static assets: css, js, images.
  AUTH_MODE | String | local | Optional | AA | Valid modes are `local` and `dfe`.
  AZURE_QUEUE_PREFIX | String | '' | Optional | AA | A prefix that can be automatically applied to the required queues.
