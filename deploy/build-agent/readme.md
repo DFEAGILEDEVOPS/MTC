@@ -14,13 +14,13 @@
 - You must be logged into your target registry before you run this script.
 
 ## NOTE: Apple Silicon
-If you are building the image locally on an Apple Silicon device during developmet, you should use the `--platform linux/amd64` argument with the `docker build` command.  Otherwise, it will default to arm64, which lacks parity with the target hardware, and causes a lot of incompatibility issues during the image build.
+If you are building the image locally on an Apple Silicon device during developmet, you should use the `--platform linux/amd64` argument with the `docker build` command.  Otherwise, it will default to arm64, which lacks parity with the target hardware, and causes a lot of incompatibility issues during the image build.  Currently Powershell will be the first to fail.
 
 ## Steps
 1. update the `$AGENT_VERSION` variable in `./Dockerfile` to the [latest full release](https://github.com/microsoft/azure-pipelines-agent/releases)
 2. commit changes to ensure commit hash is aligned
 3. [login to the Azure CLI](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli), ensuring to target the appropriate subscription
-4. login to the Azure Container Registry with `az acr login --name <registry-name>`
+4. login to the Azure Container Registry with `az acr login --name <registry-name> --resource-group <resourceGroupName>`
 5. execute `./build-push-registry.sh` to push new image
 6. run `./create-instance.sh` to create new build servers
 7. delete any outdated build server container instances in azure
