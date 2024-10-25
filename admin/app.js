@@ -131,6 +131,10 @@ const pupilStatus = require('./routes/pupil-status')
 const websiteOffline = require('./routes/website-offline')
 const techSupport = require('./routes/tech-support')
 const roles = require('./lib/consts/roles')
+// globally configure ipv4 for all axios request uses...
+const axios = require('axios')
+const http = require('http')
+axios.defaults.httpAgent = new http.Agent({ family: 4 })
 
 setupBrowserSecurity(app)
 
