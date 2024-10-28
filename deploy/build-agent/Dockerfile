@@ -150,7 +150,7 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/$RUBY_VERSION" >> ~
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
 ENV CURRENT_NODE_VERSION=20.18.0
-ENV PREVIOUS_NODE_VERSION=18.12.1
+ENV PREVIOUS_NODE_VERSION=18.12.0
 # remove once Angular has parity with rest of solution runtimes
 ENV ANGULAR_SPA_NODE_VERSION=16.17.1
 
