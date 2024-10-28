@@ -84,7 +84,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
     "morgan": "^1.10.0",
-    "mssql": "^10.0.2",
+    "mssql": "^10.0.4",
     "ramda": "^0.30.1",
     "ramda-adjunct": "^5.1.0",
     "random-number-csprng": "^1.0.2",
