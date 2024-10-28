@@ -70,7 +70,7 @@
     "fs-extra": "^11.1.0",
     "govuk-frontend": "^3.2.0",
     "helmet": "^4.3.1",
-    "ioredis": "4.28.5",
+    "ioredis": "5.4.1",
     "jsdom": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
