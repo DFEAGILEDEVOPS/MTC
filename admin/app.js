@@ -109,7 +109,7 @@ function sleep (ms) {
 logger.info('ENVIRONMENT_NAME : ' + config.Environment)
 logger.info('NODE_ENV is ' + process.env.NODE_ENV)
 // Load feature toggles
-logger.info('Loading feature toggles from: ', config.FeatureToggles)
+logger.info('Loading feature toggles: ', JSON.stringify(config.FeatureToggles))
 featureToggles.load(config.FeatureToggles)
 
 const index = require('./routes/index')
