@@ -35,7 +35,7 @@
     "@angular/platform-browser-dynamic": "^14.2.10",
     "@angular/platform-server": "^14.2.10",
     "@angular/router": "^14.2.10",
-    "@babel/runtime": "^7.24.5",
+    "@babel/runtime": "^7.25.7",
     "@microsoft/applicationinsights-web": "^2.8.18",
     "core-js": "2.6.12",
     "dotenv": "^16.0.3",
