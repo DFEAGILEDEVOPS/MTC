@@ -24,3 +24,4 @@
 | PS-Report           | A data source that is used by Psychometricians to analyse user behaviours when taking the pupil check.  |
 | Restart      | When a Live Check is spoiled and the Pupil needs to retake it.    |
 | Check Submission      | When a Pupil has completed the Live Check and the payload is submitted to the back-end for processing.    |
+| Pin Generation      | Before a pupil can take a check, a set of credentials must be generated to allow them to authenticate with the Pupil Check application.    |
