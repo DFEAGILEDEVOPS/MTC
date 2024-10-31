@@ -18,4 +18,4 @@ Each queue has a corresponding poison queue which is automatically created the f
 | pupil-prefs | `pupil-spa` | `functions/pupil-prefs` |
 | pupil-status | TBD | `functions/pupil-status` |
 
-A canonical definition of all queues and tables used for back-end processing is kept in [admin/tables-queues.json](./admin/tables-queues.json)
+A canonical definition of all queues and tables used for back-end processing is kept in [admin/tables-queues.json](/deploy/storage/tables-queues.json)
