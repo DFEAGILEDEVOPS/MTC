@@ -4,7 +4,6 @@ import {
   type ReceivedCheckFunctionBindingEntity
 } from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
-import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { type ICompressionService, CompressionService } from '../../common/compression-service'
 import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
@@ -13,6 +12,7 @@ import { ValidatorProvider, type IValidatorProvider } from './validators/validat
 import { type ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
+const RA = require('ramda-adjunct')
 
 const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'
@@ -110,10 +110,10 @@ export class CheckValidator {
     if (receivedCheckRef === undefined) {
       throw new Error(`${functionName}: received check reference is undefined`)
     }
-    if (RA.isEmptyArray(receivedCheckRef)) {
+    if (RA.isEmptyArray(receivedCheckRef) === true) {
       throw new Error(`${functionName}: received check reference is empty`)
     }
-    if (!RA.isArray(receivedCheckRef)) {
+    if (RA.isArray(receivedCheckRef) === false) {
       return receivedCheckRef as ReceivedCheckFunctionBindingEntity
     }
     const checkArray = receivedCheckRef as ReceivedCheckFunctionBindingEntity[]

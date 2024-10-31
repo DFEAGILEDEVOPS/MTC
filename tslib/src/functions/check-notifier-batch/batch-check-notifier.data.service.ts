@@ -1,7 +1,7 @@
 import { SqlService, type ITransactionRequest, type ISqlParameter } from '../../sql/sql.service'
 import * as mssql from 'mssql'
-import { isNonEmptyArray } from 'ramda-adjunct'
 import { ConsoleLogger, type ILogger } from '../../common/logger'
+const { isNonEmptyArray } = require('ramda-adjunct')
 
 export interface IBatchCheckNotifierDataService {
   createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]>
@@ -58,7 +58,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
     const checkData = await this.sqlService.query(checkCodeSql, [checkCodeParam])
     this.logService.trace(`checkData: ${JSON.stringify(checkData)}`)
     let checkIdToComplete: undefined | number
-    if (isNonEmptyArray(checkData)) {
+    if (isNonEmptyArray(checkData) === true) {
       checkIdToComplete = checkData[0]?.id
       this.logService.trace(`checkIdToComplete: ${checkIdToComplete}`)
     }
@@ -77,7 +77,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
     try {
       const pupilData = await this.sqlService.query(pupilSql, [checkCodeParam])
       this.logService.trace(`pupilData: ${JSON.stringify(pupilData)}`)
-      if (isNonEmptyArray(pupilData)) {
+      if (isNonEmptyArray(pupilData) === true) {
         pupil = pupilData[0]
       }
       this.logService.trace(`pupil: ${JSON.stringify(pupil)}`)

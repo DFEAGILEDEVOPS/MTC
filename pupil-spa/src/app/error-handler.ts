@@ -34,7 +34,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     }
     auditService.addEntry(this.auditEntryFactory.createAppError(data));
 
-    if (APP_CONFIG.applicationInsightsInstrumentationKey) {
+    if (APP_CONFIG.applicationInsightsConnectionString !== undefined) {
       // using injector directly to avoid recursive errors...
       const appInsightsService = this.injector.get(ApplicationInsightsService);
       appInsightsService.trackException(error);

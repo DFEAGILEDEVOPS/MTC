@@ -32,7 +32,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "5eb463baa90e81b0b79de4acfc4a8096"
+    "assets-version": "6a569a48061e8e7844eee749fb4527b3"
   },
   "engines": {
     "node": ">= 18"
@@ -46,7 +46,7 @@
     "@azure/storage-blob": "12.18.0",
     "@azure/storage-queue": "12.17.0",
     "adm-zip": "^0.5.10",
-    "applicationinsights": "^3.2.2",
+    "applicationinsights": "^3.3.0",
     "axios": "^1.7.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
