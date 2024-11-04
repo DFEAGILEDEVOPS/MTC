@@ -1,7 +1,7 @@
 # MTC Architecture
 
 ## Table of Contents
-- [Check Submission](./messaging/check-submission/readme.md)
+- [Check Submission](./check-submission/readme.md)
 - [Messaging](./messaging/messaging.md)
 - [Message Schemas](./messaging/message-schemas.md)
 - [PS-Report](./ps-report/psychometric-report-data-sourcing.md)
