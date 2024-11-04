@@ -28,7 +28,8 @@ Each message in the system is processed by a function that is dedicated to proce
 | ps-report-staging-complete | service bus | `TODO` | `TODO` |
 | sync-results-to-db-complete | service bus | `TODO` | `TODO` |
 
-A canonical definition of all queues and tables used for back-end processing is kept in [admin/tables-queues.json](/deploy/storage/tables-queues.json)
+A canonical definition of all Azure Storage queues and tables used within MTC is [here](../../../deploy/storage/tables-queues.json)
+A canonical definition of all Azure Service Bus queues used within MTC is [here](../../../deploy/service-bus/deploy.config.js)
 
 # Message Schemas
 
