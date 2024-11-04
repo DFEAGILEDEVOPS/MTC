@@ -3,7 +3,6 @@
 ## Table of Contents
 - [Check Submission](./check-submission/readme.md)
 - [Messaging](./messaging/readme.md)
-- [Message Schemas](./messaging/message-schemas.md)
 - [PS-Report](./ps-report/readme.md)
 - [Restarts](./restarts/readme.md)
 
