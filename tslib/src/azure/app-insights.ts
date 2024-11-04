@@ -1,32 +1,48 @@
-import * as appInsights from 'applicationinsights'
 import config from '../config'
+import { isNil } from 'ramda'
+const appInsights = require('applicationinsights')
+
+const cloudRoleName = 'TsLib'
+
+const connectionString = config.ApplicationInsights.ConnectionString
+if (isNil(connectionString)) {
+  console.log('App Insights connection string not configured - app insights is disabled')
+} else {
+  console.log('App insights config found')
+  appInsights.setup(connectionString)
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true, true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true, false)
+    .setUseDiskRetryCaching(true)
+    .setAutoCollectPreAggregatedMetrics(true)
+    .setSendLiveMetrics(false)
+    .setAutoCollectHeartbeat(false)
+    .setAutoCollectIncomingRequestAzureFunctions(true)
+    .setInternalLogging(false, true)
+    .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
+    .enableWebInstrumentation(false)
+  appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName // default
+  appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.ApplicationInsights.InstanceId
+}
 
 const appInsightsHelper = {
-  startInsightsIfConfigured: (cloudRole: string) => {
-    if (config.ApplicationInsights.Key !== undefined) {
-      appInsights.setup()
-        .setAutoDependencyCorrelation(true)
-        .setAutoCollectRequests(true)
-        .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(config.ApplicationInsights.CollectExceptions)
-        .setAutoCollectDependencies(true)
-        .setAutoCollectConsole(false)
-        .setUseDiskRetryCaching(true)
-        .setSendLiveMetrics(config.ApplicationInsights.LiveMetrics)
-        .start()
-      let buildNumber
-      try {
-        buildNumber = 'NOT IMPLEMENTED'
-      } catch (error) {
-        buildNumber = 'NOT FOUND'
-      }
-      appInsights.defaultClient.commonProperties = {
-        buildNumber
-      }
-      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRole
-      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.ApplicationInsights.InstanceId
+  startInsightsIfConfigured: async (cloudRole: string = 'TsLib (default)'): Promise<void> => {
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRole
+    appInsights.start()
+    console.log(`TSLib Application insights: started for role [${cloudRole}]`)
+    let buildNumber
+    try {
+      buildNumber = 'NOT IMPLEMENTED'
+    } catch (error) {
+      buildNumber = 'NOT FOUND'
+    }
+    appInsights.defaultClient.commonProperties = {
+      buildNumber
     }
   }
 }
 
-export = appInsightsHelper
+export default appInsightsHelper

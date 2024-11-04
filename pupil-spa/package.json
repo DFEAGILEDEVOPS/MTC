@@ -36,7 +36,7 @@
     "@angular/platform-server": "^14.2.10",
     "@angular/router": "^14.2.10",
     "@babel/runtime": "^7.24.5",
-    "@microsoft/applicationinsights-web": "^2.8.18",
+    "@microsoft/applicationinsights-web": "^3.3.3",
     "core-js": "2.6.12",
     "dotenv": "^16.0.3",
     "fflate": "^0.8.2",

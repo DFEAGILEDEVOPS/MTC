@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http'
  * Declaration of config class
  */
 export interface IAppConfig {
-  applicationInsightsInstrumentationKey: string;
+  applicationInsightsConnectionString: string;
   apiBaseUrl: string
   checkStartAPIErrorDelay: number;
   checkStartAPIErrorMaxAttempts: number;
@@ -24,7 +24,7 @@ export interface IAppConfig {
 }
 
 export class AppConfig implements IAppConfig {
-  readonly applicationInsightsInstrumentationKey: string
+  readonly applicationInsightsConnectionString: string
   readonly apiBaseUrl: string
   readonly checkStartAPIErrorDelay: number
   readonly checkStartAPIErrorMaxAttempts: number
@@ -43,7 +43,7 @@ export class AppConfig implements IAppConfig {
 }
 
 class MockAppConfig implements IAppConfig {
-  applicationInsightsInstrumentationKey: string
+  applicationInsightsConnectionString: 'mockConnectionString'
   apiBaseUrl = 'apiBaseUrl'
   checkStartAPIErrorDelay: 9
   checkStartAPIErrorMaxAttempts = 3
