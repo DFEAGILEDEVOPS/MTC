@@ -12,5 +12,5 @@ An example payload can be found [here](../data/check-payload.json)
 
 ## Process Flow
 
-
+![Check Submission Process](check-submission-flowchart.png)
 
