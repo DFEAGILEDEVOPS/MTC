@@ -1,5 +1,5 @@
-import uuid = require('uuid')
-import moment = require('moment')
+import { v4 as uuidv4 } from 'uuid'
+import moment from 'moment'
 import * as R from 'ramda'
 
 import * as Subject from './check-marker.v1'
@@ -66,8 +66,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is empty', async () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -92,8 +92,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is not an array', async () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -118,8 +118,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm cannot be found by checkCode', async () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -146,8 +146,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm data is not valid JSON', async () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -176,8 +176,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm lookup throws error', async () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -207,8 +207,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm data is not a populated array', async () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -265,8 +265,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -317,8 +317,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -369,8 +369,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -413,8 +413,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -439,9 +439,9 @@ describe('check-marker/v1', () => {
   })
 
   test('check notification is dispatched when marking unsuccessful', async () => {
-    const checkCode = uuid.v4()
+    const checkCode = uuidv4()
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
+      PartitionKey: uuidv4(),
       RowKey: checkCode,
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
@@ -486,8 +486,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -567,8 +567,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -622,8 +622,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      PartitionKey: uuidv4(),
+      RowKey: uuidv4(),
       archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
