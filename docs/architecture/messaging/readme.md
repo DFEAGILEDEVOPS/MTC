@@ -1,9 +1,6 @@
 # Messaging
 
 ## Table of contents
-- [Back to Architecture Home](../readme.md)
-- [Messaging overview](./messaging.md)
-- [Message Schemas](./message-schemas.md)
 - [Back to Architecture](../readme.md)
 
 # Overview
