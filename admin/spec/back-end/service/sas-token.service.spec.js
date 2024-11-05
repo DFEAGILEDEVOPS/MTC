@@ -131,7 +131,7 @@ describe('sas-token.service', () => {
       jest.spyOn(logger, 'debug').mockImplementation()
       await sut.getTokens(true, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
-      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(4)
+      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
     })
 
     test('calls out to generate sas tokens if any are not found in redis', async () => {
@@ -153,25 +153,9 @@ describe('sas-token.service', () => {
       jest.spyOn(logger, 'debug').mockImplementation()
       const res = await sut.getTokens(true, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
-      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(2)
+      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(1)
       // Expect `res` to have 4 properties, 2 from redis, and 2 generated
-      expect(Object.keys(res).length).toBe(4)
-    })
-
-    test('does not return the check-submitted token for tio checks', async () => {
-      // mock a response where the values are found in the cache
-      const mockRedisResponse = [
-        { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
-        { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
-        { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' }
-      ]
-      jest.spyOn(redisCacheService, 'getMany').mockReturnValue(mockRedisResponse)
-      jest.spyOn(sasTokenService, 'generateSasToken').mockImplementation()
-      const result = await sut.getTokens(false, moment().add(4, 'hours'))
-      expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
-      expect(sasTokenService.generateSasToken).not.toHaveBeenCalled()
-      expect(Object.keys(result).length).toBe(3)
-      expect(result[queueNameService.NAMES.CHECK_SUBMIT]).toBeUndefined()
+      expect(Object.keys(res).length).toBe(3)
     })
   })
 })

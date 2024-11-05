@@ -16,12 +16,12 @@ const delay = (ms) => {
 }
 
 const getFullUrl = (token) => {
-  return `${token.url.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')}?${token.token}`
+  return `${token.url.replace(`/${queueNameService.NAMES.PUPIL_FEEDBACK}`, '')}?${token.token}`
 }
 
 describe('sas-token-expiry', () => {
   beforeEach(async () => {
-    const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.CHECK_SUBMIT)
+    const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.PUPIL_FEEDBACK)
     await redisCacheService.drop(queueKey)
   })
   afterAll(async () => { await redisCacheService.disconnect() })
@@ -29,26 +29,26 @@ describe('sas-token-expiry', () => {
   test('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
     const checkSubmitToken = await sut.generateSasToken(
-      queueNameService.NAMES.CHECK_SUBMIT,
+      queueNameService.NAMES.PUPIL_FEEDBACK,
       sasExpiryDate
     )
     const queueServiceUrl = getFullUrl(checkSubmitToken)
     const queueServiceClient = new QueueServiceClient(queueServiceUrl)
-    const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+    const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.PUPIL_FEEDBACK)
     await queueClient.sendMessage('message')
   })
 
   test('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
     const checkSubmitToken = await sut.generateSasToken(
-      queueNameService.NAMES.CHECK_SUBMIT,
+      queueNameService.NAMES.PUPIL_FEEDBACK,
       sasExpiryDate
     )
     try {
       const queueServiceUrl = getFullUrl(checkSubmitToken)
       const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       await delay(3000)
-      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.PUPIL_FEEDBACK)
       await queueClient.sendMessage('testing message expiry in /admin/tests-integration/sas-token-expiry.spec.js')
       fail('message should have been rejected due to expired token')
     } catch (error) {
