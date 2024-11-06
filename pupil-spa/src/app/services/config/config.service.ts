@@ -43,7 +43,7 @@ export class AppConfig implements IAppConfig {
 }
 
 class MockAppConfig implements IAppConfig {
-  applicationInsightsConnectionString: 'mockConnectionString'
+  applicationInsightsConnectionString: ''
   apiBaseUrl = 'apiBaseUrl'
   checkStartAPIErrorDelay: 9
   checkStartAPIErrorMaxAttempts = 3
