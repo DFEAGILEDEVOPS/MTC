@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Pupil Check is a browser based Angular application written in Typescript that is used by pupils to complete the Multiplication Tables Check.  The application is designed to be accessible to all pupils, including those with special educational needs and disabilities.  The application is designed to be used on a variety of devices, including desktops, laptops, tablets and mobile phones.
+The Pupil Check is a browser based Angular application written in Typescript that is used by pupils to complete the Multiplication Tables Check.  The application is designed to be accessible to all pupils, including those with special educational needs and disabilities.  The application is designed to be used on a variety of devices, including desktops, laptops and tablets.
 
 An example payload can be found [here](../data/check-payload.json)
 
