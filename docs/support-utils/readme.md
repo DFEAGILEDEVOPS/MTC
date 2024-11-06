@@ -1,6 +1,6 @@
 # Support Utilities
 
-TODO talk about the utility functions
+TODO utility functions
 
 ## Table of Contents
 - [Check Replay Utility](./util-check-replay.md)
