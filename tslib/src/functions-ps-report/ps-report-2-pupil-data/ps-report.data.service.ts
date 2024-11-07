@@ -294,7 +294,6 @@ export class PsReportDataService {
       return null
     }
 
-    this.logger.info('Getting pupil data for ' + JSON.stringify(pupil))
 
     const sql = `
         DECLARE @pupilId INT = (SELECT pupil_id FROM [mtc_admin].[check] WHERE id = @checkId);
@@ -322,7 +321,7 @@ export class PsReportDataService {
             c.checkForm_id,
             c.checkWindow_id,
             c.complete,
-            c.completedAt,malda
+            c.completedAt,
             c.inputAssistantAddedRetrospectively,
             c.isLiveCheck,
             cr.mark,
