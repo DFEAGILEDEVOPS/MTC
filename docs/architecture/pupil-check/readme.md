@@ -1,8 +1,16 @@
-# Check Submission Payload
+# Pupil Check
 
-An example payload can be found [here](../check-submission/check-payload.json)
+- [Back to Architecture Home](../readme.md)
+
+## Overview
+
+The Pupil Check is a browser based Angular application written in Typescript that is used by pupils to complete the Multiplication Tables Check.  The application is designed to be accessible to all pupils, including those with special educational needs and disabilities.  The application is designed to be used on a variety of devices, including desktops, laptops and tablets.
+
+An example payload can be found [here](../data/check-payload.json)
 
 ## Pupil Events
+
+The Pupil Check application emits a number of events that are captured by the MTC service.  These events are used to monitor the progress of the pupil through the check, and to identify any issues that may arise.  The events are captured by the MTC service and stored in the database for later analysis.
 
 | Event Name | Description |
 | --------- | ---------------- |
