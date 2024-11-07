@@ -44,7 +44,7 @@
   "dependencies": {
     "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@azure/data-tables": "^13.2.1",
-    "@azure/functions": "^4.5.0",
+    "@azure/functions": "^4.6.0",
     "@azure/service-bus": "^7.9.4",
     "@azure/storage-blob": "~12.18.0",
     "@azure/storage-queue": "^12.22.0",
