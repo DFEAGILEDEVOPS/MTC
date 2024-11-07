@@ -27,6 +27,7 @@ module.exports = {
     '@typescript-eslint/method-signature-style': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/no-confusing-void-expression': 'off',
+    '@typescript-eslint/no-var-requires':  'off',
     '@typescript-eslint/ban-ts-comment': [
       'warn',
       {

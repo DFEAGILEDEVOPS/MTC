@@ -1,6 +1,6 @@
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
 import { type School } from './school-pin-replenishment.service'
-import moment = require('moment')
+import moment from 'moment'
 
 describe('school-requires-new-pin-predicate', () => {
   let sut: SchoolRequiresNewPinPredicate

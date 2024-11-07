@@ -1,9 +1,7 @@
 import express from 'express'
 import * as bodyParser from 'body-parser'
 import cors from 'cors'
-import helmet from 'helmet'
 import { v4 as uuidv4 } from 'uuid'
-import * as appInsights from './helpers/app-insights'
 import logger from './services/log.service'
 import authRoutes from './routes/auth'
 import submitRoutes from './routes/submit'
@@ -13,6 +11,7 @@ import * as corsOptions from './helpers/cors-options'
 import { initLogger } from './helpers/logger'
 import { JwtSecretValidator } from '../services/jwt-secret.validator'
 import config from '../config'
+const helmet = require('helmet')
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -24,7 +23,6 @@ class App {
     this.express = express()
     this.middleware()
     this.routes()
-    appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
     JwtSecretValidator.validate(config.PupilApi.JwtSecret)
   }
 
@@ -58,14 +56,6 @@ class App {
     this.express.use('/auth', authRoutes)
     this.express.use('/submit', submitRoutes)
     this.express.use(headRoute)
-
-    if (process.env.VERIFY_OWNER !== undefined) {
-      const token = process.env.VERIFY_OWNER
-      this.express.get(`/${token}`, (req, res) => {
-        res.contentType('text/plain')
-        res.send(token)
-      })
-    }
 
     // catch 404 and forward to error handler
     this.express.use(function (req, res, next) {

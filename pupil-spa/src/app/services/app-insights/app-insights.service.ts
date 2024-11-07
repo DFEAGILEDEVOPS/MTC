@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
-import { ApplicationInsights, IExceptionTelemetry, ITelemetryItem } from '@microsoft/applicationinsights-web'
+import { ApplicationInsights, ICustomProperties, IExceptionTelemetry, ITelemetryItem } from '@microsoft/applicationinsights-web'
 import { Router, NavigationEnd } from '@angular/router'
 import { filter } from 'rxjs/operators'
 import { APP_CONFIG } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
 import { StorageService } from '../storage/storage.service'
 
-export interface MtcCustomProperties {
+export interface MtcCustomProperties extends ICustomProperties {
   mtcCheckCode: string
   mtcSchoolUUID: string
   mtcSpaBuildNumber: string
@@ -20,19 +20,21 @@ export class ApplicationInsightsService {
   private appInsights: ApplicationInsights
   private buildNumber: string
   private commitId: string
+  private cloudRoleName = 'Pupil-SPA'
 
 
   constructor (private router: Router, private meta: Meta, private storageService: StorageService) {
-    if (!APP_CONFIG.applicationInsightsInstrumentationKey) {
+    if (APP_CONFIG.applicationInsightsConnectionString === undefined) {
+      console.log('AppInsights is not enabled')
       return
     }
-
+    console.log('Loading app insights')
     this.appInsights = new ApplicationInsights({
       config: {
-        instrumentationKey: APP_CONFIG.applicationInsightsInstrumentationKey
+        connectionString: APP_CONFIG.applicationInsightsConnectionString
       }
     })
-
+    console.log('Appinsights loaded.')
     this.appInsights.loadAppInsights()
     this.loadCustomTelemetryProperties()
     this.createRouterSubscription()
@@ -106,6 +108,8 @@ export class ApplicationInsightsService {
   public loadCustomTelemetryProperties () {
     const mtcTelemetryInitializer = (envelope: ITelemetryItem) => {
       const baseData = envelope.data
+      envelope.tags = envelope.tags || {}
+      envelope.tags['ai.cloud.role'] = this.cloudRoleName
       const customProps = this.getCustomProperties()
       for (const [key, val] of Object.entries(customProps)) {
         baseData[key] = val
