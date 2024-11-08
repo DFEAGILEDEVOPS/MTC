@@ -1,7 +1,7 @@
 import * as mssql from 'mssql'
 import { SqlService } from '../sql/sql.service'
-import * as RA from 'ramda-adjunct'
 import config from '../config'
+const RA = require('ramda-adjunct')
 
 interface CheckFormItem {
   f1: number
@@ -38,7 +38,7 @@ export class CheckFormService implements ICheckFormService {
       }
     ]
     const result = await this.sqlService.query(sql, params)
-    if (RA.isNilOrEmpty(result)) return
+    if (RA.isNilOrEmpty(result) === true) return
     if (result[0].formData !== undefined) {
       return result[0].formData
     }

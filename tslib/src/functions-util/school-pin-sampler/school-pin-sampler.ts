@@ -3,7 +3,7 @@ import { SchoolPinGenerator } from '../../functions/school-pin-generator/school-
 import { SchoolPinExpiryGenerator } from '../../functions/school-pin-generator/school-pin-expiry-generator'
 import { type IDateTimeService } from '../../common/datetime.service'
 import { RandomGenerator } from '../../functions/school-pin-generator/random-generator'
-import moment = require('moment')
+import type moment from 'moment'
 
 export class SchoolPinSampler {
   generateSample (size: number, utcNow: moment.Moment, allowedWordSet: Set<string>, randomiseSample?: boolean): SchoolPinSample[] {

@@ -1,3 +1,39 @@
+# Messaging
+
+## Table of contents
+- [Back to Architecture](../readme.md)
+
+# Overview
+
+Each message in the system is processed by a function that is dedicated to processing that queue.  The functions are housed under folders in the [tslib source](../../../tslib/).  Queues are hosted in Azure Storage Queues and Azure Service Bus Queues.
+
+## Inventory
+
+| Queue | Location | Publisher(s) | Subscriber |
+|---|---|---|---|
+| check-started | azure storage | `pupil-spa` | `functions/check-started` |
+| pupil-feedback | azure storage | `pupil-spa` | `functions/feedback` |
+| pupil-prefs | azure storage | `pupil-spa` | `functions/pupil-prefs` |
+| check-completion | service bus | `TODO` | `TODO` |
+| check-marking | service bus | `TODO` | `TODO` |
+| check-notification | service bus | `TODO` | `TODO` |
+| check-submission | service bus | `TODO` | `TODO` |
+| check-sync | service bus | `TODO` | `TODO` |
+| check-validation | service bus | `TODO` | `TODO` |
+| ps-report-schools | service bus | `TODO` | `TODO` |
+| ps-report-staging | service bus | `TODO` | `TODO` |
+| ps-report-export | service bus | `TODO` | `TODO` |
+| ps-report-exec | service bus | `TODO` | `TODO` |
+| ps-report-staging-start | service bus | `TODO` | `TODO` |
+| ps-report-staging-complete | service bus | `TODO` | `TODO` |
+| sync-results-to-db-complete | service bus | `TODO` | `TODO` |
+
+## Queue Definitions
+
+Canonical definitions for all Service Bus & Azure Storage entities are found below...
+
+- [Azure Storage](../../../deploy/storage/tables-queues.json)
+- [Service Bus](../../../deploy/service-bus/deploy.config.js)
 
 # Message Schemas
 
@@ -207,8 +243,7 @@ Azure Service Bus queue in the psychometric report generation pipeline.  This fu
 
 ```
 {
-	name: string
-	uuid: string
+  name: string
+  uuid: string
 }
 ```
-

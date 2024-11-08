@@ -1,5 +1,5 @@
-import * as RA from 'ramda-adjunct'
 import { type ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
+const RA = require('ramda-adjunct')
 
 const schoolsInGibraltarLaCode = 704
 
@@ -23,16 +23,16 @@ export class SchoolPredicateResult {
 export class Predicates implements ISchoolImportPredicates {
   hasRequiredFields (school: ISchoolRecord): SchoolPredicateResult {
     const issues: string[] = []
-    if (!RA.isPositive(school.estabCode)) {
+    if (RA.isPositive(school.estabCode) === false) {
       issues.push('estabCode is required')
     }
-    if (!RA.isPositive(school.leaCode)) {
+    if (RA.isPositive(school.leaCode) === false) {
       issues.push('leaCode is required')
     }
-    if (RA.isNilOrEmpty(school.name)) {
+    if (RA.isNilOrEmpty(school.name) === true) {
       issues.push('name is required')
     }
-    if (!RA.isPositive(school.urn)) {
+    if (RA.isPositive(school.urn) === false) {
       issues.push('urn is required')
     }
     if (issues.length > 0) {
@@ -55,7 +55,7 @@ export class Predicates implements ISchoolImportPredicates {
   }
 
   isAgeInRange (targetAge: number, school: ISchoolRecord): SchoolPredicateResult {
-    if (RA.isNilOrEmpty(school.statLowAge) || RA.isNilOrEmpty(school.statHighAge)) {
+    if (RA.isNilOrEmpty(school.statLowAge) === true || RA.isNilOrEmpty(school.statHighAge) === true) {
       return new SchoolPredicateResult(false, `Excluding school [${school.urn}] due to missing age fields: obj ${JSON.stringify(school)}`)
     }
     const low = Number(school.statLowAge)
