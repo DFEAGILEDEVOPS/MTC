@@ -331,7 +331,9 @@ export class ReportLine {
       if (this._pupil.notTakingCheckCode === 'ANLLQ' || this._pupil.notTakingCheckCode === 'ANLLH') {
         // For the maladmin codes we should provide the pupil status that they had before the annullment was made.  If they took a check it will still be linked by
         // pupil.currentCheckId. #58891.
-        if (RA.isPositive(this._pupil.currentCheckId) && !this._pupil.restartAvailable && this._check?.complete === true) {
+        if (RA.isPositive(this._pupil.currentCheckId) as boolean &&
+          !this._pupil.restartAvailable &&
+          this._check?.complete === true) {
           return 'Complete'
         } else {
           return 'Incomplete'
