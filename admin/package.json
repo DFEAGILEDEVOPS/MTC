@@ -96,7 +96,7 @@
     "uuid": "^9.0.0",
     "uuid-validate": "^0.0.3",
     "validator": "^13.7.0",
-    "winston": "^3.1.0",
+    "winston": "^3.15.0",
     "xmlbuilder2": "^3.0.2",
     "xregexp": "^5.1.1"
   },
