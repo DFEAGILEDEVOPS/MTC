@@ -12,7 +12,7 @@ import {
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
 import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './transformer-models'
-import * as RA from 'ramda-adjunct'
+const RA = require('ramda-adjunct')
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
