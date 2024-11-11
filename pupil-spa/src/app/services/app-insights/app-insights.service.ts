@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators'
 import { APP_CONFIG } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
 import { StorageService } from '../storage/storage.service'
+import { stringUtil } from '../../string-util'
 
 export interface MtcCustomProperties extends ICustomProperties {
   mtcCheckCode: string
@@ -24,7 +25,7 @@ export class ApplicationInsightsService {
 
 
   constructor (private router: Router, private meta: Meta, private storageService: StorageService) {
-    if (APP_CONFIG.applicationInsightsConnectionString === undefined) {
+    if (stringUtil.isEmptyOrUndefined(APP_CONFIG.applicationInsightsConnectionString)) {
       console.log('AppInsights is not enabled')
       return
     }
