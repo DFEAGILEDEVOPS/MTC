@@ -4,8 +4,6 @@
  * @file Integration Tests for Check Form Service
  */
 
-/* global describe test expect beforeAll jest */
-
 // These tests take a long time, so they are usually skipped unless we change the implementation
 jest.setTimeout(120000)
 

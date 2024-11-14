@@ -1,4 +1,3 @@
-/* global describe beforeEach afterEach test expect jest */
 const httpMocks = require('node-mocks-http')
 const middleware = require('../../../availability/middleware')
 const config = require('../../../config')

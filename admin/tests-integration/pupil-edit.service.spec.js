@@ -1,5 +1,4 @@
 'use strict'
-/* global expect describe test afterAll */
 
 /**
  * @file Integration Tests for Pupil Edit Service

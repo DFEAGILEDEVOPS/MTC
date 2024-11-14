@@ -1,4 +1,3 @@
-/* global Event describe it beforeEach expect */
 
 describe('pupil filter name module', function () {
   'use strict'
@@ -30,10 +29,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Brewer, Juliana</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="G801200001010">
                 </div>
             </td>
@@ -43,10 +42,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Daniels, Ebony</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="T801200001007">
                 </div>
             </td>
@@ -56,10 +55,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Duke, Gregory</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="N801200001014">
                 </div>
             </td>
@@ -69,10 +68,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Dunn, Nieves</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="W801200001011">
                 </div>
             </td>
@@ -82,10 +81,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Flowers, Burns</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="K801200001012">
                 </div>
             </td>
@@ -95,10 +94,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Hobbs, Koch</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="L801200001003">
                 </div>
             </td>
@@ -108,10 +107,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Jimenez, Bessie</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn-72" name="pupilUpn" value="W801200001009">
                 </div>
             </td>
@@ -121,10 +120,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Mcintyre, Kristine</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="C801200001015">
                 </div>
             </td>
@@ -134,10 +133,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Mendoza, Davenport</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="H801200001001">
                 </div>
             </td>
@@ -147,10 +146,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Mosley, Hallie</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="P801200001005">
                 </div>
             </td>
@@ -160,10 +159,10 @@ describe('pupil filter name module', function () {
         <tr class="govuk-table__row">
             <td scope="row">
                 <div class="govuk-highlight-wrapper">
-    
+
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">School 2, Pupil 01</a>
-    
-    
+
+
                     <input type="hidden" id="pupilUpn" name="pupilUpn" value="A00000000061A">
                 </div>
             </td>

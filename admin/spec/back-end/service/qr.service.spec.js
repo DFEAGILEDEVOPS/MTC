@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect jest beforeEach */
 
 const qrService = require('../../../services/qr.service')
 const redisKeyService = require('../../../services/redis-key.service')

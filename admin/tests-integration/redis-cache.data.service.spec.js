@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect test afterAll */
 
 const moment = require('moment')
 const redisCache = require('../services/data-access/redis-cache.service')

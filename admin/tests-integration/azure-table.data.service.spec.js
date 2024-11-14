@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe expect beforeAll afterAll fail test */
-
 const { TableClient, TableServiceClient } = require('@azure/data-tables')
 const config = require('../config')
 const connectionString = config.AZURE_STORAGE_CONNECTION_STRING

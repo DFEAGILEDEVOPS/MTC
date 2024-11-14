@@ -2,8 +2,6 @@ const sut = require('../../../../lib/validator/school-validator')
 const laCodeValidator = require('../../../../lib/validator/la-code-validator')
 const ValidationError = require('../../../../lib/validation-error')
 
-/* global jest describe expect test */
-
 describe('school validator', () => {
   test('fails if the school name is empty', async () => {
     jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())

@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect beforeEach fail jest test afterEach */
 
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')

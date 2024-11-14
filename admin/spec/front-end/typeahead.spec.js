@@ -1,6 +1,5 @@
 'use strict'
-/* global $ describe it expect spyOn jasmine beforeEach afterEach */
-/* eslint-disable no-var */
+/* global $ spyOn jasmine */
 
 describe('autoComplete', function () {
   describe('createComponent', function () {

@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe expect test */
-
 describe('setValidationService', () => {
   const service = require('../../../services/set-validation.service')
   test('finds differences when there are some', async () => {

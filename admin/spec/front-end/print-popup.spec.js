@@ -1,5 +1,6 @@
 'use strict'
-/* global $ describe it expect beforeEach afterEach */
+
+/* global $ */
 
 describe('printPopup', function () {
   describe('hideUncheckedPupils', function () {

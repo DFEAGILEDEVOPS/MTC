@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, test expect */
 const sut = require('../../../../lib/validator/school-impersonation-validator')
 
 describe('schoolImpersonationDfeNumberValidator.isDfeNumberValid', function () {

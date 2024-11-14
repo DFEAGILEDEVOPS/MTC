@@ -1,7 +1,6 @@
 'use strict'
 
-/* global $ describe it expect beforeEach afterEach spyOn jasmine */
-/* eslint-disable no-var */
+/* global $ spyOn jasmine */
 
 function initPupilFormElements () {
   const $dobFieldSet = `<fieldset aria-labelledby="date-of-birth">

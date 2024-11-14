@@ -13,7 +13,6 @@ const dummyCSV = {
   file: path.join(__dirname, '../../../data/fixtures/dummy.csv')
 }
 
-/* global beforeEach, describe, xdescribe, expect, test, jest, afterEach */
 const userId = 456
 
 describe('pupil-upload service', () => {

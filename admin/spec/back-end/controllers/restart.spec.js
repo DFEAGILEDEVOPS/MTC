@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect beforeEach afterEach jest test fail */
 
 const httpMocks = require('node-mocks-http')
 const logger = require('../../../services/log.service.js').getLogger()

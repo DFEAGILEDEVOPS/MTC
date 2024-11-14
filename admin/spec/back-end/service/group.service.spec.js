@@ -1,7 +1,5 @@
 'use strict'
 
-/* global jest describe beforeEach afterEach expect fail test */
-
 const groupService = require('../../../services/group.service')
 const groupDataService = require('../../../services/data-access/group.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')

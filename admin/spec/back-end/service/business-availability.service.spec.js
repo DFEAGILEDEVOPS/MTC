@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test jest expect beforeEach afterEach */
 
 const config = require('../../../config')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')

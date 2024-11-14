@@ -1,5 +1,6 @@
 'use strict'
-/* global describe it expect spyOn */
+
+/* global spyOn */
 
 describe('tableSort', function () {
   describe('getCellValue', function () {

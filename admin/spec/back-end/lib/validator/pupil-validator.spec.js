@@ -1,5 +1,4 @@
 'use strict'
-/* global beforeEach, afterEach, describe, test, expect, jest */
 
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')

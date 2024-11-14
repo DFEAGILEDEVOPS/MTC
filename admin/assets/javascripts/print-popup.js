@@ -2,7 +2,7 @@
  * Print popup.
  */
 /* eslint-disable no-var */
-/* global $ window */
+/* global $ */
 $(function () {
   'use strict'
   if (!window.GOVUK) {

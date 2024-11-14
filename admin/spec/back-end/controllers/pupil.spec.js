@@ -1,5 +1,4 @@
 'use strict'
-/* global describe beforeEach test expect jest afterEach */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')

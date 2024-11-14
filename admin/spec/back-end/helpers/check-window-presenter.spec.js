@@ -1,4 +1,3 @@
-/* global describe, expect, test */
 const moment = require('moment')
 const { v4: uuidv4 } = require('uuid')
 

@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect fail test jest afterEach */
 const RA = require('ramda-adjunct')
 const moment = require('moment')
 

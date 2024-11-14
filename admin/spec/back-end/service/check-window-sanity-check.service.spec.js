@@ -1,4 +1,3 @@
-/* global describe, test, expect, jest, afterEach */
 
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkFormV2DataService = require('../../../services/data-access/check-form-v2.data.service')

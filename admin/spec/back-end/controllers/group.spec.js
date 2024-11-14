@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach afterEach expect jest test */
-
 const httpMocks = require('node-mocks-http')
 
 const checkWindowV2Service = require('../../../services/check-window-v2.service')

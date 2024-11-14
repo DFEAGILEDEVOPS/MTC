@@ -2,7 +2,6 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe test expect jest */
 
 const random = require('../../../lib/random-generator')
 

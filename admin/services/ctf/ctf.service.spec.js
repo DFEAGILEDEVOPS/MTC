@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect jest beforeAll test afterEach */
 const moment = require('moment')
 const xmlbuilder2 = require('xmlbuilder2')
 

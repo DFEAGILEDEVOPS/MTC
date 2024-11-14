@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe test expect beforeEach afterEach jest */
-
 const moment = require('moment')
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
 const ValidationError = require('../../../../../lib/validation-error')

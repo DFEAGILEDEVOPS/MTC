@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe expect beforeEach jest test afterEach */
 const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')

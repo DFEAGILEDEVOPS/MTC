@@ -1,6 +1,6 @@
 'use strict'
 
-/* global $ describe it expect beforeEach */
+/* global $ */
 
 function initAAElements () {
   const $accessArrangementsList = $('<ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)"></ul>')

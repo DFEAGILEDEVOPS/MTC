@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, test, expect, jest beforeEach afterEach */
+
 const fs = require('fs-extra')
 
 const sut = require('../../../services/test-developer.service')

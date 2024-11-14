@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach expect afterEach test jest */
-
 const httpMocks = require('node-mocks-http')
 const sut = require('../../../controllers/test-developer2')
 const checkFormPresenter = require('../../../helpers/check-form-presenter')

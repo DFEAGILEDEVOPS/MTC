@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe jest test expect beforeEach afterEach */
-
 const httpMocks = require('node-mocks-http')
 const moment = require('moment')
 

@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect fail afterAll beforeEach */
 
 const moment = require('moment')
 

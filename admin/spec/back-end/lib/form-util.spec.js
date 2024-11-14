@@ -1,6 +1,5 @@
 const { formUtil, formUtilTypes } = require('../../../lib/form-util')
 
-/* global expect, describe, test */
 describe('formUtil.convertFromString', () => {
   describe('convert to int', () => {
     test('it types as null when given an empty string', () => {

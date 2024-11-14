@@ -7,8 +7,6 @@ if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ window */
-
 (function () {
   window.MTCAdmin.printPopup = {
     hideUncheckedPupils: function (printContainer) {

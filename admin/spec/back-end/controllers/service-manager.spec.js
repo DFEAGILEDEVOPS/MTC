@@ -1,4 +1,3 @@
-/* global describe expect beforeEach afterEach test jest */
 const uuid = require('uuid')
 const httpMocks = require('node-mocks-http')
 

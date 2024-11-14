@@ -1,5 +1,5 @@
 'use strict'
-/* global $ describe it expect beforeEach spyOn */
+/* global $ spyOn */
 
 function initUploadCheckFormElements () {
   const hasExistingFamiliarisationCheckFormInput = '<input type="hidden" id="hasExistingFamiliarisationCheckForm" name="hasExistingFamiliarisationCheckForm" value="" />'

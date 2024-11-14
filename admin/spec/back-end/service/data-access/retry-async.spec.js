@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect, fail beforeEach, test, jest, afterEach */
 
 const {
   asyncRetryHandler,
