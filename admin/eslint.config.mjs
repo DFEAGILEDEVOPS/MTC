@@ -4,7 +4,39 @@ import globals from 'globals'
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 
-export default tseslint.config(
+export default tseslint.config({
+  files: ['**/*.ts'],
+  extends: [
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended
+  ],
+  rules: {
+    '@typescript-eslint/no-require-imports': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
+  }
+},
+{
+  files: ['**/*.js'],
+  extends: [
+    eslint.configs.recommended
+  ]
+},
+{
+  rules: {
+    'no-var': 'off'
+  }
+},
+{
+  languageOptions: {
+    globals: {
+      ...globals.node,
+      ...globals.jest,
+      ...globals.browser
+    }
+  }
+})
+
+/* export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -36,4 +68,4 @@ export default tseslint.config(
       }
     }
   }
-)
+) */
