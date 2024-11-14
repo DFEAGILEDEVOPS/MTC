@@ -17,6 +17,7 @@ export default tseslint.config({
 },
 {
   files: ['**/*.js'],
+  ignores: ['**/*.min.js', '**/vendor.js'],
   extends: [
     eslint.configs.recommended
   ]
@@ -29,9 +30,12 @@ export default tseslint.config({
 {
   languageOptions: {
     globals: {
+      // TODO move these to narrowed scopes?
       ...globals.node,
       ...globals.jest,
-      ...globals.browser
+      ...globals.browser,
+      ...globals.jasmine,
+      ...globals.jquery
     }
   }
 })
