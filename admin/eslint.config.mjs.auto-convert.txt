@@ -16,8 +16,9 @@ const compat = new FlatCompat({
 });
 
 export default [{
+  // TODO why ignore all JS?
     ignores: ["**/dist/", "**/public/", "**/*.js"],
-}, ...compat.extends("standard-with-typescript", "plugin:jest/recommended", "plugin:jest/style"), {
+}, ...compat.extends("plugin:jest/recommended", "plugin:jest/style"), {
     plugins: {
         "@typescript-eslint": typescriptEslint,
         jest,
@@ -27,6 +28,7 @@ export default [{
         globals: {
             ...globals.node,
             ...globals.jest,
+            ...globals.browser, // TODO this suppresses uses of window, but can we narrow it to just the browser scripts folders?
         },
 
         parser: tsParser,
@@ -34,7 +36,7 @@ export default [{
         sourceType: "commonjs",
 
         parserOptions: {
-            tsconfigRootDir: "/Users/guy/dev/mtc/admin",
+            tsconfigRootDir: ".",
             project: "./tsconfig.json",
             warnOnUnsupportedTypeScriptVersion: true,
         },

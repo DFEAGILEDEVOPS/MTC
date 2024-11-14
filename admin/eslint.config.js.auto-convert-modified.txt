@@ -1,5 +1,5 @@
 // Auto converted by @eslint/migrate-config from .eslintrc.js
-const typescriptEslint = require('@typescript-eslint/eslint-plugin')
+const tsEsLint = require('@typescript-eslint/eslint-plugin')
 const jest = require('eslint-plugin-jest')
 const globals = require('globals')
 const tsParser = require('@typescript-eslint/parser')
@@ -7,8 +7,6 @@ const tsParser = require('@typescript-eslint/parser')
 // const fileURLToPath = require('node:url').fileURLToPath
 const js = require('@eslint/js')
 const FlatCompat = require('@eslint/eslintrc').FlatCompat
-// const love = require('eslint-config-love')
-
 // const __filename = fileURLToPath(import.meta.url)
 // const __dirname = path.dirname(__filename)
 const compat = new FlatCompat({
@@ -17,18 +15,23 @@ const compat = new FlatCompat({
   allConfig: js.configs.all
 })
 
-module.exports = [{
-  ignores: ['**/dist/', '**/public/', '**/*.js']
-}, ...compat.extends('plugin:jest/recommended', 'plugin:jest/style'), {
+module.exports = [
+  {
+    ignores: ['**/dist/', '**/public/', '**/*.js'],
+    includes: ['**/*.ts']
+  },
+  ...compat.extends('plugin:jest/recommended', 'plugin:jest/style'),
+  {
   plugins: {
-    '@typescript-eslint': typescriptEslint,
+    '@typescript-eslint': tsEsLint,
     jest
   },
 
   languageOptions: {
     globals: {
       ...globals.node,
-      ...globals.jest
+      ...globals.jest,
+      ...globals.browser
     },
 
     parser: tsParser,
@@ -36,7 +39,7 @@ module.exports = [{
     sourceType: 'commonjs',
 
     parserOptions: {
-      tsconfigRootDir: '/Users/guy/dev/mtc/admin',
+      tsconfigRootDir: '.',
       project: './tsconfig.json',
       warnOnUnsupportedTypeScriptVersion: true
     }

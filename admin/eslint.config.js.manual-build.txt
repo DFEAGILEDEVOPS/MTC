@@ -4,6 +4,7 @@ const pluginJs = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const jestEslint = require('eslint-plugin-jest')
 
+// TODO modify to export default tseslint.config so it can read tsconfig
 module.exports = [
   {
     files: ['**/*.{js,ts}'],
@@ -30,7 +31,7 @@ module.exports = [
             'jest/no-identical-title': 'error',
             'jest/prefer-to-have-length': 'warn',
             'jest/valid-expect': 'error', */
-      '@typescript-eslint/no-require-imports': 'off',
+
       'jest/consistent-test-it': ['error',
         {
           fn: 'test',
