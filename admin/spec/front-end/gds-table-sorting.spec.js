@@ -1,7 +1,5 @@
 'use strict'
 
-/* global spyOn */
-
 describe('tableSort', function () {
   describe('getCellValue', function () {
     it('should return the text of the element', function () {

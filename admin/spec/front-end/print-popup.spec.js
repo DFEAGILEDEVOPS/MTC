@@ -1,7 +1,5 @@
 'use strict'
 
-/* global $ */
-
 describe('printPopup', function () {
   describe('hideUncheckedPupils', function () {
     let fixture

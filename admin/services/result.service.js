@@ -145,7 +145,9 @@ const resultService = {
       result = await this.getPupilResultDataFromDb(schoolId)
       try {
         await redisCacheService.set(redisKey, result, schoolResultsTtl)
-      } catch (ignored) {}
+      } catch {
+        // do nothing
+      }
     }
     return result
   }

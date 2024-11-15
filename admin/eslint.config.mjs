@@ -5,6 +5,7 @@ import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config({
+  name: 'TS',
   files: ['**/*.ts'],
   extends: [
     eslint.configs.recommended,
@@ -12,12 +13,15 @@ export default tseslint.config({
   ],
   rules: {
     '@typescript-eslint/no-require-imports': 'off',
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off'
   }
 },
 {
+  name: 'JS',
   files: ['**/*.js'],
-  ignores: ['**/*.min.js', '**/vendor.js'],
+  ignores: ['**/*.min.js', 'dist/**/*.js', '**/vendor.js',
+    'public/javascripts/app.js', 'coverage/frontend/html/prettify.js'],
   extends: [
     eslint.configs.recommended
   ]
@@ -31,6 +35,7 @@ export default tseslint.config({
   languageOptions: {
     globals: {
       // TODO move these to narrowed scopes?
+      GOVUK: 'readonly',
       ...globals.node,
       ...globals.jest,
       ...globals.browser,
@@ -39,37 +44,3 @@ export default tseslint.config({
     }
   }
 })
-
-/* export default tseslint.config(
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    rules: {
-      '@typescript-eslint/no-require-imports': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      'no-return-await': 'off',
-      '@typescript-eslint/no-extraneous-class': 'off',
-      '@typescript-eslint/return-await': ['error', 'in-try-catch'],
-      '@typescript-eslint/prefer-ts-expect-error': 'off',
-      '@typescript-eslint/no-var-requires': 'off',
-      '@typescript-eslint/method-signature-style': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/strict-boolean-expressions': 'off',
-      '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
-      '@typescript-eslint/ban-ts-comment': ['warn', {
-          'ts-expect-error': true,
-          'ts-ignore': 'allow-with-description',
-          'ts-nocheck': true,
-          'ts-check': false,
-          minimumDescriptionLength: 5,
-      }],
-    },
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        // ...globals.jest, // TODO can we narrow scope to just spec.js|ts?
-        ...globals.browser, // TODO can we narrow scope to just the browser scripts folders?
-      }
-    }
-  }
-) */

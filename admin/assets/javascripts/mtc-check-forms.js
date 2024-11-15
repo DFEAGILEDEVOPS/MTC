@@ -3,7 +3,7 @@
 /**
  * Check form submission
  */
-/* eslint-disable no-var */
+ 
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }

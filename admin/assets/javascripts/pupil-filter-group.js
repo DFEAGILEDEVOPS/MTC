@@ -2,7 +2,7 @@
  * Filtering pupils by group.
  */
 /* global $, checkboxUtil, stickyBanner, inputStatus, pupilsNotTakingCheck, restarts */
-/* eslint-disable no-var */
+ 
 $(function () {
   if ($('#filterByGroup').length > 0) {
     var groupIds = []

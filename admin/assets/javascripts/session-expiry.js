@@ -1,8 +1,7 @@
 /**
  * Logic for handling the session expiration banner
  */
-/* global $, SESSION_DISPLAY_NOTICE_TIME */
-/* eslint-disable no-var */
+/* global SESSION_DISPLAY_NOTICE_TIME */
 $(function () {
   'use strict'
   if (!window.GOVUK) {

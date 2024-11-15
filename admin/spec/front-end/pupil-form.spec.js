@@ -1,7 +1,5 @@
 'use strict'
 
-/* global $ spyOn jasmine */
-
 function initPupilFormElements () {
   const $dobFieldSet = `<fieldset aria-labelledby="date-of-birth">
       <div class="form-date">

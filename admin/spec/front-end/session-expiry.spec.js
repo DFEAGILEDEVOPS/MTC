@@ -1,5 +1,4 @@
 'use strict'
-/* global $ jasmine spyOn */
 
 describe('sessionExpiry', function () {
   describe('setCountdownText', function () {

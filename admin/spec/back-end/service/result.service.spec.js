@@ -153,7 +153,7 @@ describe('result.service', () => {
       const schoolId = 2
       try {
         await resultService.getPupilResultData(schoolId)
-      } catch (error) {
+      } catch {
         fail()
       }
       expect(redisCacheService.get).toHaveBeenCalled()

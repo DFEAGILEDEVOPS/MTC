@@ -317,7 +317,9 @@ const sqlService = {
         try {
           const redisResult = await redisCacheService.get(redisKey)
           result = JSON.parse(redisResult)
-        } catch (e) {}
+        } catch {
+          // do nothing
+        }
       }
       if (!result) {
         const request = new mssql.Request(pool)
@@ -358,7 +360,9 @@ const sqlService = {
         try {
           const redisResult = await redisCacheService.get(redisKey)
           result = JSON.parse(redisResult)
-        } catch (e) {}
+        } catch {
+          // do nothing
+        }
       }
       if (!result) {
         const request = new mssql.Request(readonlyPool)

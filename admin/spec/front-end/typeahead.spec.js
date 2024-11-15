@@ -1,5 +1,4 @@
 'use strict'
-/* global $ spyOn jasmine */
 
 describe('autoComplete', function () {
   describe('createComponent', function () {

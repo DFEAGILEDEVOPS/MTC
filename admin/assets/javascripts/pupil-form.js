@@ -1,5 +1,5 @@
 'use strict'
-/* eslint-disable no-var */
+ 
 /**
  * Pupil access arrangements selection
  */

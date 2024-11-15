@@ -1,7 +1,7 @@
 /**
  * Filtering pupils by name.
  */
-/* eslint-disable no-var */
+ 
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }

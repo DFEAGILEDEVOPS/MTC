@@ -1,6 +1,6 @@
 // https://github.com/alphagov/govuk_publishing_components/blob/master/app/assets/javascripts/govuk_publishing_components/lib/cookie-functions.js
 // used by the cookie banner component
-/* eslint-disable no-var */
+ 
 (function (root) {
   'use strict'
   window.GOVUK = window.GOVUK || {}

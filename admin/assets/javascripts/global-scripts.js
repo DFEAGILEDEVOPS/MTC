@@ -5,7 +5,7 @@
  * are global, to be accessed by scripts in other files that use them.
  */
 /* global $, inputStatus, stickyBanner */
-/* eslint-disable no-var */
+ 
 /**
   * Methods for 'pupils not taking the check'.
   * @type {{isRadioChecked: isRadioChecked, isCheckboxChecked: isCheckboxChecked, validateForm: validateForm}}

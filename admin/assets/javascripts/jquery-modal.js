@@ -4,7 +4,7 @@
  * https://paper.dropbox.com/doc/Modal-dialog-boxes-jbsTPoITg37IIc6ybjetM
  */
 /* global $ */
-/* eslint-disable no-var */
+ 
 $(function () {
   var modalForm = document.querySelector('#js-modal-form')
   var hasModalForm = modalForm && modalForm.length > 0

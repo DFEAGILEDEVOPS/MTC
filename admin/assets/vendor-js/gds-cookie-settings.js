@@ -1,5 +1,4 @@
 // https://github.com/alphagov/frontend/blob/master/app/assets/javascripts/modules/cookie-settings.js
-/* eslint-disable no-var */
 window.GOVUK = window.GOVUK || {}
 window.GOVUK.Modules = window.GOVUK.Modules || {};
 
@@ -75,9 +74,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
       eventLabel += option + '-' + optionValue + ' '
     }
 
-    // eslint-disable-next-line no-undef
     if (GOVUK.analytics && GOVUK.analytics.trackEvent) {
-      // eslint-disable-next-line no-undef
       GOVUK.analytics.trackEvent('cookieSettings', 'Save changes', { label: eventLabel })
     }
   }

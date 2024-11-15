@@ -2,7 +2,7 @@
 /**
  * Autocomplete component
  */
-/* eslint-disable no-var */
+ 
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }

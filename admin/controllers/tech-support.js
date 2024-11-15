@@ -73,10 +73,14 @@ const controller = {
         found = true
         try {
           checkReceived = await checkDiagnosticsService.getReceivedCheckEntityByCheckCode(checkCode)
-        } catch (ignored) {}
+        } catch {
+          // ignore
+        }
         try {
           checkMarked = await checkDiagnosticsService.getMarkedCheckEntityByCheckCode(checkCode)
-        } catch (ignored) {}
+        } catch {
+          // ignore
+        }
       }
       req.breadcrumbs('Check View')
       res.render('tech-support/check-view', {

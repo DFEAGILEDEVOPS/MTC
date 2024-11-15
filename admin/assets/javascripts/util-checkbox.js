@@ -5,7 +5,7 @@
  * by scripts in other files that use them.
  */
 /* global $ */
-/* eslint-disable no-var */
+ 
 var inputStatus = {
   /**
     * Check/uncheck all checkboxes (text links)

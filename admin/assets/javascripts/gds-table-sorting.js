@@ -3,7 +3,7 @@
 /**
  * Table sorting.
  */
-/* eslint-disable no-var */
+ 
 
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}

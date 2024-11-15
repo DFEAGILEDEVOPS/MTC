@@ -1,7 +1,7 @@
 /**
  * Print popup.
  */
-/* eslint-disable no-var */
+ 
 /* global $ */
 $(function () {
   'use strict'
