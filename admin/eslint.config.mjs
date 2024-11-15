@@ -24,6 +24,7 @@ export default tseslint.config({
     'public/javascripts/app.js', 'coverage/**',
   'node_modules/**']
 },
+// TODO merge global items and remove duplicated
 {
   name: 'JS',
   files: ['**/*.js'],
