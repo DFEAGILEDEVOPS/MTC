@@ -127,6 +127,8 @@ test/admin-hpa/data/multiple_pupils_errors.csv
 test/admin-hpa/data/fixtures/test-check-form-*.txt
 test/admin-hpa/data/multiple_pupils_template.csv
 test/admin-hpa/data/new_toe.csv
+test/admin-hpa/data/school_*
+
 
 # azure function settings files
 local.settings.json
