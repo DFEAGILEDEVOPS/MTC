@@ -401,7 +401,7 @@ const controller = {
       let school
       try {
         school = await schoolService.searchForSchool(parseInt(req.body.q?.trim(), 10))
-      } catch (error) {
+      } catch {
         return noSchoolFound(req, res, next)
       }
       if (!school) {
@@ -606,7 +606,7 @@ const controller = {
    * @param {object} res
    * @param {object} next
    */
-  getAuditPayload: async function getAuditPayload (req, res, next) {
+  getAuditPayload: async function getAuditPayload (req, res) {
     const auditEntryId = req.query.auditEntryId.trim()
     let payload
     try {

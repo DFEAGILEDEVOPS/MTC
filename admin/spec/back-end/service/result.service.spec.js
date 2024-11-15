@@ -177,7 +177,7 @@ describe('result.service', () => {
       let result
       try {
         result = await resultService.getPupilResultData(schoolId)
-      } catch (error) {
+      } catch {
         fail()
       }
       expect(result).toBeUndefined()

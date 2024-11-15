@@ -4,8 +4,7 @@
  * inputStatus, stickyBanner, checkboxUtil are global, to be accessed
  * by scripts in other files that use them.
  */
-/* global $ */
- 
+
 var inputStatus = {
   /**
     * Check/uncheck all checkboxes (text links)
@@ -13,7 +12,7 @@ var inputStatus = {
     * @param validation
     */
   toggleAllCheckboxes: function (sel, validation) {
-    $('#tickAllCheckboxes').on('change', function (e) {
+    $('#tickAllCheckboxes').on('change', function () {
       var validationStatus = true
       var selectAll = $('#selectAll')
       var deselectAll = $('#deselectAll')
@@ -47,7 +46,7 @@ var inputStatus = {
     * @param validation
     */
   selectAll: function (sel, validation) {
-    $('#selectAll').on('click', function (e) {
+    $('#selectAll').on('click', function () {
       var validationStatus
       if (validation) {
         validationStatus = validation()
@@ -66,7 +65,7 @@ var inputStatus = {
     * @param validation
     */
   deselectAll: function (sel, validation) {
-    $('#deselectAll').on('click', function (e) {
+    $('#deselectAll').on('click', function () {
       var validationStatus
       if (validation) {
         validationStatus = validation()

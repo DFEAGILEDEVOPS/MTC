@@ -1,5 +1,5 @@
 'use strict'
- 
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
@@ -7,7 +7,7 @@ if (!window.MTCAdmin) {
 /**
  * Pupil access arrangements selection
  */
-/* global $ */
+
 (function () {
   window.MTCAdmin.retroInputAssistant = function () {
     // Add/Remove red border to autocomplete input container

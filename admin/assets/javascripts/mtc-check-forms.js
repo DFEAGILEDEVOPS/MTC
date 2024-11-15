@@ -3,12 +3,12 @@
 /**
  * Check form submission
  */
- 
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ */
+
 (function () {
   window.MTCAdmin.checkForms = function () {
     function toggleShowHideModal (e) {

@@ -2,12 +2,12 @@
 /**
  * Autocomplete component
  */
- 
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ */
+
 (function () {
   window.MTCAdmin.autoComplete = {
     /**

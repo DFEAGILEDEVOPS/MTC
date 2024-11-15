@@ -1,5 +1,5 @@
 'use strict'
- 
+
 /**
  * Pupil access arrangements selection
  */
@@ -8,7 +8,7 @@ if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ */
+
 (function () {
   window.MTCAdmin.pupilForm = function () {
     $('#dob-year').on('input', function () {

@@ -17,11 +17,16 @@ export default tseslint.config({
     '@typescript-eslint/ban-ts-comment': 'off'
   }
 },
+// global ignores
+// https://github.com/eslint/eslint/discussions/18304#discussioncomment-9069706
+{
+  ignores: ['**/*.min.js', 'dist/**', '**/vendor.js',
+    'public/javascripts/app.js', 'coverage/**',
+  'node_modules/**']
+},
 {
   name: 'JS',
   files: ['**/*.js'],
-  ignores: ['**/*.min.js', 'dist/**/*.js', '**/vendor.js',
-    'public/javascripts/app.js', 'coverage/frontend/html/prettify.js'],
   extends: [
     eslint.configs.recommended
   ]

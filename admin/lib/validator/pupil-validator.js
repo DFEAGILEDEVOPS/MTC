@@ -13,7 +13,7 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
  * @param {boolean} isMultiplePupilsSubmission
  * @returns {Promise<ValidationError>}
  */
-module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission = false) => {
+module.exports.validate = async (pupilData, schoolId) => {
   // TODO: Move to reusable validation service
   const validationError = new ValidationError()
   // Forename validation

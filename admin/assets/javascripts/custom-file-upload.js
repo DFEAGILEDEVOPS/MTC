@@ -1,8 +1,8 @@
 /**
  * File upload customisation.
  */
-/* global $ */
- 
+
+
 $(function () {
   'use strict'
 

@@ -106,7 +106,7 @@ const controller = {
    * @param {*} next
    * @returns
    */
-  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res, next) {
+  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res) {
     const jsonError = {
       error: 'Error'
     }

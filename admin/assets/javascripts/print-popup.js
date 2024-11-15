@@ -1,8 +1,8 @@
 /**
  * Print popup.
  */
- 
-/* global $ */
+
+
 $(function () {
   'use strict'
   if (!window.GOVUK) {
