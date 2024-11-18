@@ -2,6 +2,7 @@
 And(/^I am on the add multiple pupil page$/) do
   sleep 2
   add_multiple_pupil_page.load
+  @page = add_multiple_pupil_page
 end
 
 Then(/^I can see the landing page as per the design$/) do
