@@ -49,7 +49,7 @@ $(function () {
      * @param {jQuery} minutesCountdown
      * @param {jQuery} continueSessionButton
      */
-    displayExpiryBanner: function (sessionExpirationError, minutesCountdown, continueSessionButton) {
+    displayExpiryBanner: function (sessionExpirationError) {
       sessionExpirationError.removeClass('error-session-expiration')
       sessionExpirationError.addClass('error-about-to-expire-session')
     },

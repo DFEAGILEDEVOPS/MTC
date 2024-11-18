@@ -218,7 +218,9 @@ function reviver (key, value) {
         if (d && d.isValid()) {
           return d
         }
-      } catch (ignored) {}
+      } catch {
+        // ignore
+      }
     }
   }
   return value

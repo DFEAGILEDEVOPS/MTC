@@ -728,7 +728,7 @@ describe('service manager controller:', () => {
         typeOfEstablishmentCode: 10
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
-      jest.spyOn(schoolService, 'updateSchool').mockImplementation(_ => { return Promise.resolve() })
+      jest.spyOn(schoolService, 'updateSchool').mockImplementation(() => { return Promise.resolve() })
       await controller.postEditOrganisation(req, res, next)
       const schoolUpdateArg = schoolService.updateSchool.mock.calls[0][1]
       expect(schoolUpdateArg.name).toBe('updated name')

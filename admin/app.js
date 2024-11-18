@@ -387,7 +387,7 @@ app.use(function (req, res, next) {
 })
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   const errorId = uuidv4()
   res.locals.errorId = errorId
 

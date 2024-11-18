@@ -137,7 +137,7 @@ const controller = {
    * @param {*} next
    * @returns
    */
-  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res, next) {
+  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res) {
     const jsonError = {
       error: 'Error'
     }
@@ -168,7 +168,7 @@ const controller = {
    * @param {object} res
    * @param {object} next
    */
-  getReceivedCheckPayload: async function getReceivedCheckPayload (req, res, next) {
+  getReceivedCheckPayload: async function getReceivedCheckPayload (req, res) {
     const checkCode = req.query.checkCode.trim()
     let payload
     try {
@@ -626,7 +626,7 @@ const controller = {
     }
   },
 
-  postSbQueueSubmit: async function postSbQueueSubmit (req, res, next) {
+  postSbQueueSubmit: async function postSbQueueSubmit (req, res) {
     res.locals.pageTitle = 'Submit Service Bus Queue Message'
     try {
       await queueMgmtService.sendServiceBusQueueMessage(req.body.queueName, req.body.message, req.body.contentType)

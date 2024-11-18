@@ -1,12 +1,12 @@
 /**
  * Filtering pupils by name.
  */
- 
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ stickyBanner inputStatus */
+/* global stickyBanner inputStatus */
 (function () {
   window.MTCAdmin.pupilFilter = function () {
     if ($('.filter-name').length > 0) {
@@ -22,7 +22,7 @@ if (!window.MTCAdmin) {
           return
         }
 
-        $(selAllTr).each(function ($tr) {
+        $(selAllTr).each(function () {
           var pupilName = $('#pupilName', this).length > 0 && $.trim($('#pupilName', this).text()).toLowerCase()
           var pupilUpnEl = $('input[name=pupilUpn]', this)
           var pupilUpn = pupilUpnEl && pupilUpnEl.length > 0 && pupilUpnEl.val().toLowerCase()

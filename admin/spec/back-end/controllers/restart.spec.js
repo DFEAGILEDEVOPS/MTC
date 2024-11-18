@@ -134,7 +134,7 @@ describe('restart controller:', () => {
       try {
         await controller(req, res, next)
         expect(next).toHaveBeenCalledWith(new Error('mock error'))
-      } catch (error) {
+      } catch {
         fail('not expected to throw')
       }
     })

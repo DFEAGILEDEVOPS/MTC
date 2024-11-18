@@ -1,12 +1,12 @@
 /**
  * Filtering pupils by group.
  */
-/* global $, checkboxUtil, stickyBanner, inputStatus, pupilsNotTakingCheck, restarts */
- 
+/* global checkboxUtil, stickyBanner, inputStatus, pupilsNotTakingCheck, restarts */
+
 $(function () {
   if ($('#filterByGroup').length > 0) {
     var groupIds = []
-    $('#filterByGroup input:checkbox').on('click', function (e) {
+    $('#filterByGroup input:checkbox').on('click', function () {
       if ($(this).is(':checked')) {
         $(this).attr('data-checked', true)
         const groupId = $(this).val()
@@ -30,7 +30,7 @@ $(function () {
       stickyBanner.toggle(inputStatus.countCheckedCheckboxes() || displayStickyBanner)
     })
 
-    $('.filter-header').on('click', function (e) {
+    $('.filter-header').on('click', function () {
       $('.filter-label').toggleClass('active')
       $('#filter-content').toggleClass('js-filter-hidden-group')
     })

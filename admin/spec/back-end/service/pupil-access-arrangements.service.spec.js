@@ -211,7 +211,7 @@ describe('pupilAccessArrangementsService', () => {
       let pupils
       try {
         pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(1234567)
-      } catch (error) {
+      } catch {
         fail()
       }
       expect(pupils[0].fullName).toBe('Johnson, John Test')

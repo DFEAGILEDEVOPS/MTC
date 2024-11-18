@@ -862,7 +862,7 @@ const controller = {
     res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupil.urlSlug.toLowerCase())}/confirm/${encodeURIComponent(targetSchool.urlSlug.toLowerCase())}`)
   },
 
-  getPupilMoveConfirm: async function getPupilMoveConfirm (req, res, next) {
+  getPupilMoveConfirm: async function getPupilMoveConfirm (req, res) {
     let pupil, school, pupilUrlSlug, schoolUrlSlug
     try {
       res.locals.pageTitle = 'Confirm move pupil'
@@ -884,7 +884,7 @@ const controller = {
     }
   },
 
-  postPupilMoveConfirmed: async function postPupilMoveConfirmed (req, res, next) {
+  postPupilMoveConfirmed: async function postPupilMoveConfirmed (req, res) {
     let pupil, school, pupilUrlSlug, schoolUrlSlug
     try {
       pupilUrlSlug = req.params.pupilSlug

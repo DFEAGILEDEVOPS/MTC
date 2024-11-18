@@ -408,7 +408,7 @@ describe('group.service', () => {
         expect(redisKeyService.getPupilRegisterViewDataKey).toHaveBeenCalled()
         expect(redisCacheService.drop).toHaveBeenCalled()
         expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalledWith(groupId, schoolId, userId)
-      } catch (error) {
+      } catch {
         fail()
       }
     })

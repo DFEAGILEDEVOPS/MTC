@@ -8,7 +8,7 @@
 $(function () {
   var modalForm = document.querySelector('#js-modal-form')
   var hasModalForm = modalForm && modalForm.length > 0
-  function startModal (e) {
+  function startModal () {
     $('.modal-link').on('click', function (e) {
       if (hasModalForm) {
         toggleShowHideModal(e)
@@ -27,7 +27,7 @@ $(function () {
         $('#js-modal-confirmation-button').attr('href', '')
       }
     })
-    $('#js-modal-confirmation-button').on('click', function (e) {
+    $('#js-modal-confirmation-button').on('click', function () {
       if (hasModalForm) {
         modalForm.submit()
       }

@@ -6,12 +6,12 @@
 $(function () {
   'use strict'
 
-  function customFileUpload (e) {
+  function customFileUpload () {
     var $formElement = $('#upload-form')
     var $removeElement = $('#removeUploadedFile')
     var isSubmitted = false
 
-    $removeElement.on('click', function (e) {
+    $removeElement.on('click', function () {
       $removeElement.css('visibility', 'hidden')
       $removeElement.hide()
     })
