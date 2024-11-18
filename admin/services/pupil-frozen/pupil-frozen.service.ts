@@ -1,4 +1,3 @@
-
 import { PupilFrozenDataService } from './pupil-frozen.data.service'
 
 export class PupilFrozenService {

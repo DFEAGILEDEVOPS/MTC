@@ -1,4 +1,3 @@
-
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkFormV2DataService = require('../../../services/data-access/check-form-v2.data.service')
 const checkWindowSanityCheckService = require('../../../services/check-window-sanity-check.service')

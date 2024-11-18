@@ -1,4 +1,3 @@
-
 describe('pupil filter name module', function () {
   'use strict'
   const html = `

@@ -1,4 +1,3 @@
-
 const arrayUtils = require('../../../lib/array-utils')
 
 describe('arrayUtils', () => {

@@ -26,7 +26,7 @@ describe('redisCache integration tests', () => {
   })
 
   test.each(['2019-10', '1001', '2019-10-01', '2019-01-01T', '2019-10-01T00:00'])(
-    'does not turn into a datetime: %s', async (s) => {
+    'does not turn into a datetime: %s', async s => {
       const key = 'integrationTest002'
       await redisCache.set(key, s)
       const deserialsed = await redisCache.get(key)

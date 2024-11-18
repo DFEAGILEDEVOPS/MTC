@@ -114,9 +114,7 @@ const checkStartService = {
     // Create the checks for each pupil
     const checks = []
     for (const pupilId of pupilIds) {
-      const usedFormIds = usedForms[pupilId]
-        ? usedForms[pupilId].map(f => f.id)
-        : []
+      const usedFormIds = usedForms[pupilId] ? usedForms[pupilId].map(f => f.id) : []
       const c = await checkStartService.initialisePupilCheck(
         pupilId,
         checkWindow,

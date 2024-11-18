@@ -761,8 +761,7 @@ describe('service manager controller:', () => {
         urn: 888900
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
-      jest.spyOn(schoolService, 'updateSchool').mockRejectedValue(new ValidationError('leacCode', 'Unit test error' +
-        ' message'))
+      jest.spyOn(schoolService, 'updateSchool').mockRejectedValue(new ValidationError('leacCode', 'Unit test error' + ' message'))
       jest.spyOn(controller, 'getEditOrganisation').mockImplementation(() => Promise.resolve())
       await controller.postEditOrganisation(req, res, next)
       expect(controller.getEditOrganisation).toHaveBeenCalled()

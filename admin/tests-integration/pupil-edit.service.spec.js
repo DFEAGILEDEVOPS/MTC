@@ -14,9 +14,10 @@ const redisCacheService = require('../services/data-access/redis-cache.service')
 
 const currentUTCDate = moment.utc()
 const currentYear = currentUTCDate.year()
-const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
-  ? currentYear - 1
-  : currentYear
+const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`),
+  moment.utc(`${currentYear}-08-31`), null, '[]') ?
+  currentYear - 1 :
+  currentYear
 
 function createFakeUpn () {
   const base = '201' + faker.datatype.number({ min: 100000000, max: 900000000 })

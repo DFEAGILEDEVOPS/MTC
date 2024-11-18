@@ -1,6 +1,5 @@
 'use strict'
 
-
 const httpMocks = require('node-mocks-http')
 
 describe('contact page simple controller', () => {

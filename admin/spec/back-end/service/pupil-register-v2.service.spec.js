@@ -1,6 +1,5 @@
 'use strict'
 
-
 const pupilRegisterV2Service = require('../../../services/pupil-register-v2.service')
 const pupilRegisterV2DataService = require('../../../services/data-access/pupil-register-v2.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')

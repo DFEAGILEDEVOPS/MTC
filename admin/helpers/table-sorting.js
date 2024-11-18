@@ -29,9 +29,9 @@ const tableSorting = {
    * @return {*}
    */
   comparer: function (v1, v2, asc) {
-    return this.isNumericValue(v1) && this.isNumericValue(v2)
-      ? this.getNumberComparisonResult(v1, v2, asc)
-      : this.getStringComparisonResult(v1, v2, asc)
+    return this.isNumericValue(v1) && this.isNumericValue(v2) ?
+      this.getNumberComparisonResult(v1, v2, asc) :
+      this.getStringComparisonResult(v1, v2, asc)
   },
 
   /**
