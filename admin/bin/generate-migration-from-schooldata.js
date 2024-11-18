@@ -40,7 +40,7 @@ fs.createReadStream('../NCATools_EduBase_20180604.txt')
     const estabCode = data.DfENumber.substr(data.LEANUMBER.length)
     const randUrlSlug = uuidv4().toUpperCase()
 
-    const schoolName = data.NAME.replace(/'/g, "''")
+    const schoolName = data.NAME.replace(/'/g, '\'\'')
     const schoolNameEscaped = schoolName.replace(/`/, '\\`') // escape ` too for generating the up file
 
     if (data.LEANUMBER === '' || data.DfENumber === '') {

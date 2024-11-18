@@ -2,7 +2,6 @@
  * File upload customisation.
  */
 
-
 $(function () {
   'use strict'
 

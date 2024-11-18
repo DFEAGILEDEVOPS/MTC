@@ -4,7 +4,6 @@
  * https://paper.dropbox.com/doc/Modal-dialog-boxes-jbsTPoITg37IIc6ybjetM
  */
 
-
 $(function () {
   var modalForm = document.querySelector('#js-modal-form')
   var hasModalForm = modalForm && modalForm.length > 0

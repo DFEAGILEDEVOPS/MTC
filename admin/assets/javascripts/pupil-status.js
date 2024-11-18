@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
   const element = document.getElementById('step-by-step-navigation')
-   
   const stepByStepNavigation = new GOVUK.Modules.StepByStepNavigation()
   stepByStepNavigation.start(element)
 

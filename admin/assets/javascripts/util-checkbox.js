@@ -200,6 +200,7 @@ var stickyBanner = {
         $('#stickyConfirm').on('click touchstart', function () {
           // prevent form submission for print pins form
           var printPinsForm = document.getElementById('printPinsForm')
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           !printPinsForm && form.submit()
           $(this).attr('disabled', 'disabled')
         })

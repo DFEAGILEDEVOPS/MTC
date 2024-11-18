@@ -7,7 +7,6 @@ if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-
 (function () {
   window.MTCAdmin.autoComplete = {
     /**

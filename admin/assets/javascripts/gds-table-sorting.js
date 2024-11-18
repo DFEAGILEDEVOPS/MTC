@@ -3,7 +3,6 @@
 /**
  * Table sorting.
  */
- 
 
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
@@ -24,9 +23,9 @@ if (!window.MTCAdmin) {
     comparer: function (idx, asc, config) {
       return function (a, b) {
         return (function (v1, v2) {
-          return window.MTCAdmin.tableSort.isNumericValue(v1) && window.MTCAdmin.tableSort.isNumericValue(v2)
-            ? window.MTCAdmin.tableSort.getNumberComparisonResult(v1, v2, asc)
-            : window.MTCAdmin.tableSort.getStringComparisonResult(v1, v2, asc, config)
+          return window.MTCAdmin.tableSort.isNumericValue(v1) && window.MTCAdmin.tableSort.isNumericValue(v2) ?
+            window.MTCAdmin.tableSort.getNumberComparisonResult(v1, v2, asc) :
+            window.MTCAdmin.tableSort.getStringComparisonResult(v1, v2, asc, config)
         })(window.MTCAdmin.tableSort.getCellValue(a, idx), window.MTCAdmin.tableSort.getCellValue(b, idx))
       }
     },

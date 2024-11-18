@@ -8,7 +8,6 @@ if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-
 (function () {
   window.MTCAdmin.pupilForm = function () {
     $('#dob-year').on('input', function () {

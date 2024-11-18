@@ -67,10 +67,7 @@ window.GOVUK.getCurrentLocation = function () {
       function storeScrollPosition () {
         hideAllSteps()
         const step = getStepForAnchor()
-
-        document.body.scrollTop = step && step.length
-          ? step.offsetTop
-          : 0
+        document.body.scrollTop = step && step.length ? step.offsetTop : 0
       }
 
       function addShowHideAllButton () {
@@ -116,10 +113,7 @@ window.GOVUK.getCurrentLocation = function () {
 
       function getStepForAnchor () {
         const anchor = getActiveAnchor()
-
-        return anchor.length
-          ? element.querySelector('#' + escapeSelector(anchor.substr(1)))
-          : null
+        return anchor.length ? element.querySelector('#' + escapeSelector(anchor.substr(1))) : null
       }
 
       function getActiveAnchor () {
@@ -134,7 +128,6 @@ window.GOVUK.getCurrentLocation = function () {
 
             const stepView = new StepView(step)
             stepView.toggle()
-
             setShowHideAllText()
           })
         }

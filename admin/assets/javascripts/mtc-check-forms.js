@@ -8,7 +8,6 @@ if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-
 (function () {
   window.MTCAdmin.checkForms = function () {
     function toggleShowHideModal (e) {

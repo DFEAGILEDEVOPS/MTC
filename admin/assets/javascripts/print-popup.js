@@ -2,7 +2,6 @@
  * Print popup.
  */
 
-
 $(function () {
   'use strict'
   if (!window.GOVUK) {
