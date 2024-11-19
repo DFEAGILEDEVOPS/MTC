@@ -23,9 +23,9 @@ if (!window.MTCAdmin) {
     })
 
     function displayAgeTextArea () {
-      var composedDate = $('#dob-year').val() + '-' + $('#dob-month').val().padStart(2, '0') + '-' + $('#dob-day').val().padStart(2, '0')
-      var academicYear = window.MTCAdmin.determineAcademicYear()
-      var inputDate
+      const composedDate = $('#dob-year').val() + '-' + $('#dob-month').val().padStart(2, '0') + '-' + $('#dob-day').val().padStart(2, '0')
+      const academicYear = window.MTCAdmin.determineAcademicYear()
+      let inputDate
       if (/^\d{4}-\d{2}-\d{2}$/.test(composedDate)) {
         inputDate = new Date(Date.UTC(
           parseInt($('#dob-year').val(), 10),
@@ -52,10 +52,10 @@ if (!window.MTCAdmin) {
   }
 
   window.MTCAdmin.determineAcademicYear = function () {
-    var currentDate = new Date()
-    var currentYear = (currentDate).getUTCFullYear()
-    var startOfJanuary = new Date(Date.UTC(currentYear, 0, 1, 0, 0, 0))
-    var endOfAugust = new Date(Date.UTC(currentYear, 7, 31, 23, 59, 59, 0))
+    const currentDate = new Date()
+    const currentYear = (currentDate).getUTCFullYear()
+    const startOfJanuary = new Date(Date.UTC(currentYear, 0, 1, 0, 0, 0))
+    const endOfAugust = new Date(Date.UTC(currentYear, 7, 31, 23, 59, 59, 0))
     if (currentDate >= startOfJanuary && currentDate <= endOfAugust) {
       return currentYear - 1
     }
@@ -63,7 +63,7 @@ if (!window.MTCAdmin) {
   }
 
   window.MTCAdmin.isWithinAcademicYear = function (inputDate, academicYear, targetYear) {
-    var targetAcademicYear = academicYear - targetYear
+    const targetAcademicYear = academicYear - targetYear
     const startDate = new Date(Date.UTC(targetAcademicYear - 1, 8, 2, 0, 0, 0)) // 2 Sep
     const endDate = new Date(Date.UTC(targetAcademicYear, 8, 1, 23, 59, 59)) // 1 Sep
     return inputDate >= startDate && inputDate <= endDate

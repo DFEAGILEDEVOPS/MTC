@@ -10,13 +10,13 @@
   * Methods for 'pupils not taking the check'.
   * @type {{isRadioChecked: isRadioChecked, isCheckboxChecked: isCheckboxChecked, validateForm: validateForm}}
   */
-var pupilsNotTakingCheck = {
+const pupilsNotTakingCheck = {
   /**
     * Is radio button checked?
     * @returns {boolean}
     */
   isRadioChecked: function () {
-    var el = $('input:radio[name="attendanceCode"]:checked')
+    const el = $('input:radio[name="attendanceCode"]:checked')
     return el.length > 0
   },
   /**
@@ -24,8 +24,8 @@ var pupilsNotTakingCheck = {
     * @returns {boolean}
     */
   isCheckboxChecked: function () {
-    var elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
-    var elTickAll = $('.multiple-choice-mtc > input#tickAllCheckboxes:checkbox:checked')
+    const elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
+    const elTickAll = $('.multiple-choice-mtc > input#tickAllCheckboxes:checkbox:checked')
     return elTickAll.length > 0 || elCheckboxes.length > 0
   },
   /**
@@ -41,9 +41,9 @@ var pupilsNotTakingCheck = {
   * Methods for 'Generate PINs'.
   * @type {{isCheckboxChecked: isCheckboxChecked}}
   */
-var generatePins = {
+const generatePins = {
   isCheckboxChecked: function () {
-    var el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
+    const el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
     return el.length > 0
   }
 }
@@ -52,13 +52,13 @@ var generatePins = {
   * Methods for 'Restarts'.
   * @type {{isRadioChecked: isRadioChecked, isCheckboxChecked: isCheckboxChecked, validateForm: validateForm}}
   */
-var restarts = {
+const restarts = {
   /**
     * Is radio button checked?
     * @returns {boolean}
     */
   isRadioChecked: function () {
-    var el = $('input:radio[name="restartReason"]:checked')
+    const el = $('input:radio[name="restartReason"]:checked')
     return el.length > 0
   },
   /**
@@ -66,7 +66,7 @@ var restarts = {
     * @returns {boolean}
     */
   isCheckboxChecked: function () {
-    var el = $('.multiple-choice-mtc > input:checkbox:checked')
+    const el = $('.multiple-choice-mtc > input:checkbox:checked')
     return el.length > 0
   },
   validateForm: function () {
@@ -78,13 +78,13 @@ var restarts = {
   * Methods for 'assign check form to check windows'.
   * @type {{isCheckboxChecked: isCheckboxChecked}}
   */
-var assignForm = {
+const assignForm = {
   /**
     * Is there at least one checkbox checked?
     * @returns {boolean}
     */
   isCheckboxChecked: function () {
-    var el = $('.multiple-choice-mtc > input:checkbox:checked')
+    const el = $('.multiple-choice-mtc > input:checkbox:checked')
     return el.length > 0
   },
   /**
@@ -100,13 +100,13 @@ var assignForm = {
   * Methods for 'pupils groups'.
   * @type {{isCheckboxChecked: isCheckboxChecked, isGroupNameComplete: *}}
   */
-var pupilGroups = {
+const pupilGroups = {
   /**
     * Is there at least one checkbox checked?
     * @returns {boolean}
     */
   isCheckboxChecked: function () {
-    var elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked')
+    const elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked')
     return elCheckboxes.length > 0
   },
   /**
@@ -114,7 +114,7 @@ var pupilGroups = {
     * @returns {boolean}
     */
   isGroupNameComplete: function () {
-    var elName = $.trim($('input#name').val())
+    const elName = $.trim($('input#name').val())
     return elName.length > 0
   },
   /**

@@ -5,7 +5,7 @@
  * by scripts in other files that use them.
  */
 
-var inputStatus = {
+const inputStatus = {
   /**
     * Check/uncheck all checkboxes (text links)
     * @param sel
@@ -13,9 +13,9 @@ var inputStatus = {
     */
   toggleAllCheckboxes: function (sel, validation) {
     $('#tickAllCheckboxes').on('change', function () {
-      var validationStatus = true
-      var selectAll = $('#selectAll')
-      var deselectAll = $('#deselectAll')
+      let validationStatus = true
+      const selectAll = $('#selectAll')
+      const deselectAll = $('#deselectAll')
 
       if (validation) {
         validationStatus = validation()
@@ -28,7 +28,7 @@ var inputStatus = {
           selectAll.addClass('all-hide')
           deselectAll.removeClass('all-hide')
           $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-          var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+          const countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
           stickyBanner.toggle(validationStatus && countCheckedCheckboxes > 0)
         } else {
           deselectAll.addClass('all-hide')
@@ -47,14 +47,14 @@ var inputStatus = {
     */
   selectAll: function (sel, validation) {
     $('#selectAll').on('click', function () {
-      var validationStatus
+      let validationStatus
       if (validation) {
         validationStatus = validation()
       }
       $(this).addClass('all-hide')
       $('#deselectAll').removeClass('all-hide')
       $(sel + ' > input:checkbox').attr('data-checked', true)
-      var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+      const countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
       // eslint-disable-next-line no-constant-binary-expression
       stickyBanner.toggle((validationStatus || true) && countCheckedCheckboxes > 0)
     })
@@ -67,7 +67,7 @@ var inputStatus = {
     */
   deselectAll: function (sel, validation) {
     $('#deselectAll').on('click', function () {
-      var validationStatus
+      let validationStatus
       if (validation) {
         validationStatus = validation()
       }
@@ -85,9 +85,9 @@ var inputStatus = {
     */
   checkboxStatus: function (sel, validation) {
     $(sel + ' > input:checkbox').on('click', function () {
-      var validationStatus = true
-      var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
-      var countAllCheckboxes = inputStatus.countCheckboxes()
+      let validationStatus = true
+      const countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+      const countAllCheckboxes = inputStatus.countCheckboxes()
 
       if (validation) {
         validationStatus = validation()
@@ -119,8 +119,8 @@ var inputStatus = {
     */
   radioStatus: function (sel, validation) {
     $('input:radio[name="' + sel + '"]').on('click', function () {
-      var radioEl = $('input:radio[name="' + sel + '"]')
-      var validationStatus = false
+      const radioEl = $('input:radio[name="' + sel + '"]')
+      let validationStatus = false
       if (validation) {
         validationStatus = validation()
       }
@@ -153,7 +153,7 @@ var inputStatus = {
     * @param checkboxParent
     */
   countCheckedCheckboxes: function (checkboxParent) {
-    var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked').not('#tickAllCheckboxes')
+    const el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked').not('#tickAllCheckboxes')
     return el.length || 0
   },
 
@@ -161,7 +161,7 @@ var inputStatus = {
     * @param checkboxParent
     */
   countCheckboxes: function (checkboxParent) {
-    var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox').not('#tickAllCheckboxes')
+    const el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox').not('#tickAllCheckboxes')
     return el.length
   }
 }
@@ -171,7 +171,7 @@ var inputStatus = {
   * @type {{toggle: toggle}}
   */
 
-var stickyBanner = {
+const stickyBanner = {
   /**
     * @param status
     */
@@ -189,17 +189,17 @@ var stickyBanner = {
    * Calculate and update the sticky banner position
    */
   calculatePosition: function () {
-    var stickyBannerEl = $('#stickyBanner')
-    var footerEl = $('#govuk-footer').length === 0 ? $('#footer') : $('#govuk-footer')
+    const stickyBannerEl = $('#stickyBanner')
+    const footerEl = $('#govuk-footer').length === 0 ? $('#footer') : $('#govuk-footer')
     if (stickyBannerEl.next(footerEl).length === 0) {
       // we're moving the banner outside of the form, so add a click handler
       // to submit it.  The name of the form must be 'stickyBannerForm' so we do not accidentally submit a
       // different form!
-      var form = $('form[name="stickyBannerForm"]')
+      const form = $('form[name="stickyBannerForm"]')
       if (form) {
         $('#stickyConfirm').on('click touchstart', function () {
           // prevent form submission for print pins form
-          var printPinsForm = document.getElementById('printPinsForm')
+          const printPinsForm = document.getElementById('printPinsForm')
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           !printPinsForm && form.submit()
           $(this).attr('disabled', 'disabled')
@@ -209,13 +209,13 @@ var stickyBanner = {
       // so it can be full width
       stickyBannerEl.insertBefore(footerEl)
     }
-    var isIE = (navigator.userAgent.indexOf('MSIE') !== -1) || !!document.documentMode
+    const isIE = (navigator.userAgent.indexOf('MSIE') !== -1) || !!document.documentMode
     if (isIE) {
       // IE doesn't support position: sticky, so toggle fixed class instead
-      var scroll = $(document).scrollTop()
-      var footerTop = footerEl[0].getBoundingClientRect().top + scroll
-      var stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
-      var windowBottom = $(window).height() + scroll
+      const scroll = $(document).scrollTop()
+      const footerTop = footerEl[0].getBoundingClientRect().top + scroll
+      const stickyBannerTop = footerTop - stickyBannerEl.outerHeight()
+      const windowBottom = $(window).height() + scroll
       if (windowBottom < stickyBannerTop) {
         stickyBannerEl.addClass('fixed')
       } else {
@@ -264,7 +264,7 @@ var stickyBanner = {
   * Util methods to help manage the checkbox state.
   * @type {{checkCheckbox: checkCheckbox, tableRowVisibility: tableRowVisibility, getQueryParam: getQueryParam}}
   */
-var checkboxUtil = {
+const checkboxUtil = {
   /**
     * Change checkbox status to 'checked' for passed `param`Ids.
     * @param `param`Ids
@@ -317,9 +317,9 @@ var checkboxUtil = {
     * @param variable
     */
   parseQueryString: function (query, variable) {
-    var vars = query.split('&')
-    for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split('=')
+    const vars = query.split('&')
+    for (let i = 0; i < vars.length; i++) {
+      const pair = vars[i].split('=')
       if (decodeURIComponent(pair[0]) === variable) {
         return decodeURIComponent(pair[1]).replace(/,$/, '')
       }
@@ -332,7 +332,7 @@ var checkboxUtil = {
     * @param variable
     */
   getQueryParam: function (variable) {
-    var query = window.location.search.substring(1)
+    const query = window.location.search.substring(1)
     return checkboxUtil.parseQueryString(query, variable)
   },
 
@@ -341,7 +341,7 @@ var checkboxUtil = {
     * @param variable
     */
   getQueryParamFromString: function (queryString, variable) {
-    var searchIndex = queryString && queryString.indexOf('?')
+    const searchIndex = queryString && queryString.indexOf('?')
     if (!searchIndex || searchIndex === -1) return '' // nothing to be parsed
     return checkboxUtil.parseQueryString(queryString.substring(searchIndex + 1), variable)
   }

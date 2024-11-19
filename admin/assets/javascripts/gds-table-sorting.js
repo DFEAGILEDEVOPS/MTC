@@ -31,8 +31,8 @@ if (!window.MTCAdmin) {
     },
 
     isNumericValue: function (v) {
-      var numericOnlyPattern = /^\d+$/
-      var numericOnlyRegExp = new RegExp(numericOnlyPattern)
+      const numericOnlyPattern = /^\d+$/
+      const numericOnlyRegExp = new RegExp(numericOnlyPattern)
       return ((typeof v === 'string' && numericOnlyRegExp.test(v)) || typeof v === 'number')
     },
 
@@ -68,8 +68,8 @@ if (!window.MTCAdmin) {
 
     applySortClass: function (headerEl) {
       // Remove sort classes from headers
-      var nodeList = document.querySelectorAll('thead tr th span')
-      for (var i = 0; i < nodeList.length; i++) {
+      const nodeList = document.querySelectorAll('thead tr th span')
+      for (let i = 0; i < nodeList.length; i++) {
         nodeList[i].className = 'sort-icon'
       }
 
@@ -98,10 +98,10 @@ if (!window.MTCAdmin) {
      */
     applySorting: function (document, tableId, config) {
       // Listen for click events and perform sorting
-      var thNodeList = document.querySelectorAll('th')
+      const thNodeList = document.querySelectorAll('th')
 
-      for (var i = 0; i < thNodeList.length; i++) {
-        var th = thNodeList[i]
+      for (let i = 0; i < thNodeList.length; i++) {
+        const th = thNodeList[i]
         window.MTCAdmin.tableSort.setUpClickHandler(th, i, tableId, config)
       }
     },
@@ -110,9 +110,9 @@ if (!window.MTCAdmin) {
       // TODO: don't sort the whole table when clicking the `tickAllCheckboxes` checkbox
       th.addEventListener('click', function () {
         window.MTCAdmin.tableSort.applySortClass(this)
-        var tbody = document.querySelector('#' + tableId + ' tbody')
-        var trNodeList = tbody.querySelectorAll('tr')
-        var trList = [].slice.call(trNodeList)
+        const tbody = document.querySelector('#' + tableId + ' tbody')
+        const trNodeList = tbody.querySelectorAll('tr')
+        const trList = [].slice.call(trNodeList)
 
         trList.sort(window.MTCAdmin.tableSort.comparer(
           i,

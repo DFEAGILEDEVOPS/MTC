@@ -5,7 +5,7 @@
 
 $(function () {
   if ($('#filterByGroup').length > 0) {
-    var groupIds = []
+    const groupIds = []
     $('#filterByGroup input:checkbox').on('click', function () {
       if ($(this).is(':checked')) {
         $(this).attr('data-checked', true)
@@ -20,7 +20,7 @@ $(function () {
       /* Sticky banner interaction */
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
       stickyBanner.positioning()
-      var displayStickyBanner = false
+      let displayStickyBanner = false
       if ($('#pupils-not-taking-checks').length > 0) {
         displayStickyBanner = pupilsNotTakingCheck.isCheckboxChecked()
       }
@@ -36,7 +36,7 @@ $(function () {
     })
 
     $('.group-count').each(function () {
-      var totalPupils = $('.' + this.id).length
+      const totalPupils = $('.' + this.id).length
       $('#' + this.id).text('(' + totalPupils + ' pupil' + (totalPupils === 1 ? '' : 's') + ')')
     })
   }

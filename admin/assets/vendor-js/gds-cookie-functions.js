@@ -5,14 +5,14 @@
   'use strict'
   window.GOVUK = window.GOVUK || {}
 
-  var DEFAULT_COOKIE_CONSENT = {
+  const DEFAULT_COOKIE_CONSENT = {
     essential: true,
     settings: false,
     usage: false,
     campaigns: false
   }
 
-  var COOKIE_CATEGORIES = {
+  const COOKIE_CATEGORIES = {
     cookies_policy: 'essential',
     seen_cookie_message: 'essential',
     cookie_preferences_set: 'essential',
@@ -68,7 +68,7 @@
   }
 
   window.GOVUK.approveAllCookieTypes = function () {
-    var approvedConsent = {
+    const approvedConsent = {
       essential: true,
       settings: true,
       usage: true,
@@ -79,8 +79,8 @@
   }
 
   window.GOVUK.getConsentCookie = function () {
-    var consentCookie = window.GOVUK.cookie('cookies_policy')
-    var consentCookieObj
+    const consentCookie = window.GOVUK.cookie('cookies_policy')
+    let consentCookieObj
 
     if (consentCookie) {
       try {
@@ -100,18 +100,18 @@
   }
 
   window.GOVUK.setConsentCookie = function (options) {
-    var cookieConsent = window.GOVUK.getConsentCookie()
+    let cookieConsent = window.GOVUK.getConsentCookie()
 
     if (!cookieConsent) {
       cookieConsent = JSON.parse(JSON.stringify(DEFAULT_COOKIE_CONSENT))
     }
 
-    for (var cookieType in options) {
+    for (const cookieType in options) {
       cookieConsent[cookieType] = options[cookieType]
 
       // Delete cookies of that type if consent being set to false
       if (!options[cookieType]) {
-        for (var cookie in COOKIE_CATEGORIES) {
+        for (const cookie in COOKIE_CATEGORIES) {
           if (COOKIE_CATEGORIES[cookie] === cookieType) {
             window.GOVUK.deleteCookie(cookie)
           }
@@ -123,7 +123,7 @@
   }
 
   window.GOVUK.checkConsentCookieCategory = function (cookieName, cookieCategory) {
-    var currentConsentCookie = window.GOVUK.getConsentCookie()
+    let currentConsentCookie = window.GOVUK.getConsentCookie()
 
     // If the consent cookie doesn't exist, but the cookie is in our known list, return true
     if (!currentConsentCookie && COOKIE_CATEGORIES[cookieName]) {
@@ -153,7 +153,7 @@
     }
 
     if (COOKIE_CATEGORIES[cookieName]) {
-      var cookieCategory = COOKIE_CATEGORIES[cookieName]
+      const cookieCategory = COOKIE_CATEGORIES[cookieName]
 
       return window.GOVUK.checkConsentCookieCategory(cookieName, cookieCategory)
     } else {
@@ -167,9 +167,9 @@
       if (typeof options === 'undefined') {
         options = {}
       }
-      var cookieString = name + '=' + value + '; path=/'
+      let cookieString = name + '=' + value + '; path=/'
       if (options.days) {
-        var date = new Date()
+        const date = new Date()
         date.setTime(date.getTime() + (options.days * 24 * 60 * 60 * 1000))
         cookieString = cookieString + '; expires=' + date.toGMTString()
       }
@@ -181,10 +181,10 @@
   }
 
   window.GOVUK.getCookie = function (name) {
-    var nameEQ = name + '='
-    var cookies = document.cookie.split(';')
-    for (var i = 0, len = cookies.length; i < len; i++) {
-      var cookie = cookies[i]
+    const nameEQ = name + '='
+    const cookies = document.cookie.split(';')
+    for (let i = 0, len = cookies.length; i < len; i++) {
+      let cookie = cookies[i]
       while (cookie.charAt(0) === ' ') {
         cookie = cookie.substring(1, cookie.length)
       }
@@ -210,12 +210,12 @@
   }
 
   window.GOVUK.deleteUnconsentedCookies = function () {
-    var currentConsent = window.GOVUK.getConsentCookie()
+    const currentConsent = window.GOVUK.getConsentCookie()
 
-    for (var cookieType in currentConsent) {
+    for (const cookieType in currentConsent) {
       // Delete cookies of that type if consent being set to false
       if (!currentConsent[cookieType]) {
-        for (var cookie in COOKIE_CATEGORIES) {
+        for (const cookie in COOKIE_CATEGORIES) {
           if (COOKIE_CATEGORIES[cookie] === cookieType) {
             window.GOVUK.deleteCookie(cookie)
           }

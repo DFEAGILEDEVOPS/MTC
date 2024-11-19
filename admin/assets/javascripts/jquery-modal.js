@@ -5,8 +5,8 @@
  */
 
 $(function () {
-  var modalForm = document.querySelector('#js-modal-form')
-  var hasModalForm = modalForm && modalForm.length > 0
+  const modalForm = document.querySelector('#js-modal-form')
+  const hasModalForm = modalForm && modalForm.length > 0
   function startModal () {
     $('.modal-link').on('click', function (e) {
       if (hasModalForm) {
@@ -35,7 +35,7 @@ $(function () {
       toggleShowHideModal(e)
     })
     $('#modal-wrapper').on('keydown', function (e) {
-      var modalBox = $('#js-modal-box')
+      const modalBox = $('#js-modal-box')
       // escape keystroke should hide the modal when it is visible
       if (e.keyCode === 27 && modalBox.hasClass('show')) {
         toggleShowHideModal(e)
@@ -70,7 +70,7 @@ $(function () {
       e.preventDefault()
     }
     $('#js-modal-overlay').toggleClass('show')
-    var modalBox = $('#js-modal-box')
+    const modalBox = $('#js-modal-box')
     if (modalBox.hasClass('show')) {
       modalBox.removeClass('show')
       $('#js-modal-link').focus()

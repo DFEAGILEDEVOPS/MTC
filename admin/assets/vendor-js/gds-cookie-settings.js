@@ -21,21 +21,20 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
       window.GOVUK.setDefaultConsentCookie()
     }
 
-    var currentConsentCookie = window.GOVUK.cookie('cookies_policy')
-    var currentConsentCookieJSON = JSON.parse(currentConsentCookie)
+    const currentConsentCookie = window.GOVUK.cookie('cookies_policy')
+    const currentConsentCookieJSON = JSON.parse(currentConsentCookie)
 
     // We don't need the essential value as this cannot be changed by the user
     delete currentConsentCookieJSON.essential
 
-    for (var cookieType in currentConsentCookieJSON) {
-      var radioButton
+    for (const cookieType in currentConsentCookieJSON) {
+      let radioButton
 
       if (currentConsentCookieJSON[cookieType]) {
         radioButton = document.querySelector('input[name=cookies-' + cookieType + '][value=on]')
       } else {
         radioButton = document.querySelector('input[name=cookies-' + cookieType + '][value=off]')
       }
-
       radioButton.checked = true
     }
   }
@@ -43,14 +42,14 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
   CookieSettings.prototype.submitSettingsForm = function (event) {
     event.preventDefault()
 
-    var formInputs = event.target.getElementsByTagName('input')
-    var options = {}
+    const formInputs = event.target.getElementsByTagName('input')
+    const options = {}
 
-    for (var i = 0; i < formInputs.length; i++) {
-      var input = formInputs[i]
+    for (let i = 0; i < formInputs.length; i++) {
+      const input = formInputs[i]
       if (input.checked) {
-        var name = input.name.replace('cookies-', '')
-        var value = input.value === 'on'
+        const name = input.name.replace('cookies-', '')
+        const value = input.value === 'on'
 
         options[name] = value
       }
@@ -67,10 +66,10 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
   }
 
   CookieSettings.prototype.fireAnalyticsEvent = function (consent) {
-    var eventLabel = ''
+    let eventLabel = ''
 
-    for (var option in consent) {
-      var optionValue = consent[option] ? 'yes' : 'no'
+    for (const option in consent) {
+      const optionValue = consent[option] ? 'yes' : 'no'
       eventLabel += option + '-' + optionValue + ' '
     }
 
@@ -80,9 +79,9 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
   }
 
   CookieSettings.prototype.showConfirmationMessage = function () {
-    var confirmationMessage = document.querySelector('div[data-cookie-confirmation]')
-    var previousPageLink = document.querySelector('.cookie-settings__prev-page')
-    var referrer = CookieSettings.prototype.getReferrerLink()
+    const confirmationMessage = document.querySelector('div[data-cookie-confirmation]')
+    const previousPageLink = document.querySelector('.cookie-settings__prev-page')
+    const referrer = CookieSettings.prototype.getReferrerLink()
 
     document.body.scrollTop = document.documentElement.scrollTop = 0
 

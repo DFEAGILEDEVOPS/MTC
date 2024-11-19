@@ -94,7 +94,7 @@ if (!window.MTCAdmin) {
     setupLinkedConfirm: function (autoCompleteContainer, linkedContainer, findValueFunc) {
       return function (event, value) {
         if (typeof value === 'undefined') return
-        var ul = $(linkedContainer).find('ul')
+        const ul = $(linkedContainer).find('ul')
         /*
          * The autocomplete library triggers the dropdown when setting the value on the linkedContainer
          * we need to hide the menu using the style attribute, wait for the dropdown to appear,

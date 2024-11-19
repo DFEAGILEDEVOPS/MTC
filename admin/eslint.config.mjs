@@ -8,7 +8,6 @@ import stylistic from '@stylistic/eslint-plugin'
 export default tseslint.config({
   name: 'TS-and-JS',
   files: ['**/*.ts', '**/*.js'],
-  // ignores: ['public/javascripts/*.js'],
   extends: [
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
@@ -34,21 +33,6 @@ export default tseslint.config({
     '@stylistic/no-multiple-empty-lines': ['error', { maxBOF: 1, max: 1, maxEOF: 0 }],
   }
 },
-// global ignores
-// https://github.com/eslint/eslint/discussions/18304#discussioncomment-9069706
-{
-  ignores: [
-    '**/*.min.js',
-    'dist/**',
-    '**/vendor.js',
-    'coverage/**',
-    'node_modules/**']
-},
-{
-  rules: {
-    'no-var': 'off'
-  }
-},
 {
   name: 'Tests only',
   files: ['**/*.spec.ts', '**/*.spec.js'],
@@ -61,13 +45,26 @@ export default tseslint.config({
 },
 {
   name: 'Browser only',
-  files: ['public/javascripts/*.js'],
+  files: ['assets/**/*.js'],
   languageOptions: {
     globals: {
-      // TODO move these to narrowed scopes?
       GOVUK: 'readonly',
       ...globals.browser,
       ...globals.jquery
     }
+  },
+  rules: {
+    'no-var': 'error'
   }
+},
+// global ignores
+// https://github.com/eslint/eslint/discussions/18304#discussioncomment-9069706
+{
+  ignores: [
+    '**/*.min.js',
+    'dist/**',
+    '**/vendor.js',
+    'coverage/**',
+    'node_modules/**',
+    'public/**/*.*']
 })

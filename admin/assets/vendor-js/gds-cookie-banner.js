@@ -36,7 +36,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
   CookieBanner.prototype.showCookieMessage = function () {
     // Show the cookie banner if not in the cookie settings page or in an iframe
     if (!this.isInCookiesPage() && !this.isInIframe()) {
-      var shouldHaveCookieMessage = (this.$module && window.GOVUK.cookie('cookies_preferences_set') !== 'true')
+      const shouldHaveCookieMessage = (this.$module && window.GOVUK.cookie('cookies_preferences_set') !== 'true')
 
       if (shouldHaveCookieMessage) {
         this.$module.style.display = 'block'

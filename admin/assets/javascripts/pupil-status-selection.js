@@ -8,9 +8,9 @@ if (!window.MTCAdmin) {
  * Pupil status selection
  */
 function toggleDetails (element) {
-  var $relatedDetailsEl = document.getElementById(`${element.id}-details`)
+  const $relatedDetailsEl = document.getElementById(`${element.id}-details`)
   if (!$relatedDetailsEl) { return false }
-  var $summary = $relatedDetailsEl.getElementsByTagName('summary').item(0)
+  const $summary = $relatedDetailsEl.getElementsByTagName('summary').item(0)
   if (!$summary) { return false }
   // We can't blindly use this `open` attribute as IE 11, which is using the polyfill, does not have it.
   // We can work around this by simulating a click on the <summary> element.
@@ -25,8 +25,8 @@ function clickHandler (event, toggleCtrlElement) {
 
 function keyboardHandler (event, toggleCtrlElement) {
   // Make it accessible for keyboard users too
-  var KEY_ENTER = 13
-  var KEY_SPACE = 32
+  const KEY_ENTER = 13
+  const KEY_SPACE = 32
 
   switch (event.which) {
     case KEY_ENTER:
