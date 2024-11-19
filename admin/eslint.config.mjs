@@ -26,7 +26,6 @@ export default tseslint.config({
     '@stylistic/space-before-function-paren': 'off',
     '@stylistic/max-statements-per-line': ['error', { max: 2 }],
     '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
-    // TODO '@stylistic/arrow-parens': ['error', 'as-needed'],
     '@stylistic/arrow-parens': 'off',
     '@stylistic/quote-props': 'off',
     '@stylistic/operator-linebreak': ['error', 'after'],
@@ -52,9 +51,6 @@ export default tseslint.config({
       ...globals.browser,
       ...globals.jquery
     }
-  },
-  rules: {
-    'no-var': 'error'
   }
 },
 // global ignores
