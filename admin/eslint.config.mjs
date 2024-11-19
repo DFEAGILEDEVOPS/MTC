@@ -8,11 +8,17 @@ import stylistic from '@stylistic/eslint-plugin'
 export default tseslint.config({
   name: 'TS-and-JS',
   files: ['**/*.ts', '**/*.js'],
+  // ignores: ['public/javascripts/*.js'],
   extends: [
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
     stylistic.configs['recommended-flat']
   ],
+  languageOptions: {
+    globals: {
+      ...globals.node
+    }
+  },
   rules: {
     '@typescript-eslint/no-require-imports': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
@@ -31,9 +37,12 @@ export default tseslint.config({
 // global ignores
 // https://github.com/eslint/eslint/discussions/18304#discussioncomment-9069706
 {
-  ignores: ['**/*.min.js', 'dist/**', '**/vendor.js',
-    'public/javascripts/*.js', 'coverage/**',
-  'node_modules/**']
+  ignores: [
+    '**/*.min.js',
+    'dist/**',
+    '**/vendor.js',
+    'coverage/**',
+    'node_modules/**']
 },
 {
   rules: {
@@ -41,14 +50,23 @@ export default tseslint.config({
   }
 },
 {
+  name: 'Tests only',
+  files: ['**/*.spec.ts', '**/*.spec.js'],
+  languageOptions: {
+    globals: {
+      ...globals.jest,
+      ...globals.jasmine
+    }
+  }
+},
+{
+  name: 'Browser only',
+  files: ['public/javascripts/*.js'],
   languageOptions: {
     globals: {
       // TODO move these to narrowed scopes?
       GOVUK: 'readonly',
-      ...globals.node,
-      ...globals.jest,
       ...globals.browser,
-      ...globals.jasmine,
       ...globals.jquery
     }
   }
