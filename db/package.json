@@ -20,7 +20,7 @@
     "command-line-args": "^5.1.1",
     "moment": "^2.29.4",
     "mssql": "^10.0.2",
-    "postgrator": "^7.2.0",
+    "postgrator": "^8.0.0",
     "ramda": "^0.28.0",
     "to-bool": "^0.0.1",
     "winston": "^3.13.0"
