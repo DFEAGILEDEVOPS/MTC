@@ -127,7 +127,7 @@ describe('isAuthenticated', () => {
       expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
     })
 
-    test('calls redirect if the role passed is an object while the request is authenticated', () => {
+    test('calls redirect if the role passed is a function while the request is authenticated', () => {
       reqParams.user = {
         id: 1,
         UserName: 'UserName',

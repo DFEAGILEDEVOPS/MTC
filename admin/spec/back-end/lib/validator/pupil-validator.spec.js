@@ -516,7 +516,7 @@ describe('pupil validator', function () {
           jest.useRealTimers()
         })
 
-        test('bug 65064', async () => {
+        test('bug 65064#2', async () => {
           // bug from 2024 live cycle
           jest
             .useFakeTimers()
@@ -536,7 +536,7 @@ describe('pupil validator', function () {
       })
     })
 
-    describe('date of birth:', () => {
+    describe('date of birth: part 2', () => {
       describe('additional 2024 tests', () => {
         const schoolId = 2
         beforeEach(() => {

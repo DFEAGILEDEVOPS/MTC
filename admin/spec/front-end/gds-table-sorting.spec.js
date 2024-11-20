@@ -73,7 +73,7 @@ describe('tableSort', function () {
       const result = window.MTCAdmin.tableSort.isNullString('value', {})
       expect(result).toBeFalsy()
     })
-    it('should return true if element is empty string', function () {
+    it('should return true if element is a hyphen', function () {
       const result = window.MTCAdmin.tableSort.isNullString('-', { sortNullsLast: true, ignoredStrings: ['-'] })
       expect(result).toBeTruthy()
     })

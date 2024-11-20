@@ -30,7 +30,7 @@ describe.skip('check-form.service', () => {
     })
 
     test('has enough forms to complete a random sample', () => {
-      expect(availableForms.length).toBe(9)
+      expect(availableForms).toHaveLength(9)
     })
 
     test('allocates 20 check forms equally when there are no seen forms', async () => {
@@ -41,7 +41,7 @@ describe.skip('check-form.service', () => {
         formsAllocated.push(f)
       }
       // Expect to have a form produced for every iteration
-      expect(formsAllocated.length).toBe(runs)
+      expect(formsAllocated).toHaveLength(runs)
 
       // Count the frequencies of the forms allocated
       const count = countForm(formsAllocated, availableForms)

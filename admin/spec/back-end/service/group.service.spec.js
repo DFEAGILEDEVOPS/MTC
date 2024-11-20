@@ -167,7 +167,7 @@ describe('group.service', () => {
       })
     })
 
-    describe('unhappy path', () => {
+    describe('unhappy path - missinv vars', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         jest.spyOn(groupDataService, 'sqlUpdate').mockResolvedValue()
@@ -197,7 +197,7 @@ describe('group.service', () => {
       })
     })
 
-    describe('unhappy path', () => {
+    describe('unhappy path - update failure', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
         jest.spyOn(groupDataService, 'sqlUpdate').mockRejectedValue(new Error('Failed to update group'))
@@ -209,9 +209,8 @@ describe('group.service', () => {
       test('should not update group', async () => {
         try {
           const schoolId = 123
-          const group = await service.update(1, groupMock, schoolId, userId)
+          await service.update(1, groupMock, schoolId, userId)
           fail('error not thrown')
-          expect(group).toEqual(groupMock)
         } catch (error) {
           expect(error.message).toBe('Failed to update group')
         }

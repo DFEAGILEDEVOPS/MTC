@@ -40,7 +40,7 @@ describe('checkFormValidator', function () {
           csvFiles: ['error1', 'error2']
         })
       })
-      test('and returns a validation error object with errors occurring from singleCheckFormValidator and multipleCheckFormsValidator validators', async () => {
+      test('returns a validation error object due to missing check form type', async () => {
         jest.spyOn(singleCheckFormValidator, 'validate').mockResolvedValue([])
         jest.spyOn(multipleCheckFormsValidator, 'validate').mockReturnValue([])
         const uploadedFiles = [{ filename: 'filename' }]

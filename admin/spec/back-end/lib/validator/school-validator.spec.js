@@ -88,7 +88,7 @@ describe('school validator', () => {
     expect(ve.get('typeOfEstablishmentCode')).toEqual('Invalid Type Of Establishment code: null')
   })
 
-  test('fails if the typeOfEstablishmentCode is null', async () => {
+  test('fails if the typeOfEstablishmentCode is empty string', async () => {
     jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
     const update = {
       name: 'Test school',

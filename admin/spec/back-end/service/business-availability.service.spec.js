@@ -9,8 +9,6 @@ describe('businessAvailabilityService', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
-  describe('#determinePinGenerationEligibility', () => {
-  })
 
   describe('#isPinGenerationAllowed', () => {
     beforeEach(() => {

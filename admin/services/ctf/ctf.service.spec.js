@@ -219,7 +219,7 @@ describe('ctfService', () => {
     })
 
     test('returns valid xml', () => {
-      expect(typeof obj === 'object')
+      expect(typeof obj === 'object').toBe(true)
     })
 
     test('has a first element called `CTfile`', () => {

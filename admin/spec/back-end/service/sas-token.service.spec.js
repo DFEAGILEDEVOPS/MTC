@@ -34,7 +34,7 @@ describe('sas-token.service', () => {
           .toThrow('Invalid expiryDate')
       })
 
-      test('throws an error if the expiryDate is not a moment object', async () => {
+      test('throws an error if the expiryDate is a date object', async () => {
         await expect(sasTokenService.generateSasToken(queueName, new Date()))
           .rejects
           .toThrow('Invalid expiryDate')
