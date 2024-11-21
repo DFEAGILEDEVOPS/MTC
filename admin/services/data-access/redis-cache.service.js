@@ -17,9 +17,14 @@ if (config.Redis.useTLS) {
 
 let redis
 
-const redisConnect = () => {
-  if (!redis) {
-    redis = new Redis(redisConfig)
+const redisConnect = async () => {
+  try {
+    if (!redis) {
+      redis = new Redis(redisConfig)
+      const info = await redis.info()
+    }
+  } catch (error) {
+    logger.alert('ALERT: REDIS CONNECTION ERROR', error)
   }
 }
 
@@ -31,7 +36,7 @@ const redisCacheService = {}
  * @returns {Promise<any>}
  */
 redisCacheService.get = async key => {
-  redisConnect()
+  await redisConnect()
   try {
     logger.debug(`REDIS (get): retrieving ${key}`)
     const cacheEntry = await redis.get(key)
@@ -50,7 +55,7 @@ redisCacheService.get = async key => {
  * @returns {Promise<void>}
  */
 redisCacheService.set = async (key, value, ttl = undefined) => {
-  redisConnect()
+  await redisConnect()
   try {
     logger.debug(`REDIS (set): adding ${key} ttl:${ttl}`)
     const storageItemString = prepareCacheEntry(value)
@@ -74,7 +79,7 @@ redisCacheService.drop = async (cacheKeys = []) => {
   if (Array.isArray(cacheKeys) && cacheKeys.length === 0) {
     return false
   }
-  redisConnect()
+  await redisConnect()
   if (typeof cacheKeys === 'string') {
     cacheKeys = [cacheKeys]
   }
@@ -103,7 +108,7 @@ redisCacheService.setMany = async (items) => {
   if (!Array.isArray(items)) {
     throw new Error('items is not an array')
   }
-  redisConnect()
+  await redisConnect()
   const multi = redis.multi()
   for (let index = 0; index < items.length; index++) {
     const item = items[index]
@@ -137,7 +142,7 @@ redisCacheService.getMany = async (keys) => {
   if (!Array.isArray(keys)) {
     throw new Error('keys is not an array')
   }
-  redisConnect()
+  await redisConnect()
   const rawData = await redis.mget(...keys)
   const data = rawData.map(raw => unwrap(raw))
   logger.debug(`(redis) getMany ${keys.join(', ')}`)
@@ -157,7 +162,7 @@ redisCacheService.getTtl = async (key) => {
   if (key.length === 0) {
     throw new Error('Invalid key length')
   }
-  redisConnect()
+  await redisConnect()
   return await redis.ttl(key)
 }
 
@@ -168,7 +173,7 @@ redisCacheService.getTtl = async (key) => {
  * @return {Promise<void>}
  */
 redisCacheService.dropByPrefix = async (prefix) => {
-  redisConnect()
+  await redisConnect()
   const cmd = `for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`
   await redis.eval(cmd, 0)
 }
