@@ -1,3 +1,4 @@
+/* global googleTrackingId dataLayer args */
 document.addEventListener('DOMContentLoaded', function () {
   // Disable tracking if the opt-out cookie exists.
   // To disable analytics: window['ga-disable-UA-XXXXX-Y'] = true;

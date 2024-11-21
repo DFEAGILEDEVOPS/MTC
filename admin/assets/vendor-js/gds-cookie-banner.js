@@ -5,7 +5,9 @@ window.GOVUK = window.GOVUK || {}
 window.GOVUK.Modules = window.GOVUK.Modules || {};
 
 (function (Modules) {
-  function CookieBanner () { }
+  function CookieBanner () {
+    // constructor
+  }
 
   CookieBanner.prototype.start = function ($module) {
     this.$module = $module[0]

@@ -191,8 +191,7 @@ async function generateParams (tableName, data) {
 
 function addParamsToRequestSimple (params, request) {
   if (params) {
-    for (let index = 0; index < params.length; index++) {
-      const param = params[index]
+    for (const param of params) {
       // TODO support other options
       request.input(param.name, param.type, param.value)
     }
@@ -206,8 +205,7 @@ function addParamsToRequestSimple (params, request) {
  */
 function addParamsToRequest (params, request) {
   if (params) {
-    for (let index = 0; index < params.length; index++) {
-      const param = params[index]
+    for (const param of params) {
       param.value = convertMomentToJsDate(param.value)
       if (!param.type) {
         throw new Error('parameter type invalid')

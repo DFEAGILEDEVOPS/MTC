@@ -98,17 +98,15 @@ describe('azure-table.data.service', () => {
         actualTables.push(table.name)
       }
       const failures = []
-      for (let index = 0; index < tableNames.length; index++) {
-        const table = tableNames[index]
+      for (const table of tableNames) {
         if (!RA.included(actualTables, table)) {
           failures.push(table)
         }
       }
       if (failures.length > 0) {
         let message = 'the following tables were not found...'
-        for (let index = 0; index < failures.length; index++) {
-          const table = failures[index]
-          message += `\n-${table}`
+        for (const failure of failures) {
+          message += `\n-${failure}`
         }
         fail(message)
       }

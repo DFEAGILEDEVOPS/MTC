@@ -68,7 +68,9 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
         }
         checkFormIntegerCount += row.length
       })
-      .on('data', () => {})
+      .on('data', () => {
+        // do nothing
+      })
       .on('end', () => resolve()
       )
       .on('error', error => reject(error)

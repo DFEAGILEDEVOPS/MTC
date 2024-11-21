@@ -162,7 +162,7 @@ describe('check-start.service', () => {
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').mockResolvedValue([])
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
       jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
-      // @ts-ignore
+      // @ts-ignore ramda doesnt work well with types
       jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
       jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis
       jest.spyOn(configService, 'getBatchConfig').mockResolvedValue(

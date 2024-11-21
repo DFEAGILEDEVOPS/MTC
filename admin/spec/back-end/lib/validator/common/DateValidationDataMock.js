@@ -10,7 +10,9 @@ module.exports = {
                   dayInvalidChars: () => ({
                     monthInvalidChars: () => ({
                       yearInvalidChars: () => ({
-                        dateInThePast: () => {}
+                        dateInThePast: () => {
+                          // mock no-op
+                        }
                       })
                     })
                   })

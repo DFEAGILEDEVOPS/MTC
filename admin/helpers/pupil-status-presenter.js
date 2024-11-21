@@ -21,7 +21,7 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
   pupilStatusViewData.pupilsRequireAction = R.filter(p => R.includes(p.status, ['Error in processing', overdueLoggedIn, overdueStarted], p), pupilStatusData)
 
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
-    // @ts-ignore
+    // @ts-ignore ramda doesnt work well with types
     R.filter(p => R.includes(p.status, [notStarted, 'Restart'], p), pupilStatusData),
     ['Restart'],
     'Restart applied'
@@ -29,7 +29,7 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
 
   pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Signed in', 'Check processing', 'Check in progress'], p), pupilStatusData)
 
-  // @ts-ignore
+  // @ts-ignore ramda doesnt work well with types
   pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p) || !!p.reason, pupilStatusData)
 
   pupilStatusViewData.pupilsRequireActionCount = pupilStatusViewData.pupilsRequireAction.length || 0

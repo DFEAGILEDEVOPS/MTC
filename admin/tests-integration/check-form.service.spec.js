@@ -57,8 +57,8 @@ describe.skip('check-form.service', () => {
 
 function countForm (formsAllocated, availableForms) {
   const count = {}
-  for (let i = 0; i < formsAllocated.length; i++) {
-    const formId = formsAllocated[i].id
+  for (const form of formsAllocated) {
+    const formId = form.id
     count[formId] = count[formId] ? count[formId] + 1 : 1
   }
 

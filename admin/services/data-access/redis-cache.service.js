@@ -105,8 +105,7 @@ redisCacheService.setMany = async (items) => {
   }
   redisConnect()
   const multi = redis.multi()
-  for (let index = 0; index < items.length; index++) {
-    const item = items[index]
+  for (const item of items) {
     const storageItem = prepareCacheEntry(item.value)
     if (item.ttl !== undefined) {
       logger.debug(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)

@@ -132,7 +132,7 @@ const checkStartService = {
 
     try {
       // Create and return checks via spCreateChecks
-      // @ts-ignore
+      // @ts-ignore ramda doesnt work well with types
       newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
     } catch (error) {
       const pinGenerationFallbackEnabled = config.FeatureToggles.schoolPinGenFallbackEnabled
@@ -142,7 +142,7 @@ const checkStartService = {
         const schoolPin = await schoolPinService.generateSchoolPin(schoolId)
         logger.warn(`pin generated via http service for school.id:${schoolId} pin:${schoolPin}`)
         logger.warn(`2nd attempt at creating checks for school.id:${schoolId}...`)
-        // @ts-ignore
+        // @ts-ignore ramda doesnt work well with types
         newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
       } else {
         // some other error occured...

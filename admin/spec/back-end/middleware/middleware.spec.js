@@ -47,7 +47,9 @@ describe('availablility/middleware', () => {
         role: roles.teacher
       }
       const req = httpMocks.createRequest(reqParams)
-      req.breadcrumbs = () => {}
+      req.breadcrumbs = () => {
+        // no-op
+      }
       await middleware.isPostLiveOrLaterCheckPhase(req, res, next)
       expect(next).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()

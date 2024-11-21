@@ -3,7 +3,9 @@ window.GOVUK = window.GOVUK || {}
 window.GOVUK.Modules = window.GOVUK.Modules || {};
 
 (function (Modules) {
-  function CookieSettings () {}
+  function CookieSettings () {
+    // constructor
+  }
 
   CookieSettings.prototype.start = function ($module) {
     this.$module = $module[0]
