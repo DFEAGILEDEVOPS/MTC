@@ -1,0 +1,15 @@
+{
+  "name": "66011-storage-queue-bug",
+  "version": "1.0.0",
+  "description": "explore bug with storage queue messages not posting",
+  "main": "index.js",
+  "author": "Guy Harwood",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/storage-queue": "^12.25.0",
+    "dotenv": "^16.4.5"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
