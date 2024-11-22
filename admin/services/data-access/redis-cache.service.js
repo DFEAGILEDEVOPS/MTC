@@ -21,7 +21,8 @@ const redisConnect = async () => {
   try {
     if (!redis) {
       redis = new Redis(redisConfig)
-      const info = await redis.info()
+      // Make a call to check the config is valid.  This is only done once.
+      await redis.info()
     }
   } catch (error) {
     logger.alert('ALERT: REDIS CONNECTION ERROR', error)
