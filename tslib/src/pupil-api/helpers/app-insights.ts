@@ -4,7 +4,7 @@ import { isNil } from 'ramda'
 
 const appInsights = require('applicationinsights')
 const cloudRoleName = 'Pupil-API'
-let appInsightsSetup = false
+let isAppInsightsSetup = false
 
 const connectionString = config.Logging.ApplicationInsights.ConnectionString
 if (isNil(connectionString)) {
@@ -27,14 +27,14 @@ if (isNil(connectionString)) {
     .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
     .enableWebInstrumentation(false)
 
-  appInsightsSetup = true
+  isAppInsightsSetup = true
   appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
   appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
 }
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
-    if (appInsightsSetup === false) {
+    if (!isAppInsightsSetup) {
       return
     }
     appInsights.start()
