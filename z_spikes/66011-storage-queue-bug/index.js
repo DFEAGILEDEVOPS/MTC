@@ -8,8 +8,9 @@ async function sendMessage() {
   const queueClient = queueServiceClient.getQueueClient(queueName);
   await queueClient.createIfNotExists();
   const permissions = new QueueSASPermissions()
-  const startDate = new Date(2024, 10, 1)
-  const endDate = new Date(2024, 10, 25)
+  const startDate = new Date()
+  const endDate = new Date()
+  endDate.setDate(startDate.getDate() + 2);
   console.log(`GUY: startDate: ${startDate}, endDate: ${endDate}`)
   permissions.add = true
   const sasUrl = queueClient.generateSasUrl({
