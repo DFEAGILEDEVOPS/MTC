@@ -1,7 +1,7 @@
 
 And(/^I am on the add multiple pupil page$/) do
-  step 'I am on the Pupil Register page'
-  pupil_register_page.add_multiple_pupil.click
+  sleep 2
+  add_multiple_pupil_page.load
   @page = add_multiple_pupil_page
 end
 
@@ -71,6 +71,7 @@ And(/^I can see link to download Error File$/) do
 end
 
 When(/^I download the Multiple Pupil upload CSV file with error$/) do
+  sleep 2
   page.execute_script("window.downloadCSVXHR = function(){ var url = '#{ENV["ADMIN_BASE_URL"]}/pupil-register/pupil/download-error-csv'; return getFile(url); }")
   page.execute_script("window.getFile = function(url) { var xhr = new XMLHttpRequest();  xhr.open('GET', url, false);  xhr.send(null); return xhr.responseText; }")
   data = page.evaluate_script("downloadCSVXHR()")
