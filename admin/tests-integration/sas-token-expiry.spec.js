@@ -1,5 +1,5 @@
 'use strict'
-/* global describe test expect fail afterAll beforeEach */
+/* global describe test expect afterAll beforeEach */
 
 const moment = require('moment')
 const redisKeyService = require('../services/redis-key.service')
@@ -23,7 +23,7 @@ async function postMessageToQueue (payload, queueUrl, sasTokenUrl) {
   const config = {
     headers: {
       'Content-Type': 'application/xml',
-      'Accept': 'application/xml, text/xml',
+      Accept: 'application/xml, text/xml',
       'x-ms-date': (new Date()).toISOString()
     },
     method: 'POST'
@@ -38,7 +38,6 @@ describe('sas-token-expiry', () => {
     await redisCacheService.drop(queueKey)
   })
   afterAll(async () => { await redisCacheService.disconnect() })
-
 
   test('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
