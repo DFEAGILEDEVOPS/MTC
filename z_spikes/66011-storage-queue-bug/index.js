@@ -1,5 +1,5 @@
 const { QueueServiceClient, QueueSASPermissions } = require('@azure/storage-queue');
-const queueName = 'guy-poc-66011-bug';
+const queueName = 'spike-66011-bug';
 // add dotenv to load environment variables
 require('dotenv').config();
 
@@ -11,7 +11,7 @@ async function sendMessage() {
   const startDate = new Date()
   const endDate = new Date()
   endDate.setDate(startDate.getDate() + 2);
-  console.log(`GUY: startDate: ${startDate}, endDate: ${endDate}`)
+  console.log(`startDate: ${startDate}, endDate: ${endDate}`)
   permissions.add = true
   const sasUrl = queueClient.generateSasUrl({
     permissions,
@@ -25,14 +25,13 @@ async function sendMessage() {
       queueName
     }
   console.dir(tokenObject)
-  const fullUrl = getFullUrl(tokenObject)
-  console.log(`GUY: fullUrl: ${fullUrl}`)
-  const newClient = new QueueServiceClient(fullUrl)
+  const queueSasUrl = buildSasUrlFromToken(tokenObject)
+  const newClient = new QueueServiceClient(queueSasUrl)
   const newQueueClient = newClient.getQueueClient(queueName)
   await newQueueClient.sendMessage('Hello, world!');
 }
 
-const getFullUrl = (token) => {
+const buildSasUrlFromToken = (token) => {
   return `${token.url.replace(`/${queueName}`, '')}?${token.token}`
 }
 

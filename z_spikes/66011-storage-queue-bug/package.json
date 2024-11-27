@@ -6,7 +6,7 @@
   "author": "Guy Harwood",
   "license": "MIT",
   "dependencies": {
-    "@azure/storage-queue": "^12.25.0",
+    "@azure/storage-queue": "12.24.0",
     "dotenv": "^16.4.5"
   },
   "scripts": {

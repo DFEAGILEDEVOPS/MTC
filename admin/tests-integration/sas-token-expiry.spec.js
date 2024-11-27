@@ -2,12 +2,11 @@
 /* global describe test expect fail afterAll beforeEach */
 
 const moment = require('moment')
-
 const redisKeyService = require('../services/redis-key.service')
-const { QueueServiceClient } = require('@azure/storage-queue')
 const queueNameService = require('../services/storage-queue-name-service')
 const sut = require('../services/sas-token.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
+const axios = require('axios')
 
 const delay = (ms) => {
   return new Promise(function (resolve) {
@@ -15,8 +14,22 @@ const delay = (ms) => {
   })
 }
 
-const getFullUrl = (token) => {
-  return `${token.url.replace(`/${queueNameService.NAMES.PUPIL_FEEDBACK}`, '')}?${token.token}`
+async function postMessageToQueue (payload, queueUrl, sasTokenUrl) {
+  const messagePostUrl = `${queueUrl}/messages?messagettl=60&${sasTokenUrl}`
+  const stringifiedPayload = JSON.stringify(payload)
+  const encodedMessage = Buffer.from(stringifiedPayload, 'utf8').toString('base64')
+  const wrappedXmlMessage = `<?xml version="1.0" encoding="utf-8"?>
+                              <QueueMessage><MessageText>${encodedMessage}</MessageText></QueueMessage>`
+  const config = {
+    headers: {
+      'Content-Type': 'application/xml',
+      'Accept': 'application/xml, text/xml',
+      'x-ms-date': (new Date()).toISOString()
+    },
+    method: 'POST'
+  }
+  const response = await axios.post(messagePostUrl, wrappedXmlMessage, config)
+  return response.data
 }
 
 describe('sas-token-expiry', () => {
@@ -26,16 +39,15 @@ describe('sas-token-expiry', () => {
   })
   afterAll(async () => { await redisCacheService.disconnect() })
 
+
   test('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
     const sasToken = await sut.generateSasToken(
       queueNameService.NAMES.PUPIL_FEEDBACK,
       sasExpiryDate
     )
-    const queueServiceUrl = getFullUrl(sasToken)
-    const queueServiceClient = new QueueServiceClient(queueServiceUrl)
-    const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.PUPIL_FEEDBACK)
-    await queueClient.sendMessage('message')
+    const message = { message: 'integration test message' }
+    await postMessageToQueue(message, sasToken.url, sasToken.token)
   })
 
   test('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
@@ -45,15 +57,14 @@ describe('sas-token-expiry', () => {
       sasExpiryDate
     )
     try {
-      const queueServiceUrl = getFullUrl(sasToken)
-      const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       await delay(3000)
-      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.PUPIL_FEEDBACK)
-      await queueClient.sendMessage('message 1')
-      fail('message should have been rejected due to expired token')
+      const message = {
+        message: 'integration test message'
+      }
+      await postMessageToQueue(message, sasToken.url, sasToken.token)
+      throw new Error('message should have been rejected due to expired token')
     } catch (error) {
-      console.log(error.message)
-      expect(error.statusCode).toBe(403)
+      expect(error.status).toBe(403)
     }
   })
 })
