@@ -12,6 +12,7 @@ import {
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
 import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './transformer-models'
+const RA = require('ramda-adjunct')
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
@@ -166,7 +167,7 @@ export class ReportLine {
   }
 
   private getAccessArrangements (): string {
-    if (this.checkConfig === null && this._inputAssistant === null) {
+    if (this._checkConfig === null && this._inputAssistant === null) {
       return ''
     }
 
@@ -193,7 +194,7 @@ export class ReportLine {
       if (map[k] === 4 && this._inputAssistant !== null) {
         arrangements.push('[4]')
         // @ts-ignore - ignore, `map` is badly typed
-      } else if (this.checkConfig[k] === true) {
+      } else if (this._checkConfig[k] === true) {
         // @ts-ignore - ignore, we know that the key is `true`, see `map`
         const s = `[${map[k]}]`
         arrangements.push(s)
@@ -241,7 +242,7 @@ export class ReportLine {
     if (!Array.isArray(this.answers)) {
       return null
     }
-    const lastQuestionNumber = this.checkForm?.items.length
+    const lastQuestionNumber = this._checkForm?.items.length
     if (lastQuestionNumber === undefined) {
       return null
     }
@@ -327,6 +328,17 @@ export class ReportLine {
 
   private getPupilStatus (): string {
     if (this._pupil.notTakingCheckCode !== null) {
+      if (this._pupil.notTakingCheckCode === 'ANLLQ' || this._pupil.notTakingCheckCode === 'ANLLH') {
+        // For the maladmin codes we should provide the pupil status that they had before the annullment was made.  If they took a check it will still be linked by
+        // pupil.currentCheckId. #58891.
+        if (RA.isPositive(this._pupil.currentCheckId) as boolean &&
+          !this._pupil.restartAvailable &&
+          this._check?.complete === true) {
+          return 'Complete'
+        } else {
+          return 'Incomplete'
+        }
+      }
       return 'Not taking the Check'
     }
 
@@ -391,8 +403,10 @@ export class ReportLine {
     this._report.LAnum = this.school.laCode
     this._report.AccessArr = this.getAccessArrangements()
     this._report.IsEdited = this.pupil.isEdited
-    // Check data
-    if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q') {
+    // Add check data to the report:
+    // 1. if there is a check
+    // 2. if they did a check but it was annulled.
+    if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q' || this._report.ReasonNotTakingCheck === 'H') {
       this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
       this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
       this._report.AttemptID = this.getAttemptId()
