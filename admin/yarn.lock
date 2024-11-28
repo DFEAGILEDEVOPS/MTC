@@ -4715,10 +4715,10 @@ connect-flash@^0.1.1:
   resolved "https://registry.yarnpkg.com/connect-flash/-/connect-flash-0.1.1.tgz#d8630f26d95a7f851f9956b1e8cc6732f3b6aa30"
   integrity sha512-2rcfELQt/ZMP+SM/pG8PyhJRaLKp+6Hk2IUBNkEit09X+vwn3QsAL3ZbYtxUn7NVPzbMTSLRDhqe0B/eh30RYA==
 
-connect-redis@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-7.1.1.tgz#b78f91eb6d7509ae9e819bb362b94ba459072a1d"
-  integrity sha512-M+z7alnCJiuzKa8/1qAYdGUXHYfDnLolOGAUjOioB07pP39qxjG+X9ibsud7qUBc4jMV5Mcy3ugGv8eFcgamJQ==
+connect-redis@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-8.0.0.tgz#74f851332e2ce08a1293b484fd0220b45c1a1e15"
+  integrity sha512-co5fbIPLslji7aCLvXb2RuZiqx+7DpPhf9Co7j/c+RmPYi82zDDKnEdEQCiK/stY2gJ7R+nfsgqq95iFZjK5RQ==
 
 connect@^3.7.0:
   version "3.7.0"
