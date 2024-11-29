@@ -32,13 +32,19 @@ Feature:
     Then I should see a record for the pupil in the ps report table
     And I should see the correct code for an annulled pupil
 
-  Scenario: Form mark is null for Pupils who have been annulled
+  Scenario Outline: Form mark is null for Pupils who have been annulled
     Given I have completed the check
     When the data sync and ps report function has run
     Then I should see a record for the pupil in the ps report table
-    But the pupil has been annulled
+    But the pupil has been annulled for the <reason>
     When the data sync and ps report function has run
     And I should see that form mark is set to null
+    But the question level information is populated correctly
+
+    Examples:
+      | reason         |
+      | maladmin       |
+      | pupil_cheating |
 
   Scenario: Pupils who have had their annulled removed return to previous state
     Given I have removed a pupils annulment
