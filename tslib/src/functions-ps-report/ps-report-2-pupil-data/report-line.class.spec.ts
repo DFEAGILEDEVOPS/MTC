@@ -1,7 +1,8 @@
 import { ReportLine } from './report-line.class'
 import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-check'
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
-import { pupil as pupilAnnulled } from './mocks/pupil-not-attending-annulled'
+import { pupil as pupilAnnulledMaladmin } from './mocks/pupil-not-attending-annulled'
+import { pupil as pupilAnnulledCheating } from './mocks/pupil-not-attending-annulled-cheating'
 import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
 import { pupil as pupilIncompleteCorrupt } from './mocks/pupil-not-attending-corrupt'
 import { pupil as pupilCompleteRestartAvailableCorrupt } from './mocks/pupil-complete-and-restart-available-corrupt'
@@ -815,8 +816,9 @@ describe('report line class', () => {
     })
   })
 
-  describe('pupil is marked as annulled', () => {
+  describe('pupil is marked as annulled for maladmin after completing a check', () => {
     let sut: ReportLine
+
     beforeEach(() => {
       sut = new ReportLine(
         answers,
@@ -825,7 +827,7 @@ describe('report line class', () => {
         checkForm,
         device,
         events,
-        pupilAnnulled,
+        pupilAnnulledMaladmin,
         school,
         null
       )
@@ -854,9 +856,55 @@ describe('report line class', () => {
       expect(out.ReasonNotTakingCheck).toBe('Q')
     })
 
-    test('the pupil status is set to Not taking the Check', () => {
+    test('the pupil status is set to whatever it was before it was annulled', () => {
       const out = sut.transform()
-      expect(out.PupilStatus).toBe('Not taking the Check')
+      expect(out.PupilStatus).toMatch(/^(Complete|Incomplete)$/)
+    })
+  })
+
+  describe('pupil is marked as annulled cheating after completing a check', () => {
+    let sut: ReportLine
+
+    beforeEach(() => {
+      sut = new ReportLine(
+        answers,
+        check,
+        checkConfig,
+        checkForm,
+        device,
+        events,
+        pupilAnnulledCheating,
+        school,
+        null
+      )
+    })
+
+    test('it is defined', () => {
+      expect(sut).toBeDefined()
+    })
+
+    test('the check data is initialised', () => {
+      const out = sut.transform()
+      expect(out.PauseLength).not.toBeNull()
+      expect(out.QDisplayTime).not.toBeNull()
+      expect(out.AttemptID).not.toBeNull()
+      expect(out.FormID).not.toBeNull()
+      expect(out.TestDate).not.toBeNull()
+      expect(out.TimeStart).not.toBeNull()
+      expect(out.FormMark).toBeNull()
+      expect(out.BrowserType).not.toBeNull()
+      expect(out.DeviceID).not.toBeNull()
+      expect(out.answers).not.toHaveLength(0)
+    })
+
+    test('the pupil has the annulled code', () => {
+      const out = sut.transform()
+      expect(out.ReasonNotTakingCheck).toBe('H')
+    })
+
+    test('the pupil status is set to whatever it was before it was annulled', () => {
+      const out = sut.transform()
+      expect(out.PupilStatus).toMatch(/^(Complete|Incomplete)$/)
     })
   })
 

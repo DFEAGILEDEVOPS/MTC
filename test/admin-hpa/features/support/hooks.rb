@@ -167,6 +167,7 @@ Before("@hdf_hook") do
   SqlDbHelper.delete_pupils_not_taking_check(@school['id'])
   SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
   step "I have signed in with #{@username}"
+  sleep 2
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
   @page = pupil_reason_page
