@@ -46,35 +46,6 @@ describe('pupil-upload service', () => {
     })
   })
 
-  xdescribe('generates csv validation errors', () => {
-    beforeEach(() => {
-      jest.spyOn(validateCSVService, 'process').mockResolvedValue({
-        csvData: [['test', 'test', 'test', 'test', 'test', 'test', 'Error'],
-          ['test', 'test', 'test', 'test', 'test', 'test', 'Error']]
-      })
-    })
-
-    describe('on csv error', () => {
-      beforeEach(() => {
-        jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ file: { name: 'test.csv' } })
-      })
-
-      test('returns error csv file if csv has errors', async () => {
-        const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
-        expect(pr.csvErrorFile).toBe('test.csv')
-      })
-    })
-
-    describe('on csv generation error', () => {
-      jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ error: 'error' })
-    })
-
-    test('returns error csv file if csv has errors', async () => {
-      const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
-      expect(pr.error).toBe('error')
-    })
-  })
-
   describe('attempts to save csv errors', () => {
     beforeEach(() => {
       jest.spyOn(validateCSVService, 'process').mockResolvedValue({
