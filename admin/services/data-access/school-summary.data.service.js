@@ -36,7 +36,6 @@ service.getRegisterData = async function getRegisterData (schoolId) {
     WHERE p.school_id = @schoolId
     GROUP BY p.school_id`
   const result = await sqlService.readonlyQuery(sql, [schoolIdParam])
-  // @ts-ignore
   return R.head(result)
 }
 

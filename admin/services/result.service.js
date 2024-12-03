@@ -124,7 +124,6 @@ const resultService = {
     return {
       generatedAt: moment(),
       schoolId,
-      // @ts-ignore - ignore
       pupils: pupilIdentificationFlagService.sortAndAddIdentificationFlags(this.createPupilData(data))
     }
   },

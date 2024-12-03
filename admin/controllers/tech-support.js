@@ -256,7 +256,6 @@ const controller = {
       } else {
         // Key is not allowed / not found
         const error = new Error('Invalid key')
-        // @ts-ignore
         error.status = 404
         return next(error)
       }

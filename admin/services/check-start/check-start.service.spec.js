@@ -208,7 +208,6 @@ describe('check-start.service', () => {
       config.FeatureToggles.schoolPinGenFallbackEnabled = true
       jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockImplementation(() => {
         const err = new Error()
-        // @ts-ignore
         err.number = 49999
         throw err
       })

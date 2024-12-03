@@ -33,6 +33,7 @@ module.exports = tseslint.config({
     // migrated rules...
     'no-return-await': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
+    '@typescript-eslint/prefer-regexp-exec': 'off',
     '@typescript-eslint/return-await': ['error', 'in-try-catch'],
     '@typescript-eslint/prefer-ts-expect-error': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

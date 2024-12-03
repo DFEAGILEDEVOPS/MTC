@@ -25,7 +25,6 @@ pupilAccessArrangementsService.getPupils = async (schoolId) => {
     // Remove reason require text from string
     const requiredTextIndex = val.description.indexOf(' (reason required)')
     const description = requiredTextIndex !== -1 ? val.description.slice(0, requiredTextIndex) : val.description
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     acc[val.urlSlug].arrangements && acc[val.urlSlug].arrangements.push(description)
     return acc
   }, {})
