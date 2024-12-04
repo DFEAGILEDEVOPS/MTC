@@ -169,8 +169,7 @@ module.exports = {
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true,
     schoolPinGenFallbackEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK) : false,
-    schoolResultFetchFromDbEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB) : true,
-    checkSubmissionApi: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_CHECK_SUBMISSION_API') ? toBool(process.env.FEATURE_TOGGLE_CHECK_SUBMISSION_API) : true
+    schoolResultFetchFromDbEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB) : true
   },
   SchoolPinGeneratorFunction: {
     FunctionUrl: process.env.SCHOOL_PIN_GEN_FUNCTION_URL || 'http://localhost:7071/api/school-pin-http-service'

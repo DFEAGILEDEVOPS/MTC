@@ -462,10 +462,6 @@ And(/^this is code is stored$/) do
   @original_pupil_attendance = calculate_not_taking_reason_code(attendance_code_name['reason'])
 end
 
-And(/^the pupil has been annulled$/) do
-  annul_pupil(@details_hash[:upn], @school_id)
-end
-
 And(/^I should see that form mark is set to null$/) do
   pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
   filename = JSON.parse(SqlDbHelper.get_ps_report_job['meta'])['filename']
@@ -642,4 +638,63 @@ Given(/^I have completed the check with a pupil who has non utf8 characters in t
   @check_code = @storage_pupil['checkCode']
   p @check_code
   @device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
+end
+
+But(/^the question level information is populated correctly$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  reason = SqlDbHelper.get_attendance_code_for_a_pupil(pupil_details['id'])
+  attendance_code_name = SqlDbHelper.check_attendance_code(reason['attendanceCode_id']) unless reason.nil?
+  @check_details = SqlDbHelper.get_all_pupil_checks(pupil_details['id']).sort_by { |hsh| hsh['createdAt'] }.last
+  check_config = JSON.parse SqlDbHelper.get_check_config_data(@check_details['id'])['payload'] unless @check_details.nil?
+  wait_until(ENV['WAIT_TIME'].to_i, 20) { !SqlDbHelper.get_check_result(@check_details['id']).nil? } unless @check_details.nil?
+  check_result = SqlDbHelper.get_check_result(@check_details['id']) unless @check_details.nil?
+  wait_until(ENV['WAIT_TIME'].to_i, 20) { !SqlDbHelper.get_answers(check_result['id']).nil? } unless @check_details.nil?
+  check_answers = SqlDbHelper.get_answers(check_result['id']) unless @check_details.nil?
+  check_events = SqlDbHelper.get_event_types_for_check(check_result['id']) unless @check_details.nil?
+  check_inputs = SqlDbHelper.get_input_data(check_result['id']) unless @check_details.nil?
+  filename = JSON.parse(SqlDbHelper.get_ps_report_job['meta'])['filename']
+  filename.slice!('ps-report-staging-')
+  filename.slice!('.csv')
+  ps_report_table_name = "psychometricReport_#{filename.gsub('-', '_')}"
+  wait_until(ENV['WAIT_TIME'].to_i, 20) { !SqlDbHelper.get_ps_record_for_pupil(ps_report_table_name, pupil_details['id']).nil? }
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(ps_report_table_name, pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  25.times do |index|
+    question = index + 1
+    expect(ps_report_record["Q#{question}ID"]).to eql check_inputs.nil? ? nil : check_inputs.find { |inputs| inputs["questionNumber"] == question }["question"]
+    expect(ps_report_record["Q#{question}Response"]).to eql check_answers.nil? ? nil : check_answers.find { |answer| answer["questionNumber"] == question }["answer"]
+    input_methods = check_inputs.select { |inputs| inputs["questionNumber"] == question }.map { |input| input['name'] }.uniq unless check_inputs.nil?
+    expect(ps_report_record["Q#{question}InputMethods"]).to eql check_inputs.nil? ? nil : input_methods.size > 1 ? 'x' : input_methods.first.first.downcase
+    expect(ps_report_record["Q#{question}K"]).to eql check_inputs.nil? ? nil : check_inputs.select { |input| input["questionNumber"] == question }.map { |input| input["name"].first.downcase + "[#{input["userInput"]}]" }.join(", ")
+    expect(ps_report_record["Q#{question}Sco"]).to eql check_answers.nil? ? nil : check_answers.find { |answer| answer["questionNumber"] == question }["isCorrect"] ? 1 : 0
+    first_entry_time = check_inputs.nil? ? nil : check_inputs.select { |inputs| inputs["questionNumber"] == question }.reject { |input| input["userInput"] == 'Enter' }.sort_by { |h| h["inputBrowserTimestamp"] }.first["inputBrowserTimestamp"]
+    expect(ps_report_record["Q#{question}tFirstKey"]).to eql first_entry_time
+    last_entry_time = check_inputs.nil? ? nil : check_inputs.select { |inputs| inputs["questionNumber"] == question }.reject { |input| input["userInput"] == 'Enter' }.sort_by { |h| h["inputBrowserTimestamp"] }.last["inputBrowserTimestamp"]
+    expect(ps_report_record["Q#{question}tLastKey"]).to eql last_entry_time
+    expect(ps_report_record["Q#{question}ResponseTime"]).to eql check_inputs.nil? ? nil : last_entry_time - first_entry_time
+    timeout = check_inputs.nil? ? nil : check_inputs.select { |input| input["questionNumber"] == question }.find { |input| input["userInput"].eql? "Enter" } ? 0 : 1
+    expect(ps_report_record["Q#{question}TimeOut"]).to eql timeout
+    (expect(ps_report_record["Q#{question}TimeOutResponse"]).to eql (timeout == nil || timeout == 0) ? 0 : 1) if !timeout.nil?
+    (expect(ps_report_record["Q#{question}TimeOutResponse"]).to eql nil) if timeout.nil?
+    (expect(ps_report_record["Q#{question}TimeOutSco"]).to eql (timeout == nil || timeout == 0) ? 0 : 1) if !timeout.nil?
+    (expect(ps_report_record["Q#{question}TimeOutSco"]).to eql nil) if timeout.nil?
+    question_load_time = check_events.nil? ? nil : check_events.select { |events| events["questionNumber"] == question }.find { |event| event['eventType'] == 'QuestionTimerStarted' }['browserTimestamp']
+    expect(ps_report_record["Q#{question}tLoad"]).to eql question_load_time
+    expect(ps_report_record["Q#{question}OverallTime"]).to eql check_inputs.nil? ? nil : last_entry_time - question_load_time
+    expect(ps_report_record["Q#{question}RecallTime"]).to eql check_inputs.nil? ? nil : first_entry_time - question_load_time
+    reader_started = check_events.nil? ? nil : check_events.find { |event| event['eventType'] == 'QuestionReadingStarted' }.nil? ? nil : check_events.find { |event| event['eventType'] == 'QuestionReadingStarted' }['browserTimestamp']
+    expect(ps_report_record["Q#{question}ReaderStart"]).to eql reader_started
+    reader_ended = check_events.nil? ? nil : check_events.find { |event| event['eventType'] == 'QuestionReadingEnded' }.nil? ? nil : check_events.find { |event| event['eventType'] == 'QuestionReadingEnded' }['browserTimestamp']
+    expect(ps_report_record["Q#{question}ReaderEnd"]).to eql reader_ended
+  end
+  expect(@check_details['checkCode']).to eql @third_check_code unless @third_check_code.nil?
+  expect(@before_taking_check).to_not eql ps_report_record["updatedAt"] unless @before_taking_check.nil?
+end
+
+But(/^the pupil has been annulled for the (.*)$/) do |reason|
+  annul_pupil(@details_hash[:upn], @school_id, reason)
+end
+
+And(/^the pupil has been annulled$/) do
+  annul_pupil(@details_hash[:upn], @school_id)
 end
