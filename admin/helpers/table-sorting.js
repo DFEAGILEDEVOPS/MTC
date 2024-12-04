@@ -3,7 +3,7 @@ const numericOnlyRegExp = new RegExp(numericOnlyPattern)
 const R = require('ramda')
 
 const firstTruthy = ([head, ...tail]) => R.reduce(R.either, head, tail)
-// @ts-ignore
+// @ts-ignore ramda doesnt work well with types
 const makeComparator = (propName) => R.comparator((a, b) => R.lt(R.prop(propName, a), R.prop(propName, b)))
 const sortByProps = (props, list) => R.sort(firstTruthy(R.map(makeComparator, props)), list)
 
@@ -29,9 +29,9 @@ const tableSorting = {
    * @return {*}
    */
   comparer: function (v1, v2, asc) {
-    return this.isNumericValue(v1) && this.isNumericValue(v2)
-      ? this.getNumberComparisonResult(v1, v2, asc)
-      : this.getStringComparisonResult(v1, v2, asc)
+    return this.isNumericValue(v1) && this.isNumericValue(v2) ?
+      this.getNumberComparisonResult(v1, v2, asc) :
+      this.getStringComparisonResult(v1, v2, asc)
   },
 
   /**

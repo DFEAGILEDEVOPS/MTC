@@ -1,29 +1,28 @@
 /**
  * File upload customisation.
  */
-/* global $ */
-/* eslint-disable no-var */
+
 $(function () {
   'use strict'
 
-  function customFileUpload (e) {
-    var $formElement = $('#upload-form')
-    var $removeElement = $('#removeUploadedFile')
-    var isSubmitted = false
+  function customFileUpload () {
+    const $formElement = $('#upload-form')
+    const $removeElement = $('#removeUploadedFile')
+    let isSubmitted = false
 
-    $removeElement.on('click', function (e) {
+    $removeElement.on('click', function () {
       $removeElement.css('visibility', 'hidden')
       $removeElement.hide()
     })
 
     $('input:file').change(function (e) {
-      var hasFileForUpload = !!e.target.value
+      const hasFileForUpload = !!e.target.value
       if (!hasFileForUpload) {
         return $removeElement.click()
       }
       $removeElement.css('visibility', 'visible')
       $removeElement.show()
-      var $fileName = $(this).val()
+      const $fileName = $(this).val()
       $('.filename').html($fileName)
     })
 
@@ -32,7 +31,7 @@ $(function () {
         return false
       }
       // Update the form submit button to say it's uploading
-      var submitButton = $('#upload-form-submit')
+      const submitButton = $('#upload-form-submit')
       if (submitButton.text) {
         $('#upload-form-submit').text('Sending...')
       } else if (submitButton.val) {

@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect jest beforeAll test afterEach */
 const moment = require('moment')
 const xmlbuilder2 = require('xmlbuilder2')
 
@@ -220,7 +219,7 @@ describe('ctfService', () => {
     })
 
     test('returns valid xml', () => {
-      expect(typeof obj === 'object')
+      expect(typeof obj === 'object').toBe(true)
     })
 
     test('has a first element called `CTfile`', () => {

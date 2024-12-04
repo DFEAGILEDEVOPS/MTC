@@ -1,8 +1,7 @@
 /**
  * Print popup.
  */
-/* eslint-disable no-var */
-/* global $ window */
+
 $(function () {
   'use strict'
   if (!window.GOVUK) {
@@ -14,7 +13,7 @@ $(function () {
         $(this).addClass('hidden')
       })
       $('.multiple-choice-mtc > input:checkbox').each(function () {
-        var pupilId = $(this).val()
+        const pupilId = $(this).val()
         if ($(this).is(':checked')) {
           $(printContainer + ' tr.pupil-' + pupilId).removeClass('hidden')
         }

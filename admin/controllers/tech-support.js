@@ -73,10 +73,14 @@ const controller = {
         found = true
         try {
           checkReceived = await checkDiagnosticsService.getReceivedCheckEntityByCheckCode(checkCode)
-        } catch (ignored) {}
+        } catch {
+          // ignore
+        }
         try {
           checkMarked = await checkDiagnosticsService.getMarkedCheckEntityByCheckCode(checkCode)
-        } catch (ignored) {}
+        } catch {
+          // ignore
+        }
       }
       req.breadcrumbs('Check View')
       res.render('tech-support/check-view', {
@@ -102,7 +106,7 @@ const controller = {
    * @param {*} next
    * @returns
    */
-  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res, next) {
+  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res) {
     const jsonError = {
       error: 'Error'
     }
@@ -133,7 +137,7 @@ const controller = {
    * @param {*} next
    * @returns
    */
-  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res, next) {
+  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res) {
     const jsonError = {
       error: 'Error'
     }
@@ -164,7 +168,7 @@ const controller = {
    * @param {object} res
    * @param {object} next
    */
-  getReceivedCheckPayload: async function getReceivedCheckPayload (req, res, next) {
+  getReceivedCheckPayload: async function getReceivedCheckPayload (req, res) {
     const checkCode = req.query.checkCode.trim()
     let payload
     try {
@@ -252,7 +256,6 @@ const controller = {
       } else {
         // Key is not allowed / not found
         const error = new Error('Invalid key')
-        // @ts-ignore
         error.status = 404
         return next(error)
       }
@@ -622,7 +625,7 @@ const controller = {
     }
   },
 
-  postSbQueueSubmit: async function postSbQueueSubmit (req, res, next) {
+  postSbQueueSubmit: async function postSbQueueSubmit (req, res) {
     res.locals.pageTitle = 'Submit Service Bus Queue Message'
     try {
       await queueMgmtService.sendServiceBusQueueMessage(req.body.queueName, req.body.message, req.body.contentType)

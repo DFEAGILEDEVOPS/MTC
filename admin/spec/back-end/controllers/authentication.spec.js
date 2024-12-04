@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe expect jest test beforeEach */
-
 const httpMocks = require('node-mocks-http')
 const sut = require('../../../controllers/authentication')
 const homeRoutes = require('../../../lib/consts/home-routes')

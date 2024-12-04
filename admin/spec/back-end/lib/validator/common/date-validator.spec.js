@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe test expect beforeEach afterEach jest */
-
 const moment = require('moment')
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
 const ValidationError = require('../../../../../lib/validation-error')
@@ -64,13 +62,13 @@ describe('New check window date validator', function () {
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
     })
-    test('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is invalid', () => {
+    test('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is not a number', () => {
       validationData.year = 'th'
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearInvalidChars)
     })
-    test('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is invalid', () => {
+    test('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is out of range', () => {
       validationData.year = moment.utc().add(1, 'days').format('YY')
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)

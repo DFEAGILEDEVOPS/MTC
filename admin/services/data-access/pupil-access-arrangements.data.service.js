@@ -233,7 +233,6 @@ pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilI
   ]
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
-  // @ts-ignore
   return row && row.colourContrastLookup_Id
 }
 
@@ -256,7 +255,6 @@ pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, acc
   ]
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
-  // @ts-ignore
   return row && row.fontSizeLookup_Id
 }
 

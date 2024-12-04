@@ -5,7 +5,7 @@ function isNullOrUndefined (o: any): boolean {
   return o === null || o === undefined
 }
 
-export class JwtService implements IJwtService {
+export class JwtService {
   async sign (payload: object, signingOptions: jwt.SignOptions): Promise<string> {
     return new Promise((resolve, reject) => {
       jwt.sign(payload, config.PupilApi.Submission.JwtSecret, signingOptions, (err, token) => {
@@ -40,9 +40,4 @@ export class JwtService implements IJwtService {
     }
     return this.instance
   }
-}
-
-export interface IJwtService {
-  sign (payload: object, signingOptions: jwt.SignOptions): Promise<string>
-  verify (token: string): Promise<any>
 }

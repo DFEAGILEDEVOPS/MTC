@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect afterEach jest */
 
 const pupilNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../../services/data-access/pupils-not-taking-check.data.service')

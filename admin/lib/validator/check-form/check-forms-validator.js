@@ -19,7 +19,7 @@ module.exports.validate = async (uploadedFiles, requestData, existingCheckForms,
 
   const singleFileErrors = await Promise.all(uploadedFiles.map(async (uploadedFile) => singleCheckFormValidator.validate(uploadedFile)))
   const multipleFileErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
-  // @ts-ignore
+  // @ts-ignore ramda doesnt work well with types
   const fileErrors = R.flatten(R.concat(singleFileErrors, multipleFileErrors))
   if (fileErrors.length > 0) {
     validationError.addError('csvFiles', fileErrors)

@@ -2,7 +2,6 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe test expect jest */
 
 const random = require('../../../lib/random-generator')
 
@@ -31,25 +30,25 @@ describe('check-form.service', () => {
       expect({}.hasOwnProperty.call(checkForm, 'name')).toBe(true)
     })
 
-    test('should throw when available form param is not an array', async () => {
+    test('should throw when available form param is an empty object', async () => {
       await expect(service.allocateCheckForm({}, seenForms))
         .rejects
         .toThrow('availableForms is not an array')
     })
 
-    test('should throw when available form param is not an array', async () => {
+    test('should throw when available form param is null', async () => {
       await expect(service.allocateCheckForm(null, seenForms))
         .rejects
         .toThrow('availableForms is not an array')
     })
 
-    test('should throw when the used forms param is not an array', async () => {
+    test('should throw when the used forms param is undefined', async () => {
       await expect(service.allocateCheckForm(availableForms, undefined))
         .rejects
         .toThrow('usedFormIds is not an array')
     })
 
-    test('should throw when the used forms param is not an array', async () => {
+    test('should throw when the used forms param is not specified', async () => {
       await expect(service.allocateCheckForm(availableForms))
         .rejects
         .toThrow('usedFormIds is not an array')

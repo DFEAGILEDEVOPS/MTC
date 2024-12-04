@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, jest, expect, beforeEach test afterEach */
-
 let sut, schoolDataService, userDataService, roleService, dfeDataService, adminLogonEventDataService
 const token = { id_token: 'the-token' }
 const config = require('../../../config')

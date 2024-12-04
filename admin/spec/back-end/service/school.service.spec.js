@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect test jest afterEach beforeEach fail */
 
 const uuid = require('uuid')
 const sut = require('../../../services/school.service')
@@ -134,7 +133,7 @@ describe('school.service', () => {
     })
 
     test('it calls the data service to do the update if the validation passes', async () => {
-      jest.spyOn(schoolDataService, 'sqlUpdateBySlug').mockImplementation(_ => Promise.resolve({}))
+      jest.spyOn(schoolDataService, 'sqlUpdateBySlug').mockImplementation(() => Promise.resolve({}))
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
       await sut.updateSchool(uuid.NIL, {}, 1)
       expect(schoolDataService.sqlUpdateBySlug).toHaveBeenCalledTimes(1)

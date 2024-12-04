@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, beforeEach expect test jest afterEach */
 const administrationMessageDataService = require('../../../services/data-access/administration-message.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const administrationMessageService = require('../../../services/administration-message.service')

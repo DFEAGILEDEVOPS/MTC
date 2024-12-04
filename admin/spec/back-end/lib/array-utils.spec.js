@@ -1,5 +1,3 @@
-/* global describe, test, expect */
-
 const arrayUtils = require('../../../lib/array-utils')
 
 describe('arrayUtils', () => {

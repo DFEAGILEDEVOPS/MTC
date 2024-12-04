@@ -176,7 +176,7 @@ module.exports = class ValidationError {
 
     const sortedFields = []
 
-    fieldOrder.forEach((val, idx) => {
+    fieldOrder.forEach((val) => {
       if (arrayToSort.indexOf(val) !== -1) {
         sortedFields.push(val)
       }

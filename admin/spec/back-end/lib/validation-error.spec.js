@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, expect */
-
 const ValidationError = require('../../../lib/validation-error')
 
 describe('validation error class', function () {

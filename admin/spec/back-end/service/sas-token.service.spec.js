@@ -1,5 +1,3 @@
-/* global describe expect beforeEach test jest afterEach */
-
 const sasTokenService = require('../../../services/sas-token.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const redisKeyService = require('../../../services/redis-key.service')
@@ -36,7 +34,7 @@ describe('sas-token.service', () => {
           .toThrow('Invalid expiryDate')
       })
 
-      test('throws an error if the expiryDate is not a moment object', async () => {
+      test('throws an error if the expiryDate is a date object', async () => {
         await expect(sasTokenService.generateSasToken(queueName, new Date()))
           .rejects
           .toThrow('Invalid expiryDate')
@@ -44,7 +42,7 @@ describe('sas-token.service', () => {
 
       test('sets the start Date to more than 4.5 minutes in the past', async () => {
         let capturedStartDate
-        jest.spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').mockImplementation((q, start, expiry) => {
+        jest.spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').mockImplementation((q, start) => {
           capturedStartDate = start
           return 'some/url?query=foo'
         })

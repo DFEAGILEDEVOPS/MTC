@@ -4,8 +4,6 @@
  * @file Integration Tests for Check Form Service
  */
 
-/* global describe test expect beforeAll jest */
-
 // These tests take a long time, so they are usually skipped unless we change the implementation
 jest.setTimeout(120000)
 
@@ -32,7 +30,7 @@ describe.skip('check-form.service', () => {
     })
 
     test('has enough forms to complete a random sample', () => {
-      expect(availableForms.length).toBe(9)
+      expect(availableForms).toHaveLength(9)
     })
 
     test('allocates 20 check forms equally when there are no seen forms', async () => {
@@ -43,7 +41,7 @@ describe.skip('check-form.service', () => {
         formsAllocated.push(f)
       }
       // Expect to have a form produced for every iteration
-      expect(formsAllocated.length).toBe(runs)
+      expect(formsAllocated).toHaveLength(runs)
 
       // Count the frequencies of the forms allocated
       const count = countForm(formsAllocated, availableForms)
@@ -59,8 +57,8 @@ describe.skip('check-form.service', () => {
 
 function countForm (formsAllocated, availableForms) {
   const count = {}
-  for (let i = 0; i < formsAllocated.length; i++) {
-    const formId = formsAllocated[i].id
+  for (const form of formsAllocated) {
+    const formId = form.id
     count[formId] = count[formId] ? count[formId] + 1 : 1
   }
 

@@ -1,5 +1,5 @@
 'use strict'
-/* eslint-disable no-var */
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
@@ -7,10 +7,10 @@ if (!window.MTCAdmin) {
 /**
  * Pupil access arrangements selection
  */
-/* global $ */
+
 (function () {
   window.MTCAdmin.accessArrangements = function () {
-    var accessArrangementsList = ('#accessArrangementsList')
+    const accessArrangementsList = ('#accessArrangementsList')
     // Reveal hidden content if the checkbox or radio button appears selected on page load
     if ($('input[value=ITA]').is(':checked')) {
       $($('input[value=ITA]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
@@ -18,7 +18,7 @@ if (!window.MTCAdmin) {
     }
     // Reveal hidden content when appropriate checkbox is checked
     $(accessArrangementsList).find('input:checkbox').click(function (i) {
-      var el = i.currentTarget
+      const el = i.currentTarget
       if (el.checked && (el.value === 'ITA')) {
         $(el).closest('li').find('.hide-checkbox-content').addClass('show-checkbox-content')
         $(el).closest('li').find('.hide-checkbox-content').removeClass('hide-checkbox-content')
@@ -35,12 +35,12 @@ if (!window.MTCAdmin) {
     }
     // Clear selected pupil if empty value is submitted to the backend
     $('#save-access-arrangement').click(function (e) {
-      var autocompleteListBox = $('#pupil-autocomplete-container__listbox')[0]
+      const autocompleteListBox = $('#pupil-autocomplete-container__listbox')[0]
       if (autocompleteListBox && autocompleteListBox.children.length === 0) {
         $('select[name=pupilUrlSlug]').prop('selectedIndex', 0)
       }
       // Edit mode only: Display modal only when no checkboxes are checked
-      var isEditView = $('#isEditView')[0]
+      const isEditView = $('#isEditView')[0]
       if (isEditView && $('input:checkbox:checked').length === 0) {
         toggleShowHideModal(e)
       }
@@ -48,7 +48,7 @@ if (!window.MTCAdmin) {
     function toggleShowHideModal (e) {
       e.preventDefault()
       $('#js-modal-overlay').toggleClass('show')
-      var modalBox = $('#js-modal-box')
+      const modalBox = $('#js-modal-box')
       if (modalBox.hasClass('show')) {
         modalBox.removeClass('show')
         $('#js-modal-link').focus()
@@ -60,8 +60,8 @@ if (!window.MTCAdmin) {
     // Submit form via modal window
     $('#js-modal-confirmation-button').click(function (e) {
       e.preventDefault()
-      var pupilUrlSlug = $('#urlSlug').val()
-      var deleteUrl = '/access-arrangements/delete-access-arrangements/' + pupilUrlSlug
+      const pupilUrlSlug = $('#urlSlug').val()
+      const deleteUrl = '/access-arrangements/delete-access-arrangements/' + pupilUrlSlug
       window.location.replace(deleteUrl)
     })
   }

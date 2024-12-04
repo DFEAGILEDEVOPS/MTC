@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, test, expect, jest */
-
 const prepareCheckService = require('../../../services/prepare-check.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')

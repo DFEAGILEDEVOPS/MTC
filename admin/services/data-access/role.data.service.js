@@ -34,7 +34,6 @@ const roleDataService = {
       }
     ]
     const result = await sqlService.query(`SELECT TOP 1 [id], [title] FROM ${sqlService.adminSchema}.${table} WHERE title=@roleTitle`, params)
-    // @ts-ignore
     return R.head(result)
   }
 }

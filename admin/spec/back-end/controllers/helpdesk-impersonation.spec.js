@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe jest test expect beforeEach afterEach */
-
 const controller = require('../../../controllers/helpdesk-impersonation')
 const schoolImpersonationService = require('../../../services/school-impersonation.service')
 const ValidationError = require('../../../lib/validation-error')
