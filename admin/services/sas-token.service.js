@@ -72,9 +72,6 @@ const sasTokenService = {
       queueNameService.NAMES.PUPIL_PREFS,
       queueNameService.NAMES.PUPIL_FEEDBACK
     ]
-    if (hasLiveChecks) {
-      queueNames.push(queueNameService.NAMES.CHECK_SUBMIT)
-    }
 
     // Attempt to retrieve all tokens from redis
     const redisKeys = queueNames.map(redisKeyService.getSasTokenKey)

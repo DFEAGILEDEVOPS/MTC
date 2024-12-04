@@ -125,13 +125,9 @@ export const mockCompletionCheckMessage = {
         url: 'https://strgt1dvmtcjs.queue.core.windows.net/pupil-feedback',
         queueName: 'pupil-feedback'
       },
-      jwt: {
-        token: 'token-disabled'
-      },
-      checkComplete: {
-        token: 'st=2020-09-29T12%3A20%3A01Z&se=2020-09-30T13%3A25%3A01Z&sp=a&sv=2018-03-28&sig=BCjuagMioaUVaR64LyPCyOCm51NKEpnSMVgGEDTRmgU%3D',
-        url: 'https://strgt1dvmtcjs.queue.core.windows.net/check-submitted',
-        queueName: 'check-submitted'
+      checkSubmission: {
+        token: 'string',
+        url: 'string'
       }
     },
     audit: [
