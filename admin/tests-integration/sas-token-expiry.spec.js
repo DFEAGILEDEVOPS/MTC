@@ -49,7 +49,7 @@ describe('sas-token-expiry', () => {
       const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       await delay(3000)
       const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.PUPIL_FEEDBACK)
-      await queueClient.sendMessage('message 1')
+      await queueClient.sendMessage('testing message expiry in /admin/tests-integration/sas-token-expiry.spec.js')
       fail('message should have been rejected due to expired token')
     } catch (error) {
       console.log(error.message)

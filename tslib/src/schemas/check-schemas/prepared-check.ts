@@ -27,7 +27,6 @@ export interface PreparedCheck {
     checkStarted: QueueAuthToken
     pupilPreferences: QueueAuthToken
     pupilFeedback: QueueAuthToken
-    checkComplete?: QueueAuthToken
     checkSubmission: {
       token: string
       url: string

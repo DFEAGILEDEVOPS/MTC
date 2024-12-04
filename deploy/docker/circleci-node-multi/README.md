@@ -16,9 +16,10 @@ Change the base image reference to the lowest version of node the solution needs
 
 1. Build it
 
-$ docker build . -t stamtc/mtc_circleci
+Mac Intel: `$ docker build . -t stamtc/mtc_circleci`
+Mac M1: `$ docker build -t stamtc/mtc_circleci --platform linux/amd64 .`
 
-2. Push it
+1. Push it
 
 $ docker push stamtc/mtc_circleci:latest
 
