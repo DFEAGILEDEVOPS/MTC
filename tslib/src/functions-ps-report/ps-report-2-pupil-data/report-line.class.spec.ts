@@ -262,12 +262,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           thisCheckConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           {
@@ -301,12 +301,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           thisCheckConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           {
@@ -340,12 +340,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           thisCheckConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           {
@@ -365,12 +365,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           checkConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           null
@@ -698,6 +698,24 @@ describe('report line class', () => {
         )
         const out = report.transform()
         expect(out.PupilStatus).toBe('Incomplete')
+      })
+
+      test('if the pupil has had a pin generated but not logged in, then the check timing data should not be shown', () => {
+        const report = new ReportLine(
+          null,
+          checkIncomplete,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilIncomplete,
+          school,
+          null
+        )
+        const out = report.transform()
+        expect(out.PauseLength).toBeNull()
+        expect(out.QDisplayTime).toBeNull()
+        expect(out.AccessArr).toBe('')
       })
     })
 
