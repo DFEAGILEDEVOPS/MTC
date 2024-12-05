@@ -30,7 +30,6 @@
     "@faker-js/faker": "^9.3.0",
     "@types/async": "^3.2.7",
     "@types/cors": "^2.8.13",
-    "@types/debug": "^4.1.8",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.2",
