@@ -20,7 +20,7 @@ const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`)
   : currentYear
 
 function createFakeUpn () {
-  const base = '201' + faker.datatype.number({ min: 100000000, max: 900000000 })
+  const base = '201' + faker.number.int({ min: 100000000, max: 900000000 })
   const checkLetter = upnService.calculateCheckLetter(base)
   return checkLetter + base.toString()
 }
@@ -29,7 +29,7 @@ function fakePupilData () {
   const gender = faker.helpers.arrayElement(['M', 'F'])
   const dob = moment(`${academicYear}-08-31`)
     .subtract(8, 'years')
-    .subtract(faker.datatype.number({ min: 0, max: 364 }), 'days') // randomise dob
+    .subtract(faker.number.int({ min: 0, max: 364 }), 'days') // randomise dob
 
   return {
     school_id: 1,

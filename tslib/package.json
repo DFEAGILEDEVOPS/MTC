@@ -27,7 +27,7 @@
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
   "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
+    "@faker-js/faker": "^9.3.0",
     "@types/adm-zip": "^0.5.0",
     "@types/async": "^3.2.7",
     "@types/bluebird": "^3.5.38",
