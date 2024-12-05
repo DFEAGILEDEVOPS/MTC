@@ -1418,11 +1418,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/he@^1.2.0":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@types/he/-/he-1.2.3.tgz#c33ca3096f30cbd5d68d78211572de3f9adff75a"
-  integrity sha512-q67/qwlxblDzEDvzHhVkwc1gzVWxaNxeyHUBF4xElrvjL11O+Ytze+1fGpBHlr/H9myiBUaUXNnNPmBHxxfAcA==
-
 "@types/http-errors@*":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-2.0.4.tgz#7eb47726c391b7345a6ec35ad7f4de469cf5ba4f"
@@ -3438,11 +3433,6 @@ hasown@^2.0.0, hasown@^2.0.1, hasown@^2.0.2:
   integrity sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==
   dependencies:
     function-bind "^1.1.2"
-
-he@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
-  integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
 helmet@8.0.0:
   version "8.0.0"
