@@ -804,11 +804,6 @@ bl@^6.0.3:
     inherits "^2.0.4"
     readable-stream "^4.2.0"
 
-bluebird@^3.3.3:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
-  integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
-
 body-parser@1.20.3, body-parser@^1.20.2:
   version "1.20.3"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.20.3.tgz#1953431221c6fb5cd63c4b36d53fab0928e548c6"
@@ -1189,11 +1184,6 @@ cors@^2.8.5:
   dependencies:
     object-assign "^4"
     vary "^1"
-
-create-error@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/create-error/-/create-error-0.3.1.tgz#69810245a629e654432bf04377360003a5351a23"
-  integrity sha512-n/Q4aSCtYuuDneEW5Q+nd0IIZwbwmX/oF6wKcDUhXGJNwhmp2WHEoWKz7X+/H7rBtjimInW7f0ceouxU0SmuzQ==
 
 csv-string@^4.1.0:
   version "4.1.1"
@@ -3551,14 +3541,6 @@ ramda@^0.30.1:
   version "0.30.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.30.1.tgz#7108ac95673062b060025052cd5143ae8fc605bf"
   integrity sha512-tEF5I22zJnuclswcZMc8bDIrwRHRzf+NqVEmqg50ShAZMP7MWeR/RGDthfM/p+BlqvF2fXAzpn8i+SJcYD3alw==
-
-random-number-csprng@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/random-number-csprng/-/random-number-csprng-1.0.2.tgz#fcd120e62dffc2c07674c7c3fe01e16b25f73a26"
-  integrity sha512-Gb7ZsEXfz6d9xAMCUg2tD0ouRZMOZRRvLsRoUyPlVS4/pNwO31IA88yAx6AEYXon/LzogWJdsCRwFQaFlQTaHw==
-  dependencies:
-    bluebird "^3.3.3"
-    create-error "^0.3.1"
 
 range-parser@~1.2.1:
   version "1.2.1"
