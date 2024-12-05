@@ -69,3 +69,4 @@ dependency-graphs
 
 # typescript output directory
 dist
+tsconfig.tsbuildinfo

@@ -22,7 +22,7 @@ export async function psReport4Writer (triggerInput: unknown, context: Invocatio
 }
 
 async function bulkUpload (context: InvocationContext, incomingMessage: PsReportStagingCompleteMessage): Promise<void> {
-  let dbTable: string = ''
+  let dbTable = ''
   const service = new PsReportWriterService(context, context.invocationId)
   const jobDataService = new JobDataService()
   funcName = `${funcName}: ${context.invocationId}`

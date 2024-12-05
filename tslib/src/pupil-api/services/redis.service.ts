@@ -25,7 +25,7 @@ export interface IRedisService {
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<void>}
    */
-  drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null>
+  drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null>
   /**
    * @description cleans up the underlying redis client implementation
    * @returns void
@@ -117,7 +117,6 @@ export class RedisService implements IRedisService {
         meta: {
           type: cacheItemDataType
         },
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         value: value.toString()
       }
       const storageItemString = JSON.stringify(storageItem)
@@ -128,7 +127,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null> {
+  async drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null> {
     if (keys.length === 0) {
       throw new Error('Invalid key list')
     }

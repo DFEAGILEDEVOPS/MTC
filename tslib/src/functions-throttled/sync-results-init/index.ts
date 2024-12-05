@@ -20,7 +20,7 @@ export async function syncResultsInit (timer: Timer, context: InvocationContext)
     const syncResultsInitService = new SyncResultsInitService(context)
     // If called via http there could be a message passed in
     // TODO this might not be the correct way to access the http inputs
-    const options: ISyncResultsInitServiceOptions = context.triggerMetadata !== undefined ? context.triggerMetadata : {}
+    const options: ISyncResultsInitServiceOptions = context.triggerMetadata ?? {}
     const meta = await syncResultsInitService.processBatch(options)
     const memoryUsage = process.memoryUsage()
     const heapUsed = memoryUsage.heapUsed / 1024 / 1024

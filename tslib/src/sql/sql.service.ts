@@ -56,8 +56,7 @@ export class SqlService implements ISqlService {
 
   private addParamsToRequestSimple (params: ISqlParameter[], request: Request): void {
     if (params !== undefined) {
-      for (let index = 0; index < params.length; index++) {
-        const param = params[index]
+      for (const param of params) {
         request.input(param.name, param.type, param.value)
       }
     }
@@ -128,8 +127,7 @@ export class SqlService implements ISqlService {
   async modifyWithTransaction (requests: ITransactionRequest[]): Promise<any> {
     const transaction = new Transaction(await connectionPool.getInstance())
     await transaction.begin(ISOLATION_LEVEL.SERIALIZABLE)
-    for (let index = 0; index < requests.length; index++) {
-      const request = requests[index]
+    for (const request of requests) {
       const modify = async (): Promise<IResult<any>> => {
         const req = new Request(transaction)
         this.addParamsToRequest(request.params, req)
@@ -154,8 +152,7 @@ export class SqlService implements ISqlService {
    * @param {{input}} request -  mssql request
    */
   private addParamsToRequest (params: ISqlParameter[], request: Request): void {
-    for (let index = 0; index < params.length; index++) {
-      const param = params[index]
+    for (const param of params) {
       if (param.type === undefined) {
         throw new Error('parameter type invalid')
       }
