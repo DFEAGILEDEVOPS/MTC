@@ -47,11 +47,11 @@
     "@azure/storage-queue": "12.17.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^3.3.0",
-    "axios": "^1.7.4",
+    "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
-    "connect-redis": "^7.1.1",
+    "connect-redis": "^8.0.0",
     "dompurify": "^3.1.7",
     "dotenv": "^16.0.3",
     "edit-json-file": "^1.4.0",
@@ -198,8 +198,7 @@
     "verbose": false,
     "testRunner": "jest-circus",
     "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs",
-      "connect-redis": "connect-redis/dist/cjs/index.js"
+      "axios": "axios/dist/node/axios.cjs"
     }
   }
 }
