@@ -90,7 +90,7 @@
     "ramda": "^0.30.1",
     "ramda-adjunct": "^5.1.0",
     "random-number-csprng": "^1.0.2",
-    "sass": "^1.80.3",
+    "sass": "^1.80.4",
     "simplemde": "^1.11.2",
     "to-bool": "^0.0.1",
     "uuid": "^10.0.0",
