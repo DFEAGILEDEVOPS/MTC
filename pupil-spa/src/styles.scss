@@ -312,3 +312,14 @@ ol, ul {
     margin: 0.8rem 0;
   }
 }
+
+/*
+ * Disable pull to refresh on tablets
+ */
+@media screen and (pointer: coarse) {
+  html {
+    min-height: 100.3%;
+    overscroll-behavior-y: none; // Disable on ios 16 and newer
+    overscroll-behaviour: none; // Disable on chrome / android tablets
+  }
+}
