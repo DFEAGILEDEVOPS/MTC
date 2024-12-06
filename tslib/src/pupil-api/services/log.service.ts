@@ -31,41 +31,36 @@ export class Logger {
     this.logger = winston.createLogger(baseLogOptions)
   }
 
-  log (level: LogLevel, msg: string, exception?: any): void {
+  log (level: LogLevel, msg: string, exception?: Error | null | undefined): void {
     this.logger.log(level, msg, exception)
   }
 
   /**
    * AI -> critical
-   * @param {string} msg
    */
-  alert (msg: string, exception = null): void { this.log('alert', msg, exception) }
+  alert (msg: string, exception: Error | null | undefined = null): void { this.log('alert', msg, exception) }
 
   /**
    * AI -> error
-   * @param {string} msg
    */
-  error (msg: string, exception = null): void { this.log('error', msg, exception) }
+  error (msg: string, exception: Error | null | undefined = null): void { this.log('error', msg, exception) }
 
   /**
    * AI -> warning
-   * @param {string} msg
    */
-  warn (msg: string, exception = null): void { this.log('warning', msg, exception) }
+  warn (msg: string, exception: Error | null | undefined = null): void { this.log('warning', msg, exception) }
 
   /**
    * AI -> notice
-   * @param {string} msg
    */
-  info (msg: string, exception = null): void {
+  info (msg: string, exception: Error | null | undefined = null): void {
     this.log('info', msg, exception)
   }
 
   /**
    * AI -> verbose
-   * @param {string} msg
    */
-  debug (msg: string, exception = null): void { this.log('debug', msg, exception) }
+  debug (msg: string, exception: Error | null | undefined = null): void { this.log('debug', msg, exception) }
 
   /**
    * Return the underlying `winston` logger
