@@ -50,7 +50,7 @@ const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
 const { formAlreadySubmittedErrorCode } = require('./error-types/form-already-submitted-error')
 const { dfeSignInErrorConsts } = require('./error-types/dfe-signin-error')
-const RedisStore = require('connect-redis').default
+const { RedisStore } = require('connect-redis')
 
 const app = express()
 setupLogging(app)

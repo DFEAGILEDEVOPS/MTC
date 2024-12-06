@@ -65,6 +65,7 @@ export class RedisService implements IRedisService {
       }
     }
     this.redis = new Redis(options)
+    this.redis.on('error', (error) => { this.logger.error(`ERROR: [pupil-api]: redis error: ${error.message}`, error) })
     this.logger = new Logger()
   }
 
