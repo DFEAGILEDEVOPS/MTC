@@ -167,6 +167,10 @@ export class ReportLine {
   }
 
   private getAccessArrangements (): string {
+    if (this._check?.pupilLoginDate == null) {
+      // the pupil never logged in
+      return ''
+    }
     if (this._checkConfig === null && this._inputAssistant === null) {
       return ''
     }
@@ -404,9 +408,12 @@ export class ReportLine {
     this._report.AccessArr = this.getAccessArrangements()
     this._report.IsEdited = this.pupil.isEdited
     // Add check data to the report:
-    // 1. if there is a check
-    // 2. if they did a check but it was annulled.
-    if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q' || this._report.ReasonNotTakingCheck === 'H') {
+    // 1. if there is a check, and they logged in
+    // 2. OR they did a check but it was annulled.
+    if (this._check?.pupilLoginDate !== null &&
+      (this._report.ReasonNotTakingCheck === null ||
+        this._report.ReasonNotTakingCheck === 'Q' ||
+        this._report.ReasonNotTakingCheck === 'H')) {
       this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
       this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
       this._report.AttemptID = this.getAttemptId()
