@@ -34,9 +34,9 @@ function fakePupilData () {
   return {
     school_id: 1,
     upn: createFakeUpn(),
-    foreName: faker.name.firstName(gender === 'M' ? 'male' : 'female'),
-    middleNames: faker.name.middleName(gender === 'M' ? 'male' : 'female'),
-    lastName: faker.name.lastName(),
+    foreName: faker.person.firstName(gender === 'M' ? 'male' : 'female'),
+    middleNames: faker.person.middleName(gender === 'M' ? 'male' : 'female'),
+    lastName: faker.person.lastName(),
     foreNameAlias: '',
     lastNameAlias: '',
     gender,
