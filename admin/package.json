@@ -46,7 +46,7 @@
     "@azure/storage-blob": "12.18.0",
     "@azure/storage-queue": "12.25.0",
     "adm-zip": "^0.5.10",
-    "applicationinsights": "3.3.0",
+    "applicationinsights": "^3.4.0",
     "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
@@ -149,7 +149,6 @@
     "nodemon": "^2.0.12",
     "standard": "^17.0.0",
     "supertest": "^6.0.1",
-    "ts-node": "^10.4.0",
     "typescript": "^5.7.2"
   },
   "standard": {
