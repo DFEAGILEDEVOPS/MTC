@@ -15,7 +15,7 @@ export class SpeechService implements OnDestroy {
   private speaking = false;
   private cancelTimeout: number;
   private speechStatusSource = new Subject<string>();
-  protected synth;
+  protected synth: { speak: (arg0: SpeechSynthesisUtterance) => void; cancel: () => void; speaking: boolean; pending: boolean; };
   private userActionEvents = ['keydown', 'mousedown']; // touchstart should work as well in theory, doesn't in practice
   // Garbage Collector hack for Chrome implementations of the speech API..
   // See https://bugs.chromium.org/p/chromium/issues/detail?id=509488 for why this is necessary
