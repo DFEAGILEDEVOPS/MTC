@@ -132,21 +132,21 @@ export class MockReportLineAnswer implements IReportLineAnswer {
   public constructor (questionNumber: number) {
     this.questionNumber = questionNumber
     this.id = `${questionNumber}x${questionNumber}`
-    this.response = faker.datatype.number({ min: 0, max: 144 }).toString()
+    this.response = faker.number.int({ min: 0, max: 144 }).toString()
     this.inputMethods = faker.helpers.arrayElement(['k', 'm', 'p', 't', 'x'])
     this.keystrokes = this.response.split('').map(v => `${faker.helpers.arrayElement(['k', 'm', 'p', 't'])}[${v}]`).join(', ')
-    this.score = faker.datatype.number({ min: 0, max: 100 }) > 75 ? 0 : 1
-    this.firstKey = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
-    this.lastKey = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
-    this.responseTime = faker.datatype.number({ min: 0, max: 6000 }) / 1000
+    this.score = faker.number.int({ min: 0, max: 100 }) > 75 ? 0 : 1
+    this.firstKey = moment().subtract(faker.number.int({ min: 0, max: 100 }), 'minutes')
+    this.lastKey = moment().subtract(faker.number.int({ min: 0, max: 100 }), 'minutes')
+    this.responseTime = faker.number.int({ min: 0, max: 6000 }) / 1000
     this.timeout = faker.datatype.boolean()
     this.timeoutResponse = faker.datatype.boolean()
     this.timeoutScore = faker.datatype.boolean()
-    this.loadTime = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
-    this.overallTime = faker.datatype.number({ min: 1000, max: 9000 }) / 1000
-    this.recallTime = faker.datatype.number({ min: 0, max: 6000 }) / 1000
-    this.questionReaderStart = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
-    this.questionReaderEnd = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
+    this.loadTime = moment().subtract(faker.number.int({ min: 0, max: 100 }), 'minutes')
+    this.overallTime = faker.number.int({ min: 1000, max: 9000 }) / 1000
+    this.recallTime = faker.number.int({ min: 0, max: 6000 }) / 1000
+    this.questionReaderStart = moment().subtract(faker.number.int({ min: 0, max: 100 }), 'minutes')
+    this.questionReaderEnd = moment().subtract(faker.number.int({ min: 0, max: 100 }), 'minutes')
   }
 }
 
@@ -193,7 +193,7 @@ export class MockPayload implements IPsychometricReportLine {
   answers: IReportLineAnswer[] = []
 
   public constructor () {
-    this.PupilDatabaseId = faker.datatype.number({ min: 1, max: 750000 })
+    this.PupilDatabaseId = faker.number.int({ min: 1, max: 750000 })
     this.PupilUPN = veryFakeUpn()
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')
