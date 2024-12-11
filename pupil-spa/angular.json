@@ -83,7 +83,6 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
             "include": [
               "**/*.spec.ts"
             ],
@@ -95,7 +94,7 @@
                 "node_modules/govuk_frontend_toolkit/"
               ]
             },
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [ "src/polyfills.ts", "zone.js/testing" ],
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
