@@ -5,24 +5,30 @@
 # Multiplication Tables Check (MTC) Project
 
 ## Project tooling requirements
-
 - Docker (current LTS)
 - Node JS (best installed via [nvm](https://github.com/nvm-sh/nvm))
-- Text Editor
+- Text Editor / IDE that supports Typescript & Javscript
 - bash
-- Azure storage explorer
+- Yarn (version 1.x)
+- Git
+- Azure CLI
+- Azure Functions Core Tools
 - An Azure storage account
 - An Azure service bus account
 
-## Quickstart
+## Optional useful tools
+- Azure storage explorer
+- SQL Server Client (e.g. Azure Data Studio)
+- Redis Client
+- Postman / Rapid API
 
+## Quickstart
 Ensure you have set the `AZURE_STORAGE_CONNECTION_STRING` value to your azure storage account.
 From the repository root (this directory) run `./start.sh`.  This will create the necessary storage queues, storage tables and stand up a docker instance of SQL Server Linux and run all the migrations to create the MTC database.
 
 You can now start the admin, pupil-spa & pupil-api applications individually.
 
 ## Docker Compose
-
 There are 2 docker-compose files...
 
 ### docker-compose.yml
@@ -36,7 +42,6 @@ Start: `docker-compose -f docker-compose.yml -f docker-compose-apps.yml up`
 Teardown: `docker-compose -f docker-compose.yml -f docker-compose-apps.yml down`
 
 ## Solution
-
 Once the full compose stack is up and running, you can browse to....
 
 * http://localhost:3001 (Admin App)
@@ -60,7 +65,6 @@ The MTC solution consists of the following projects...
 See each projects readme for app specifics.
 
 ### Building Docker Images
-
 to build an individual docker image, navigate to the relevant app folder and run...
 
 `docker build -t <image name> .`
@@ -70,7 +74,6 @@ where `<image-name>` is a friendly name that allows you to easily identify the i
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
 ### SQL Connectivity
-
 See the following docs for info on sql connection and pooling behaviour...
 - https://tediousjs.github.io/node-mssql/#connection-pools
 - https://github.com/vincit/tarn.js/#usage
