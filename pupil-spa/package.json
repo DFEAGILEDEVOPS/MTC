@@ -43,7 +43,7 @@
     "lz-string": "^1.5.0",
     "ngx-cookie-service": "^15.0.0",
     "polly-js": "^1.8.2",
-    "rxjs": "^6.5.3",
+    "rxjs": "^7.8.1",
     "sass": "^1.79.4",
     "tslib": "^2.5.2",
     "uuid": "^9.0.0",
