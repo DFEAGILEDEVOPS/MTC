@@ -32,7 +32,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "5eb463baa90e81b0b79de4acfc4a8096"
+    "assets-version": "65277eea29822abe9a509880adefb859"
   },
   "engines": {
     "node": ">= 18"
@@ -44,7 +44,7 @@
     "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.9.1",
     "@azure/storage-blob": "12.18.0",
-    "@azure/storage-queue": "12.17.0",
+    "@azure/storage-queue": "12.25.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^3.3.0",
     "axios": "^1.7.8",
