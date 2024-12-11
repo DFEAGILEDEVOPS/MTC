@@ -160,7 +160,8 @@ const appRoutes: Routes = [
     ],
     imports: [
         BrowserModule,
-        RouterModule.forRoot(appRoutes, { enableTracing: false, relativeLinkResolution: 'legacy' } // <-- debugging purposes only
+        RouterModule.forRoot(appRoutes, { enableTracing: false } // <-- debugging purposes only
+ // <-- debugging purposes only
         ),
         FormsModule,
         ReactiveFormsModule,

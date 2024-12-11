@@ -84,6 +84,9 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
+            "include": [
+              "**/*.spec.ts"
+            ],
             "karmaConfig": "./karma.conf.js",
             "stylePreprocessorOptions": {
               "includePaths": [
