@@ -293,7 +293,7 @@ export class SpeechService implements OnDestroy {
     _window.clearTimeout(this.cancelTimeout);
 
     return new Promise((resolve, reject) => {
-      this.synth.cancel();
+      this.synth?.cancel();
       this.speaking = false;
 
       this.cancelTimeout = _window.setTimeout(() => {
