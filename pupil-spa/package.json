@@ -83,6 +83,6 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "node-sass-utils": "^1.1.2",
     "replace-in-file": "^6.3.2",
-    "typescript": "~4.8"
+    "typescript": "^4.9.3"
   }
 }
