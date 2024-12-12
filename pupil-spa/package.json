@@ -46,7 +46,7 @@
     "rxjs": "^7.8.1",
     "sass": "^1.79.4",
     "tslib": "^2.5.2",
-    "uuid": "^9.0.0",
+    "uuid": "^11.0.3",
     "zone.js": "~0.13.1"
   },
   "devDependencies": {
@@ -82,6 +82,6 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "node-sass-utils": "^1.1.2",
     "replace-in-file": "^6.3.2",
-    "typescript": "^4.9.3"
+    "typescript": "~5.1.0"
   }
 }
