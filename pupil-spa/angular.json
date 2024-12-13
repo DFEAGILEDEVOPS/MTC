@@ -34,10 +34,17 @@
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
-            "sourceMap": true,
+            "sourceMap": {
+              "scripts": true,
+              "styles": false,
+              "vendor": true
+            },
             "optimization": true,
-            "namedChunks": true
-          },
+            "namedChunks": true,
+            "allowedCommonJsDependencies": [
+              "polly-js"
+            ]
+           },
           "configurations": {
             "production": {
               "budgets": [
@@ -48,7 +55,11 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": true,
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "vendor": true
+              },
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
