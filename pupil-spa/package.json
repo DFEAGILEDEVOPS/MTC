@@ -4,8 +4,8 @@
   "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
-    "start": "yarn genconfig && yarn run gulp setSecretEnvVars && yarn build:prod && yarn run http-server ./dist -p 4200 --proxy http://localhost:4200?",
-    "start:dev": "yarn genconfig && yarn run gulp setSecretEnvVars && ng serve --host 0.0.0.0",
+    "start": "export NODE_OPTIONS=--dns-result-order=ipv4first && yarn genconfig && yarn run gulp setSecretEnvVars && yarn build:prod && yarn run http-server ./dist -p 4200 --proxy http://localhost:4200?",
+    "start:dev": "export NODE_OPTIONS=--dns-result-order=ipv4first && yarn genconfig && yarn run gulp setSecretEnvVars && ng serve --host 0.0.0.0",
     "build": "yarn clean && yarn genconfig && ng build",
     "build:prod": "yarn clean && ng build --configuration production --build-optimizer --aot",
     "clean": "rm -rf ./dist",
