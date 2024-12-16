@@ -84,7 +84,7 @@
     "nocache": "^3.0.4",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
-    "passport": "^0.6.0",
+    "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "qrcode": "^1.5.1",
     "ramda": "^0.30.1",
