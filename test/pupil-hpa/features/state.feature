@@ -40,7 +40,6 @@ Feature:
      Given I have completed the check with refersh on instruction page
      Then audit recorded should reflect this refresh event
 
-  @manual
   Scenario: Navigation to different tab during the check is recorded in audit log
     Given I navigated to different tab during the check
     Then audit recorded should reflect the navigation of tab
