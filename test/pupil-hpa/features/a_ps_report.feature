@@ -127,12 +127,12 @@ Feature:
     When the data sync and ps report function has run for the test school
     Then I should not see any records for the test school
 
-  Scenario: AttemptId is not set when a pin has expired and the pupil has been set to NTC
+  Scenario: AttemptId, QDisplayTime, PauseLength and AccessArr are not set when a pin has expired and the pupil has been set to NTC
     Given I have generated a live pin
     But the pin expires
     When the pupil is set to not taking the check
     And the data sync and ps report function has run
-    Then the AttemptId for the ps record for that pupil is set to null
+    Then the AttemptId, QDisplayTime, PauseLength and AccessArr for the ps record for that pupil are set to null
 
   Scenario: Device is set to null when no device information is collected
     Given I have completed a check that has no device information

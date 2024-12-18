@@ -489,7 +489,7 @@ When(/^the pupil is set to not taking the check$/) do
   pupil_reason_page.sticky_banner.confirm.click
 end
 
-Then(/^the AttemptId for the ps record for that pupil is set to null$/) do
+Then(/^the AttemptId, QDisplayTime, PauseLength and AccessArr for the ps record for that pupil are set to null$/) do
   pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
   filename = JSON.parse(SqlDbHelper.get_ps_report_job['meta'])['filename']
   filename.slice!('ps-report-staging-')
@@ -500,6 +500,9 @@ Then(/^the AttemptId for the ps record for that pupil is set to null$/) do
   p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
   ps_report_record = ps_report_record.map { |k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)] }.to_h
   expect(ps_report_record["AttemptId"]).to be_nil
+  expect(ps_report_record["QDisplayTime"]).to be_nil
+  expect(ps_report_record["PauseLength"]).to be_nil
+  expect(ps_report_record["AccessArr"]).to be_nil
 end
 
 Given(/^I have completed a check that has no device information$/) do
