@@ -161,7 +161,7 @@ Given(/^I navigated to different tab during the check$/) do
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
   start_mtc
-  check_page.complete_check_with_correct_answers(18, 'keyboard')
+  check_page.complete_check_with_correct_answers(25, 'keyboard')
 
   first_tab = page.windows.first
   new_window = Capybara.open_new_window

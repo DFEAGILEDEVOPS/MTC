@@ -21,6 +21,7 @@ ACR_PASSWORD=$7
 ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP --query "loginServer" --output tsv)
 
 az container create --resource-group $RESOURCE_GROUP --name $AGENT_NAME --output none \
+  --os-type Linux \
   --cpu 4 --memory 8 \
   --image "$ACR_LOGIN_SERVER/devops-build-agent:latest" \
   --registry-login-server $ACR_LOGIN_SERVER \
