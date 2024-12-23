@@ -1,5 +1,4 @@
 'use strict'
-/* globals describe expect test jest afterEach beforeEach */
 
 const sut = require('../../../services/check-diagnostic.service')
 const dataService = require('../../../services/data-access/check-diagnostic.data.service')

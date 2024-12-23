@@ -42,7 +42,6 @@ const pupilAddService = {
     }
 
     const saveData = R.omit(['dob-day', 'dob-month', 'dob-year'], pupilDataRow)
-    // @ts-ignore
     saveData.dateOfBirth = dateService.createUTCFromDayMonthYear(pupilDataRow['dob-day'], pupilDataRow['dob-month'], pupilDataRow['dob-year'])
     const res = await pupilDataService.sqlCreate(saveData)
     const pupilRecord = await pupilDataService.sqlFindOneById(res.insertId)
@@ -61,7 +60,6 @@ const pupilAddService = {
     if (!pupil || pupil.length < 1) {
       return pupilData
     }
-    // @ts-ignore
     pupilData = R.omit(['dateOfBirth'], pupil)
     // expand single date field to 3
     pupilData['dob-day'] = pupil.dateOfBirth.format('D')

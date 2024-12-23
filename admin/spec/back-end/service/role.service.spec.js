@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe test expect jest beforeEach afterEach */
 const roles = require('../../../lib/consts/roles')
 const roleService = require('../../../services/role.service')
 

@@ -58,8 +58,7 @@ describe('submitted-check-generator-service', () => {
  * @param needle
  */
 function isValidAnswer (haystack: CheckQuestion[], needle: CompleteCheckAnswer): boolean {
-  for (let i = 0; i < haystack.length; i++) {
-    const questionToTest = haystack[i]
+  for (const questionToTest of haystack) {
     if (needle.factor1 === questionToTest.factor1 && needle.factor2 === questionToTest.factor2) {
       return true
     }

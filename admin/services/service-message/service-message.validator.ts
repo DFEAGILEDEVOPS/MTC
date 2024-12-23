@@ -26,7 +26,7 @@ export interface ServiceMessageValidatorInput {
 
 // Sigh.  There should be a better way to do this.
 export class UserInterfaceValidator {
-  public static validate (input: any): ValidationError {
+  public static validate (): ValidationError {
     return new ValidationError()
   }
 }

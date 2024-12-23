@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect jest afterEach */
 
 const tableSort = require('../../../helpers/table-sorting')
 

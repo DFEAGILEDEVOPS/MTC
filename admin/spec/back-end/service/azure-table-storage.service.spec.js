@@ -1,5 +1,4 @@
 'use strict'
-/* globals describe expect test jest afterEach beforeEach */
 
 const sut = require('../../../services/azure-table-storage.service')
 const azureTableDataService = require('../../../services/data-access/azure-table.data.service')

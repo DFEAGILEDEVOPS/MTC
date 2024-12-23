@@ -34,7 +34,7 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('it should call redis:get with correct key format', async () => {
-    let actualKey: string = ''
+    let actualKey = ''
     jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       actualKey = key
     })
@@ -201,7 +201,7 @@ describe('redis-pupil-auth.service', () => {
       }
     }
     jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
-    let actualPreparedCheckExpiryValue: number = -1
+    let actualPreparedCheckExpiryValue = -1
     jest.spyOn(redisServiceMock, 'expire').mockImplementation(async (key: string, ttl: number) => {
       actualPreparedCheckExpiryValue = ttl
     })

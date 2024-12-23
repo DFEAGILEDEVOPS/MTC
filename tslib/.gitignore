@@ -24,6 +24,7 @@ local.settings.json
 
 node_modules
 dist
+tsconfig.tsbuildinfo
 
 # Local python packages
 .python_packages/

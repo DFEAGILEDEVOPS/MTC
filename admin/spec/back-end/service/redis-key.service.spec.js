@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe expect test */
-
 const redisKeyService = require('../../../services/redis-key.service')
 const sut = redisKeyService
 

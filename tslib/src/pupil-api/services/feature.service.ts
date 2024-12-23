@@ -1,7 +1,7 @@
 import logger from './log.service'
 import config from '../config'
 
-let initialised: boolean = false
+let initialised = false
 
 export class FeatureService {
   constructor () {

@@ -1,6 +1,4 @@
 'use strict'
-/* global $ describe it expect spyOn jasmine beforeEach afterEach */
-/* eslint-disable no-var */
 
 describe('autoComplete', function () {
   describe('createComponent', function () {
@@ -81,9 +79,9 @@ describe('autoComplete', function () {
     })
     it('should populate the value of the second container based on the first one', function () {
       const f = jasmine.createSpy().and.callFake(() => 'source2_2')
-      var cb = window.MTCAdmin.autoComplete.setupLinkedConfirm('#container1', '#container2', f)
-      var event = {}
-      var value = 'source1_2'
+      const cb = window.MTCAdmin.autoComplete.setupLinkedConfirm('#container1', '#container2', f)
+      const event = {}
+      const value = 'source1_2'
       // trigger the onconfirm function
       cb(event, value)
       expect(f).toHaveBeenCalledWith(value)
@@ -91,9 +89,9 @@ describe('autoComplete', function () {
     })
     it('should populate the value of the first container based on the second one', function () {
       const f = jasmine.createSpy().and.callFake(() => 'source1_2')
-      var cb = window.MTCAdmin.autoComplete.setupLinkedConfirm('#container2', '#container1', f)
-      var event = {}
-      var value = 'source2_2'
+      const cb = window.MTCAdmin.autoComplete.setupLinkedConfirm('#container2', '#container1', f)
+      const event = {}
+      const value = 'source2_2'
       // trigger the onconfirm function
       cb(event, value)
       expect(f).toHaveBeenCalledWith(value)

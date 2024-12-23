@@ -22,7 +22,7 @@ const apiResponse = {
     return res.status(413).json({ error: 'Message size too large :(' })
   },
 
-  sendJson: (res: Response, obj: object | string, code: number = 200): Response => {
+  sendJson: (res: Response, obj: object | string, code = 200): Response => {
     apiResponse.setDefaultHeaders(res)
     return res.status(code).json(obj)
   },

@@ -1,4 +1,3 @@
-
 import { PupilFrozenDataService } from './pupil-frozen.data.service'
 
 export class PupilFrozenService {
@@ -16,7 +15,7 @@ export class PupilFrozenService {
     this.throwIfFrozen(frozenCount > 0, 'frozen pupils cannot be modified')
   }
 
-  private static throwIfFrozen (frozenFlag: boolean, errorMsg: string = 'Pupil record is frozen and cannot be edited'): void {
+  private static throwIfFrozen (frozenFlag: boolean, errorMsg = 'Pupil record is frozen and cannot be edited'): void {
     if (frozenFlag) {
       throw new Error(errorMsg)
     }

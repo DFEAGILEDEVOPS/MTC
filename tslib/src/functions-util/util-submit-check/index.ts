@@ -88,8 +88,7 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
     throw new Error('invalid check functionality not yet implemented')
   }
   const messages = []
-  for (let index = 0; index < funcConfig.checkCodes.length; index++) {
-    const checkCode = funcConfig.checkCodes[index]
+  for (const checkCode of funcConfig.checkCodes) {
     if (messageVersion === SubmittedCheckVersion.V3.toString()) {
       messages.push(await fakeSubmittedCheckBuilder.createV3Message(checkCode))
       context.extraOutputs.set(outputCheckSubmissionServiceBusQueue, messages)

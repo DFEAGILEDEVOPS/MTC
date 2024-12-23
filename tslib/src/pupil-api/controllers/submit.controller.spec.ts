@@ -34,7 +34,9 @@ class JwtServiceMock implements IJwtService {
 }
 
 class CheckSubmitServiceMock implements ICheckSubmitService {
-  async submit (payload: any): Promise<void> {}
+  async submit (): Promise<void> {
+    return
+  }
 }
 
 describe('submit controller', () => {

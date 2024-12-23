@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach, jest, describe, test, expect, afterEach */
-
 const fs = require('fs-extra')
 const fileValidator = require('../../../../lib/validator/file-validator')
 const fileCsvErrors = require('../../../../lib/errors/file-csv')

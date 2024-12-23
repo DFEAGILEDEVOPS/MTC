@@ -11,7 +11,6 @@ const santitiseService = {
       throw new Error('Invalid string')
     }
     const window = new JSDOM('').window
-    // @ts-ignore
     const DOMPurify = createDOMPurify(window)
     // Allow safe html tags, but not svg or MathML
     const clean = DOMPurify.sanitize(dirty, { USE_PROFILES: { html: true } })

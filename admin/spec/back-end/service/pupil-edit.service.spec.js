@@ -1,4 +1,3 @@
-/* global describe test expect beforeEach jest afterEach */
 
 const dateService = require('../../../services/date.service')
 const pupilMock = require('../mocks/pupil')

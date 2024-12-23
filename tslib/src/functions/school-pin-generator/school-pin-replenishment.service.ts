@@ -70,8 +70,7 @@ export class SchoolPinReplenishmnentService {
     if (maxAttemptsAtSchoolPinUpdate === 0) {
       maxAttemptsAtSchoolPinUpdate = this.maxAttemptsCalculator.calculate(allowedWordSet.size, this.configProvider.DigitChars.length)
     }
-    for (let index = 0; index < schoolsToProcess.length; index++) {
-      const school = schoolsToProcess[index]
+    for (const school of schoolsToProcess) {
       if (this.newPinRequiredPredicate.isRequired(school)) {
         logger.info(`${this.logName} new pin required for school.id:${school.id}`)
         let pinUpdated = false

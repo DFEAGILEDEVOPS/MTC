@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect test beforeEach */
 
 const Logger = require('../../../models/logger')
 require('../../../config')

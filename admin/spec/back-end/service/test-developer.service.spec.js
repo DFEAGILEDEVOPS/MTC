@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, test, expect, jest beforeEach afterEach */
+
 const fs = require('fs-extra')
 
 const sut = require('../../../services/test-developer.service')
@@ -78,7 +78,7 @@ describe('test-developer.service', () => {
       const result = await sut.hasExistingFamiliarisationCheckForm()
       expect(result).toBeTruthy()
     })
-    test('finds a familiarisation check form and returns true to indicate it exists', async () => {
+    test('does not find a familiarisation check form and returns false to indicate it does not exist', async () => {
       jest.spyOn(checkFormV2DataService, 'sqlFindFamiliarisationCheckForm').mockResolvedValue({})
       const result = await sut.hasExistingFamiliarisationCheckForm()
       expect(result).toBeFalsy()

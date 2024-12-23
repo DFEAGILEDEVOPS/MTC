@@ -93,7 +93,7 @@ function genUPN (leaCode, estabCode, serial) {
       serial.toString().padStart(3, '0')
     const checkLetter = upnService.calculateCheckLetter(upn)
     return checkLetter + upn
-  } catch (error) {
+  } catch {
     console.error(`Failed on: leaCode [${leaCode}] estab: [${estabCode}] serial: [${serial}]`)
   }
 }

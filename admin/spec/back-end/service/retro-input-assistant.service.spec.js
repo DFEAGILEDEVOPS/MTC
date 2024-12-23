@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe test expect beforeEach afterEach fail jest */
-
 const sut = require('../../../services/retro-input-assistant.service')
 const dataService = require('../../../services/data-access/retro-input-assistant.data.service.js')
 const pupilId = 123

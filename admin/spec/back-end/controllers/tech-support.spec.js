@@ -1,5 +1,4 @@
 'use strict'
-/* global describe beforeEach test expect jest */
 
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')

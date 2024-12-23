@@ -48,8 +48,7 @@ export class ServiceManagerPupilService {
     if (p.length === 0) throw new Error(`no pupil found with specified urlSlug '${urlSlug}'`)
 
     const status = await this.getPupilStatus(p[0].id)
-    const isAnnulled = (p[0].attendanceCode === AnnulmentType.Maladministration) ||
-      (p[0].attendanceCode === AnnulmentType.PupilCheating)
+    const isAnnulled = (p[0].attendanceCode === AnnulmentType.Maladministration) || (p[0].attendanceCode === AnnulmentType.PupilCheating)
 
     return {
       dateOfBirth: dateService.formatShortGdsDate(moment(p[0].dateOfBirth)),
