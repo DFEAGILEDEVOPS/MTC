@@ -8,7 +8,8 @@ const pluginJest = require('eslint-plugin-jest')
 
 module.exports = tseslint.config({
   name: 'TS-and-JS',
-  // files: ['**/*.ts', '**/*.js'],
+  files: ['**/*.ts', '**/*.js'],
+  ignores: ['assets/**/*.js'],
   extends: [
     eslint.configs.recommended,
     ...tseslint.configs.stylisticTypeChecked,
@@ -76,7 +77,7 @@ module.exports = tseslint.config({
     globals: {
       // ...pluginJest.environments.globals.globals,
       ...globals.jest,
-      ...globals.jasmine
+      ...globals.jasmine,
     },
   },
   rules: {

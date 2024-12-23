@@ -1,10 +1,8 @@
 {
   "queues": [
     "check-started",
-    "check-submitted",
     "pupil-feedback",
-    "pupil-prefs",
-    "test-pupil-connection"
+    "pupil-prefs"
   ],
   "tables": [
     "checkResult",

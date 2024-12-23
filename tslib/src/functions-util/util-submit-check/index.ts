@@ -6,11 +6,6 @@ import { SchoolChecksDataService } from './school-checks.data.service'
 
 const functionName = 'util-submit-check'
 
-const outputSubmittedCheckStorageQueue = output.storageQueue({
-  connection: 'AZURE_STORAGE_CONNECTION_STRING',
-  queueName: 'check-submitted'
-})
-
 const outputCheckSubmissionServiceBusQueue = output.serviceBusQueue({
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'check-submission'
@@ -20,7 +15,7 @@ app.http(functionName, {
   methods: ['POST'],
   authLevel: 'function',
   handler: utilSubmitCheck,
-  extraOutputs: [outputSubmittedCheckStorageQueue, outputCheckSubmissionServiceBusQueue]
+  extraOutputs: [outputCheckSubmissionServiceBusQueue]
 })
 
 const liveSchoolChecksDataService = new SchoolChecksDataService()
@@ -58,8 +53,7 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
 
   const messageVersion: string = reqBody.messageVersion as string ?? SubmittedCheckVersion.V3
 
-  if (messageVersion.toString() !== SubmittedCheckVersion.V2.toString() &&
-    messageVersion.toString() !== SubmittedCheckVersion.V3.toString() &&
+  if (messageVersion.toString() !== SubmittedCheckVersion.V3.toString() &&
     messageVersion.toString() !== SubmittedCheckVersion.V4.toString()
   ) {
     return {
@@ -75,14 +69,10 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
     const promises = liveCheckCodes.map(async record => {
-      if (messageVersion === SubmittedCheckVersion.V2.toString()) {
-        return fakeSubmittedCheckBuilder.createV2Message(record.checkCode)
-      } else {
-        return fakeSubmittedCheckBuilder.createV3Message(record.checkCode)
-      }
+      return fakeSubmittedCheckBuilder.createV3Message(record.checkCode)
     })
     const messages = await Promise.all(promises)
-    context.extraOutputs.set(outputSubmittedCheckStorageQueue, messages)
+    context.extraOutputs.set(outputCheckSubmissionServiceBusQueue, messages)
     return {
       status: 200
     }
@@ -99,10 +89,7 @@ export async function utilSubmitCheck (req: HttpRequest, context: InvocationCont
   }
   const messages = []
   for (const checkCode of funcConfig.checkCodes) {
-    if (messageVersion === SubmittedCheckVersion.V2.toString()) {
-      messages.push(await fakeSubmittedCheckBuilder.createV2Message(checkCode))
-      context.extraOutputs.set(outputSubmittedCheckStorageQueue, messages)
-    } else if (messageVersion === SubmittedCheckVersion.V3.toString()) {
+    if (messageVersion === SubmittedCheckVersion.V3.toString()) {
       messages.push(await fakeSubmittedCheckBuilder.createV3Message(checkCode))
       context.extraOutputs.set(outputCheckSubmissionServiceBusQueue, messages)
     } else {

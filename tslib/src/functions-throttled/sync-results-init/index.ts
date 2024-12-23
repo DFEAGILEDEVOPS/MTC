@@ -11,7 +11,7 @@ app.timer(functionName, {
 
 export async function syncResultsInit (timer: Timer, context: InvocationContext): Promise<void> {
   if (timer.isPastDue) {
-    // This function could potentially deliver a lot of work to do to the functions, and none of it is urgent. No surprises!
+    // This function could potentially deliver a lot of work to the functions, and none of it is urgent. No surprises!
     context.log(`${functionName}: timer is past due, exiting.`)
     return
   }

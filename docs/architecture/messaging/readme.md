@@ -97,26 +97,6 @@ Azure Storage queue for signaling that the pupil has started official check.
 
 **Publishers**: pupil check application
 
-## check-submitted
-
-**Deprecated** - see `check-submission` below
-Azure Storage queue for submitting checks from the pupil check application.
-
-See the [check-submission](./check-submission/readme.md) documentation for full payload schema.
-
-```typescript
-{
-  version: 2
-  checkCode: string
-  schoolUUID: string
-  archive: string //zipped copy of submitted check JSON structure
-}
-```
-
-**Consumers**: check-receiver function
-
-**Publishers**: pupil check application
-
 ## check-submission
 
 Service bus queue for submitting checks from the pupil API.

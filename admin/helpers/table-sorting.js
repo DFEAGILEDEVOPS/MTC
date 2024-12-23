@@ -29,9 +29,7 @@ const tableSorting = {
    * @return {*}
    */
   comparer: function (v1, v2, asc) {
-    return this.isNumericValue(v1) && this.isNumericValue(v2) ?
-      this.getNumberComparisonResult(v1, v2, asc) :
-      this.getStringComparisonResult(v1, v2, asc)
+    return this.isNumericValue(v1) && this.isNumericValue(v2) ? this.getNumberComparisonResult(v1, v2, asc) : this.getStringComparisonResult(v1, v2, asc)
   },
 
   /**
@@ -87,13 +85,11 @@ const tableSorting = {
   },
 
   /**
-   * Return a sorted copy of the array.
-   * Sort a List by array of props (if first prop equivalent, sort by second, etc.)
-   * E.g.sortByProps(["a","b","c"], [{a:1,b:2,c:3}, {a:10,b:10,c:10}, {a:10,b:6,c:0}, {a:1, b:2, c:1}, {a:100}])
-   * => [{"a":1,"b":2,"c":1},{"a":1,"b":2,"c":3},{"a":10,"b":6,"c":0},{"a":10,"b":10,"c":10},{"a":100}]
-   */
-  sortByProps
-
-}
+ * Return a sorted copy of the array.
+ * Sort a List by array of props (if first prop equivalent, sort by second, etc.)
+ * E.g.sortByProps(["a","b","c"], [{a:1,b:2,c:3}, {a:10,b:10,c:10}, {a:10,b:6,c:0}, {a:1, b:2, c:1}, {a:100}])
+ * => [{"a":1,"b":2,"c":1},{"a":1,"b":2,"c":3},{"a":10,"b":6,"c":0},{"a":10,"b":10,"c":10},{"a":100}]
+ */
+  sortByProps }
 
 module.exports = tableSorting

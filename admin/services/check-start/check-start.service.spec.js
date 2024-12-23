@@ -295,15 +295,11 @@ describe('check-start.service', () => {
         tokenData[queueNameService.NAMES.PUPIL_FEEDBACK] = {
           queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab', url: 'xyz'
         }
-        tokenData[queueNameService.NAMES.CHECK_SUBMIT] = {
-          queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab', url: 'xyz'
-        }
         jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue(tokenData)
         const mockSignMethod = async (payload) => {
           return payload.checkCode
         }
         jest.spyOn(jwtService, 'sign').mockImplementation(mockSignMethod)
-        config.FeatureToggles.checkSubmissionApi = true
       })
 
       afterEach(() => {
@@ -393,24 +389,10 @@ describe('check-start.service', () => {
           })
       })
 
-      test('jwt token should only be generated when feature active', async () => {
-        config.FeatureToggles.checkSubmissionApi = false
-        await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        expect(jwtService.sign).not.toHaveBeenCalled()
-        config.FeatureToggles.checkSubmissionApi = true
-      })
-
       test('submission url should be sourced from config when feature active', async () => {
         const expectedUrl = `${config.PupilApi.baseUrl}/submit`
         const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(payload[0].tokens.checkSubmission.url).toStrictEqual(expectedUrl)
-      })
-
-      test('checkComplete tokens data should be populated when submission feature inactive', async () => {
-        config.FeatureToggles.checkSubmissionApi = false
-        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        expect(payload[0].tokens.checkSubmission).toBeUndefined()
-        expect(payload[0].tokens.checkComplete).toBeDefined()
       })
 
       test('checkSubmission tokens data should be populated when submission feature active', async () => {

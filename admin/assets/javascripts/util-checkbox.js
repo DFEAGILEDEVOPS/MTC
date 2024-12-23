@@ -55,7 +55,6 @@ const inputStatus = {
       $('#deselectAll').removeClass('all-hide')
       $(sel + ' > input:checkbox').attr('data-checked', true)
       const countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
-      // eslint-disable-next-line no-constant-binary-expression
       stickyBanner.toggle((validationStatus || true) && countCheckedCheckboxes > 0)
     })
   },

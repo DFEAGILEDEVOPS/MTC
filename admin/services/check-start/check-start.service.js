@@ -288,24 +288,21 @@ const checkStartService = {
       const pupilConfig = pupilConfigs[o.pupil_id]
       pupilConfig.practice = !o.check_isLiveCheck
       pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
-      pupilConfig.submissionMode = config.FeatureToggles.checkSubmissionApi ? 'modern' : 'legacy'
-      let jwtToken, checkSubmissionData, checkCompleteData
+      pupilConfig.submissionMode = 'modern'
+      let checkCompleteData
 
-      if (config.FeatureToggles.checkSubmissionApi) {
-        const jwtSigningOptions = {
-          issuer: 'MTC Admin',
-          subject: o.pupil_uuid,
-          expiresIn: fiveDays // expires in 5 days
-        }
-        jwtToken = await jwtService.sign({
-          checkCode: o.check_checkCode
-        }, jwtSigningOptions)
-        checkSubmissionData = {
-          url: `${config.PupilApi.baseUrl}/submit`,
-          token: jwtToken
-        }
-      } else {
-        checkCompleteData = sasTokens[queueNameService.NAMES.CHECK_SUBMIT]
+      const jwtSigningOptions = {
+        issuer: 'MTC Admin',
+        subject: o.pupil_uuid,
+        expiresIn: fiveDays // expires in 5 days
+      }
+      const jwtToken = await jwtService.sign({
+        checkCode: o.check_checkCode
+      },
+      jwtSigningOptions)
+      const checkSubmissionData = {
+        url: `${config.PupilApi.baseUrl}/submit`,
+        token: jwtToken
       }
 
       const payload = {
