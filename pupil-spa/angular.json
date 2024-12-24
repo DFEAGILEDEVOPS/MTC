@@ -77,18 +77,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "pupil-spa:build"
+            "buildTarget": "pupil-spa:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "pupil-spa:build:production"
+              "buildTarget": "pupil-spa:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pupil-spa:build"
+            "buildTarget": "pupil-spa:build"
           }
         },
         "test": {
