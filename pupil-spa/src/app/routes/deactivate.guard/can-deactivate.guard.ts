@@ -8,7 +8,6 @@ export interface CanComponentDeactivate {
 export const deactivateGuard: CanDeactivateFn<CanComponentDeactivate> = (
   component: CanComponentDeactivate
 ) => {
-  console.log('deactivateGuard() called')
   if (component.canDeactivate) {
     return component.canDeactivate()
   }
