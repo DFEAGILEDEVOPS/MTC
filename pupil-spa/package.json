@@ -20,10 +20,6 @@
   "engines": {
     "node": ">= 18"
   },
-  "resolutions": {
-    "**/**/lodash": ">=4.17.21",
-    "**/**/path-parse": ">=1.0.7"
-  },
   "dependencies": {
     "@angular/animations": "^16.2.12",
     "@angular/common": "^16.2.12",
@@ -43,7 +39,7 @@
     "ngx-cookie-service": "^16.0.0",
     "polly-js": "^1.8.2",
     "rxjs": "^7.8.1",
-    "sass": "^1.79.4",
+    "sass": "^1.83.0",
     "tslib": "^2.5.2",
     "uuid": "^11.0.3",
     "zone.js": "~0.13.1"
@@ -59,7 +55,7 @@
     "@angular/compiler-cli": "^16.2.12",
     "@angular/language-service": "^16.2.12",
     "@types/jasmine": "^5.1.5",
-    "@types/node": "16",
+    "@types/node": "20",
     "@typescript-eslint/eslint-plugin": "5.36.2",
     "@typescript-eslint/parser": "5.36.2",
     "axios": "^1.6.0",
