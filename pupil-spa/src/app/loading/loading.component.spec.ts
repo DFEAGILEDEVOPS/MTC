@@ -24,13 +24,6 @@ describe('LoadingComponent', () => {
   let auditServiceMock = new AuditServiceMock();
 
   beforeEach(waitForAsync(() => {
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [ IdleModalComponent ],
-      },
-    });
-
     TestBed.configureTestingModule({
       declarations: [LoadingComponent, IdleModalComponent, SvgClockComponent],
       providers: [
