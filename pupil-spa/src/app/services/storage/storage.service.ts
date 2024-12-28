@@ -59,18 +59,18 @@ export interface IStorageService {
   setAccessArrangements(accessArrangements: AccessArrangements): void
   setAnswer(answer: Answer): void
   setAuditEntry(auditEntry: AuditEntry): void
-  setCheckStartTime(checkStartTime: Number): void
-  setCheckState(state: Number): void
-  setCompletedSubmission(isCompleted: Boolean): any
-  setConfig(config: Object): any
+  setCheckStartTime(checkStartTime: number): void
+  setCheckState(state: number): void
+  setCompletedSubmission(isCompleted: boolean): any
+  setConfig(config: object): any
   setDeviceData(deviceData: any): void
-  setFeedback(feedback: Object): void
-  setInput(questionInput: Object): void
-  setPendingSubmission(isPending: Boolean): void
-  setPupil(pupilData: Object): void
+  setFeedback(feedback: object): void
+  setInput(questionInput: object): void
+  setPendingSubmission(isPending: boolean): void
+  setPupil(pupilData: object): void
   setQuestions(questions: Question[]): void
-  setSchool(school: Object): void
-  setTimeout(timeout: Object): void
+  setSchool(school: object): void
+  setTimeout(timeout: object): void
   setToken(token: string): void
 }
 
@@ -97,7 +97,7 @@ export class StorageService implements IStorageService {
     return this.getItem(checkStartTimeStorageKey);
   }
 
-  setCheckStartTime(checkStartTime: Number) {
+  setCheckStartTime(checkStartTime: number) {
     this.setItem(checkStartTimeStorageKey, checkStartTime);
   }
 
@@ -109,7 +109,7 @@ export class StorageService implements IStorageService {
     return this.getItem(checkStateStorageKey);
   }
 
-  setCheckState(state: Number) {
+  setCheckState(state: number) {
     this.setItem(checkStateStorageKey, state);
   }
 
@@ -121,7 +121,7 @@ export class StorageService implements IStorageService {
     return this.getItem(completedSubmissionStorageKey);
   }
 
-  setCompletedSubmission(isCompleted: Boolean) {
+  setCompletedSubmission(isCompleted: boolean) {
     this.setItem(completedSubmissionStorageKey, isCompleted);
   }
 
@@ -129,7 +129,7 @@ export class StorageService implements IStorageService {
     return this.getItem(configStorageKey);
   }
 
-  setConfig(configData: Object) {
+  setConfig(configData: object) {
     this.setItem(configStorageKey, configData);
   }
 
@@ -145,11 +145,11 @@ export class StorageService implements IStorageService {
     return this.getItem(feedbackStorageKey);
   }
 
-  setFeedback(feedbackData: Object) {
+  setFeedback(feedbackData: object) {
     this.setItem(feedbackStorageKey, feedbackData);
   }
 
-  setInput(questionInput: Object) {
+  setInput(questionInput: object) {
     this.setItem(new InputsStorageKey(), questionInput);
   }
 
@@ -157,7 +157,7 @@ export class StorageService implements IStorageService {
     return this.getItem(pendingSubmissionStorageKey);
   }
 
-  setPendingSubmission(isPending: Boolean) {
+  setPendingSubmission(isPending: boolean) {
     this.setItem(pendingSubmissionStorageKey, isPending);
   }
 
@@ -165,7 +165,7 @@ export class StorageService implements IStorageService {
     return this.getItem(pupilStorageKey);
   }
 
-  setPupil(pupilData: Object) {
+  setPupil(pupilData: object) {
     this.setItem(pupilStorageKey, pupilData);
   }
 
@@ -181,11 +181,11 @@ export class StorageService implements IStorageService {
     return this.getItem(schoolStorageKey);
   }
 
-  setSchool(schoolData: Object) {
+  setSchool(schoolData: object) {
     this.setItem(schoolStorageKey, schoolData);
   }
 
-  setTimeout(obj: Object) {
+  setTimeout(obj: object) {
     this.setItem(timeoutStorageKey, obj);
   }
 
@@ -197,11 +197,11 @@ export class StorageService implements IStorageService {
     return this.getItem(tokensStorageKey);
   }
 
-  setToken(token: String) {
+  setToken(token: string) {
     this.setItem(tokensStorageKey, token);
   }
 
-  protected setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
+  protected setItem(key: StorageKeyTypesAll, value: object | Array<object> | number | string | boolean): void {
     if (!key) {
       throw new Error('key is required');
     }

@@ -15,7 +15,7 @@ export class StorageServiceMock extends StorageService implements IStorageServic
   }
 
   // Extends StorageService, just swaps out the localStorage for an in-memory map.
-  protected setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
+  protected setItem(key: StorageKeyTypesAll, value: object | Array<object>): void {
     if (!key) {
       throw new Error('key is required');
     }

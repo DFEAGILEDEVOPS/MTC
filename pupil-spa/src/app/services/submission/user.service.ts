@@ -32,27 +32,25 @@ export class SubmissionService {
   }
 
   submit(payload: object): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      await this.http.postJson(`${APP_CONFIG.authURL}`, { payload })
-        .then(data => {
-          this.loggedIn = true;
-          this.storageService.clear();
-          // Create a login success event in the audit trail
-          this.auditService.addEntry(
-            this.auditEntryFactory.createLoginSuccessAuditEntryClass()
-          )
-          // Store other info to local storage, ready to be sent back in the payload
-          this.storageService.setQuestions(data[questionsStorageKey.toString()]);
-          this.storageService.setConfig(data[configStorageKey.toString()]);
-          this.storageService.setPupil(data[pupilStorageKey.toString()]);
-          this.storageService.setSchool(data[schoolStorageKey.toString()]);
-          this.storageService.setToken(data[tokensStorageKey.toString()]);
-          resolve(true);
-        },
-        (err) => {
-          reject(err);
-        }).catch(error => reject(error));
-    });
+    return this.http.postJson(`${APP_CONFIG.authURL}`, { payload })
+      .then(data => {
+        this.loggedIn = true;
+        this.storageService.clear();
+
+        // Create a login success event in the audit trail
+        this.auditService.addEntry(
+          this.auditEntryFactory.createLoginSuccessAuditEntryClass()
+        );
+
+        // Store other info to local storage, ready to be sent back in the payload
+        this.storageService.setQuestions(data[questionsStorageKey.toString()]);
+        this.storageService.setConfig(data[configStorageKey.toString()]);
+        this.storageService.setPupil(data[pupilStorageKey.toString()]);
+        this.storageService.setSchool(data[schoolStorageKey.toString()]);
+        this.storageService.setToken(data[tokensStorageKey.toString()]);
+
+        return true;
+      });
   }
 
   logout() {

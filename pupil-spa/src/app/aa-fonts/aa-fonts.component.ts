@@ -18,7 +18,7 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
   pupil: Pupil;
   validSelection = false;
   selectedSize: AccessArrangements["fontSize"];
-  fontSettings: Object[];
+  fontSettings: object[];
   accessArrangements: AccessArrangements;
   speechListenerEvent: any;
 
