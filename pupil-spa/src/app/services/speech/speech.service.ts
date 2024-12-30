@@ -89,7 +89,7 @@ export class SpeechService implements OnDestroy {
    * @param utterance
    * @param cancelBeforeSpeaking
    */
-  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<{}> {
+  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<void> {
     if (!this.isSupported()) {
       return;
     }
@@ -97,12 +97,12 @@ export class SpeechService implements OnDestroy {
       await this.cancel();
     }
     const sayThis = new SpeechSynthesisUtterance(utterance);
-    sayThis.onstart = (event) => {
+    sayThis.onstart = () => {
       this.speaking = true;
       this.announceSpeechStarted();
       this.audit.addEntry(this.auditEntryFactory.createUtteranceStarted());
     };
-    sayThis.onend = (event) => {
+    sayThis.onend = () => {
       this.speaking = false;
       this.audit.addEntry(this.auditEntryFactory.createUtteranceEnded());
       this.announceSpeechEnded();
@@ -123,12 +123,12 @@ export class SpeechService implements OnDestroy {
     }
     await this.cancel();
     const sayThis = new SpeechSynthesisUtterance(utterance);
-    sayThis.onstart = (event) => {
+    sayThis.onstart = () => {
       this.speaking = true;
       this.announceQuestionSpeechStarted();
       this.audit.addEntry(this.auditEntryFactory.createQuestionReadingStarted({ sequenceNumber }));
     };
-    sayThis.onend = (event) => {
+    sayThis.onend = () => {
       this.speaking = false;
       this.audit.addEntry(this.auditEntryFactory.createQuestionReadingEnded({ sequenceNumber }));
       this.announceQuestionSpeechEnded();
@@ -169,7 +169,7 @@ export class SpeechService implements OnDestroy {
    * Parse the source of a NativeElement and speak the text
    * @param nativeElement
    */
-  speakElement(nativeElement: any): Promise<{}> {
+  speakElement(nativeElement: any): Promise<void> {
     this.focusInterruptedPageSpeech = false;
     const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label'
       + ', *[speak="true"]';
@@ -292,7 +292,7 @@ export class SpeechService implements OnDestroy {
     const _window = this.windowRefService.nativeWindow;
     _window.clearTimeout(this.cancelTimeout);
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.synth?.cancel();
       this.speaking = false;
 
@@ -317,15 +317,13 @@ export class SpeechService implements OnDestroy {
    */
   waitForEndOfSpeech(): Promise<void> {
     const _window = this.windowRefService.nativeWindow;
-    return new Promise((resolve: (value?: any) => void, reject: (reason?: any) => void) => {
+    return new Promise((resolve: (value?: any) => void) => {
       if (!this.isSpeaking() && !this.isPending()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
         // wait for the last speechEnded event to resolve()
-        let subscription: any, timeout: number;
-
-        subscription = this.speechStatus.subscribe(speechStatus => {
+        const subscription = this.speechStatus.subscribe(speechStatus => {
           if (speechStatus === SpeechService.speechEnded) {
             _window.setTimeout(() => {
               if (!this.isSpeaking() && !this.isPending()) {
@@ -339,7 +337,7 @@ export class SpeechService implements OnDestroy {
 
         // check for deadlocks after a longer delay of 3sec
         // and use the emulated .speaking property if needed
-        timeout = _window.setTimeout(() => {
+        const timeout: number = _window.setTimeout(() => {
           if (!this.speaking || !this.synth.speaking) {
             resolve();
             subscription.unsubscribe();

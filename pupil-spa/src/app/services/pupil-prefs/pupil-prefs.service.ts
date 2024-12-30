@@ -68,7 +68,7 @@ export class PupilPrefsService {
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICalled());
       await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICallSucceeded());
-    } catch (error) {
+    } catch {
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICallFailed());
     }
   }

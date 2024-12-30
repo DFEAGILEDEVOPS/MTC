@@ -271,7 +271,7 @@ describe('HttpService', () => {
       try {
         await httpService.postXml('http://localhost', '<xml></xml>', new HttpHeaders(), retryCount)
         fail('Should have thrown')
-      } catch (error) {
+      } catch {
         expect(httpClientSpy.request).toHaveBeenCalledTimes(retryCount + 1);
       }
     })

@@ -225,7 +225,9 @@ export class StorageService implements IStorageService {
     // try/catch as not all localstorage items are JSON, e.g. ai_session
     try {
       item = JSON.parse(item);
-    } catch (_) { }
+    } catch {
+      // do nothing, it wasn't JSON
+    }
     return item;
   }
 
@@ -251,7 +253,7 @@ export class StorageService implements IStorageService {
       // try/catch as not all localstorage items are JSON, e.g. ai_session
       try {
         item = JSON.parse(item);
-      } catch (_) {
+      } catch {
         // do nothing, it wasn't JSON
        }
      output[key] = item
