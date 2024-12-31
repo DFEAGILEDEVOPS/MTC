@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, test expect */
 const accessArrangementsValidator = require('../../../../lib/validator/access-arrangements-validator')
 
 describe('Access arrangements validator', function () {

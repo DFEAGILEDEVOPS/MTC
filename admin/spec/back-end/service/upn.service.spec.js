@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, test, expect */
 
 const upnService = require('../../../services/upn.service')
 

@@ -40,7 +40,7 @@ export interface IRedisService {
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<Array<[error: Error | null, result: unknown]> | null | undefined>}
    */
-  drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null | undefined>
+  drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null | undefined>
   /**
    * @description get the TTL of an existing item in the cache
    * @param key the key of the item in the cache
@@ -122,7 +122,6 @@ export class RedisService implements IRedisService {
       meta: {
         type: cacheItemDataType
       },
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       value: value.toString()
     }
     const storageItemString = JSON.stringify(storageItem)
@@ -155,7 +154,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null | undefined> {
+  async drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null | undefined> {
     if (keys.length === 0) {
       return
     }

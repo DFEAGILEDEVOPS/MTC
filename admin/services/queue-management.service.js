@@ -15,8 +15,7 @@ const service = {
     const poisonQueues = queueInfo.filter(q => q.name.endsWith('-poison'))
     const mainQueues = queueInfo.filter(q => !q.name.endsWith('-poison'))
     const toReturn = []
-    for (let index = 0; index < mainQueues.length; index++) {
-      const q = mainQueues[index]
+    for (const q of mainQueues) {
       const poisonQCount = findPoisonQueueCount(q.name, poisonQueues)
       toReturn.push({
         name: q.name,

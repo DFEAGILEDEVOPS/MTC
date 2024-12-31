@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, test, jest expect */
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
 const ValidationError = require('../../../../../lib/validation-error')
 const checkWindowNameValidator = require('../../../../../lib/validator/check-window-v2/check-window-name-validator')

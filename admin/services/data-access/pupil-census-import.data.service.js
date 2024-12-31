@@ -9,7 +9,7 @@ const pupilCensusImportDataService = {}
  * @param {Number} jobId
  * @return {Promise<*>}
  */
-pupilCensusImportDataService.sqlBulkImport = async (pupilData, schools, jobId) => {
+pupilCensusImportDataService.sqlBulkImport = async () => {
   return {}
 }
 

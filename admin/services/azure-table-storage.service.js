@@ -79,7 +79,7 @@ const azureTableStorageService = {
         answers.forEach(a => {
           a.clientTimestamp = moment(a.clientTimestamp)
         })
-      } catch (error) {
+      } catch {
         // json decode error / ignore
       }
     }

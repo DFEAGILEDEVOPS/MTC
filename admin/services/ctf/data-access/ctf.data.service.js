@@ -43,7 +43,6 @@ const ctfDataService = {
                   WHERE id = @schoolId`
     const params = { name: 'schoolId', value: schoolId, type: TYPES.Int }
     const data = await sqlService.readonlyQuery(sql, [params])
-    // @ts-ignore
     return R.head(data)
   },
 

@@ -1,4 +1,3 @@
-/* global describe, test, expect */
 const pupilMock = require('../mocks/pupil')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 const moment = require('moment')

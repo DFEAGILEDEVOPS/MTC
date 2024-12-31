@@ -19,7 +19,7 @@ module.exports.validate = async (uploadedFile, element) => {
   let fileContent, unreadable
   try {
     fileContent = await fs.readFileSync(uploadedFile.file, 'utf8')
-  } catch (err) {
+  } catch {
     unreadable = true
   }
   if (isEmpty(fileContent) || unreadable) {

@@ -47,8 +47,7 @@ export class SchoolDataService implements ISchoolDataService {
     table.columns.add('urn', mssql.Int, { nullable: false })
     table.columns.add('typeOfEstablishmentLookup_id', mssql.Int, { nullable: true })
 
-    for (let i = 0; i < schoolData.length; i++) {
-      const school = schoolData[i]
+    for (const school of schoolData) {
       this.jobResult.linesProcessed += 1
       this.jobResult.schoolsLoaded += 1
       const dfeNumber = `${school.leaCode}${school.estabCode}`
@@ -71,7 +70,7 @@ export class SchoolDataService implements ISchoolDataService {
     return this.jobResult
   }
 
-  private async getExistingEstabTypes (): Promise<Array<Record<string, number>>> {
+  private async getExistingEstabTypes (): Promise<Record<string, number>[]> {
     const sql = `SELECT [id], [code]
                  FROM
                  [mtc_admin].[typeOfEstablishmentLookup] `
@@ -88,7 +87,7 @@ export class SchoolDataService implements ISchoolDataService {
     return estabTypes
   }
 
-  private async getEstabTypeId (estabTypeCode: number, estabTypeName: string, existingEstabTypes: Array<Record<string, number>>): Promise<number> {
+  private async getEstabTypeId (estabTypeCode: number, estabTypeName: string, existingEstabTypes: Record<string, number>[]): Promise<number> {
     const estabTypeEntry = R.find(R.propEq(estabTypeCode, 'code'), existingEstabTypes)
     if (estabTypeEntry === undefined) {
       this.logInfo(`no estabType found with code ${estabTypeCode}, attempting to add...`)
@@ -123,8 +122,7 @@ export class SchoolDataService implements ISchoolDataService {
     const sql = `
       INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn, typeOfEstablishmentLookup_id)
       VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn, @toeCodeId);`
-    for (let index = 0; index < schoolData.length; index++) {
-      const school = schoolData[index]
+    for (const school of schoolData) {
       const toeCodeId = await this.getEstabTypeId(school.estabTypeCode, school.estabTypeName, toeCodes)
       const request = new mssql.Request(this.pool)
       request.input('dfeNumber', mssql.TYPES.Int, `${school.leaCode}${school.estabCode}`)

@@ -1,4 +1,3 @@
-/* global describe, jest, test, expect, beforeEach, afterEach */
 const uuid = require('uuid')
 const sut = require('../../../services/organisation-bulk-upload.service')
 const fileValidator = require('../../../lib/validator/file-validator')

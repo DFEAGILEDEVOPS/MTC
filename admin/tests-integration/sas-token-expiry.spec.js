@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect afterAll beforeEach */
 
 const moment = require('moment')
 const redisKeyService = require('../services/redis-key.service')

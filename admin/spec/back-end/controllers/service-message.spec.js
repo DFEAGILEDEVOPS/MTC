@@ -1,4 +1,3 @@
-/* global describe expect beforeEach afterEach jest test describe */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/service-message')
 const administrationMessageService = require('../../../services/administration-message.service')

@@ -38,7 +38,7 @@ cd ../tslib
 nvm use
 # yarn clean
 yarn test
-yarn tests:integration
+yarn test:integration
 
 mybanner "tests passed ok"
 

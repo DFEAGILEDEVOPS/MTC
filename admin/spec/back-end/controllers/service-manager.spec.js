@@ -1,4 +1,3 @@
-/* global describe expect beforeEach afterEach test jest */
 const uuid = require('uuid')
 const httpMocks = require('node-mocks-http')
 
@@ -729,7 +728,7 @@ describe('service manager controller:', () => {
         typeOfEstablishmentCode: 10
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
-      jest.spyOn(schoolService, 'updateSchool').mockImplementation(_ => { return Promise.resolve() })
+      jest.spyOn(schoolService, 'updateSchool').mockImplementation(() => { return Promise.resolve() })
       await controller.postEditOrganisation(req, res, next)
       const schoolUpdateArg = schoolService.updateSchool.mock.calls[0][1]
       expect(schoolUpdateArg.name).toBe('updated name')
@@ -762,9 +761,8 @@ describe('service manager controller:', () => {
         urn: 888900
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
-      jest.spyOn(schoolService, 'updateSchool').mockRejectedValue(new ValidationError('leacCode', 'Unit test error' +
-        ' message'))
-      jest.spyOn(controller, 'getEditOrganisation').mockImplementation(_ => { return Promise.resolve() })
+      jest.spyOn(schoolService, 'updateSchool').mockRejectedValue(new ValidationError('leacCode', 'Unit test error' + ' message'))
+      jest.spyOn(controller, 'getEditOrganisation').mockImplementation(() => Promise.resolve())
       await controller.postEditOrganisation(req, res, next)
       expect(controller.getEditOrganisation).toHaveBeenCalled()
     })

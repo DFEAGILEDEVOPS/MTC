@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect beforeEach test jest afterEach */
 
 const R = require('ramda')
 

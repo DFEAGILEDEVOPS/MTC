@@ -33,7 +33,7 @@ const sasTokenService = {
       if (token) {
         return token
       }
-    } catch (error) {
+    } catch {
       logger.error(`Error retrieving cached cached sasToken for ${queueName}`)
     }
 

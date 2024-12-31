@@ -4,8 +4,6 @@ const pupilMock = require('../mocks/pupil')
 const checkWithResultsMock = require('../mocks/check-results')
 const checkMock = require('../mocks/check')
 
-/* global describe, test, expect, jest */
-
 describe('score.service', () => {
   describe('getScorePercentage', () => {
     test('returns the score in percentage value if the latest check has results', async () => {

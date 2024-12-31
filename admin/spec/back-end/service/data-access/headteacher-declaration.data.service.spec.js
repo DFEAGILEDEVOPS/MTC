@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, jest, expect, afterEach */
-
 const sqlService = require('../../../../services/data-access/sql.service')
 const sqlMockResponse = require('../../mocks/sql-modify-response')
 const hdfMock = require('../../mocks/sql-hdf.js')

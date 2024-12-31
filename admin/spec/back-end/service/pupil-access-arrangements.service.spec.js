@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect beforeEach fail jest test afterEach */
 
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
@@ -212,7 +211,7 @@ describe('pupilAccessArrangementsService', () => {
       let pupils
       try {
         pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(1234567)
-      } catch (error) {
+      } catch {
         fail()
       }
       expect(pupils[0].fullName).toBe('Johnson, John Test')
