@@ -10,7 +10,7 @@ import { TimerService } from '../services/timer/timer.service';
 })
 export class IdleModalComponent implements AfterViewInit, OnDestroy {
 
-    public closeCallback: Function;
+    public closeCallback: () => void // function type taking no args and returning void
     protected speechListenerEvent: any;
 
     constructor(

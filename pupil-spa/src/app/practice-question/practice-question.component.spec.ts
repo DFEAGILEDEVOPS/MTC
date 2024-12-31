@@ -482,16 +482,14 @@ describe('PractiseQuestionComponent', () => {
 
   describe('ngOnDestroy', () => {
     it('cleans up the timers on destroy', async () => {
-      // @ts-ignore: protected property
+      // @ts-expect-error: protected property
       component.countdownInterval = 1
-      // @ts-ignore: protected property
+      // @ts-expect-error: protected property
       component.timeout = 2
       const spy1 = spyOn(window, 'clearInterval')
       const spy2 = spyOn(window, 'clearTimeout')
       await component.ngOnDestroy()
-      // @ts-ignore
       expect(spy1).toHaveBeenCalledWith(1)
-      // @ts-ignore
       expect(spy2).toHaveBeenCalledWith(2)
     })
   })

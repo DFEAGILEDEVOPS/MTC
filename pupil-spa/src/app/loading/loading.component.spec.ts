@@ -11,12 +11,10 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { Question } from '../services/question/question.model';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { IdleModalComponent } from '../modal/idle.modal.component';
 import { TimerService } from '../services/timer/timer.service';
 import { TimerServiceMock } from '../services/timer/timer.service.mock';
 import { SvgClockComponent } from '../svg/svg.clock.component';
-import { servicesVersion } from 'typescript';
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
@@ -64,7 +62,7 @@ describe('LoadingComponent', () => {
   });
 
   it('should clean up the timeouts when destroyed', async () => {
-    // @ts-ignore: spying on protected method
+    // @ts-expect-error: spying on protected method
     const spy = spyOn(component, 'cleanupTheTimeouts').and.callThrough()
     await component.ngOnDestroy()
     expect(spy).toHaveBeenCalled()

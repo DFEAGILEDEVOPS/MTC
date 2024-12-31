@@ -2,6 +2,7 @@
  * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
  */
 import '@angular/localize/init';
+
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
@@ -26,13 +27,14 @@ import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
 /***************************************************************************************************
  * Zone JS is required by Angular itself.
  */
-import 'zone.js';  // Included with Angular CLI.
-
+import 'zone.js'; // Included with Angular CLI.
 
 import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
 
 /***************************************************************************************************
- * Buffer is required to encode non latin characters in the storage queue payload to base64.
+ * Buffer is required to encode non-Latin characters in the storage queue payload to base64.
  */
+import { Buffer } from 'buffer';
+
 (window as any)['global'] = window;
-global.Buffer = global.Buffer || require('buffer').Buffer;
+global.Buffer = global.Buffer || Buffer;

@@ -265,6 +265,7 @@ describe('CheckComponent', () => {
       })
 
       answerService = fixture.debugElement.injector.get(AnswerService)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       setAnswerSpy = spyOn(answerService, 'setAnswer').and.callFake((factor1, factor2, userAnswer, sequenceNumber) => {})
     })
 

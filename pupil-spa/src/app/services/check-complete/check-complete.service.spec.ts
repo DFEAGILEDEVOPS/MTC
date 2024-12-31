@@ -97,6 +97,7 @@ describe('CheckCompleteService', () => {
         }
       });
       let capturedMessage;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       azureQueueServiceSpy.addMessageToQueue.and.callFake((url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
         capturedMessage = message;
         return Promise.resolve()
