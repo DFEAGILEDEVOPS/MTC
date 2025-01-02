@@ -36,7 +36,7 @@ describe('AppConfigService', () => {
 
   it('returns false if the config json file does not exist', async () => {
     spyOn(http, 'get').and.callFake(() => {
-      return throwError(new HttpErrorResponse({ // TODO: remove deprecated throwError before rxjs v8
+      return throwError(() => new HttpErrorResponse({
         error: new Error('Not found'),
         status: 404,
         statusText: 'Not found'
