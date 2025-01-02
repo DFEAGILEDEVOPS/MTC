@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing'
 import { deactivateGuard, CanComponentDeactivate } from './can-deactivate.guard'
-import { RouterTestingModule } from '@angular/router/testing'
 import { Component } from '@angular/core'
 
 // Sample component for testing
@@ -20,7 +19,6 @@ describe('deactivateGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       declarations: [TestComponent]
     })
 
