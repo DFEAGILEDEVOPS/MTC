@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-
+import { of } from 'rxjs';
 import { AccessibilityStatementComponent } from './accessibility-statement.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -30,25 +30,27 @@ export class MockAppFooterComponent {
 describe('AccessibilityStatementComponent', () => {
   let component: AccessibilityStatementComponent;
   let fixture: ComponentFixture<AccessibilityStatementComponent>;
+  let mockActivatedRoute: Partial<ActivatedRoute>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ RouterTestingModule.withRoutes([]) ],
+  beforeEach(async () => {
+    mockActivatedRoute = {
+      fragment: of(null)
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [RouterModule.forRoot([])],
       declarations: [ AccessibilityStatementComponent, MockAppBreadcrumbsComponent, MockAppHeaderComponent, MockAppFooterComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } }, fragment: { subscribe: () => {} } } }
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ]
-    })
-    .compileComponents();
-  }));
+    }).compileComponents();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(AccessibilityStatementComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBeDefined();
   });
 });
