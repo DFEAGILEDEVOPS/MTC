@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { AccessibilityStatementComponent } from './accessibility-statement.component';
