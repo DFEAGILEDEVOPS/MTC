@@ -21,7 +21,7 @@ export class AccessibilityStatementComponent implements OnInit, AfterViewChecked
       if (this.fragment) {
         document.querySelector('#' + this.fragment).scrollIntoView();
       }
-    } catch (e) { }
+    } catch { /* empty */ }
   }
 
 }

@@ -20,7 +20,7 @@ import { Config } from '../config.model';
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
   let fixture: ComponentFixture<LoginSuccessComponent>;
-  let store: {};
+  let store: object;
   let mockRouter;
   let appUsageService;
   let questionService;
@@ -56,6 +56,7 @@ describe('LoginSuccessComponent', () => {
 
     store = {};
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     spyOn(storageService, 'getItem').and.callFake(function (key) {
       return JSON.stringify(responseMock);
     });

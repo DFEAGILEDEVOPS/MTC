@@ -105,7 +105,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       this.feedbackData = {
         'satisfactionRating': this.selectedSatisfactionRating,
         'createdAt': new Date(),
-        'checkCode': this.pupilData['checkCode' as keyof Object]
+        'checkCode': this.pupilData['checkCode' as keyof object]
       };
       this.storageService.setFeedback(this.feedbackData);
       this.enableSubmit = false;

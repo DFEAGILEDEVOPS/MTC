@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core'
+import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ViewContainerRef } from '@angular/core'
 import { LoadingComponent } from '../loading/loading.component';
 import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service'
@@ -18,10 +18,9 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
               protected questionService: QuestionService,
               protected speechService: SpeechService,
               protected elRef: ElementRef,
-              protected componentFactoryResolver: ComponentFactoryResolver,
               protected viewContainerRef: ViewContainerRef,
               protected auditEntryFactory: AuditEntryFactory) {
-    super(auditService, questionService, speechService, elRef, componentFactoryResolver, viewContainerRef, auditEntryFactory)
+    super(auditService, questionService, speechService, elRef, auditEntryFactory)
   }
 
   addAuditServiceEntry() {

@@ -1,14 +1,14 @@
-import { Component,
+import {
+  AfterViewChecked,
   AfterViewInit,
-  Input,
-  Output,
+  Component,
+  ElementRef,
   EventEmitter,
   HostListener,
-  ElementRef,
+  Input,
   OnDestroy,
-  AfterViewChecked,
-  ComponentFactoryResolver,
-  ComponentRef,
+  Output,
+  ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
@@ -31,6 +31,9 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   protected timeouts: number[] = [];
   public config: Config;
   public nextButtonDelayFinished = false;
+
+  @ViewChild('modalContainer', { read: ViewContainerRef })
+  modalContainer!: ViewContainerRef;
 
   @Input()
   public shouldShowWarningModal = true;
@@ -59,8 +62,6 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
               protected questionService: QuestionService,
               protected speechService: SpeechService,
               protected elRef: ElementRef,
-              protected componentFactoryResolver: ComponentFactoryResolver,
-              protected viewContainerRef: ViewContainerRef,
               protected auditEntryFactory: AuditEntryFactory) {
     this.config = this.questionService.getConfig();
   }
@@ -102,11 +103,10 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   }
 
   showWarningModal() {
-    const factory = this.componentFactoryResolver.resolveComponentFactory(IdleModalComponent);
-    const ref: ComponentRef<IdleModalComponent> = this.viewContainerRef.createComponent(factory);
-    ref.instance.closeCallback = () => {
-      ref.destroy();
-    };
+    const modalRef = this.modalContainer.createComponent(IdleModalComponent)
+    modalRef.instance.closeCallback = () => {
+      modalRef.destroy()
+    }
   }
 
   async ngAfterViewInit() {
@@ -150,7 +150,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   }
 
   /**
-   * Usually this screenis shown for 3 seconds, except when the next button between questions is shown
+   * Usually this screen is shown for 3 seconds, except when the next button between questions is shown
    * the button just calls this function in the onClick handler.
    */
   async sendTimeoutEvent() {

@@ -26,7 +26,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public loginSucceeded: boolean
   public connectionFailed: boolean
   public loginPendingViewMinDisplay: number
-  //@ts-ignore used in ngOnInit
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: TS6133
   private errorMessage: string
   public isUnsupportedBrowser: boolean
   public isLocalStorageEnabled: boolean
@@ -46,6 +47,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ) {
     const { loginPendingViewMinDisplay } = APP_CONFIG
     this.loginPendingViewMinDisplay = loginPendingViewMinDisplay
+    this.errorMessage = ''
   }
 
   ngOnInit () {

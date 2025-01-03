@@ -4,7 +4,6 @@ import { SubmissionService } from './submission.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
 import { CompressorService } from '../compressor/compressor.service'
-import * as lzString from 'lz-string';
 import { ApplicationInsightsService } from '../app-insights/app-insights.service'
 
 describe('submission service', () => {
@@ -117,7 +116,7 @@ describe('submission service', () => {
     }
     httpServiceSpy.post.and.callFake((url: string, postBody: any) => {
       const jsonPayload = CompressorService.decompressFromGzip(postBody.archive)
-      //const jsonPayload = JSON.parse(stringifiedPayload)
+      expect(jsonPayload.checkCode).toBe(payload.checkCode)
       expect(postBody.version).toEqual(expectedPayloadVersion)
       expect(postBody.checkCode).toEqual(payload?.checkCode)
       expect(postBody.schoolUUID).toEqual(payload?.school?.uuid)

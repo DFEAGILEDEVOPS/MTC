@@ -16,7 +16,7 @@ import { QuestionService } from '../services/question/question.service';
 })
 export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedContrast: string;
-  contrastSettings: Object[];
+  contrastSettings: object[];
   accessArrangements: any;
   backLinkUrl: string;
   speechListenerEvent: any;
