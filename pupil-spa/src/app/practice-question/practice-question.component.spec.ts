@@ -337,8 +337,9 @@ describe('PractiseQuestionComponent', () => {
 
   describe('handleKeyboardEvent', () => {
     function dispatchKeyEvent(keyboardDict) {
+      keyboardDict.bubbles ??= true
+      keyboardDict.cancelable ??= true
       const event = new KeyboardEvent('keyup', keyboardDict);
-      event.initEvent('keyup', true, true);
       document.dispatchEvent(event);
       return event;
     }
