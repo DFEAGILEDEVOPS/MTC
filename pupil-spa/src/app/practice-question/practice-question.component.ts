@@ -489,7 +489,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       if (this.config.questionReader) {
         this.speechService.speakQueued('Delete ' + this.answer[this.answer.length - 1]);
       }
-      this.answer = this.answer.substr(0, this.answer.length - 1);
+      this.answer = this.answer.substring(0, this.answer.length - 1);
     }
   }
 

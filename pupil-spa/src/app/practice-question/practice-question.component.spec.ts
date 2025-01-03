@@ -17,9 +17,13 @@ import { Renderer2 } from '@angular/core'
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
 import { AuditEntryFactory } from '../services/audit/auditEntry'
 
+class TestablePracticeQuestionComponent extends PracticeQuestionComponent {
+  public submitted = false
+}
+
 describe('PractiseQuestionComponent', () => {
-  let component: PracticeQuestionComponent;
-  let fixture: ComponentFixture<PracticeQuestionComponent>;
+  let component: TestablePracticeQuestionComponent
+  let fixture: ComponentFixture<TestablePracticeQuestionComponent>;
   let mockSpeechService: SpeechServiceMock;
   let registerInputService: RegisterInputService;
   let registerInputServiceSpy: any;
@@ -38,7 +42,7 @@ describe('PractiseQuestionComponent', () => {
     mockSpeechService = new SpeechServiceMock();
 
     TestBed.configureTestingModule({
-      declarations: [ PracticeQuestionComponent ],
+      declarations: [ TestablePracticeQuestionComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
         WindowRefService,
@@ -55,7 +59,7 @@ describe('PractiseQuestionComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PracticeQuestionComponent);
+    fixture = TestBed.createComponent(TestablePracticeQuestionComponent);
     component = fixture.componentInstance;
     component.soundComponent = new SoundComponentMock();
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
@@ -492,6 +496,37 @@ describe('PractiseQuestionComponent', () => {
       await component.ngOnDestroy()
       expect(spy1).toHaveBeenCalledWith(1)
       expect(spy2).toHaveBeenCalledWith(2)
+    })
+  })
+
+  describe('deleteChar', () => {
+    it('short circuits if the answer has already been submitted', () => {
+      component.submitted = true
+      component.answer = '123'
+      component.deleteChar()
+      expect(component.answer).toBe('123') // no change because it short-circuited
+    })
+    it('deletes the answer if there is one to delete', () => {
+      component.answer = '123'
+      component.deleteChar()
+      expect(component.answer).toBe('12') // success
+    })
+    it('does nothing if the input is an empty string', () => {
+      component.answer = ''
+      component.deleteChar()
+      expect(component.answer).toBe('') // ok, no error
+    })
+    it('does nothing if the input is an empty string', () => {
+      component.answer = ''
+      component.deleteChar()
+      expect(component.answer).toBe('') // ok, no error
+    })
+    it('speaks the deletion if configured', () => {
+      component.config.questionReader = true // configure speech
+      spyOn(mockSpeechService, 'speakQueued')
+      component.answer = '123'
+      component.deleteChar()
+      expect(mockSpeechService.speakQueued).toHaveBeenCalledTimes(1)
     })
   })
 });
