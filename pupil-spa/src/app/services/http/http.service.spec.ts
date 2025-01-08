@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing'
 import { HttpService } from './http.service'
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { HttpErrorResponse, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { defer } from 'rxjs/internal/observable/defer'
 
 /** Create async observable that emits-once and completes
@@ -21,11 +21,13 @@ describe('HttpService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        HttpService
-      ]
-    })
+    imports: [],
+    providers: [
+        HttpService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     // Here is how to construct an actual HttpClient instance without DI
     // service = new HttpService(new HttpClient(new HttpXhrBackend({ build: () => new XMLHttpRequest() })));
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'request'])

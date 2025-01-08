@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import * as polly from 'polly-js';
+import polly from 'polly-js'
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({

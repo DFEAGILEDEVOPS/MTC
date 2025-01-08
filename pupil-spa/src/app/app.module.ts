@@ -1,7 +1,7 @@
 // Angular modules
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GlobalErrorHandler } from './error-handler';
@@ -110,8 +110,7 @@ const appRoutes: Routes = [
   { path: '**', component: PageNotFoundComponent }
 ];
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AAColoursComponent,
         AAFontsComponent,
         AASettingsComponent,
@@ -158,17 +157,13 @@ const appRoutes: Routes = [
         ErrorLocalStorageComponent,
         PageNotFoundComponent
     ],
-    imports: [
-        BrowserModule,
-        RouterModule.forRoot(appRoutes, { enableTracing: false }), // set enableTracing: true for debugging only
-        FormsModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-    ],
     exports: [
         RouterModule
     ],
-    providers: [
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        RouterModule.forRoot(appRoutes, { enableTracing: false }), // set enableTracing: true for debugging only
+        FormsModule,
+        ReactiveFormsModule], providers: [
         AppConfigService,
         { provide: APP_INITIALIZER, useFactory: loadConfigService, deps: [AppConfigService], multi: true },
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
@@ -199,9 +194,8 @@ const appRoutes: Routes = [
         TokenService,
         UserService,
         WarmupQuestionService,
-        WindowRefService
-    ],
-    bootstrap: [AppComponent]
-})
+        WindowRefService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppRoutingModule {
 }

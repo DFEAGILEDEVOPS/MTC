@@ -13,7 +13,7 @@ import { UserService } from '../services/user/user.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { Config } from '../config.model';
 
@@ -32,10 +32,10 @@ describe('LoginSuccessComponent', () => {
     };
 
     const injector = TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
-      declarations: [LoginSuccessComponent],
-      providers: [
+    schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
+    declarations: [LoginSuccessComponent],
+    imports: [],
+    providers: [
         HttpClient,
         HttpClientModule,
         DeviceService,
@@ -47,8 +47,9 @@ describe('LoginSuccessComponent', () => {
         QuestionService,
         WindowRefService,
         AppUsageService,
-      ]
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+    ]
+});
     storageService = injector.inject(StorageService);
     appUsageService = injector.inject(AppUsageService);
     questionService = injector.inject(QuestionService);

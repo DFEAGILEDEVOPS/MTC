@@ -28,9 +28,6 @@ import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
  * Zone JS is required by Angular itself.
  */
 import 'zone.js'; // Included with Angular CLI.
-
-import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
-
 /***************************************************************************************************
  * Buffer is required to encode non-Latin characters in the storage queue payload to base64.
  */

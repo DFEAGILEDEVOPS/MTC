@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing'
 import { AppConfigService } from './config.service'
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { throwError } from 'rxjs/internal/observable/throwError'
 import { of } from 'rxjs/internal/observable/of'
 
@@ -11,11 +11,13 @@ describe('AppConfigService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        AppConfigService
-      ]
-    })
+    imports: [],
+    providers: [
+        AppConfigService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     service = TestBed.inject(AppConfigService)
     http = TestBed.inject(HttpClient)
   })
