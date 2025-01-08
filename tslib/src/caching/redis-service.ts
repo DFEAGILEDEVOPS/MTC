@@ -29,7 +29,7 @@ export interface IRedisService {
   /**
    * @description insert or ovewrite an item in the cache, which lives for a specific duration
    * @param {string} key the unique string key of the redis entry to persist
-   * @param {object | string} value the item to persist in redis cache
+   * @param {string | any} value the item to persist in redis cache
    * @param {number} ttl how long to store the item in seconds
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
