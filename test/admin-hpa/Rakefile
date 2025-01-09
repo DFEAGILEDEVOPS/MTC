@@ -13,7 +13,7 @@ ENV['SERVER_COUNT'] ||= '8'
 Cucumber::Rake::Task.new(:run_all, 'Run all features') do |t|
   File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
   @start_time = Time.now
-  t.cucumber_opts = ["--format pretty --retry 1 -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"]
+  t.cucumber_opts = ["--format pretty --retry 2 -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"]
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
 end
 
