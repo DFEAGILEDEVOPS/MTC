@@ -13,6 +13,9 @@ jobs:
     environment:
       TZ: Europe/London
     steps:
+      - browser-tools/install-browser-tools
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - checkout
       - restore_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
