@@ -8,54 +8,30 @@ import { type ILogger } from '../common/logger'
 export interface IRedisService {
   /**
    * @description retrieve an item from the cache, under the given key
-   * @param {string} key the unique string key of the redis entry to fetch
-   * @throws when the data type of the retrieved value is unsupported
-   * @returns {Promise<unknown | undefined>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
   get (key: string): Promise<unknown | undefined>
   /**
    * @description insert or ovewrite an item in the cache, which lives indefinitely
-   * @param {string} key the unique string key of the redis entry to persist
-   * @param {object | string} value the item to persist in redis cache
-   * @throws when the incoming item datatype is not supported and when the setex redis operation fails
-   * @returns {Promise<void} an awaitable promise
    */
   set (key: string, value: string | Record<string, any>): Promise<void>
   /**
-   * @description drop a series of items from the cache
-   * @param {Array<string>} keys an array of keys to invalidate
-   * @returns {Promise<void>}
-   */
-  /**
    * @description insert or ovewrite an item in the cache, which lives for a specific duration
-   * @param {string} key the unique string key of the redis entry to persist
-   * @param {string | any} value the item to persist in redis cache
-   * @param {number} ttl how long to store the item in seconds
-   * @throws when the incoming item datatype is not supported and when the setex redis operation fails
-   * @returns {Promise<void} an awaitable promise
    */
   setex (key: string, value: string | any, ttl: number): Promise<void>
   /**
    * @description drop a series of items from the cache
-   * @param {Array<string>} keys an array of keys to invalidate
-   * @returns {Promise<Array<[error: Error | null, result: unknown]> | null | undefined>}
    */
   drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null | undefined>
   /**
    * @description get the TTL of an existing item in the cache
-   * @param key the key of the item in the cache
-   * @returns the TTL in seconds or null if the item is not found
    */
   ttl (key: string): Promise<number | null>
   /**
    * @description set the TTL of an existing item in the cache
-   * @param key the unique string key of the redis entry to update
-   * @param ttl the expiry time, in seconds from now
    */
   expire (key: string, ttl: number): Promise<any>
   /**
    * Drop multiple keys that share a common prefix
-   * @param prefix the start of the string that matches the keys to be dropped
    */
   dropByPrefix (prefix: string): Promise<void>
 }
