@@ -36,8 +36,7 @@ jobs:
       # Test Pupil SPA: the first run of `ng test` fails due to image issues.  This doesn't happen with `ng build`.
       # Try once and ignore completely...
       - run: bash -c "export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-spa; nvm use; yarn test:single; exit 0"
-      # The real test run we are interested in:
-       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-spa;     nvm use; yarn test:single
+      # The real test run we are interested in:       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-spa;     nvm use; yarn test:single
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd tslib;         nvm use; yarn install --frozen-lockfile
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd tslib;         nvm use; yarn test:throttle
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin;         nvm use; yarn test:frontend
