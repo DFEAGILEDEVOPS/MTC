@@ -1,7 +1,7 @@
 import config from '../config'
 import { isNil } from 'ramda'
-import * as appInsights from 'applicationinsights'
-
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const appInsights = require('applicationinsights')
 const cloudRoleName = 'TsLib'
 
 const connectionString = config.ApplicationInsights.ConnectionString
