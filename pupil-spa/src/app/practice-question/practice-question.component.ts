@@ -32,9 +32,10 @@ export enum EventType {
 }
 
 @Component({
-  selector: 'app-practice-question',
-  templateUrl: '../question/question.component.html',
-  styleUrls: ['../question/question.component.css']
+    selector: 'app-practice-question',
+    templateUrl: '../question/question.component.html',
+    styleUrls: ['../question/question.component.css'],
+    standalone: false
 })
 export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 

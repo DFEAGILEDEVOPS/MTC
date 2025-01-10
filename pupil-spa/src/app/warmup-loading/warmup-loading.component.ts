@@ -6,9 +6,10 @@ import { QuestionService } from '../services/question/question.service'
 import { SpeechService } from '../services/speech/speech.service'
 
 @Component({
-  selector: 'app-warmup-loading',
-  templateUrl: './warmup-loading.component.html',
-  styles: []
+    selector: 'app-warmup-loading',
+    templateUrl: './warmup-loading.component.html',
+    styles: [],
+    standalone: false
 })
 export class WarmupLoadingComponent extends LoadingComponent implements AfterViewInit, OnDestroy {
 

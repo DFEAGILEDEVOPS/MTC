@@ -15,9 +15,10 @@ import { CanComponentDeactivate } from '../routes/deactivate.guard/can-deactivat
 import { ApplicationInsightsService } from '../services/app-insights/app-insights.service';
 
 @Component({
-  selector: 'app-check',
-  templateUrl: './check.component.html',
-  styleUrls: [ './check.component.scss' ]
+    selector: 'app-check',
+    templateUrl: './check.component.html',
+    styleUrls: ['./check.component.scss'],
+    standalone: false
 })
 export class CheckComponent implements OnInit, CanComponentDeactivate {
   private static warmupIntroRe = /^warmup-intro$/;

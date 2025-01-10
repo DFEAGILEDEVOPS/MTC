@@ -10,9 +10,10 @@ import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 
 @Component({
-  selector: 'app-aa-fonts',
-  templateUrl: './aa-fonts.component.html',
-  styleUrls: ['./aa-fonts.component.scss']
+    selector: 'app-aa-fonts',
+    templateUrl: './aa-fonts.component.html',
+    styleUrls: ['./aa-fonts.component.scss'],
+    standalone: false
 })
 export class AAFontsComponent implements AfterViewInit, OnDestroy {
   pupil: Pupil;

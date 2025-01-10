@@ -1,18 +1,23 @@
-import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import {
-  AccessArrangementsConfig,
-} from '../access-arrangements';
-import { StorageService } from '../services/storage/storage.service';
-import { RouteService } from '../services/route/route.service';
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
-import { SpeechService } from '../services/speech/speech.service';
-import { QuestionService } from '../services/question/question.service';
+  Component,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { AccessArrangementsConfig } from "../access-arrangements";
+import { StorageService } from "../services/storage/storage.service";
+import { RouteService } from "../services/route/route.service";
+import { PupilPrefsService } from "../services/pupil-prefs/pupil-prefs.service";
+import { SpeechService } from "../services/speech/speech.service";
+import { QuestionService } from "../services/question/question.service";
 
 @Component({
-  selector: 'app-aa-colours',
-  templateUrl: './aa-colours.component.html',
-  styleUrls: ['./aa-colours.component.scss']
+  selector: "app-aa-colours",
+  templateUrl: "./aa-colours.component.html",
+  styleUrls: ["./aa-colours.component.scss"],
+  standalone: false,
 })
 export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedContrast: string;
@@ -32,16 +37,15 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
     this.accessArrangements = this.storageService.getAccessArrangements();
-    this.selectedContrast = this.accessArrangements.contrast || 'bow';
+    this.selectedContrast = this.accessArrangements.contrast || "bow";
   }
 
   ngOnInit() {
-    const validBackLinks = ['/access-settings', '/font-choice'];
+    const validBackLinks = ["/access-settings", "/font-choice"];
     if (validBackLinks.indexOf(this.routeService.getPreviousUrl()) !== -1) {
       this.backLinkUrl = this.routeService.getPreviousUrl();
     }
   }
-
 
   selectionChange(selectedContrast: string) {
     this.selectedContrast = selectedContrast;
@@ -52,10 +56,10 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.setAccessArrangements(this.accessArrangements);
     this.pupilPrefsService.storePupilPrefs();
 
-    if (this.routeService.getPreviousUrl() === '/access-settings') {
-      this.router.navigate(['access-settings']);
+    if (this.routeService.getPreviousUrl() === "/access-settings") {
+      this.router.navigate(["access-settings"]);
     } else {
-      this.router.navigate(['sign-in-success']);
+      this.router.navigate(["sign-in-success"]);
     }
   }
 
@@ -63,11 +67,16 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
-        this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#next'));
+        this.speechService.focusEndOfSpeech(
+          this.elRef.nativeElement.querySelector("#next")
+        );
       });
 
-      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event: any) => { this.speechService.focusEventListenerHook(event); },
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener(
+        "focus",
+        (event: any) => {
+          this.speechService.focusEventListenerHook(event);
+        },
         true
       );
     }
@@ -78,7 +87,11 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.questionService.getConfig().questionReader) {
       await this.speechService.cancel();
 
-      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
+      this.elRef.nativeElement.removeEventListener(
+        "focus",
+        this.speechListenerEvent,
+        true
+      );
     }
   }
 }

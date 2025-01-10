@@ -20,9 +20,10 @@ import { Config } from '../config.model';
 import { IdleModalComponent } from '../modal/idle.modal.component';
 
 @Component({
-  selector: 'app-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss']
+    selector: 'app-loading',
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.scss'],
+    standalone: false
 })
 
 export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {

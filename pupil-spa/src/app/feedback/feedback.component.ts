@@ -7,9 +7,10 @@ import { FeedbackService } from '../services/feedback/feedback.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 
 @Component({
-  selector: 'app-feedback',
-  templateUrl: './feedback.component.html',
-  styleUrls: ['./feedback.component.scss']
+    selector: 'app-feedback',
+    templateUrl: './feedback.component.html',
+    styleUrls: ['./feedback.component.scss'],
+    standalone: false
 })
 export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 

@@ -4,7 +4,8 @@ import { Component } from '@angular/core'
 
 // Sample component for testing
 @Component({
-  template: '<div>Test Component</div>'
+    template: '<div>Test Component</div>',
+    standalone: false
 })
 class TestComponent implements CanComponentDeactivate {
   isDirty = false
@@ -68,8 +69,9 @@ describe('deactivateGuard', () => {
 
   it('should work with components that do not implement CanComponentDeactivate', () => {
     @Component({
-      template: '<div>Non-implementing Component</div>'
-    })
+    template: '<div>Non-implementing Component</div>',
+    standalone: false
+})
     class NonImplementingComponent {}
 
     const nonImplementingComponent = TestBed.createComponent(NonImplementingComponent).componentInstance

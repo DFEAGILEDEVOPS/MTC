@@ -6,9 +6,10 @@ import { QuestionService } from '../services/question/question.service';
 import { CheckCompleteService } from '../services/check-complete/check-complete.service';
 
 @Component({
-  selector: 'app-submission-pending',
-  templateUrl: './submission-pending.component.html',
-  styleUrls: ['./submission-pending.component.scss']
+    selector: 'app-submission-pending',
+    templateUrl: './submission-pending.component.html',
+    styleUrls: ['./submission-pending.component.scss'],
+    standalone: false
 })
 export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDestroy {
   private speechListenerEvent: any;

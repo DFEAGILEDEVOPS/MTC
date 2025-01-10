@@ -6,9 +6,10 @@ import { StorageService } from '../services/storage/storage.service';
 
 
 @Component({
-  selector: 'app-page-visibility',
-  templateUrl: './page-visibility.component.html',
-  styleUrls: ['./page-visibility.component.scss']
+    selector: 'app-page-visibility',
+    templateUrl: './page-visibility.component.html',
+    styleUrls: ['./page-visibility.component.scss'],
+    standalone: false
 })
 export class PageVisibilityComponent {
   constructor(

@@ -6,23 +6,26 @@ import { AccessibilityStatementComponent } from './accessibility-statement.compo
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
-  template: ''
+    selector: 'app-header',
+    template: '',
+    standalone: false
 })
 export class MockAppHeaderComponent {
 }
 
 @Component({
-  selector: 'app-breadcrumbs',
-  template: ''
+    selector: 'app-breadcrumbs',
+    template: '',
+    standalone: false
 })
 export class MockAppBreadcrumbsComponent {
   @Input() breadcrumbs: any[];
 }
 
 @Component({
-  selector: 'app-footer',
-  template: ''
+    selector: 'app-footer',
+    template: '',
+    standalone: false
 })
 export class MockAppFooterComponent {
 }

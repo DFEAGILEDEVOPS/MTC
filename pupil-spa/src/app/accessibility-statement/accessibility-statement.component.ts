@@ -2,9 +2,10 @@ import { Component, OnInit, AfterViewChecked, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-accessibility-statement',
-  templateUrl: './accessibility-statement.component.html',
-  styleUrls: ['./accessibility-statement.component.scss']
+    selector: 'app-accessibility-statement',
+    templateUrl: './accessibility-statement.component.html',
+    styleUrls: ['./accessibility-statement.component.scss'],
+    standalone: false
 })
 export class AccessibilityStatementComponent implements OnInit, AfterViewChecked {
 

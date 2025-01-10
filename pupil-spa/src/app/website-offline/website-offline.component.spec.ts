@@ -4,14 +4,16 @@ import { WebsiteOfflineComponent } from './website-offline.component'
 import { loadConfigMockService } from '../services/config/config.service'
 
 @Component({
-  selector: 'app-header',
-  template: ''
+    selector: 'app-header',
+    template: '',
+    standalone: false
 })
 export class MockAppHeaderComponent {}
 
 @Component({
-  selector: 'app-footer',
-  template: ''
+    selector: 'app-footer',
+    template: '',
+    standalone: false
 })
 export class MockAppFooterComponent {}
 

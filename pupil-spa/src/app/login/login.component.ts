@@ -14,9 +14,10 @@ import { DeviceService } from '../services/device/device.service'
 import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service'
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent implements OnInit, AfterViewInit {
 
