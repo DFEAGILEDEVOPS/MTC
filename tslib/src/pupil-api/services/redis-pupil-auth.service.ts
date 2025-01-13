@@ -6,7 +6,7 @@ import config from '../config'
 import { ServiceBusQueueService } from '../../azure/service-bus.queue.service'
 import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
 import { PingService } from './ping.service'
-import { ServiceBusQueueName } from '../../azure/service-bus-queue.names'
+import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>
@@ -77,7 +77,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     }
     await this.queueService.dispatch({
       body: pupilLoginMessage
-    }, ServiceBusQueueName.pupilLogin)
+    }, ServiceBusQueueNames.pupilLogin)
     return preparedCheckEntry
   }
 
