@@ -34,7 +34,7 @@ export class SubmitController {
       return apiResponse.unauthorised(res)
     }
     const token = authHeader.split(' ')[1]
-    if (token == null) return apiResponse.unauthorised(res)
+    if (token === undefined || token === '') return apiResponse.unauthorised(res)
     try {
       await this.jwtService.verify(token)
     } catch (error: any) {

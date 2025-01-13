@@ -67,6 +67,13 @@ describe('submit controller', () => {
     expect(res.statusCode).toBe(401)
   })
 
+  test('returns 401 if the JWT is incorrectly formatted', async () => {
+    req = createMockRequest('application/json')
+    req.headers.authorization = 'Bearer '
+    await sut.postSubmit(req, res)
+    expect(res.statusCode).toBe(401)
+  })
+
   test('returns 401 if the JWT is not verified', async () => {
     req = createMockRequest('application/json')
     req.headers.authorization = 'Bearer 123'
