@@ -1,17 +1,24 @@
-import { PupilFeedbackService, type IPupilFeedbackMessage, type IPupilFeedbackTableEntity } from './feedback.service'
+import { PupilFeedbackService, type IPupilFeedbackMessage } from './feedback.service'
 import { v4 as uuidv4 } from 'uuid'
+import type { ISqlService } from '../../sql/sql.service'
 
 let sut: PupilFeedbackService
 let message: IPupilFeedbackMessage
+let sqlServiceMock: ISqlService
+
+const SqlServiceMock = jest.fn<ISqlService, []>(() => ({
+  modify: jest.fn(),
+  modifyWithTransaction: jest.fn(),
+  query: jest.fn()
+}))
 
 describe('pupil feedback service', () => {
   beforeEach(() => {
-    sut = new PupilFeedbackService()
+    sqlServiceMock = new SqlServiceMock()
+    sut = new PupilFeedbackService(sqlServiceMock)
     message = {
-      version: 2,
+      version: 3,
       checkCode: uuidv4(),
-      comments: 'comments',
-      inputType: 'inputType',
       satisfactionRating: 'rating'
     }
   })
@@ -20,10 +27,10 @@ describe('pupil feedback service', () => {
     expect(sut).toBeDefined()
   })
 
-  test('unsupported message version throws error', () => {
+  test('unsupported message version throws error', async () => {
     try {
-      message.version = 1
-      sut.process(message)
+      message.version = 2
+      await sut.process(message)
       fail('error should have been thrown')
     } catch (error) {
       let errorMessage = 'unknown error'
@@ -34,20 +41,18 @@ describe('pupil feedback service', () => {
     }
   })
 
-  test('feedback message should be added to feedback table binding', () => {
-    const output = sut.process(message)
-    expect(output.feedbackTable).toHaveLength(1)
+  test('validation should fail if message does not contain checkCode', async () => {
+    message.checkCode = ''
+    await expect(sut.process(message)).rejects.toThrow('checkCode is required')
   })
 
-  test('all expected message properties should be inserted into feedback table', () => {
-    const output = sut.process(message)
-    const entity = output.feedbackTable[0] as IPupilFeedbackTableEntity
-    expect(entity.PartitionKey).toStrictEqual(message.checkCode)
-    expect(entity.RowKey).toBeDefined()
-    expect(entity.RowKey).toHaveLength(uuidv4().length)
-    expect(entity.checkCode).toStrictEqual(message.checkCode)
-    expect(entity.inputType).toStrictEqual(message.inputType)
-    expect(entity.satisfactionRating).toStrictEqual(message.satisfactionRating)
-    expect(entity.comments).toStrictEqual(message.comments)
+  test('validation should fail if satisfactionRating is not provided', async () => {
+    message.satisfactionRating = ''
+    await expect(sut.process(message)).rejects.toThrow('satisfactionRating is required')
+  })
+
+  test('sql service is called with correct parameters', async () => {
+    await sut.process(message)
+    expect(sqlServiceMock.modify).toHaveBeenCalledWith(expect.any(String), [])
   })
 })
