@@ -294,9 +294,6 @@ describe('check-start.service', () => {
         tokenData[queueNameService.NAMES.PUPIL_PREFS] = {
           queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab', url: 'xyz'
         }
-        tokenData[queueNameService.NAMES.PUPIL_FEEDBACK] = {
-          queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab', url: 'xyz'
-        }
         jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue(tokenData)
         const mockSignMethod = async (payload) => {
           return payload.checkCode

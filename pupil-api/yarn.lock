@@ -307,23 +307,6 @@
     events "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-queue@^12.22.0":
-  version "12.25.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.25.0.tgz#69803070857d2341ab22941e2409ed5994e70f66"
-  integrity sha512-uoobHFbH/o7wIul/sCm32X2YFq6zb1XpNdpKIms9I60mwG3BBaOpEs5pgQV5a5ONG5WMSHlo8E1dNFB5ZZIa1g==
-  dependencies:
-    "@azure/abort-controller" "^2.1.2"
-    "@azure/core-auth" "^1.4.0"
-    "@azure/core-client" "^1.6.2"
-    "@azure/core-http-compat" "^2.0.0"
-    "@azure/core-paging" "^1.1.1"
-    "@azure/core-rest-pipeline" "^1.10.1"
-    "@azure/core-tracing" "^1.1.2"
-    "@azure/core-util" "^1.6.1"
-    "@azure/core-xml" "^1.4.3"
-    "@azure/logger" "^1.0.0"
-    tslib "^2.2.0"
-
 "@colors/colors@1.6.0", "@colors/colors@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.6.0.tgz#ec6cd237440700bc23ca23087f513c75508958b0"

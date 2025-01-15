@@ -327,7 +327,6 @@ const checkStartService = {
         tokens: {
           checkStarted: sasTokens[queueNameService.NAMES.CHECK_STARTED],
           pupilPreferences: sasTokens[queueNameService.NAMES.PUPIL_PREFS],
-          pupilFeedback: sasTokens[queueNameService.NAMES.PUPIL_FEEDBACK],
           checkComplete: checkCompleteData,
           checkSubmission: checkSubmissionData
         },

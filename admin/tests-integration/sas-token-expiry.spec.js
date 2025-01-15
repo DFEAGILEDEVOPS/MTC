@@ -34,7 +34,7 @@ async function postMessageToQueue (payload, queueUrl, sasTokenUrl) {
 
 describe('sas-token-expiry', () => {
   beforeEach(async () => {
-    const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.PUPIL_FEEDBACK)
+    const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.CHECK_STARTED)
     await redisCacheService.drop(queueKey)
   })
   afterAll(async () => { await redisCacheService.disconnect() })
@@ -42,7 +42,7 @@ describe('sas-token-expiry', () => {
   test('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
     const sasToken = await sut.generateSasToken(
-      queueNameService.NAMES.PUPIL_FEEDBACK,
+      queueNameService.NAMES.CHECK_STARTED,
       sasExpiryDate
     )
     const message = { message: 'integration test message' }
@@ -52,7 +52,7 @@ describe('sas-token-expiry', () => {
   test('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
     const sasToken = await sut.generateSasToken(
-      queueNameService.NAMES.PUPIL_FEEDBACK,
+      queueNameService.NAMES.CHECK_STARTED,
       sasExpiryDate
     )
     try {
