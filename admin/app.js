@@ -385,7 +385,8 @@ app.use(function (req, res, next) {
 })
 
 // error handler
-app.use(function (err, req, res) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use(function (err, req, res, next) {
   const errorId = uuidv4()
   res.locals.errorId = errorId
 
