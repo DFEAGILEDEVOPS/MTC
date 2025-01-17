@@ -22,7 +22,12 @@ export class PupilFeedbackService {
     if (message.satisfactionRating === '') {
       throw new Error('satisfactionRating is required')
     }
-    const insertSql = 'INSERT INTO mtc_admin.pupilFeedback (pupil_id, school_id, check_id, satisfactionRating) VALUES (@pupilId, @schoolId, @checkId, @satisfactionRating)'
+    const insertSql = `
+        INSERT INTO mtc_admin.pupilFeedback
+          (pupil_id, school_id, check_id, satisfactionRating)
+        VALUES
+          (@pupilId, @schoolId, @checkId, @satisfactionRating)
+    `
     await this.sqlService.modify(insertSql, [])
     // TODO infer check id, pupil id and school ids via sql
     // TODO remove partition and row keys, make sql insert statement instead
