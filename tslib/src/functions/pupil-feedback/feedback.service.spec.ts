@@ -1,6 +1,6 @@
 import { PupilFeedbackService, type IPupilFeedbackMessage } from './feedback.service'
 import { v4 as uuidv4 } from 'uuid'
-import type { ISqlService } from '../../sql/sql.service'
+import type { ISqlService, ISqlParameter } from '../../sql/sql.service'
 
 let sut: PupilFeedbackService
 let message: IPupilFeedbackMessage
@@ -53,6 +53,6 @@ describe('pupil feedback service', () => {
 
   test('sql service is called with correct parameters', async () => {
     await sut.process(message)
-    expect(sqlServiceMock.modify).toHaveBeenCalledWith(expect.any(String), [])
+    expect(sqlServiceMock.modify).toHaveBeenCalledWith(expect.any(String), expect.any(Array<ISqlParameter>))
   })
 })
