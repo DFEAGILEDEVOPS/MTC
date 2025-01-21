@@ -407,7 +407,7 @@ describe('check-start.service', () => {
       test('pupilFeedback JWT token should be the same as check submission', async () => {
         const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(payload[0].tokens.pupilFeedback.token)
-        .toStrictEqual(payload[0].tokens.checkSubmission.token)
+          .toStrictEqual(payload[0].tokens.checkSubmission.token)
       })
     })
   })
