@@ -306,6 +306,10 @@ const checkStartService = {
         url: `${config.PupilApi.baseUrl}/submit`,
         token: jwtToken
       }
+      const pupilFeedbackData = {
+        url: `${config.PupilApi.baseUrl}/feedback`,
+        token: jwtToken
+      }
 
       const payload = {
         checkCode: o.check_checkCode,
@@ -328,7 +332,8 @@ const checkStartService = {
           checkStarted: sasTokens[queueNameService.NAMES.CHECK_STARTED],
           pupilPreferences: sasTokens[queueNameService.NAMES.PUPIL_PREFS],
           checkComplete: checkCompleteData,
-          checkSubmission: checkSubmissionData
+          checkSubmission: checkSubmissionData,
+          pupilFeedback: pupilFeedbackData
         },
         questions: checkFormService.prepareQuestionData(
           JSON.parse(o.checkForm_formData)
