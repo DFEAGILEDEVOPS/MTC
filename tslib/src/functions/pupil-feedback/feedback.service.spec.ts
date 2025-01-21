@@ -19,7 +19,7 @@ describe('pupil feedback service', () => {
     message = {
       version: 3,
       checkCode: uuidv4(),
-      satisfactionRating: 'rating'
+      feedback: 'rating'
     }
   })
 
@@ -44,11 +44,17 @@ describe('pupil feedback service', () => {
   test('validation should fail if message does not contain checkCode', async () => {
     message.checkCode = ''
     await expect(sut.process(message)).rejects.toThrow('checkCode is required')
+
+    message.checkCode = undefined
+    await expect(sut.process(message)).rejects.toThrow('checkCode is required')
   })
 
-  test('validation should fail if satisfactionRating is not provided', async () => {
-    message.satisfactionRating = ''
-    await expect(sut.process(message)).rejects.toThrow('satisfactionRating is required')
+  test('validation should fail if feedback is not provided', async () => {
+    message.feedback = ''
+    await expect(sut.process(message)).rejects.toThrow('feedback is required')
+
+    message.feedback = undefined
+    await expect(sut.process(message)).rejects.toThrow('feedback is required')
   })
 
   test('sql service is called with correct parameters', async () => {

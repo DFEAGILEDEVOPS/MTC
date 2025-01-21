@@ -21,6 +21,7 @@ export async function pupilFeedback (triggerMessage: unknown, context: Invocatio
       // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported`)
     }
+
     await service.process(feedbackMessage)
   } catch (error) {
     let errorMessage = 'unknown error'

@@ -1,9 +1,10 @@
+import { TYPES } from 'mssql'
 import { type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
 
 export interface IPupilFeedbackMessage {
   version: number
-  checkCode: string
-  satisfactionRating: string
+  checkCode?: string
+  feedback?: string
 }
 
 export class PupilFeedbackService {
@@ -16,11 +17,11 @@ export class PupilFeedbackService {
     if (message.version !== 3) {
       throw new Error(`version:${message.version} unsupported`)
     }
-    if (message.checkCode === '') {
+    if (message.checkCode === undefined || message.checkCode === '') {
       throw new Error('checkCode is required')
     }
-    if (message.satisfactionRating === '') {
-      throw new Error('satisfactionRating is required')
+    if (message.feedback === undefined || message.feedback === '') {
+      throw new Error('feedback is required')
     }
     const insertSql = `
     DECLARE @checkId INT
@@ -29,7 +30,7 @@ export class PupilFeedbackService {
 
         -- look up pupil_id, school_id and check_id using the check code
         SELECT
-          @checkId = [check_id],
+          @checkId = chk.id,
           @pupilId = chk.pupil_id,
           @schoolId = s.id
         FROM
@@ -46,20 +47,20 @@ export class PupilFeedbackService {
         IF @schoolId IS NULL THROW 50000, 'schoolId not found', 1
 
         INSERT INTO mtc_admin.pupilFeedback
-          (pupil_id, school_id, check_id, satisfactionRating)
+          (pupil_id, school_id, check_id, feedback)
         VALUES
-          (@pupilId, @schoolId, @checkId, @satisfactionRating)
+          (@pupilId, @schoolId, @checkId, @feedback)
     `
     const params: ISqlParameter[] = [
       {
         name: 'checkCode',
-        type: 'uniqueidentifier',
+        type: TYPES.UniqueIdentifier,
         value: message.checkCode
       },
       {
-        name: 'satisfactionRating',
-        type: 'NVarChar',
-        value: message.satisfactionRating
+        name: 'feedback',
+        type: TYPES.NVarChar(255),
+        value: message.feedback
       }
     ]
     await this.sqlService.modify(insertSql, params)
