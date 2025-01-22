@@ -1,5 +1,3 @@
-/* global describe expect test beforeEach */
-
 import { Logger } from './log.service'
 
 describe('logger class', () => {

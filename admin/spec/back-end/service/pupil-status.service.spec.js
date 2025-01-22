@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe expect fail beforeEach test jest afterEach */
 const logger = require('../../../services/log.service').getLogger()
 const moment = require('moment')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')

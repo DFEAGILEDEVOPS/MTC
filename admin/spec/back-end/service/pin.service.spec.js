@@ -6,8 +6,6 @@ const pinService = require('../../../services/pin.service')
 const schoolMock = require('../mocks/school')
 const roles = require('../../../lib/consts/roles')
 
-/* global jest, describe, beforeEach, test, expect */
-
 describe('pin.service', () => {
   describe('getActiveSchool', () => {
     const school = Object.assign({}, schoolMock)

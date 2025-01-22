@@ -5,9 +5,6 @@ export interface IAreaCode {
   code: string
   description: string
 }
-
-export interface IBorderColourCode extends IAreaCode {}
-
 export class ServiceMessageCodesService {
   public static async getAreaCodes (): Promise<IAreaCode[]> {
     const areaCodes = await ServiceMessageAreaCodeDataService.sqlGetAreaCodes()
@@ -15,7 +12,7 @@ export class ServiceMessageCodesService {
     return sortedCodes
   }
 
-  public static async getBorderColourCodes (): Promise<IBorderColourCode[]> {
+  public static async getBorderColourCodes (): Promise<IAreaCode[]> {
     const borderColourCodes = await ServiceMessageAreaCodeDataService.sqlGetBorderColourCodes()
     const sortedCodes = sort.sortByProps(['description'], borderColourCodes)
     return sortedCodes

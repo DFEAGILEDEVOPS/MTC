@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe test expect */
-
 const sut = require('../../../lib/deep-freeze')
 
 describe('deep-freeze', () => {

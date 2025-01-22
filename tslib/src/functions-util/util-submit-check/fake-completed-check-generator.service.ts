@@ -52,7 +52,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     }
   }
 
-  private createMockResponse (questionNumber: number, question: CheckQuestion, baseTime: moment.Moment, wantRandomAnswer: boolean = false): { answer: CompleteCheckAnswer, inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } {
+  private createMockResponse (questionNumber: number, question: CheckQuestion, baseTime: moment.Moment, wantRandomAnswer = false): { answer: CompleteCheckAnswer, inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } {
     // the answer as a string
     const input: string = wantRandomAnswer ? faker.number.int({ min: 1, max: 150 }).toString() : (question.factor1 * question.factor2).toString()
     const audits: CompleteCheckAuditEntry[] = []
@@ -111,7 +111,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
      * @param num
      * @returns
      */
-  createResponses (questions: CheckQuestion[], numberFromCorrectCheckForm: number = questions.length, numberFromIncorrectCheckForm: number = 0, numberOfDuplicateAnswers: number = 0): { answers: CompleteCheckAnswer[], inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } {
+  createResponses (questions: CheckQuestion[], numberFromCorrectCheckForm = questions.length, numberFromIncorrectCheckForm = 0, numberOfDuplicateAnswers = 0): { answers: CompleteCheckAnswer[], inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } {
     const responses: { answers: CompleteCheckAnswer[], inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } = { answers: [], inputs: [], audits: [] }
 
     // The check starts now.  We will pass `dt` around by reference and keep adding more time to it, to

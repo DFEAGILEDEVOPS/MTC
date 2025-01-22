@@ -69,7 +69,6 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
       AND p.school_id = @schoolId
     `
   const results = await sqlService.query(sql, [paramSlug, paramSchoolId])
-  // @ts-ignore
   return R.head(results)
 }
 

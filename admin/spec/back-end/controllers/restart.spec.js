@@ -1,5 +1,4 @@
 'use strict'
-/* global describe expect beforeEach afterEach jest test fail */
 
 const httpMocks = require('node-mocks-http')
 const logger = require('../../../services/log.service.js').getLogger()
@@ -135,7 +134,7 @@ describe('restart controller:', () => {
       try {
         await controller(req, res, next)
         expect(next).toHaveBeenCalledWith(new Error('mock error'))
-      } catch (error) {
+      } catch {
         fail('not expected to throw')
       }
     })

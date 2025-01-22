@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, test, expect, jest, afterEach */
+
 const redisService = require('../../../services/data-access/redis-cache.service')
 const logService = require('../../../services/log.service')
 const laCodeDataService = require('../../../services/data-access/la-code.data.service')

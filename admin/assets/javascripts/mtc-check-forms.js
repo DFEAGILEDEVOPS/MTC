@@ -3,18 +3,17 @@
 /**
  * Check form submission
  */
-/* eslint-disable no-var */
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ */
 (function () {
   window.MTCAdmin.checkForms = function () {
     function toggleShowHideModal (e) {
       e.preventDefault()
       $('#js-modal-overlay').toggleClass('show')
-      var modalBox = $('#js-modal-box')
+      const modalBox = $('#js-modal-box')
       if (modalBox.hasClass('show')) {
         modalBox.removeClass('show')
         $('#js-modal-link').focus()
@@ -26,8 +25,8 @@ if (!window.MTCAdmin) {
 
     // Display modal if familiarisation form already exists
     $('#upload-form-submit').click(function (e) {
-      var hasExistingFamiliarisationCheckForm = $('#hasExistingFamiliarisationCheckForm').val()
-      var selectedCheckFormType = $('input[name=checkFormType]:checked').val()
+      const hasExistingFamiliarisationCheckForm = $('#hasExistingFamiliarisationCheckForm').val()
+      const selectedCheckFormType = $('input[name=checkFormType]:checked').val()
       if (selectedCheckFormType === 'F' &&
         typeof hasExistingFamiliarisationCheckForm === 'string' && JSON.parse(hasExistingFamiliarisationCheckForm)) {
         toggleShowHideModal(e)
