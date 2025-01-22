@@ -48,7 +48,7 @@ describe('report line class', () => {
       if (Array.isArray(sut.answers) && sut.answers.length > 1) {
         try {
           sut.answers[1].isCorrect = true // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.answers[1].isCorrect).toBe(false)
       }
     })
@@ -59,7 +59,7 @@ describe('report line class', () => {
       if (Array.isArray(sut.answers) && sut.answers.length > 1) {
         try {
           sut.answers[1].inputs[0].input = '66' // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.answers[1].inputs[0].input).toBe('4')
       }
     })
@@ -74,7 +74,7 @@ describe('report line class', () => {
       if (sut.check !== null) {
         try {
           sut.check.mark = 26 // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.check.mark).toBe(1)
       }
     })
@@ -89,7 +89,7 @@ describe('report line class', () => {
       if (sut.checkConfig !== null) {
         try {
           sut.checkConfig.audibleSounds = true // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.checkConfig.audibleSounds).toBe(false)
       }
     })
@@ -104,7 +104,7 @@ describe('report line class', () => {
       if (sut.checkForm !== null) {
         try {
           sut.checkForm.items[0].f1 = 9 // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.checkForm.items[0].f1).toBe(1)
       }
     })
@@ -119,7 +119,7 @@ describe('report line class', () => {
       if (sut.device !== null) {
         try {
           sut.device.browserFamily = 'TEST' // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.device.browserFamily).toBe('CHROME')
       }
     })
@@ -134,7 +134,7 @@ describe('report line class', () => {
       if (sut.events !== null) {
         try {
           sut.events[0].type = 'QuestionIntroRendered' // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.events[0].type).toBe('CheckStarted')
       }
     })

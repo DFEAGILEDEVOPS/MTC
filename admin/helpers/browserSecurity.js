@@ -7,10 +7,10 @@ const config = require('../config')
 const init = (app) => {
   app.use(helmet())
   app.use(nocache())
-  const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://az416426.vo.msecnd.net']
-  const styleSources = ["'self'", "'unsafe-inline'"]
-  const imgSources = ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'data:']
-  const objectSources = ["'self'"]
+  const scriptSources = ['\'self\'', '\'unsafe-inline\'', 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://az416426.vo.msecnd.net']
+  const styleSources = ['\'self\'', '\'unsafe-inline\'']
+  const imgSources = ['\'self\'', 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'data:']
+  const objectSources = ['\'self\'']
 
   if (config.AssetPath !== '/') {
     // add CSP policy for assets domain
@@ -21,15 +21,15 @@ const init = (app) => {
   }
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ['\'self\''],
       scriptSrc: scriptSources,
-      fontSrc: ["'self'", 'data:', config.AssetPath],
+      fontSrc: ['\'self\'', 'data:', config.AssetPath],
       styleSrc: styleSources,
       imgSrc: imgSources,
-      connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://dc.services.visualstudio.com/v2/track'],
+      connectSrc: ['\'self\'', 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://dc.services.visualstudio.com/v2/track'],
       objectSrc: objectSources,
-      mediaSrc: ["'none'"],
-      childSrc: ["'none'"]
+      mediaSrc: ['\'none\''],
+      childSrc: ['\'none\'']
     }
   }))
 

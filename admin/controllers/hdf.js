@@ -130,7 +130,7 @@ controller.downloadResults = async function downloadResults (req, res, next) {
 
 controller.getReviewPupilDetails = async function getReviewPupilDetails (req, res, next) {
   res.locals.pageTitle = 'Review pupil details'
-  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
+  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
   try {
     const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.schoolId)
@@ -149,7 +149,7 @@ controller.getReviewPupilDetails = async function getReviewPupilDetails (req, re
 
 controller.getEditReason = async function getEditReason (req, res, next) {
   res.locals.pageTitle = 'Edit reason for not taking the check'
-  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
+  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
   req.breadcrumbs('Edit reason')
   if (!req.params.urlSlug) {
@@ -190,7 +190,7 @@ controller.postSubmitEditReason = async function postSubmitEditReason (req, res,
 
 controller.getConfirmSubmit = async function getConfirmSubmit (req, res, next) {
   res.locals.pageTitle = 'Confirm and submit'
-  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
+  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -249,7 +249,7 @@ controller.postConfirmSubmit = async function postConfirmSubmit (req, res, next)
 }
 
 controller.getDeclarationForm = async function getDeclarationForm (req, res, next) {
-  res.locals.pageTitle = "Headteacher's declaration form"
+  res.locals.pageTitle = 'Headteacher\'s declaration form'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindowData
   let hdfEligibility
@@ -295,7 +295,7 @@ controller.postDeclarationForm = async function postDeclarationForm (req, res, n
 
   const validationError = await hdfValidator.validate(form)
   if (validationError.hasError()) {
-    res.locals.pageTitle = "Headteacher's declaration form"
+    res.locals.pageTitle = 'Headteacher\'s declaration form'
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('hdf/declaration-form', {
       hdfEligibility,
@@ -312,7 +312,7 @@ controller.postDeclarationForm = async function postDeclarationForm (req, res, n
 }
 
 controller.getHDFSubmitted = async function getHDFSubmitted (req, res, next) {
-  res.locals.pageTitle = "Headteacher's declaration form"
+  res.locals.pageTitle = 'Headteacher\'s declaration form'
   req.breadcrumbs(res.locals.pageTitle)
   try {
     const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
@@ -333,7 +333,7 @@ controller.getHDFSubmitted = async function getHDFSubmitted (req, res, next) {
 
 controller.getHDFSubmittedForm = async function getHDFSubmittedForm (req, res, next) {
   res.locals.pageTitle = 'View submission'
-  req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
+  req.breadcrumbs('Headteacher\'s declaration form', '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
   try {
     const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)

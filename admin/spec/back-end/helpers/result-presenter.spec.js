@@ -1,4 +1,3 @@
-/* global describe test expect */
 
 const sut = require('../../../helpers/result-presenter')
 

@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, expect */
-
 const csvValidator = require('../../../../lib/validator/csv-validator')
 const csvPupilUploadErrors = require('../../../../lib/errors/csv-pupil-upload')
 

@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe expect beforeEach jest test afterEach */
-
 const controller = require('../../../controllers/pupil-status')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pupilStatusService = require('../../../services/pupil-status.service')

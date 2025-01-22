@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect afterAll */
 
 /**
  * Supertest will run a copy of the app on an ephemeral port and then tear it down.

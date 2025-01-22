@@ -6,41 +6,26 @@ import { Logger } from './log.service'
 export interface IRedisService {
   /**
    * @description retrieve an item from the cache, under the given key
-   * @param {string} key the unique string key of the redis entry to fetch
-   * @throws when the data type of the retrieved value is unsupported
-   * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
   get (key: string): Promise<any | null>
   /**
    * @description insert or ovewrite an item in the cache, which lives for a specific duration
-   * @param {string} key the unique string key of the redis entry to persist
-   * @param {object | string} value the item to persist in redis cache
-   * @param {number} ttl how long to store the item in seconds
-   * @throws when the incoming item datatype is not supported and when the setex redis operation fails
-   * @returns {Promise<void>} an awaitable promise
    */
   setex (key: string, value: string | object, ttl: number): Promise<void>
   /**
    * @description drop a series of items from the cache
-   * @param {Array<string>} keys an array of keys to invalidate
-   * @returns {Promise<void>}
    */
-  drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null>
+  drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null>
   /**
    * @description cleans up the underlying redis client implementation
-   * @returns void
    */
   quit (): Promise<string>
   /**
    * @description set expiry on a redis item
-   * @param key key of the item to update TTL on
-   * @param ttl the expiry time in seconds
    */
   expire (key: string, ttl: number): Promise<void>
   /**
    * @description get the TTL of an existing item in the cache
-   * @param key the key of the item in the cache
-   * @returns the TTL in seconds or null if the item is not found
    */
   ttl (key: string): Promise<number | null>
 }
@@ -118,7 +103,6 @@ export class RedisService implements IRedisService {
         meta: {
           type: cacheItemDataType
         },
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         value: value.toString()
       }
       const storageItemString = JSON.stringify(storageItem)
@@ -129,7 +113,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null> {
+  async drop (keys: string[]): Promise<[error: Error | null, result: unknown][] | null> {
     if (keys.length === 0) {
       throw new Error('Invalid key list')
     }

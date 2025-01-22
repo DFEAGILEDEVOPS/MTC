@@ -1,9 +1,9 @@
-import { type HttpRequest, app, type HttpResponseInit, type InvocationContext } from '@azure/functions'
+import { app, type HttpResponseInit } from '@azure/functions'
 import { readFile } from 'fs'
 import { promisify } from 'util'
 import { join } from 'path'
 const readFileAsync = promisify(readFile)
-let buildNumber: string = ''
+let buildNumber = ''
 
 app.http('utilDiag', {
   methods: ['GET'],
@@ -11,7 +11,7 @@ app.http('utilDiag', {
   handler: utilDiag
 })
 
-export async function utilDiag (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+export async function utilDiag (): Promise<HttpResponseInit> {
   return {
     status: 200,
     body: `func-consumption. Build:${await getBuildNumber()}. Node version: ${process.version}`

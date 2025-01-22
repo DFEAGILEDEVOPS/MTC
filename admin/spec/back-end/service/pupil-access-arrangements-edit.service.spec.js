@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, test, expect jest, afterEach */
 
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilService = require('../../../services/pupil.service')

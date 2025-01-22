@@ -1,4 +1,3 @@
-/* global describe, expect, test */
 
 const pupilPinPresenter = require('../../../helpers/pupil-pin-presenter')
 
