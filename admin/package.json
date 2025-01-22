@@ -11,8 +11,7 @@
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "lint": "standard && yarn lint:ts",
-    "lint:ts": "yarn eslint .",
+    "lint": "yarn eslint .",
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
@@ -32,7 +31,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "65277eea29822abe9a509880adefb859"
+    "assets-version": "527477e2fc5eae7a7569f1b2bff7cb81"
   },
   "engines": {
     "node": ">= 18"
@@ -104,9 +103,12 @@
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@eslint/js": "^9.14.0",
     "@faker-js/faker": "^9.3.0",
+    "@stylistic/eslint-plugin": "^2.10.1",
     "@types/adm-zip": "^0.4.34",
     "@types/dompurify": "^2.3.1",
+    "@types/eslint__js": "^8.42.3",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^27.0.1",
     "@types/jsdom": "^16.2.13",
@@ -121,13 +123,9 @@
     "command-line-args": "^5.0.2",
     "concurrently": "^6.2.1",
     "csv-string": "^4.0.1",
-    "eslint": "^8.23.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-config-standard-with-typescript": "34.0.1",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jest": "^27.0.4",
-    "eslint-plugin-n": "^15.2.5",
-    "eslint-plugin-promise": "^6.0.1",
+    "eslint": "^9.14.0",
+    "eslint-plugin-jest": "^28.9.0",
+    "globals": "^15.12.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean": "^0.4.0",
@@ -147,9 +145,10 @@
     "karma-remap-istanbul": "~0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
-    "standard": "^17.0.0",
     "supertest": "^6.0.1",
-    "typescript": "^5.7.2"
+    "ts-node": "^10.4.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.17.0"
   },
   "standard": {
     "ignore": [

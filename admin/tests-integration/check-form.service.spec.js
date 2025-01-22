@@ -2,10 +2,9 @@
 
 /**
  * @file Integration Tests for Check Form Service
- */
+*/
 
-/* global describe test expect beforeAll jest */
-
+/* eslint-disable jest/no-disabled-tests */
 // These tests take a long time, so they are usually skipped unless we change the implementation
 jest.setTimeout(120000)
 
@@ -14,7 +13,7 @@ const moment = require('moment')
 
 const checkFormService = require('../services/check-form.service')
 
-describe.skip('check-form.service', () => {
+xdescribe('check-form.service', () => {
   const availableForms = []
   const seenForms = []
 
@@ -59,8 +58,8 @@ describe.skip('check-form.service', () => {
 
 function countForm (formsAllocated, availableForms) {
   const count = {}
-  for (let i = 0; i < formsAllocated.length; i++) {
-    const formId = formsAllocated[i].id
+  for (const form of formsAllocated) {
+    const formId = form.id
     count[formId] = count[formId] ? count[formId] + 1 : 1
   }
 

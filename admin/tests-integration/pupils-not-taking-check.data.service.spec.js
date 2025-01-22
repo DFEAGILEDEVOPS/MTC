@@ -1,5 +1,5 @@
 'use strict'
-/* global describe test expect beforeAll afterAll */
+
 const R = require('ramda')
 
 const pupilNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')

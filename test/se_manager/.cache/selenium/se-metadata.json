@@ -4,12 +4,21 @@
   "stats": [
     {
       "browser": "chrome",
-      "browser_version": "131",
+      "browser_version": "132",
       "os": "macos",
       "arch": "x86_64",
       "lang": "ruby",
       "selenium_version": "4.23",
-      "stats_ttl": 1734441826
+      "stats_ttl": 1737472691
+    },
+    {
+      "browser": "chrome",
+      "browser_version": "132",
+      "os": "macos",
+      "arch": "x86_64",
+      "lang": "ruby",
+      "selenium_version": "4.28",
+      "stats_ttl": 1737474074
     }
   ]
 }

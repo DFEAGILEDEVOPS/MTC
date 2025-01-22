@@ -263,10 +263,8 @@ if (config.Auth.mode === authModes.dfeSignIn) {
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates
-  // @ts-ignore
   if (req.isAuthenticated()) {
     res.locals.isAuthenticated = true
-    // @ts-ignore
     res.locals.user = req.user
   } else {
     res.locals.isAuthenticated = false
@@ -387,6 +385,7 @@ app.use(function (req, res, next) {
 })
 
 // error handler
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use(function (err, req, res, next) {
   const errorId = uuidv4()
   res.locals.errorId = errorId

@@ -7,8 +7,6 @@ const checkWindowPhaseConsts = require('../../../lib/consts/check-window-phase')
 const pupilRegisterV2Service = require('../../../services/pupil-register-v2.service')
 const userRoles = require('../../../lib/consts/roles')
 
-/* global describe beforeEach expect test jest afterEach */
-
 describe('pupil-register controller:', () => {
   let next
   const mockAvailabilityDataHdfSubmitted = {

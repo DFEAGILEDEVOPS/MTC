@@ -1,4 +1,3 @@
-/* global describe test expect */
 const sanitiseService = require('../../../services/sanitise.service')
 const sut = sanitiseService
 

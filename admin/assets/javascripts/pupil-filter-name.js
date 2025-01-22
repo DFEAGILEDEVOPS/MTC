@@ -1,18 +1,18 @@
 /**
  * Filtering pupils by name.
  */
-/* eslint-disable no-var */
+
 if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ stickyBanner inputStatus */
+/* global stickyBanner inputStatus */
 (function () {
   window.MTCAdmin.pupilFilter = function () {
     if ($('.filter-name').length > 0) {
       $('#search-name').on('change keyup', function () {
-        var input = $.trim($(this).val()).toLowerCase()
-        var selAllTr = 'table[data-name="filterablePupilsList"] > tbody > tr'
+        const input = $.trim($(this).val()).toLowerCase()
+        const selAllTr = 'table[data-name="filterablePupilsList"] > tbody > tr'
         if (input.length === 0) {
           $(selAllTr).each(function () {
             $(this).removeClass('filter-hidden-name')
@@ -22,12 +22,12 @@ if (!window.MTCAdmin) {
           return
         }
 
-        $(selAllTr).each(function ($tr) {
-          var pupilName = $('#pupilName', this).length > 0 && $.trim($('#pupilName', this).text()).toLowerCase()
-          var pupilUpnEl = $('input[name=pupilUpn]', this)
-          var pupilUpn = pupilUpnEl && pupilUpnEl.length > 0 && pupilUpnEl.val().toLowerCase()
-          var searchTerm = input.toLowerCase()
-          var isPupilExcluded =
+        $(selAllTr).each(function () {
+          const pupilName = $('#pupilName', this).length > 0 && $.trim($('#pupilName', this).text()).toLowerCase()
+          const pupilUpnEl = $('input[name=pupilUpn]', this)
+          const pupilUpn = pupilUpnEl && pupilUpnEl.length > 0 && pupilUpnEl.val().toLowerCase()
+          const searchTerm = input.toLowerCase()
+          const isPupilExcluded =
             (!pupilName || pupilName.indexOf(searchTerm) < 0) &&
             (!pupilUpn || pupilUpn.indexOf(searchTerm) < 0)
 
@@ -46,8 +46,8 @@ if (!window.MTCAdmin) {
       // Edge / IE hack to detect input clearing
       // See the bug at: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/17584515/
       $('#search-name').on('mouseup', function () {
-        var $input = $(this)
-        var oldVal = $input.val()
+        const $input = $(this)
+        const oldVal = $input.val()
         if (oldVal.length === 0) return
 
         setTimeout(function () {

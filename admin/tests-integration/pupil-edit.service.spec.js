@@ -1,5 +1,4 @@
 'use strict'
-/* global expect describe test afterAll */
 
 /**
  * @file Integration Tests for Pupil Edit Service
@@ -15,9 +14,10 @@ const redisCacheService = require('../services/data-access/redis-cache.service')
 
 const currentUTCDate = moment.utc()
 const currentYear = currentUTCDate.year()
-const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
-  ? currentYear - 1
-  : currentYear
+const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`),
+  moment.utc(`${currentYear}-08-31`), null, '[]') ?
+  currentYear - 1 :
+  currentYear
 
 function createFakeUpn () {
   const base = '201' + faker.number.int({ min: 100000000, max: 900000000 })

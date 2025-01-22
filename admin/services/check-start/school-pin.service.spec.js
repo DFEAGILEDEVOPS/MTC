@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe test expect fail */
-
 const sut = require('./school-pin.service')
 
 describe('school-pin-service', () => {

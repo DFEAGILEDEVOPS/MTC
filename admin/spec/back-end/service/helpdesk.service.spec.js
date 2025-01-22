@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, test, expect */
 const helpdeskService = require('../../../services/helpdesk.service')
 
 describe('helpdeskService', () => {

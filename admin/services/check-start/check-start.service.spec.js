@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe expect beforeEach jest test afterEach */
 const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')
@@ -163,7 +162,7 @@ describe('check-start.service', () => {
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').mockResolvedValue([])
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
       jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
-      // @ts-ignore
+      // @ts-ignore ramda doesnt work well with types
       jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
       jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis
       jest.spyOn(configService, 'getBatchConfig').mockResolvedValue(
@@ -209,7 +208,6 @@ describe('check-start.service', () => {
       config.FeatureToggles.schoolPinGenFallbackEnabled = true
       jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockImplementation(() => {
         const err = new Error()
-        // @ts-ignore
         err.number = 49999
         throw err
       })
@@ -259,10 +257,10 @@ describe('check-start.service', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
         jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true, userId, schoolId)
-        expect({}.hasOwnProperty.call(c, 'pupil_id'))
-        expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
-        expect({}.hasOwnProperty.call(c, 'checkForm_id'))
-        expect({}.hasOwnProperty.call(c, 'createdBy_userId'))
+        expect(c.pupil_id).toBeTruthy()
+        expect(c.checkWindow_id).toBeTruthy()
+        expect(c.checkForm_id).toBeTruthy()
+        expect(c.createdBy_userId).toBeTruthy()
       })
     })
 
@@ -270,10 +268,10 @@ describe('check-start.service', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
         jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false, userId, schoolId)
-        expect({}.hasOwnProperty.call(c, 'pupil_id'))
-        expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
-        expect({}.hasOwnProperty.call(c, 'checkForm_id'))
-        expect({}.hasOwnProperty.call(c, 'createdBy_userId'))
+        expect(c.pupil_id).toBeTruthy()
+        expect(c.checkWindow_id).toBeTruthy()
+        expect(c.checkForm_id).toBeTruthy()
+        expect(c.createdBy_userId).toBeTruthy()
       })
     })
   })

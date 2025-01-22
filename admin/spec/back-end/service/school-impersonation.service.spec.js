@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, expect, jest, afterEach */
-
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const schoolImpersonationService = require('../../../services/school-impersonation.service')
 const schoolImpersonationValidator = require('../../../lib/validator/school-impersonation-validator')

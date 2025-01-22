@@ -47,7 +47,7 @@ module.exports = async function (app) {
   let buildNumber
   try {
     buildNumber = await getBuildNumber()
-  } catch (error) {
+  } catch {
     buildNumber = 'NOT FOUND'
   }
   // Ensure we initialise the `isAuthenticated` variable so that it is defined

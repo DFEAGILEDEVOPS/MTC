@@ -1,12 +1,12 @@
 /**
  * Filtering pupils by group.
  */
-/* global $, checkboxUtil, stickyBanner, inputStatus, pupilsNotTakingCheck, restarts */
-/* eslint-disable no-var */
+/* global checkboxUtil, stickyBanner, inputStatus, pupilsNotTakingCheck, restarts */
+
 $(function () {
   if ($('#filterByGroup').length > 0) {
-    var groupIds = []
-    $('#filterByGroup input:checkbox').on('click', function (e) {
+    const groupIds = []
+    $('#filterByGroup input:checkbox').on('click', function () {
       if ($(this).is(':checked')) {
         $(this).attr('data-checked', true)
         const groupId = $(this).val()
@@ -20,7 +20,7 @@ $(function () {
       /* Sticky banner interaction */
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
       stickyBanner.positioning()
-      var displayStickyBanner = false
+      let displayStickyBanner = false
       if ($('#pupils-not-taking-checks').length > 0) {
         displayStickyBanner = pupilsNotTakingCheck.isCheckboxChecked()
       }
@@ -30,13 +30,13 @@ $(function () {
       stickyBanner.toggle(inputStatus.countCheckedCheckboxes() || displayStickyBanner)
     })
 
-    $('.filter-header').on('click', function (e) {
+    $('.filter-header').on('click', function () {
       $('.filter-label').toggleClass('active')
       $('#filter-content').toggleClass('js-filter-hidden-group')
     })
 
     $('.group-count').each(function () {
-      var totalPupils = $('.' + this.id).length
+      const totalPupils = $('.' + this.id).length
       $('#' + this.id).text('(' + totalPupils + ' pupil' + (totalPupils === 1 ? '' : 's') + ')')
     })
   }

@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, test expect */
 const sut = require('../../../../lib/validator/school-impersonation-validator')
 
 describe('schoolImpersonationDfeNumberValidator.isDfeNumberValid', function () {
@@ -73,12 +72,12 @@ describe('schoolImpersonationDfeNumberValidator.isSchoolRecordValid', function (
     const result = sut.isSchoolRecordValid(school)
     expect(result.hasError()).toBeTruthy()
   })
-  test('should add a validation error if school object is not valid', function () {
+  test('should add a validation error if school object is empty', function () {
     const school = {}
     const result = sut.isSchoolRecordValid(school)
     expect(result.hasError()).toBeTruthy()
   })
-  test('should add a validation error if school object is not valid', function () {
+  test('should add a validation error if school object has no id', function () {
     const school = { id: undefined }
     const result = sut.isSchoolRecordValid(school)
     expect(result.hasError()).toBeTruthy()

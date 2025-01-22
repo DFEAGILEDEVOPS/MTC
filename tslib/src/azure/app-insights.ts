@@ -1,7 +1,7 @@
 import config from '../config'
 import { isNil } from 'ramda'
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const appInsights = require('applicationinsights')
-
 const cloudRoleName = 'TsLib'
 
 const connectionString = config.ApplicationInsights.ConnectionString
@@ -29,14 +29,14 @@ if (isNil(connectionString)) {
 }
 
 const appInsightsHelper = {
-  startInsightsIfConfigured: async (cloudRole: string = 'TsLib (default)'): Promise<void> => {
+  startInsightsIfConfigured: async (cloudRole = 'TsLib (default)'): Promise<void> => {
     appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRole
     appInsights.start()
     console.log(`TSLib Application insights: started for role [${cloudRole}]`)
     let buildNumber
     try {
       buildNumber = 'NOT IMPLEMENTED'
-    } catch (error) {
+    } catch {
       buildNumber = 'NOT FOUND'
     }
     appInsights.defaultClient.commonProperties = {

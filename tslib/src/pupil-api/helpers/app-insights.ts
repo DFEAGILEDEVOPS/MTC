@@ -1,8 +1,8 @@
 import { PingService } from '../services/ping.service'
 import config from '../config'
 import { isNil } from 'ramda'
+import * as appInsights from 'applicationinsights'
 
-const appInsights = require('applicationinsights')
 const cloudRoleName = 'Pupil-API'
 let isAppInsightsSetup = false
 
@@ -43,7 +43,7 @@ const appInsightsHelper = {
     let buildNumber
     try {
       buildNumber = await pingService.getBuildNumber()
-    } catch (error) {
+    } catch {
       buildNumber = 'NOT FOUND'
     }
     appInsights.defaultClient.commonProperties = {

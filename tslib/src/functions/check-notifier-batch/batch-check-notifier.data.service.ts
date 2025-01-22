@@ -47,7 +47,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
 
     // Pupil Verification: we need to find the check id of the currentCheckId for the pupil, so that IF this checkCode that is now complete,
     // and it is the same as the currentCheckId THEN we can consider setting the pupil to checkComplete as long as the other checks succeed.
-    const checkCodeSql: string = `
+    const checkCodeSql = `
       SELECT
         id
       FROM
@@ -63,7 +63,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
       this.logService.trace(`checkIdToComplete: ${checkIdToComplete}`)
     }
 
-    const pupilSql: string = `
+    const pupilSql = `
         SELECT
             p.attendanceId,
             p.restartAvailable,

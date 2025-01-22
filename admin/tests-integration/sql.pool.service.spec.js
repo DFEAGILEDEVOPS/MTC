@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect fail */
 
 const path = require('path')
 const fs = require('fs')

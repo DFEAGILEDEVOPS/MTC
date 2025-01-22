@@ -13,7 +13,6 @@ const dummyCSV = {
   file: path.join(__dirname, '../../../data/fixtures/dummy.csv')
 }
 
-/* global beforeEach, describe, xdescribe, expect, test, jest, afterEach */
 const userId = 456
 
 describe('pupil-upload service', () => {
@@ -44,35 +43,6 @@ describe('pupil-upload service', () => {
       expect(pr).toBeDefined()
       expect(typeof pr).toBe('object')
       expect(pr.fileErrors.errors).toBe('')
-    })
-  })
-
-  xdescribe('generates csv validation errors', () => {
-    beforeEach(() => {
-      jest.spyOn(validateCSVService, 'process').mockResolvedValue({
-        csvData: [['test', 'test', 'test', 'test', 'test', 'test', 'Error'],
-          ['test', 'test', 'test', 'test', 'test', 'test', 'Error']]
-      })
-    })
-
-    describe('on csv error', () => {
-      beforeEach(() => {
-        jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ file: { name: 'test.csv' } })
-      })
-
-      test('returns error csv file if csv has errors', async () => {
-        const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
-        expect(pr.csvErrorFile).toBe('test.csv')
-      })
-    })
-
-    describe('on csv generation error', () => {
-      jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ error: 'error' })
-    })
-
-    test('returns error csv file if csv has errors', async () => {
-      const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
-      expect(pr.error).toBe('error')
     })
   })
 

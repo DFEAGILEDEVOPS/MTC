@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach, describe, test, expect */
-
 const ValidationError = require('../../../lib/validation-error')
 const errorConverter = require('../../../lib/error-converter')
 

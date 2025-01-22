@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect jest afterEach */
 
 const dateService = require('../../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')

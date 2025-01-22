@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe beforeEach test expect */
 const sut = require('../../../../lib/validator/retro-input-assistant-validator')
 const errorMessages = require('../../../../lib/errors/retro-input-assistant')
 

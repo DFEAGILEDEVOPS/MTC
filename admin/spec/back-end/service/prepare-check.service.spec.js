@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe test expect beforeEach afterEach jest */
 const sut = require('../../../services/prepare-check.service')
 const pinService = require('../../../services/pin.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
@@ -65,7 +64,7 @@ describe('prepare-check.service', () => {
     const expectedPreparedCheckLookupKey = `prepared-check-lookup:${check.checkCode}`
     const expectedPreparedCheckKey = `preparedCheck:${check.schoolPin}:${check.pupilPin}`
     const expectedPupilUuidLookupKey = `pupil-uuid-lookup:${check.checkCode}`
-    jest.spyOn(redisService, 'setMany').mockImplementation((batch, ttl) => {
+    jest.spyOn(redisService, 'setMany').mockImplementation((batch) => {
       actualPreparedCheckKey = batch[0].key
       actualPreparedCheckLookupKey = batch[1].key
       actualPupilUuidLookupKey = batch[2].key
@@ -78,7 +77,7 @@ describe('prepare-check.service', () => {
 
   test('should cache each item with the expected structure', async () => {
     let cachedObject
-    jest.spyOn(redisService, 'setMany').mockImplementation((batch, ttl) => {
+    jest.spyOn(redisService, 'setMany').mockImplementation((batch) => {
       cachedObject = batch[0].value
     })
     await sut.prepareChecks([check])

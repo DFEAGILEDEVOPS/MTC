@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach expect jest test afterEach */
-
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-window')
 const checkWindowPresenter = require('../../../helpers/check-window-presenter')

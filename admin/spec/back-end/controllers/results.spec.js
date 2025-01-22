@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach jest expect test */
-
 const httpMocks = require('node-mocks-http')
 const moment = require('moment-timezone')
 

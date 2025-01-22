@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, test, expect */
 
 const checkFormErrorMessages = require('../../../../../lib/errors/check-form')
 const singleCheckFormValidator = require('../../../../../lib/validator/check-form/single-check-form-validator')

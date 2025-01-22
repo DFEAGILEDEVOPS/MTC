@@ -67,7 +67,7 @@ class App {
     })
 
     // error handler
-    this.express.use(function (err: any, req: any, res: any, next: any) {
+    this.express.use(function (err: any, req: any, res: any) {
       const errorId = uuidv4()
       // only providing error information in development
       // @TODO: change this to a real logger with an error string that contains

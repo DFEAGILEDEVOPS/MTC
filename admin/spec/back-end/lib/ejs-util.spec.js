@@ -1,5 +1,4 @@
 'use strict'
-/* global test expect fail describe */
 
 const sut = require('../../../lib/ejs-util')
 

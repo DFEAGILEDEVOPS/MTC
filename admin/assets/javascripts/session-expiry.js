@@ -1,8 +1,7 @@
 /**
  * Logic for handling the session expiration banner
  */
-/* global $, SESSION_DISPLAY_NOTICE_TIME */
-/* eslint-disable no-var */
+/* global SESSION_DISPLAY_NOTICE_TIME */
 $(function () {
   'use strict'
   if (!window.GOVUK) {
@@ -20,7 +19,7 @@ $(function () {
      *
      */
     setCountdownText: function (minutesCountdown, minutes) {
-      var formattedText = minutes === 1 ? '1 minute' : minutes + ' minutes'
+      const formattedText = minutes === 1 ? '1 minute' : minutes + ' minutes'
       minutesCountdown.text(formattedText)
     },
     /**
@@ -30,12 +29,12 @@ $(function () {
      * @param {date} expiryDate - the Date that the session expires
      */
     startTimer: function (minutesCountdown, tickMs, expiryDate) {
-      var now = Date.now()
-      var remainingMinutes = Math.ceil(((expiryDate.valueOf() - now.valueOf()) / 1000) / 60)
+      const now = Date.now()
+      let remainingMinutes = Math.ceil(((expiryDate.valueOf() - now.valueOf()) / 1000) / 60)
       window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, remainingMinutes)
 
       window.GOVUK.sessionExpiry.countDownIntervalId = window.setInterval(function () {
-        var d = Date.now()
+        const d = Date.now()
         window.GOVUK.sessionExpiry.setCountdownText(minutesCountdown, --remainingMinutes)
         const remainingSeconds = (expiryDate.valueOf() - d.valueOf()) / 1000
         if (remainingSeconds <= 5) {
@@ -50,7 +49,7 @@ $(function () {
      * @param {jQuery} minutesCountdown
      * @param {jQuery} continueSessionButton
      */
-    displayExpiryBanner: function (sessionExpirationError, minutesCountdown, continueSessionButton) {
+    displayExpiryBanner: function (sessionExpirationError) {
       sessionExpirationError.removeClass('error-session-expiration')
       sessionExpirationError.addClass('error-about-to-expire-session')
     },
@@ -114,14 +113,14 @@ $(function () {
     }
   }
 
-  var sessionExpirationError = $('.error-session-expiration')
-  var minutesCountdown = $('.session-expiration-countdown')
-  var continueSessionButton = $('#continue-session-expiration')
-  var sessionExpiresAt = $('body').data('session-expires-at')
+  const sessionExpirationError = $('.error-session-expiration')
+  const minutesCountdown = $('.session-expiration-countdown')
+  const continueSessionButton = $('#continue-session-expiration')
+  let sessionExpiresAt = $('body').data('session-expires-at')
   // Clear the data attribute after reading, before it gets out-of-date
   $('body').removeAttr('data-session-expires-at')
 
-  var sessionExpiresAtDate = null
+  let sessionExpiresAtDate = null
   if (sessionExpiresAt) {
     sessionExpiresAtDate = new Date(sessionExpiresAt)
   }

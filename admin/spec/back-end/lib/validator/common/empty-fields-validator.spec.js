@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, expect */
-
 const emptyFieldsValidator = require('../../../../../lib/validator/common/empty-fields-validators')
 
 describe('emptyFieldValidator', function () {
