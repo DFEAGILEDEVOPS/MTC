@@ -1,5 +1,5 @@
 import { PupilFeedbackService } from './feedback.service'
-import type { IServiceBusQueueService, IServiceBusQueueMessage } from '../../azure/service-bus.queue.service'
+import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
 import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names'
 
 describe('Pupil Feedback Service', () => {
@@ -7,8 +7,8 @@ describe('Pupil Feedback Service', () => {
   let serviceBusQueueServiceMock: IServiceBusQueueService
 
   class ServiceBusQueueServiceMock implements IServiceBusQueueService {
-    async dispatch (message: IServiceBusQueueMessage, queueName: string): Promise<void> {}
-    async getActiveMessageCount (queueName: ServiceBusQueueNames): Promise<number> {
+    async dispatch (): Promise<void> {}
+    async getActiveMessageCount (): Promise<number> {
       throw new Error('Method not implemented.')
     }
   }

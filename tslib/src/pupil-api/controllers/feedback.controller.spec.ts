@@ -24,7 +24,7 @@ function createMockRequest (contentType: string): any {
 }
 
 class PupilFeedbackServiceMock implements IPupilFeedbackService {
-  async putFeedbackOnQueue (payload: any): Promise<void> {}
+  async putFeedbackOnQueue (): Promise<void> {}
 }
 
 class JwtServiceMock implements IJwtService {
