@@ -1,6 +1,6 @@
 import { CheckSubmitService } from './check-submit.service'
 import { type IServiceBusQueueService } from '../azure/service-bus.queue.service'
-import { ServiceBusQueueName } from '../azure/service-bus-queue.names'
+import { ServiceBusQueueNames } from '../azure/service-bus-queue.names'
 
 const SbQueueServiceMock = jest.fn<IServiceBusQueueService, any>(() => ({
   dispatch: jest.fn(),
@@ -29,6 +29,6 @@ describe('check submit service', () => {
     await sut.submit(payload)
     expect(queueServiceMock.dispatch).toHaveBeenCalledWith({
       body: payload
-    }, ServiceBusQueueName.checkSubmission)
+    }, ServiceBusQueueNames.checkSubmission)
   })
 })

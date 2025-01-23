@@ -4,7 +4,6 @@ import { SubmissionService } from './submission.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
 import { CompressorService } from '../compressor/compressor.service'
-import * as lzString from 'lz-string';
 import { ApplicationInsightsService } from '../app-insights/app-insights.service'
 
 describe('submission service', () => {

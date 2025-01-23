@@ -292,9 +292,6 @@ describe('check-start.service', () => {
         tokenData[queueNameService.NAMES.PUPIL_PREFS] = {
           queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab', url: 'xyz'
         }
-        tokenData[queueNameService.NAMES.PUPIL_FEEDBACK] = {
-          queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab', url: 'xyz'
-        }
         jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue(tokenData)
         const mockSignMethod = async (payload) => {
           return payload.checkCode
@@ -395,11 +392,20 @@ describe('check-start.service', () => {
         expect(payload[0].tokens.checkSubmission.url).toStrictEqual(expectedUrl)
       })
 
-      test('checkSubmission tokens data should be populated when submission feature active', async () => {
-        config.FeatureToggles.checkSubmissionApi = true
+      test('checkSubmission tokens data should be populated', async () => {
         const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        expect(payload[0].tokens.checkComplete).toBeUndefined()
         expect(payload[0].tokens.checkSubmission).toBeDefined()
+      })
+
+      test('pupilFeedback tokens data should be populated', async () => {
+        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(payload[0].tokens.pupilFeedback).toBeDefined()
+      })
+
+      test('pupilFeedback JWT token should be the same as check submission', async () => {
+        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(payload[0].tokens.pupilFeedback.token)
+          .toStrictEqual(payload[0].tokens.checkSubmission.token)
       })
     })
   })
