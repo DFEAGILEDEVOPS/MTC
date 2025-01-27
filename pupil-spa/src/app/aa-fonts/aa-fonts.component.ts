@@ -34,7 +34,7 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
     this.accessArrangements = this.storageService.getAccessArrangements();
-    this.selectedSize = this.accessArrangements.fontSize || 'regular';
+    this.selectedSize = this.accessArrangements?.fontSize || 'regular';
     this.checkValidSelection();
 
     this.pupil = storageService.getPupil() as Pupil;

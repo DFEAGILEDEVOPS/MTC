@@ -55,7 +55,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   public loadingTimeout: number;
 
   @Output()
-  timeoutEvent: EventEmitter<any> = new EventEmitter();
+  public timeoutEvent = new EventEmitter<void>();
 
   @Input() public familiarisationCheck = false;
 
@@ -154,13 +154,13 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
    * Usually this screen is shown for 3 seconds, except when the next button between questions is shown
    * the button just calls this function in the onClick handler.
    */
-  async sendTimeoutEvent() {
+  sendTimeoutEvent() {
     // Make sure we cancel the speech service before we trigger the next page. PBI #58403
     // There may be duplication of code here, but getting the order correct prevents a possible race condition.
     if (this.questionService.getConfig().questionReader) {
-      await this.speechService.cancel();
+      this.speechService.cancel();
     }
-    this.timeoutEvent.emit(null);
+    this.timeoutEvent.emit()
   }
 
   async ngOnDestroy(): Promise<void> {
