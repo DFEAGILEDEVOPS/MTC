@@ -1,13 +1,11 @@
 {
   "queues": [
     "check-started",
-    "pupil-feedback",
     "pupil-prefs"
   ],
   "tables": [
     "checkResult",
     "pupilEvent",
-    "pupilFeedback",
     "receivedCheck"
   ],
   "blobcontainers": [

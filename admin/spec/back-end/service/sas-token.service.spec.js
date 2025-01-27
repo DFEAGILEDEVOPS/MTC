@@ -99,7 +99,6 @@ describe('sas-token.service', () => {
       const mockRedisResponse = [
         { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
         { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
-        { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
         { queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab' }
       ]
       jest.spyOn(redisCacheService, 'getMany').mockResolvedValue(mockRedisResponse)
@@ -129,15 +128,13 @@ describe('sas-token.service', () => {
       jest.spyOn(logger, 'debug').mockImplementation()
       await sut.getTokens(true, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
-      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
+      expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(2)
     })
 
     test('calls out to generate sas tokens if any are not found in redis', async () => {
       // mock a response where the values are partially found in the cache
       const mockRedisResponse = [
         { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
-        { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
-        undefined,
         undefined
       ]
       jest.spyOn(redisCacheService, 'getMany').mockReturnValue(mockRedisResponse)
@@ -153,7 +150,7 @@ describe('sas-token.service', () => {
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
       expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(1)
       // Expect `res` to have 4 properties, 2 from redis, and 2 generated
-      expect(Object.keys(res).length).toBe(3)
+      expect(Object.keys(res).length).toBe(2)
     })
   })
 })
