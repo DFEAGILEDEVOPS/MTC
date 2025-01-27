@@ -11,15 +11,16 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { TimerService } from '../services/timer/timer.service';
 import { Router } from '@angular/router';
-import { CanExit } from '../routes/can-exit/can-exit.guard';
+import { CanComponentDeactivate } from '../routes/deactivate.guard/can-deactivate.guard';
 import { ApplicationInsightsService } from '../services/app-insights/app-insights.service';
 
 @Component({
-  selector: 'app-check',
-  templateUrl: './check.component.html',
-  styleUrls: [ './check.component.scss' ]
+    selector: 'app-check',
+    templateUrl: './check.component.html',
+    styleUrls: ['./check.component.scss'],
+    standalone: false
 })
-export class CheckComponent implements OnInit, CanExit {
+export class CheckComponent implements OnInit, CanComponentDeactivate {
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
   private static warmupQuestionRe = /^W(\d+)$/;
@@ -89,7 +90,7 @@ export class CheckComponent implements OnInit, CanExit {
   ngOnInit() {
     // console.log('check.component: ngOnInit() called');
     this.config = this.warmupQuestionService.getConfig();
-    this.timerService.emitter.subscribe(e => {
+    this.timerService.emitter.subscribe(() => {
       this.storageService.setTimeout({
         numQuestions: this.questionService.getNumberOfQuestions(),
         numCompleted: this.questionService.getCurrentQuestionNumber()
@@ -104,9 +105,9 @@ export class CheckComponent implements OnInit, CanExit {
 
     // Prevent the user going back a page
     history.pushState(null, null, location.href);
-    window.onpopstate = function (event: Event) {
-      history.go(1);
-    };
+    window.onpopstate = function () {
+      history.go(1)
+    }
 
     // set up the state
     if (this.hasExistingState()) {
@@ -121,9 +122,25 @@ export class CheckComponent implements OnInit, CanExit {
     }
   }
 
+  // Prevent inadvertant navigation from the component
   canDeactivate(): boolean {
+    // return true if we are allowed to exit, or false if not allowed.
+    // see deactivateGuard()
     return this.viewState === 'warmup-intro' || this.viewState === 'submission-pending' ||
       this.viewState === 'preload' || this.viewState === 'warmup-complete';
+  }
+
+  /**
+   * Prevent refresh or browser close when in the check.
+   * @param event
+   */
+  @HostListener('window:beforeunload', [ '$event' ])
+  canUnload(event: any) {
+    if (event) {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    return false
   }
 
   private loadExistingState() {
@@ -276,16 +293,16 @@ export class CheckComponent implements OnInit, CanExit {
    * to submit early.
    * @param {string} answer
    */
-  manualSubmitHandler(answer: string) {
-    this.changeState();
+  manualSubmitHandler(answer: string) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    this.changeState()
   }
 
   /**
    * Handle the timeout caused by the timer reaching zero.  We accept whatever answer is available.
    * @param {string} answer
    */
-  questionTimeoutHandler(answer: string) {
-    this.changeState();
+  questionTimeoutHandler(answer: string) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    this.changeState()
   }
 
   /**

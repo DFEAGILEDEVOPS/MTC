@@ -4,8 +4,9 @@ import { ApplicationInsightsService } from '../services/app-insights/app-insight
 import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service';
 
 @Component({
-  selector: 'app-qr-code-arrival',
-  templateUrl: './qr-code-arrival.component.html'
+    selector: 'app-qr-code-arrival',
+    templateUrl: './qr-code-arrival.component.html',
+    standalone: false
 })
 export class QrCodeArrivalComponent implements OnInit {
   constructor(private router: Router,
