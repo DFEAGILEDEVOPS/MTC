@@ -1,20 +1,14 @@
-import { app, output, type InvocationContext } from '@azure/functions'
+import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { type IPupilFeedbackMessage, PupilFeedbackService } from './feedback.service'
 
 const functionName = 'pupil-feedback'
 const service = new PupilFeedbackService()
 
-const outputTable = output.table({
-  connection: 'AZURE_STORAGE_CONNECTION_STRING',
-  tableName: 'pupilFeedback'
-})
-
-app.storageQueue(functionName, {
-  connection: 'AZURE_STORAGE_CONNECTION_STRING',
+app.serviceBusQueue(functionName, {
+  connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'pupil-feedback',
-  handler: pupilFeedback,
-  extraOutputs: [outputTable]
+  handler: pupilFeedback
 })
 
 export async function pupilFeedback (triggerMessage: unknown, context: InvocationContext): Promise<void> {
@@ -23,12 +17,12 @@ export async function pupilFeedback (triggerMessage: unknown, context: Invocatio
   const version = feedbackMessage.version
   context.info(`${functionName}: version:${version} message received for checkCode ${feedbackMessage.checkCode}`)
   try {
-    if (version !== 2) {
-      // dead letter the message as we no longer support below v2
+    if (version !== 3) {
+      // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported`)
     }
-    const output = service.process(feedbackMessage)
-    context.extraOutputs.set(outputTable, output.feedbackTable)
+
+    await service.process(feedbackMessage)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {

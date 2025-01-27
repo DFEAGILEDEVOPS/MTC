@@ -69,8 +69,7 @@ const sasTokenService = {
   getTokens: async function (hasLiveChecks, expiryDate) {
     const queueNames = [
       queueNameService.NAMES.CHECK_STARTED,
-      queueNameService.NAMES.PUPIL_PREFS,
-      queueNameService.NAMES.PUPIL_FEEDBACK
+      queueNameService.NAMES.PUPIL_PREFS
     ]
 
     // Attempt to retrieve all tokens from redis
