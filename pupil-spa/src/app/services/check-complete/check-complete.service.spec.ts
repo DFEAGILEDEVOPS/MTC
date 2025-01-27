@@ -1,7 +1,7 @@
 import { APP_INITIALIZER } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
-import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
+import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';

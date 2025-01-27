@@ -3487,6 +3487,11 @@ browserslist@^4.24.3:
     node-releases "^2.0.19"
     update-browserslist-db "^1.1.1"
 
+buffer-esm@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/buffer-esm/-/buffer-esm-1.2.0.tgz#d6cd1cda051068c3f975af9552a5d5c88b19ac9c"
+  integrity sha512-VdoXyqlJpVWspgSdR795+2IIBwpUx0rHRaMEYMKgr/fXaDgrdyL2B9fcc2VqJy3+IJKktZFVtfOBMHadatWEsQ==
+
 buffer-from@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"
