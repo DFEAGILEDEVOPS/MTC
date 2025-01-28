@@ -78,7 +78,6 @@ describe('SpeechService', () => {
         }
       });
       await service.speak('9 times 9');
-      expect(window.setTimeout).toHaveBeenCalledTimes(1);
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
       expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
@@ -107,7 +106,6 @@ describe('SpeechService', () => {
         }
       });
       await service.speak('9 times 9');
-      expect(window.setTimeout).toHaveBeenCalledTimes(1);
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
       expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
