@@ -289,17 +289,16 @@ export class SpeechService implements OnDestroy {
    */
   cancel(): Promise<void> {
     // console.log('SpeechAPI cancel() called');
-    const _window = this.windowRefService.nativeWindow;
-    _window.clearTimeout(this.cancelTimeout);
+    const _window = this.windowRefService.nativeWindow
+    _window.clearTimeout(this.cancelTimeout)
+    this.synth?.cancel()
 
     return new Promise((resolve) => {
-      this.synth?.cancel();
-      this.speaking = false;
-
+      this.speaking = false
       this.cancelTimeout = _window.setTimeout(() => {
         resolve();
-      }, 300);
-    });
+      }, 250)
+    })
   }
 
   /**

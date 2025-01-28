@@ -154,11 +154,11 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
    * Usually this screen is shown for 3 seconds, except when the next button between questions is shown
    * the button just calls this function in the onClick handler.
    */
-  sendTimeoutEvent() {
+  async sendTimeoutEvent() {
     // Make sure we cancel the speech service before we trigger the next page. PBI #58403
     // There may be duplication of code here, but getting the order correct prevents a possible race condition.
     if (this.questionService.getConfig().questionReader) {
-      this.speechService.cancel();
+      await this.speechService.cancel();
     }
     this.timeoutEvent.emit()
   }
