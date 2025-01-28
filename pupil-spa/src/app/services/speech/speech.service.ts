@@ -5,6 +5,10 @@ import { AuditService } from '../audit/audit.service';
 import { AuditEntryFactory } from '../audit/auditEntry'
 import { WindowRefService } from '../window-ref/window-ref.service';
 
+function delay (ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 @Injectable()
 export class SpeechService implements OnDestroy {
   public static readonly speechStarted = 'start';
@@ -288,16 +292,29 @@ export class SpeechService implements OnDestroy {
    * happen if it's being cancelled here.
    */
   cancel(): Promise<void> {
-    // console.log('SpeechAPI cancel() called');
     const _window = this.windowRefService.nativeWindow
     _window.clearTimeout(this.cancelTimeout)
     this.synth?.cancel()
 
     return new Promise((resolve) => {
-      this.speaking = false
-      this.cancelTimeout = _window.setTimeout(() => {
-        resolve();
-      }, 250)
+      const checkStabilized = async () => {
+        // Wait a small amount to let the cancel take effect
+        await delay(50)
+
+        // If still speaking, keep checking until stabilized
+        if (this.synth?.speaking) {
+          this.cancelTimeout = _window.setTimeout(checkStabilized, 50)
+          return
+        }
+
+        this.speaking = false
+        // Add final delay to ensure browser is ready for new speech
+        this.cancelTimeout = _window.setTimeout(() => {
+          resolve()
+        }, 250)
+      }
+
+      checkStabilized()
     })
   }
 
