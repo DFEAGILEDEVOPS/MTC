@@ -8,9 +8,10 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { Config } from '../config.model'
 
 @Component({
-  selector: 'app-instructions',
-  templateUrl: './instructions.component.html',
-  styleUrls: ['./instructions.component.css']
+    selector: 'app-instructions',
+    templateUrl: './instructions.component.html',
+    styleUrls: ['./instructions.component.css'],
+    standalone: false
 })
 export class InstructionsComponent implements AfterViewInit, OnDestroy {
 

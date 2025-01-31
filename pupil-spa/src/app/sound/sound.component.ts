@@ -2,9 +2,10 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({
-  selector: 'app-sound',
-  templateUrl: './sound.component.html',
-  styleUrls: ['./sound.component.scss']
+    selector: 'app-sound',
+    templateUrl: './sound.component.html',
+    styleUrls: ['./sound.component.scss'],
+    standalone: false
 })
 export class SoundComponent {
   @ViewChild('endOfQuestionSound', { static: true }) public endOfQuestionSound: ElementRef;

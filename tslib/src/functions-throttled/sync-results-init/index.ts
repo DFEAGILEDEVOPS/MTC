@@ -4,6 +4,8 @@ import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './s
 import './../../common/bigint'
 const functionName = 'sync-results-init'
 
+// This is usually in GMT so 5pm GMT is equal to 6pm BST (wall clock time in summer)
+// Timezones are now supported: https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-javascript#ncrontab-time-zones
 app.timer(functionName, {
   schedule: '0 0 17 * * *',
   handler: syncResultsInit

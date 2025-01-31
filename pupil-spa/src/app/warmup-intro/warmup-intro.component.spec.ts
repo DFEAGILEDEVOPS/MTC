@@ -41,7 +41,7 @@ describe('WarmupIntroComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('emits onClick()', waitForAsync ((done) => {
+  it('emits onClick()', waitForAsync (() => {
     component.clickEvent.subscribe( g => {
       expect(g).toBe(null);
       // Issue: https://github.com/angular/angular/issues/15830

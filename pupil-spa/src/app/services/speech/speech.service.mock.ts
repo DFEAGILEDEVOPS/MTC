@@ -20,6 +20,8 @@ export class SpeechServiceMock {
   cancel () {
   }
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
   speak (arg) {
     this.speechStatusSource.next(SpeechServiceMock.speechEnded);
   }
@@ -32,7 +34,7 @@ export class SpeechServiceMock {
     this.speechStatusSource.next(SpeechServiceMock.speechEnded);
   }
 
-  speakElement (arg) {}
+  speakElement () {}
 
   waitForEndOfSpeech (): Promise<void> {
    return Promise.resolve()
@@ -42,3 +44,4 @@ export class SpeechServiceMock {
     this.speak(arg)
   }
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */

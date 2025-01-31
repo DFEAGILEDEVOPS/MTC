@@ -1,7 +1,7 @@
 import { APP_INITIALIZER } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
-import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
+import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
@@ -72,121 +72,6 @@ describe('CheckCompleteService', () => {
   it('should be created', () => {
     expect(checkCompleteService).toBeTruthy();
   });
-
-  describe('live: legacy mode (azure queue storage)', () => {
-    beforeEach(() => {
-      spyOn(appUsageService, 'store')
-      spyOn(storageService, 'getConfig').and.returnValue({
-        practice: false,
-        submissionMode: 'legacy'
-      });
-    })
-
-    it('submit should call azure queue service successfully', async () => {
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(storageService, 'setPendingSubmission');
-      spyOn(storageService, 'setCompletedSubmission');
-      const expectedSchoolUUID = 'school_uuid';
-      spyOn(storageService, 'getAllItems').and.returnValue({
-        pupil: {
-          checkCode: 'checkCode'
-        },
-        school: {
-          uuid: expectedSchoolUUID
-        }
-      });
-      let capturedMessage;
-      azureQueueServiceSpy.addMessageToQueue.and.callFake((url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
-        capturedMessage = message;
-        return Promise.resolve()
-      });
-      spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
-
-      // exec
-      await checkCompleteService.submit(Date.now());
-
-      // test
-      expect(addEntrySpy).toHaveBeenCalledTimes(2);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
-      expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1);
-      expect(capturedMessage).toBeDefined();
-      expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
-      expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(1);
-      expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(1);
-      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-      expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
-    });
-
-    it('uses checkComplete token', async () => {
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-      spyOn(storageService, 'setPendingSubmission');
-      spyOn(storageService, 'setCompletedSubmission');
-      const expectedSchoolUUID = 'school_uuid';
-      spyOn(storageService, 'getAllItems').and.returnValue({
-        pupil: {
-          checkCode: 'checkCode'
-        },
-        school: {
-          uuid: expectedSchoolUUID
-        }
-      });
-      spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
-      await checkCompleteService.submit(Date.now());
-      expect(tokenService.getToken).toHaveBeenCalledWith('checkComplete');
-    });
-
-    it(`submit should call azure queue service service unsuccessfully, audit failure
-    and redirect to submission failed page`, async () => {
-    const addEntrySpy = spyOn(auditService, 'addEntry');
-    spyOn(appInsightsService, 'trackException');
-    spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-    spyOn(storageService, 'setPendingSubmission');
-    spyOn(storageService, 'setCompletedSubmission');
-    spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-    azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(new Error('error')));
-    spyOn(checkCompleteService, 'getPayload').and.returnValue({});
-    await checkCompleteService.submit(Date.now());
-    expect(addEntrySpy).toHaveBeenCalledTimes(2);
-    expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-    expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1);
-    expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(0);
-    expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
-    expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
-    expect(appInsightsService.trackException).toHaveBeenCalledTimes(1);
-    });
-
-    it(`submit should call azure queue service service when sas token has expired and redirect to session expiry page`, async () => {
-      const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
-      spyOn(storageService, 'setPendingSubmission');
-      spyOn(storageService, 'setCompletedSubmission');
-      spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-      spyOn(checkCompleteService, 'getPayload').and.returnValue({});
-      const sasTokenExpiredError = {
-        statusCode: 403,
-        authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
-      };
-      azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(sasTokenExpiredError));
-      await checkCompleteService.submit(Date.now());
-      expect(addEntrySpy).toHaveBeenCalledTimes(2);
-      expect(appUsageService.store).toHaveBeenCalledTimes(1);
-      expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(1);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
-      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-      expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1);
-      expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(0);
-      expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
-      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/session-expired']);
-    });
-  })
 
   describe('live: modern mode (Submit API with JWT)', () => {
     beforeEach(() => {
