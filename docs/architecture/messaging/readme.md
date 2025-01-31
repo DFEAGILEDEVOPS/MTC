@@ -14,19 +14,19 @@ Each message in the system is processed by a function that is dedicated to proce
 | check-started | azure storage | `pupil-spa` | `functions/check-started` |
 | pupil-feedback | azure storage | `pupil-spa` | `functions/feedback` |
 | pupil-prefs | azure storage | `pupil-spa` | `functions/pupil-prefs` |
-| check-completion | service bus | `TODO` | `TODO` |
-| check-marking | service bus | `TODO` | `TODO` |
-| check-notification | service bus | `TODO` | `TODO` |
-| check-submission | service bus | `TODO` | `TODO` |
-| check-sync | service bus | `TODO` | `TODO` |
-| check-validation | service bus | `TODO` | `TODO` |
-| ps-report-schools | service bus | `TODO` | `TODO` |
-| ps-report-staging | service bus | `TODO` | `TODO` |
-| ps-report-export | service bus | `TODO` | `TODO` |
-| ps-report-exec | service bus | `TODO` | `TODO` |
-| ps-report-staging-start | service bus | `TODO` | `TODO` |
-| ps-report-staging-complete | service bus | `TODO` | `TODO` |
-| sync-results-to-db-complete | service bus | `TODO` | `TODO` |
+| check-completion | service bus | `check-marking` | `check-notification` |
+| check-marking | service bus | `check-validator` | `check-notification` |
+| check-notification | service bus | `n/a` | `n/a` |
+| check-submission | service bus | `pupil-api` | `check-receiver` |
+| check-sync | service bus | `admin-app` | `functions/pupil-prefs` |
+| check-validation | service bus | `check-receiver` | `check-marker` |
+| ps-report-schools | service bus | `n/a` | `n/a` |
+| ps-report-staging | service bus | `n/a` | `n/a` |
+| ps-report-export | service bus | `n/a` | `n/a` |
+| ps-report-exec | service bus | `admin-app` | `n/a` |
+| ps-report-staging-start | service bus | `n/a` | `n/a` |
+| ps-report-staging-complete | service bus | `n/a` | `n/a` |
+| sync-results-to-db-complete | service bus | `n/a` | `n/a` |
 
 ## Queue Definitions
 

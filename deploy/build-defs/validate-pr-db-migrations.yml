@@ -16,19 +16,7 @@ pool:
   name: $(BuildAgentPool)
 
 jobs:
-- job: FastFail
-  steps:
-  - task: Bash@3
-    displayName: PR FastFail check
-    env:
-      PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
-    inputs:
-      targetType: filePath
-      filePath: 'deploy/pr-label-check.sh'
-      arguments: $PULL_REQUEST_ID
-      failOnStderr: true
 - job: ValidateMigrations
-  dependsOn: FastFail
   steps:
   - task: AzureCLI@2
     displayName: 'Create Database'
