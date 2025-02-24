@@ -25,7 +25,7 @@ CREATE TABLE [mtc_results].[psychometricReport]
  LANum                SMALLINT          NULL,
  AttemptId            UNIQUEIDENTIFIER  NULL,
  FormID               NVARCHAR(64)      NULL,
- TestDate             DATE              NULL,
+ TestDate             DATETIMEOFFSET(3) NULL,
  TimeStart            DATETIMEOFFSET(3) NULL,
  TimeComplete         DATETIMEOFFSET(3) NULL,
  TimeTaken            DECIMAL(9, 3)     NULL, -- SQL Server does not have a duration type; store durations as seconds with the fractional part in milliseconds
