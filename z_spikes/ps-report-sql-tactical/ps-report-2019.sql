@@ -27,7 +27,7 @@ CREATE TABLE [mtc_analysis].[PsReport2019](
 	[LA Num] smallint NULL,
 	[AttemptId] [nvarchar](64) NULL,
 	[Form ID] [nvarchar](64) NULL,
-	[TestDate] int NULL,
+	[TestDate] [nvarchar](16) NULL,
 	[TimeStart] [nvarchar](16) NULL,
 	[TimeComplete] [nvarchar](16) NULL,
 	[TimeTaken] [nvarchar](16) NULL,

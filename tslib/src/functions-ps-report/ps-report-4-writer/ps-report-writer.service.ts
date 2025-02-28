@@ -90,7 +90,7 @@ export class PsReportWriterService {
         LANum smallint NULL,
         AttemptId uniqueidentifier NULL,
         FormID nvarchar(64) NULL,
-        TestDate date NULL,
+        TestDate datetimeoffset(3) NULL,
         TimeStart datetimeoffset(7) NULL,
         TimeComplete datetimeoffset(7) NULL,
         TimeTaken decimal(9,3) NULL,

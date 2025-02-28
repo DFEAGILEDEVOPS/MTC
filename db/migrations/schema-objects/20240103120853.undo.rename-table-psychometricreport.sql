@@ -22,7 +22,7 @@ CREATE TABLE [mtc_results].[psychometricReport](
 	[LANum] [smallint] NULL,
 	[AttemptId] [uniqueidentifier] NULL,
 	[FormID] [nvarchar](64) NULL,
-	[TestDate] [date] NULL,
+	[TestDate] [datetimeoffset](3) NULL,
 	[TimeStart] [datetimeoffset](3) NULL,
 	[TimeComplete] [datetimeoffset](3) NULL,
 	[TimeTaken] [decimal](9, 3) NULL,
