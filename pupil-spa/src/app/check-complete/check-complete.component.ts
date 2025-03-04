@@ -8,9 +8,10 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 import { Config } from '../config.model';
 
 @Component({
-  selector: 'app-check-complete',
-  templateUrl: './check-complete.component.html',
-  styleUrls: ['./check-complete.component.css']
+    selector: 'app-check-complete',
+    templateUrl: './check-complete.component.html',
+    styleUrls: ['./check-complete.component.css'],
+    standalone: false
 })
 export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
 

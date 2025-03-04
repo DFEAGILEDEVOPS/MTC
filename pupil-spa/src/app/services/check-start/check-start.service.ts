@@ -49,7 +49,7 @@ export class CheckStartService {
       this.auditService.addEntry(this.auditEntryFactory.createCheckStartedApiCalled());
       await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
       this.auditService.addEntry(this.auditEntryFactory.createCheckStartedAPICallSucceeded());
-    } catch (error) {
+    } catch {
       this.auditService.addEntry(this.auditEntryFactory.createCheckStartedAPICallFailed());
     }
   }

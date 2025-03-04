@@ -97,7 +97,7 @@ describe('AASettingsComponent', () => {
       })
 
       it('should call the pupil prefs service to store the input assistant data', async () => {
-        const getPupilSpy = spyOn(mockStorageService, 'getPupil').and.returnValue({ checkCode: 'checkCode', inputAssistant: {} })
+        spyOn(mockStorageService, 'getPupil').and.returnValue({ checkCode: 'checkCode', inputAssistant: {} })
         await fixture.whenStable()
         component.inputAssistantForm.controls.inputAssistantFirstName.setValue('FirstName')
         component.inputAssistantForm.controls.inputAssistantLastName.setValue('LastName')

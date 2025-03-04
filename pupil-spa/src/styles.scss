@@ -4,7 +4,7 @@
 $image-path: "../images/";
 
 // used by shared-styles (MTC): file-url()
-$path: "~/assets/images/";
+$path: "./assets/images/";
 
 /* Custom functions */
 @import "../lib/shared-styles/helpers/helpers";

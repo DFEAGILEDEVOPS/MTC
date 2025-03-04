@@ -7,9 +7,10 @@ import { SpeechService } from '../services/speech/speech.service'
 import { QuestionService } from '../services/question/question.service'
 
 @Component({
-  selector: 'app-submission-failed',
-  templateUrl: './submission-failed.component.html',
-  styleUrls: ['./submission-failed.component.scss']
+    selector: 'app-submission-failed',
+    templateUrl: './submission-failed.component.html',
+    styleUrls: ['./submission-failed.component.scss'],
+    standalone: false
 })
 export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestroy {
 

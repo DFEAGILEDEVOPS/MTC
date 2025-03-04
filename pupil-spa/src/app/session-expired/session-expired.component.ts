@@ -7,9 +7,10 @@ import { SpeechService } from '../services/speech/speech.service';
 import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
-  selector: 'app-session-expired',
-  templateUrl: './session-expired.component.html',
-  styleUrls: ['./session-expired.component.scss']
+    selector: 'app-session-expired',
+    templateUrl: './session-expired.component.html',
+    styleUrls: ['./session-expired.component.scss'],
+    standalone: false
 })
 export class SessionExpiredComponent implements OnInit, AfterViewInit, OnDestroy {
 

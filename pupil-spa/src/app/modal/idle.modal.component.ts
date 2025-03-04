@@ -4,13 +4,14 @@ import { SpeechService } from '../services/speech/speech.service';
 import { TimerService } from '../services/timer/timer.service';
 
 @Component({
-  selector: 'app-idle-modal-component',
-  templateUrl: './idle.modal.component.html',
-  styleUrls: ['./idle.modal.component.scss']
+    selector: 'app-idle-modal-component',
+    templateUrl: './idle.modal.component.html',
+    styleUrls: ['./idle.modal.component.scss'],
+    standalone: false
 })
 export class IdleModalComponent implements AfterViewInit, OnDestroy {
 
-    public closeCallback: Function;
+    public closeCallback: () => void // function type taking no args and returning void
     protected speechListenerEvent: any;
 
     constructor(

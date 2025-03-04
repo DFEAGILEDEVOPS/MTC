@@ -10,15 +10,16 @@ import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
 
 @Component({
-  selector: 'app-aa-fonts',
-  templateUrl: './aa-fonts.component.html',
-  styleUrls: ['./aa-fonts.component.scss']
+    selector: 'app-aa-fonts',
+    templateUrl: './aa-fonts.component.html',
+    styleUrls: ['./aa-fonts.component.scss'],
+    standalone: false
 })
 export class AAFontsComponent implements AfterViewInit, OnDestroy {
   pupil: Pupil;
   validSelection = false;
   selectedSize: AccessArrangements["fontSize"];
-  fontSettings: Object[];
+  fontSettings: object[];
   accessArrangements: AccessArrangements;
   speechListenerEvent: any;
 
@@ -33,7 +34,7 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
 ) {
     this.fontSettings = AccessArrangementsConfig.fontSettings;
     this.accessArrangements = this.storageService.getAccessArrangements();
-    this.selectedSize = this.accessArrangements.fontSize || 'regular';
+    this.selectedSize = this.accessArrangements?.fontSize || 'regular';
     this.checkValidSelection();
 
     this.pupil = storageService.getPupil() as Pupil;
