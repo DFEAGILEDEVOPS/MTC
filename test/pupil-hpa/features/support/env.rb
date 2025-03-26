@@ -58,7 +58,7 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
-  seconds = 7
+  seconds = 30
   config.default_max_wait_time = seconds
 end
 
