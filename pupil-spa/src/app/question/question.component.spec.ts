@@ -12,7 +12,7 @@ import { RegisterInputServiceMock } from '../services/register-input/register-in
 import { SoundComponentMock } from '../sound/sound-component-mock'
 import { SpeechService } from '../services/speech/speech.service'
 import { SpeechServiceMock } from '../services/speech/speech.service.mock'
-import { IStorageService, StorageService } from '../services/storage/storage.service'
+import { StorageService } from '../services/storage/storage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { Renderer2 } from '@angular/core'
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
@@ -116,7 +116,7 @@ describe('QuestionComponent', () => {
       component.factor1 = 1
       component.factor2 = 2
       const event = { timeStamp: 1519211809934 }
-      //@ts-ignore need to mock timestamp
+      // @ts-expect-error need to mock timestamp
       component.onClickBackspace(event)
       expect(registerInputServiceSpy).toHaveBeenCalledTimes(1)
       expect(registerInputServiceSpy).toHaveBeenCalledWith('Backspace', 'mouse', 1, '1x2', 1519211809934)
@@ -172,7 +172,7 @@ describe('QuestionComponent', () => {
       component.factor1 = 1
       component.factor2 = 2
       const event = { timeStamp: 1519211809934 }
-      //@ts-ignore need to mock timestamp
+      // @ts-expect-error need to mock timestamp
       component.onClickSubmit(event)
       expect(registerInputServiceSpy).toHaveBeenCalledTimes(1)
       expect(registerInputServiceSpy).toHaveBeenCalledWith('Enter', 'mouse', 1, '1x2', 1519211809934)
@@ -181,7 +181,7 @@ describe('QuestionComponent', () => {
     it('calls onSubmit()', () => {
       spyOn(component, 'onSubmit')
       const event = {}
-      //@ts-ignore need to mock timestamp
+      // @ts-expect-error need to mock timestamp
       component.onClickSubmit(event)
       expect(component.onSubmit).toHaveBeenCalledTimes(1)
     })

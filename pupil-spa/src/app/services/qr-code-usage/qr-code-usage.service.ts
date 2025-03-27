@@ -67,8 +67,8 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   initialiseFromLocalStorage () {
-    let qrCodeArrivalTimestamps: MonotonicTime[] = []
-    let qrCodeSubsequentAppUses: MonotonicTime[] = []
+    const qrCodeArrivalTimestamps: MonotonicTime[] = []
+    const qrCodeSubsequentAppUses: MonotonicTime[] = []
     const storageItems = this.storageService.getAllItems()
     Object.keys(storageItems).forEach((key: string) => {
       if (storageItems[key].type === 'QrCodeArrival') {

@@ -13,8 +13,8 @@ import { AuditEntry, AuditEntryFactory, CheckStarted, QuestionIntroRendered } fr
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { TokenService } from '../services/token/token.service';
 import { StorageService } from '../services/storage/storage.service';
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { loadConfigMockService } from '../services/config/config.service'
 
@@ -27,11 +27,11 @@ describe('QuestionsIntroComponent', () => {
 
   beforeEach(waitForAsync(() => {
     const inject = TestBed.configureTestingModule({
-      declarations: [ QuestionsIntroComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
-      imports: [HttpClientTestingModule],
-      providers: [
-        { provide: AuditService, useClass: AuditServiceMock},
+    declarations: [QuestionsIntroComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [],
+    providers: [
+        { provide: AuditService, useClass: AuditServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
@@ -41,9 +41,11 @@ describe('QuestionsIntroComponent', () => {
         CheckStartService,
         CheckStartService,
         AppUsageService,
-        AuditEntryFactory
-      ]
-    });
+        AuditEntryFactory,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     TestBed.inject(HttpClient);
     TestBed.inject(HttpTestingController);
     checkStartService = inject.inject(CheckStartService);

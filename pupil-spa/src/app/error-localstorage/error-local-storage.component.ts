@@ -3,9 +3,10 @@ import { DeviceService } from '../services/device/device.service'
 import { Router } from '@angular/router'
 
 @Component({
-  selector: 'app-error-localstorage',
-  templateUrl: './error-local-storage.component.html',
-  styleUrls: ['./error-local-storage.component.scss']
+    selector: 'app-error-localstorage',
+    templateUrl: './error-local-storage.component.html',
+    styleUrls: ['./error-local-storage.component.scss'],
+    standalone: false
 })
 export class ErrorLocalStorageComponent implements OnInit {
 

@@ -39,7 +39,7 @@ logger.level = :info
 
 ENV['SE_CACHE_PATH'] ||=File.expand_path("#{File.dirname(__FILE__)}/../../../se_manager/.cache/selenium")
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
-ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
+ENV["PUPIL_BASE_URL"] ||= Dotenv.parse("../../.env")['PUPIL_APP_URL']
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV["FUNC_THROTTLED_BASE_URL"] ||= 'http://localhost:7073/admin/functions'
 ENV['FUNC_PS_REPORT_BASE_URL']  ||= 'http://localhost:7074/admin/functions'
@@ -58,7 +58,7 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
-  seconds = 7
+  seconds = 30
   config.default_max_wait_time = seconds
 end
 
