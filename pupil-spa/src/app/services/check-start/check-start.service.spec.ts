@@ -52,7 +52,7 @@ describe('CheckStartService', () => {
     azureQueueServiceSpy.addMessageToQueue.and
       .callFake(async (url: string,
         token: string, payload: object,
-        retryConfig: QueueMessageRetryConfig): Promise<void> => { // eslint-disable-line @typescript-eslint/no-unused-vars
+        retryConfig: QueueMessageRetryConfig): Promise<void> => {
         actualPayload = payload
         return Promise.resolve()
       })

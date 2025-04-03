@@ -1,15 +1,15 @@
 export class Pupil {
-  firstName: string
-  firstNameAlias: string
-  lastName: string
-  lastNameAlias: string
-  dob: string
+  firstName: String
+  firstNameAlias: String
+  lastName: String
+  lastNameAlias: String
+  dob: String
   checkCode: string
   inputAssistant: InputAssistant
 }
 
 export interface InputAssistant {
-  firstName: string
-  lastName: string
+  firstName: String
+  lastName: String
 }
 

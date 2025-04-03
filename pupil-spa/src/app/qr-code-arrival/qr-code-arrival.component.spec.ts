@@ -12,6 +12,7 @@ describe('QrCodeArrivalComponent', () => {
   let mockAppInsightsService;
   let fixture: ComponentFixture<QrCodeArrivalComponent>;
   let qrCodeUsageService: QrCodeUsageService;
+  let qrCodeArrivalTimestampsSpy: jasmine.Spy
 
   beforeEach(waitForAsync(() => {
     mockRouter = { navigate: jasmine.createSpy('navigate') }

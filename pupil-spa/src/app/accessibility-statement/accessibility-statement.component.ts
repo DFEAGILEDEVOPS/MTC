@@ -2,10 +2,9 @@ import { Component, OnInit, AfterViewChecked, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-accessibility-statement',
-    templateUrl: './accessibility-statement.component.html',
-    styleUrls: ['./accessibility-statement.component.scss'],
-    standalone: false
+  selector: 'app-accessibility-statement',
+  templateUrl: './accessibility-statement.component.html',
+  styleUrls: ['./accessibility-statement.component.scss']
 })
 export class AccessibilityStatementComponent implements OnInit, AfterViewChecked {
 
@@ -22,7 +21,7 @@ export class AccessibilityStatementComponent implements OnInit, AfterViewChecked
       if (this.fragment) {
         document.querySelector('#' + this.fragment).scrollIntoView();
       }
-    } catch { /* empty */ }
+    } catch (e) { }
   }
 
 }

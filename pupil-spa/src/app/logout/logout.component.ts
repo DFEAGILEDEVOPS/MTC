@@ -5,9 +5,8 @@ import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 @Component({
-    selector: 'app-logout',
-    template: ``,
-    standalone: false
+  selector: 'app-logout',
+  template: ``
 })
 export class LogoutComponent {
 

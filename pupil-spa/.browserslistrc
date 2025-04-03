@@ -8,7 +8,8 @@
 > 0.5%
 last 4 versions
 Firefox ESR
-Safari >= 14
-iOS >= 14
-not OperaMini all
 not dead
+not IE 11
+Safari >= 13
+iOS >= 13
+not OperaMini all

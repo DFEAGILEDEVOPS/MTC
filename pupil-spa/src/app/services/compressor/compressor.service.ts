@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
+import * as lzString from 'lz-string';
 import { gzipSync, gunzipSync, strToU8, strFromU8 } from 'fflate';
 
 @Injectable()
 export class CompressorService {
 
   constructor() { }
+
+  static compress(data: string): string {
+    return lzString.compressToUTF16(data);
+  }
+
+  static compressToBase64(data: string): string {
+    return lzString.compressToBase64(data);
+  }
 
   /**
    *

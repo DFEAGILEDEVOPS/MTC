@@ -10,10 +10,9 @@ import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
-    selector: 'app-question',
-    templateUrl: './question.component.html',
-    styleUrls: ['./question.component.css'],
-    standalone: false
+  selector: 'app-question',
+  templateUrl: './question.component.html',
+  styleUrls: ['./question.component.css']
 })
 
 export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {

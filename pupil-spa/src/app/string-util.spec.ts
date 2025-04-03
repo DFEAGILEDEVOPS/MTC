@@ -1,5 +1,7 @@
 import { stringUtil } from './string-util'
 
+sut: stringUtil
+
 describe('string-util', () => {
   it('should return true for undefined', () => {
     expect(stringUtil.isEmptyOrUndefined(undefined)).toBe(true)

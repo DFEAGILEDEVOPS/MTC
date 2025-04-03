@@ -6,10 +6,9 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({
-    selector: 'app-warmup-complete',
-    templateUrl: './warmup-complete.component.html',
-    styles: [],
-    standalone: false
+  selector: 'app-warmup-complete',
+  templateUrl: './warmup-complete.component.html',
+  styles: []
 })
 export class WarmupCompleteComponent implements AfterViewInit, OnDestroy {
   private speechListenerEvent: any;

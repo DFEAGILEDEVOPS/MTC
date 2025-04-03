@@ -26,8 +26,8 @@ export class QuestionService {
   public getNumberOfQuestions(): number {
     try {
       return this.questions.length;
-    } catch {
-      return 0
+    } catch (error) {
+      return 0;
     }
   }
 

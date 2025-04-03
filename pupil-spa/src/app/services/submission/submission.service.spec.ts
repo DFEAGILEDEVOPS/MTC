@@ -116,7 +116,7 @@ describe('submission service', () => {
     }
     httpServiceSpy.post.and.callFake((url: string, postBody: any) => {
       const jsonPayload = CompressorService.decompressFromGzip(postBody.archive)
-      expect(jsonPayload.checkCode).toBe(payload.checkCode)
+      //const jsonPayload = JSON.parse(stringifiedPayload)
       expect(postBody.version).toEqual(expectedPayloadVersion)
       expect(postBody.checkCode).toEqual(payload?.checkCode)
       expect(postBody.schoolUUID).toEqual(payload?.school?.uuid)

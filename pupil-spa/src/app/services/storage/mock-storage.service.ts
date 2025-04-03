@@ -15,7 +15,7 @@ export class StorageServiceMock extends StorageService implements IStorageServic
   }
 
   // Extends StorageService, just swaps out the localStorage for an in-memory map.
-  protected setItem(key: StorageKeyTypesAll, value: object | Array<object>): void {
+  protected setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
     if (!key) {
       throw new Error('key is required');
     }
@@ -36,11 +36,10 @@ export class StorageServiceMock extends StorageService implements IStorageServic
     } catch (error) {
       console.error('Storage-service: error getting key: ', error)
     }
+    // try/catch as not all localstorage items are JSON, e.g. ai_session
     try {
       item = JSON.parse(item);
-    } catch {
-       // try/catch as not all localstorage items are JSON, e.g. ai_session
-     }
+    } catch (_) { }
     return item;
   }
 

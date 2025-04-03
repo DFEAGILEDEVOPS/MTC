@@ -1,7 +1,7 @@
 // Angular modules
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GlobalErrorHandler } from './error-handler';
@@ -31,7 +31,7 @@ import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
 import { LoggedInGuard } from './routes/logged-in/logged-in.guard';
-import { deactivateGuard } from './routes/deactivate.guard/can-deactivate.guard';
+import { CanExitGuard } from './routes/can-exit/can-exit.guard';
 import { LoginComponent } from './login/login.component';
 import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics/login-error-diagnostics.service';
 import { LoginErrorService } from './services/login-error/login-error.service';
@@ -85,10 +85,10 @@ import { QrCodeArrivalComponent } from './qr-code-arrival/qr-code-arrival.compon
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 const appRoutes: Routes = [
-  {path: '', redirectTo: 'sign-in', pathMatch: 'full', canDeactivate: [deactivateGuard]},
+  {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'access-settings', component: AASettingsComponent },
   {path: 'accessibility-statement', component: AccessibilityStatementComponent },
-  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard], canDeactivate: [deactivateGuard]},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard], canDeactivate: [CanExitGuard]},
   {path: 'check-complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard] },
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'colour-choice', component: AAColoursComponent },
@@ -103,14 +103,15 @@ const appRoutes: Routes = [
   {path: 'session-expired', component: SessionExpiredComponent },
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-fail', component: LoginFailureComponent},
-  {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]}, // Allow Deaactivation here
-  {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]}, // Allow Deactivation
+  {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'test-error', component: TestErrorComponent}, // no need for login here
   { path: '**', component: PageNotFoundComponent }
 ];
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AAColoursComponent,
         AAFontsComponent,
         AASettingsComponent,
@@ -157,13 +158,15 @@ const appRoutes: Routes = [
         ErrorLocalStorageComponent,
         PageNotFoundComponent
     ],
-    exports: [
-        RouterModule
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        RouterModule.forRoot(appRoutes, { enableTracing: false }), // set enableTracing: true for debugging only
+    imports: [
+        BrowserModule,
+        RouterModule.forRoot(appRoutes, { enableTracing: false, relativeLinkResolution: 'legacy' } // <-- debugging purposes only
+        ),
         FormsModule,
-        ReactiveFormsModule], providers: [
+        ReactiveFormsModule,
+        HttpClientModule,
+    ],
+    providers: [
         AppConfigService,
         { provide: APP_INITIALIZER, useFactory: loadConfigService, deps: [AppConfigService], multi: true },
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
@@ -173,6 +176,7 @@ const appRoutes: Routes = [
         AuditService,
         AuditEntryFactory,
         AzureQueueService,
+        CanExitGuard,
         CheckCompleteService,
         CheckStartService,
         CheckStatusService,
@@ -194,8 +198,9 @@ const appRoutes: Routes = [
         TokenService,
         UserService,
         WarmupQuestionService,
-        WindowRefService,
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
-export class AppRoutingModule {
+        WindowRefService
+    ],
+    bootstrap: [AppComponent]
+})
+export class AppModule {
 }

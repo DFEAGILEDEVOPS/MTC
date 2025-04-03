@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpHeaders } from '@angular/common/http'
-import { BufferShim } from 'buffer-esm'
+import { Buffer } from 'buffer'
 import { HttpService } from '../http/http.service'
 
 export interface QueueMessageRetryConfig {
@@ -38,7 +38,7 @@ export class AzureQueueService implements IAzureQueueService {
                     messageLifeTimeInSeconds: number = -1): Promise<void> {
     const queueEndpointUrl = `${storageAccountUrl}/messages?messagettl=${messageLifeTimeInSeconds}&${sasToken}`
     const message = JSON.stringify(payload)
-    const encodedMessage = BufferShim.from(message).toString('base64')
+    const encodedMessage = Buffer.from(message, 'utf8').toString('base64')
     const wrappedXmlMessage = `<?xml version="1.0" encoding="utf-8"?><QueueMessage><MessageText>${encodedMessage}</MessageText></QueueMessage>`
     const headers = new HttpHeaders()
       .set('Content-Type', 'text/xml')

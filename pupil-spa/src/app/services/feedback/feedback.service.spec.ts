@@ -7,6 +7,7 @@ import { AppConfigService, loadConfigMockService } from '../config/config.servic
 import { HttpService } from '../http/http.service'
 
 let storageService: StorageService
+let tokenService: TokenService
 
 describe('FeedbackService', () => {
   let httpServiceSpy: {
@@ -26,6 +27,7 @@ describe('FeedbackService', () => {
       ]
     })
     storageService = injector.inject(StorageService)
+    tokenService = injector.inject(TokenService)
   })
 
   it('should be created', inject([FeedbackService], (service: FeedbackService) => {

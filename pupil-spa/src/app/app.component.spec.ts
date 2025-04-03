@@ -1,7 +1,10 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AppConfigService, loadConfigMockService } from './services/config/config.service';
+
+
 import { AppComponent } from './app.component';
 import { RouteService } from './services/route/route.service';
 
@@ -17,7 +20,10 @@ describe('AppComponent', () => {
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         WindowRefService,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        RouterTestingModule,
+      ]
   }).compileComponents();
   }));
 

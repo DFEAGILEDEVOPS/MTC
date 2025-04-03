@@ -6,10 +6,9 @@ import { UserService } from '../services/user/user.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 @Component({
-    selector: 'app-out-of-time',
-    templateUrl: './out-of-time.component.html',
-    styleUrls: ['./out-of-time.component.scss'],
-    standalone: false
+  selector: 'app-out-of-time',
+  templateUrl: './out-of-time.component.html',
+  styleUrls: ['./out-of-time.component.scss']
 })
 export class OutOfTimeComponent implements AfterViewInit, OnDestroy {
 

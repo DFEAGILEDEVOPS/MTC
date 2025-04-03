@@ -12,10 +12,9 @@ import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
-    selector: 'app-spoken-practice-question',
-    templateUrl: '../question/question.component.html',
-    styleUrls: ['../question/question.component.css'],
-    standalone: false
+  selector: 'app-spoken-practice-question',
+  templateUrl: '../question/question.component.html',
+  styleUrls: ['../question/question.component.css'],
 })
 export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription;

@@ -59,18 +59,18 @@ export interface IStorageService {
   setAccessArrangements(accessArrangements: AccessArrangements): void
   setAnswer(answer: Answer): void
   setAuditEntry(auditEntry: AuditEntry): void
-  setCheckStartTime(checkStartTime: number): void
-  setCheckState(state: number): void
-  setCompletedSubmission(isCompleted: boolean): any
-  setConfig(config: object): any
+  setCheckStartTime(checkStartTime: Number): void
+  setCheckState(state: Number): void
+  setCompletedSubmission(isCompleted: Boolean): any
+  setConfig(config: Object): any
   setDeviceData(deviceData: any): void
-  setFeedback(feedback: object): void
-  setInput(questionInput: object): void
-  setPendingSubmission(isPending: boolean): void
-  setPupil(pupilData: object): void
+  setFeedback(feedback: Object): void
+  setInput(questionInput: Object): void
+  setPendingSubmission(isPending: Boolean): void
+  setPupil(pupilData: Object): void
   setQuestions(questions: Question[]): void
-  setSchool(school: object): void
-  setTimeout(timeout: object): void
+  setSchool(school: Object): void
+  setTimeout(timeout: Object): void
   setToken(token: string): void
 }
 
@@ -97,7 +97,7 @@ export class StorageService implements IStorageService {
     return this.getItem(checkStartTimeStorageKey);
   }
 
-  setCheckStartTime(checkStartTime: number) {
+  setCheckStartTime(checkStartTime: Number) {
     this.setItem(checkStartTimeStorageKey, checkStartTime);
   }
 
@@ -109,7 +109,7 @@ export class StorageService implements IStorageService {
     return this.getItem(checkStateStorageKey);
   }
 
-  setCheckState(state: number) {
+  setCheckState(state: Number) {
     this.setItem(checkStateStorageKey, state);
   }
 
@@ -121,7 +121,7 @@ export class StorageService implements IStorageService {
     return this.getItem(completedSubmissionStorageKey);
   }
 
-  setCompletedSubmission(isCompleted: boolean) {
+  setCompletedSubmission(isCompleted: Boolean) {
     this.setItem(completedSubmissionStorageKey, isCompleted);
   }
 
@@ -129,7 +129,7 @@ export class StorageService implements IStorageService {
     return this.getItem(configStorageKey);
   }
 
-  setConfig(configData: object) {
+  setConfig(configData: Object) {
     this.setItem(configStorageKey, configData);
   }
 
@@ -145,11 +145,11 @@ export class StorageService implements IStorageService {
     return this.getItem(feedbackStorageKey);
   }
 
-  setFeedback(feedbackData: object) {
+  setFeedback(feedbackData: Object) {
     this.setItem(feedbackStorageKey, feedbackData);
   }
 
-  setInput(questionInput: object) {
+  setInput(questionInput: Object) {
     this.setItem(new InputsStorageKey(), questionInput);
   }
 
@@ -157,7 +157,7 @@ export class StorageService implements IStorageService {
     return this.getItem(pendingSubmissionStorageKey);
   }
 
-  setPendingSubmission(isPending: boolean) {
+  setPendingSubmission(isPending: Boolean) {
     this.setItem(pendingSubmissionStorageKey, isPending);
   }
 
@@ -165,7 +165,7 @@ export class StorageService implements IStorageService {
     return this.getItem(pupilStorageKey);
   }
 
-  setPupil(pupilData: object) {
+  setPupil(pupilData: Object) {
     this.setItem(pupilStorageKey, pupilData);
   }
 
@@ -181,11 +181,11 @@ export class StorageService implements IStorageService {
     return this.getItem(schoolStorageKey);
   }
 
-  setSchool(schoolData: object) {
+  setSchool(schoolData: Object) {
     this.setItem(schoolStorageKey, schoolData);
   }
 
-  setTimeout(obj: object) {
+  setTimeout(obj: Object) {
     this.setItem(timeoutStorageKey, obj);
   }
 
@@ -197,11 +197,11 @@ export class StorageService implements IStorageService {
     return this.getItem(tokensStorageKey);
   }
 
-  setToken(token: string) {
+  setToken(token: String) {
     this.setItem(tokensStorageKey, token);
   }
 
-  protected setItem(key: StorageKeyTypesAll, value: object | Array<object> | number | string | boolean): void {
+  protected setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
     if (!key) {
       throw new Error('key is required');
     }
@@ -225,9 +225,7 @@ export class StorageService implements IStorageService {
     // try/catch as not all localstorage items are JSON, e.g. ai_session
     try {
       item = JSON.parse(item);
-    } catch {
-      // do nothing, it wasn't JSON
-    }
+    } catch (_) { }
     return item;
   }
 
@@ -253,7 +251,7 @@ export class StorageService implements IStorageService {
       // try/catch as not all localstorage items are JSON, e.g. ai_session
       try {
         item = JSON.parse(item);
-      } catch {
+      } catch (_) {
         // do nothing, it wasn't JSON
        }
      output[key] = item

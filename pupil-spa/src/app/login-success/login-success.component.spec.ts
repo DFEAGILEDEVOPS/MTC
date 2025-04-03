@@ -13,14 +13,14 @@ import { UserService } from '../services/user/user.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { Config } from '../config.model';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
   let fixture: ComponentFixture<LoginSuccessComponent>;
-  let store: object;
+  let store: {};
   let mockRouter;
   let appUsageService;
   let questionService;
@@ -32,10 +32,10 @@ describe('LoginSuccessComponent', () => {
     };
 
     const injector = TestBed.configureTestingModule({
-    schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
-    declarations: [LoginSuccessComponent],
-    imports: [],
-    providers: [
+      imports: [HttpClientModule],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
+      declarations: [LoginSuccessComponent],
+      providers: [
         HttpClient,
         HttpClientModule,
         DeviceService,
@@ -47,9 +47,8 @@ describe('LoginSuccessComponent', () => {
         QuestionService,
         WindowRefService,
         AppUsageService,
-        provideHttpClient(withInterceptorsFromDi()),
-    ]
-});
+      ]
+    });
     storageService = injector.inject(StorageService);
     appUsageService = injector.inject(AppUsageService);
     questionService = injector.inject(QuestionService);
@@ -57,7 +56,6 @@ describe('LoginSuccessComponent', () => {
 
     store = {};
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     spyOn(storageService, 'getItem').and.callFake(function (key) {
       return JSON.stringify(responseMock);
     });

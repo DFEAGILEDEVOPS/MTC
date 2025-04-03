@@ -7,10 +7,9 @@ import { FeedbackService } from '../services/feedback/feedback.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 
 @Component({
-    selector: 'app-feedback',
-    templateUrl: './feedback.component.html',
-    styleUrls: ['./feedback.component.scss'],
-    standalone: false
+  selector: 'app-feedback',
+  templateUrl: './feedback.component.html',
+  styleUrls: ['./feedback.component.scss']
 })
 export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -106,7 +105,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       this.feedbackData = {
         'satisfactionRating': this.selectedSatisfactionRating,
         'createdAt': new Date(),
-        'checkCode': this.pupilData['checkCode' as keyof object]
+        'checkCode': this.pupilData['checkCode' as keyof Object]
       };
       this.storageService.setFeedback(this.feedbackData);
       this.enableSubmit = false;

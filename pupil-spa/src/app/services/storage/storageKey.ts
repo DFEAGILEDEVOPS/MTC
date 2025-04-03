@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import * as uuid from 'uuid';
 
 export type StorageKeyPrefix = 'answers' | 'inputs' | 'session' |
   'audit' | 'questions' | 'config' | 'pupil' | 'school' | 'access_token' |
@@ -27,7 +27,7 @@ export class AnswersStorageKey extends StorageKey {
   constructor() {
     super();
     this.prefix = 'answers';
-    this.suffix = uuidv4();
+    this.suffix = uuid.v4();
   }
 }
 
@@ -35,7 +35,7 @@ export class InputsStorageKey extends StorageKey {
   constructor() {
     super();
     this.prefix = 'inputs';
-    this.suffix = uuidv4();
+    this.suffix = uuid.v4();
   }
 }
 
@@ -50,7 +50,7 @@ export class AuditStorageKey extends StorageKey {
   constructor() {
     super();
     this.prefix = 'audit';
-    this.suffix = uuidv4();
+    this.suffix = uuid.v4();
   }
 }
 

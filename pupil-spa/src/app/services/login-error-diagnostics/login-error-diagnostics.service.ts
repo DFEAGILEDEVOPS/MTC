@@ -4,11 +4,8 @@ import { APP_CONFIG } from '../config/config.service';
 import { HttpClient } from '@angular/common/http';
 import { first } from 'rxjs/operators';
 import { WindowRefService} from '../window-ref/window-ref.service';
-import { lastValueFrom } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LoginErrorDiagnosticsService {
 
   protected window: any;
@@ -37,15 +34,17 @@ export class LoginErrorDiagnosticsService {
     }
   }
 
-  private async canAccessURL(url: string): Promise<boolean> {
-    try {
-      await lastValueFrom(
-        this.http.get(url, { observe: 'response' })
-          .pipe(first())
-      )
-      return true
-    } catch {
-      return false
-    }
+  async canAccessURL(url: string) {
+    return new Promise(async (resolve) => {
+      await this.http.get(url, { observe: 'response' })
+        .pipe(first())
+        .toPromise()
+        .then(data => {
+          return resolve(true);
+        })
+        .catch(error => {
+          return resolve(false);
+        });
+    });
   }
 }

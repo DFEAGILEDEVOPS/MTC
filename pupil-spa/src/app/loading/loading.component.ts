@@ -1,14 +1,14 @@
-import {
-  AfterViewChecked,
+import { Component,
   AfterViewInit,
-  Component,
-  ElementRef,
+  Input,
+  Output,
   EventEmitter,
   HostListener,
-  Input,
+  ElementRef,
   OnDestroy,
-  Output,
-  ViewChild,
+  AfterViewChecked,
+  ComponentFactoryResolver,
+  ComponentRef,
   ViewContainerRef
 } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
@@ -20,10 +20,9 @@ import { Config } from '../config.model';
 import { IdleModalComponent } from '../modal/idle.modal.component';
 
 @Component({
-    selector: 'app-loading',
-    templateUrl: './loading.component.html',
-    styleUrls: ['./loading.component.scss'],
-    standalone: false
+  selector: 'app-loading',
+  templateUrl: './loading.component.html',
+  styleUrls: ['./loading.component.scss']
 })
 
 export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
@@ -32,9 +31,6 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   protected timeouts: number[] = [];
   public config: Config;
   public nextButtonDelayFinished = false;
-
-  @ViewChild('modalContainer', { read: ViewContainerRef })
-  modalContainer!: ViewContainerRef;
 
   @Input()
   public shouldShowWarningModal = true;
@@ -55,7 +51,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   public loadingTimeout: number;
 
   @Output()
-  public timeoutEvent = new EventEmitter<void>();
+  timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   @Input() public familiarisationCheck = false;
 
@@ -63,6 +59,8 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
               protected questionService: QuestionService,
               protected speechService: SpeechService,
               protected elRef: ElementRef,
+              protected componentFactoryResolver: ComponentFactoryResolver,
+              protected viewContainerRef: ViewContainerRef,
               protected auditEntryFactory: AuditEntryFactory) {
     this.config = this.questionService.getConfig();
   }
@@ -104,10 +102,11 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   }
 
   showWarningModal() {
-    const modalRef = this.modalContainer.createComponent(IdleModalComponent)
-    modalRef.instance.closeCallback = () => {
-      modalRef.destroy()
-    }
+    const factory = this.componentFactoryResolver.resolveComponentFactory(IdleModalComponent);
+    const ref: ComponentRef<IdleModalComponent> = this.viewContainerRef.createComponent(factory);
+    ref.instance.closeCallback = () => {
+      ref.destroy();
+    };
   }
 
   async ngAfterViewInit() {
@@ -151,7 +150,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   }
 
   /**
-   * Usually this screen is shown for 3 seconds, except when the next button between questions is shown
+   * Usually this screenis shown for 3 seconds, except when the next button between questions is shown
    * the button just calls this function in the onClick handler.
    */
   async sendTimeoutEvent() {
@@ -160,7 +159,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     if (this.questionService.getConfig().questionReader) {
       await this.speechService.cancel();
     }
-    this.timeoutEvent.emit()
+    this.timeoutEvent.emit(null);
   }
 
   async ngOnDestroy(): Promise<void> {

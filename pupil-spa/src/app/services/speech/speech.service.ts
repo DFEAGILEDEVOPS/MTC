@@ -5,10 +5,6 @@ import { AuditService } from '../audit/audit.service';
 import { AuditEntryFactory } from '../audit/auditEntry'
 import { WindowRefService } from '../window-ref/window-ref.service';
 
-function delay (ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 @Injectable()
 export class SpeechService implements OnDestroy {
   public static readonly speechStarted = 'start';
@@ -19,7 +15,7 @@ export class SpeechService implements OnDestroy {
   private speaking = false;
   private cancelTimeout: number;
   private speechStatusSource = new Subject<string>();
-  protected synth: { speak: (arg0: SpeechSynthesisUtterance) => void; cancel: () => void; speaking: boolean; pending: boolean; };
+  protected synth;
   private userActionEvents = ['keydown', 'mousedown']; // touchstart should work as well in theory, doesn't in practice
   // Garbage Collector hack for Chrome implementations of the speech API..
   // See https://bugs.chromium.org/p/chromium/issues/detail?id=509488 for why this is necessary
@@ -93,7 +89,7 @@ export class SpeechService implements OnDestroy {
    * @param utterance
    * @param cancelBeforeSpeaking
    */
-  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<void> {
+  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<{}> {
     if (!this.isSupported()) {
       return;
     }
@@ -101,12 +97,12 @@ export class SpeechService implements OnDestroy {
       await this.cancel();
     }
     const sayThis = new SpeechSynthesisUtterance(utterance);
-    sayThis.onstart = () => {
+    sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceSpeechStarted();
       this.audit.addEntry(this.auditEntryFactory.createUtteranceStarted());
     };
-    sayThis.onend = () => {
+    sayThis.onend = (event) => {
       this.speaking = false;
       this.audit.addEntry(this.auditEntryFactory.createUtteranceEnded());
       this.announceSpeechEnded();
@@ -127,12 +123,12 @@ export class SpeechService implements OnDestroy {
     }
     await this.cancel();
     const sayThis = new SpeechSynthesisUtterance(utterance);
-    sayThis.onstart = () => {
+    sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceQuestionSpeechStarted();
       this.audit.addEntry(this.auditEntryFactory.createQuestionReadingStarted({ sequenceNumber }));
     };
-    sayThis.onend = () => {
+    sayThis.onend = (event) => {
       this.speaking = false;
       this.audit.addEntry(this.auditEntryFactory.createQuestionReadingEnded({ sequenceNumber }));
       this.announceQuestionSpeechEnded();
@@ -173,7 +169,7 @@ export class SpeechService implements OnDestroy {
    * Parse the source of a NativeElement and speak the text
    * @param nativeElement
    */
-  speakElement(nativeElement: any): Promise<void> {
+  speakElement(nativeElement: any): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
     const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label'
       + ', *[speak="true"]';
@@ -292,30 +288,18 @@ export class SpeechService implements OnDestroy {
    * happen if it's being cancelled here.
    */
   cancel(): Promise<void> {
-    const _window = this.windowRefService.nativeWindow
-    _window.clearTimeout(this.cancelTimeout)
-    this.synth?.cancel()
+    // console.log('SpeechAPI cancel() called');
+    const _window = this.windowRefService.nativeWindow;
+    _window.clearTimeout(this.cancelTimeout);
 
-    return new Promise((resolve) => {
-      const checkStabilized = async () => {
-        // Wait a small amount to let the cancel take effect
-        await delay(50)
+    return new Promise((resolve, reject) => {
+      this.synth.cancel();
+      this.speaking = false;
 
-        // If still speaking, keep checking until stabilized
-        if (this.synth?.speaking) {
-          this.cancelTimeout = _window.setTimeout(checkStabilized, 50)
-          return
-        }
-
-        this.speaking = false
-        // Add final delay to ensure browser is ready for new speech
-        this.cancelTimeout = _window.setTimeout(() => {
-          resolve()
-        }, 250)
-      }
-
-      checkStabilized()
-    })
+      this.cancelTimeout = _window.setTimeout(() => {
+        resolve();
+      }, 300);
+    });
   }
 
   /**
@@ -333,13 +317,15 @@ export class SpeechService implements OnDestroy {
    */
   waitForEndOfSpeech(): Promise<void> {
     const _window = this.windowRefService.nativeWindow;
-    return new Promise((resolve: (value?: any) => void) => {
+    return new Promise((resolve: (value?: any) => void, reject: (reason?: any) => void) => {
       if (!this.isSpeaking() && !this.isPending()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
         // wait for the last speechEnded event to resolve()
-        const subscription = this.speechStatus.subscribe(speechStatus => {
+        let subscription: any, timeout: number;
+
+        subscription = this.speechStatus.subscribe(speechStatus => {
           if (speechStatus === SpeechService.speechEnded) {
             _window.setTimeout(() => {
               if (!this.isSpeaking() && !this.isPending()) {
@@ -353,7 +339,7 @@ export class SpeechService implements OnDestroy {
 
         // check for deadlocks after a longer delay of 3sec
         // and use the emulated .speaking property if needed
-        const timeout: number = _window.setTimeout(() => {
+        timeout = _window.setTimeout(() => {
           if (!this.speaking || !this.synth.speaking) {
             resolve();
             subscription.unsubscribe();

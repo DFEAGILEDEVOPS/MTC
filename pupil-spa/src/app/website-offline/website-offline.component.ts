@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
-    selector: 'app-website-offline',
-    templateUrl: './website-offline.component.html',
-    styleUrls: ['./website-offline.component.scss'],
-    standalone: false
+  selector: 'app-website-offline',
+  templateUrl: './website-offline.component.html',
+  styleUrls: ['./website-offline.component.scss']
 })
 
 export class WebsiteOfflineComponent implements OnInit {

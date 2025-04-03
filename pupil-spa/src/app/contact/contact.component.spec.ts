@@ -4,26 +4,23 @@ import { ContactComponent } from './contact.component';
 import {Component, Input} from '@angular/core';
 
 @Component({
-    selector: 'app-header',
-    template: '',
-    standalone: false
+  selector: 'app-header',
+  template: ''
 })
 export class MockAppHeaderComponent {
 }
 
 @Component({
-    selector: 'app-breadcrumbs',
-    template: '',
-    standalone: false
+  selector: 'app-breadcrumbs',
+  template: ''
 })
 export class MockAppBreadcrumbsComponent {
   @Input() breadcrumbs: any[];
 }
 
 @Component({
-    selector: 'app-footer',
-    template: '',
-    standalone: false
+  selector: 'app-footer',
+  template: ''
 })
 class MockAppFooterComponent {
 }

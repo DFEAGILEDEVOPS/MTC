@@ -17,10 +17,8 @@ describe('DeviceService', () => {
         },
         screen: {},
         localStorage: {
-          /* eslint-disable @typescript-eslint/no-unused-vars */
           getItem: (item) => undefined,
           setItem: (key, val) => undefined
-          /* eslint-enable @typescript-eslint/no-unused-vars */
         }
       }
     }

@@ -146,7 +146,7 @@ export class DeviceService {
       }
       if (!('setItem' in this.window.localStorage)) { return false }
       if (!('getItem' in this.window.localStorage)) { return false }
-    } catch {
+    } catch (error) {
       console.error('LS02: Local storage is not enabled.  Please enable it to proceed with the MTC check.')
       return false
     }
@@ -154,7 +154,7 @@ export class DeviceService {
     const testVal = uuidv4()
     try {
       this.window.localStorage.setItem(key, testVal)
-    } catch {
+    } catch (error) {
       console.error('LS03: Local storage is not working.  Please enable it to proceed with the MTC check.')
       return false
     }
@@ -163,7 +163,7 @@ export class DeviceService {
       if (readTestVal === testVal) {
         return true
       }
-    } catch {
+    } catch (error) {
       console.error('LS04: Local storage is not working.  Please enable it to proceed with the MTC check.')
       return false
     }

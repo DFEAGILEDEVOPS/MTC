@@ -9,10 +9,9 @@ import { Pupil } from '../pupil';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 
 @Component({
-    selector: 'app-aa-settings',
-    templateUrl: './aa-settings.component.html',
-    styleUrls: ['./aa-settings.component.scss'],
-    standalone: false
+  selector: 'app-aa-settings',
+  templateUrl: './aa-settings.component.html',
+  styleUrls: ['./aa-settings.component.scss']
 })
 export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
   public config: Config;

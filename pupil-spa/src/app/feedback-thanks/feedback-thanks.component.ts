@@ -3,10 +3,9 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({
-    selector: 'app-feedback-thanks',
-    templateUrl: './feedback-thanks.component.html',
-    styleUrls: ['./feedback-thanks.component.scss'],
-    standalone: false
+  selector: 'app-feedback-thanks',
+  templateUrl: './feedback-thanks.component.html',
+  styleUrls: ['./feedback-thanks.component.scss']
 })
 export class FeedbackThanksComponent implements AfterViewInit, OnDestroy {
 

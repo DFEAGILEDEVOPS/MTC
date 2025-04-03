@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import * as uuid from 'uuid';
 
 import {
   AccessArrangementsStorageKey,
@@ -19,7 +19,7 @@ import {
 } from './storageKey';
 
 describe('storageKey', () => {
-  const uuidV4 = uuidv4();
+  const uuidV4 = uuid.v4();
   describe('AnswersStorageKey', () => {
     it('should create a composite key with a prefix and suffix', () => {
       const answersStorageKey = new AnswersStorageKey();

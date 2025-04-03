@@ -103,7 +103,7 @@ describe('UserService', () => {
       })))
 
       userService.login('xxx', 'xxx').then(
-        () => {
+        (res) => {
           fail('expected to reject')
         },
         (err) => {

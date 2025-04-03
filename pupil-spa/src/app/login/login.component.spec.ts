@@ -1,8 +1,8 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { Router } from '@angular/router'
 import { FormsModule } from '@angular/forms'
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing'
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { HttpClient } from '@angular/common/http'
 
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 import { CheckStatusService } from '../services/check-status/check-status.service'
@@ -61,10 +61,10 @@ describe('LoginComponent', () => {
     }
 
     const injector = TestBed.configureTestingModule({
-    declarations: [LoginComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [FormsModule],
-    providers: [
+      declarations: [LoginComponent],
+      imports: [FormsModule, HttpClientTestingModule],
+      schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
+      providers: [
         { provide: DeviceService, useValue: mockDeviceService },
         LoginErrorDiagnosticsService,
         LoginErrorService,
@@ -80,11 +80,8 @@ describe('LoginComponent', () => {
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: QrCodeUsageService, useClass: QrCodeUsageService }, // original
         { provide: AuditService, useClass: AuditService } // original
-        ,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-})
+      ]
+    })
     mockQuestionService = injector.inject(QuestionService)
     mockWarmupQuestionService = injector.inject(WarmupQuestionService)
     mockLoginModel = injector.inject(Login)

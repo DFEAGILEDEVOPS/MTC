@@ -3,10 +3,9 @@ import { StorageService } from '../services/storage/storage.service';
 import { AccessArrangements } from '../access-arrangements';
 
 @Component({
-    selector: 'app-page-modifications',
-    templateUrl: './page-modifications.component.html',
-    styleUrls: ['./page-modifications.component.scss'],
-    standalone: false
+  selector: 'app-page-modifications',
+  templateUrl: './page-modifications.component.html',
+  styleUrls: ['./page-modifications.component.scss']
 })
 export class PageModificationsComponent {
   accessArrangements;

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { lastValueFrom } from 'rxjs';
 
 /**
  * Declaration of config class
@@ -72,7 +71,7 @@ export let APP_CONFIG: IAppConfig
  * @param {AppConfigService} configService
  * @returns {Function}
  */
-export function loadConfigService (configService: AppConfigService): () => void {
+export function loadConfigService (configService: AppConfigService): Function {
   return () => configService.load()
 }
 
@@ -80,7 +79,7 @@ export function loadConfigService (configService: AppConfigService): () => void 
  * Mock helper
  * @returns {Function}
  */
-export function loadConfigMockService (): () => void {
+export function loadConfigMockService (): Function {
   return () => {
     APP_CONFIG = new MockAppConfig()
     return Promise.resolve(true)
@@ -102,13 +101,13 @@ export class AppConfigService {
   /**
    * Parse the config file through http, throw a Server error if unavailable
    */
-  public async load (): Promise<boolean> {
+  public async load (): Promise<Boolean> {
     try {
-      const data = await lastValueFrom(this.http.get(this.configFileURL))
+      const data = await this.http.get(this.configFileURL).toPromise()
       const t = new AppConfig()
       APP_CONFIG = Object.assign(t, data)
       return true
-    } catch {
+    } catch (error) {
       this.errorMessages.push('There was a problem getting the settings')
       return false
     }

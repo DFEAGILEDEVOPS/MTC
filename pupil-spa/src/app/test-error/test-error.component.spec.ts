@@ -3,9 +3,8 @@ import { TestErrorComponent } from './test-error.component';
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-header',
-    template: '',
-    standalone: false
+  selector: 'app-header',
+  template: ''
 })
 export class MockAppHeaderComponent {
 }

@@ -4,12 +4,11 @@ import { QuestionService } from '../services/question/question.service';
 import { UserService } from '../services/user/user.service';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: [
-        './header.component.scss'
-    ],
-    standalone: false
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: [
+      './header.component.scss'
+  ]
 })
 export class HeaderComponent implements OnInit {
 

@@ -1,10 +1,13 @@
 import { APP_CONFIG } from '../config/config.service'
 import { AuditService } from '../audit/audit.service'
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service'
 import { AuditEntryFactory } from '../audit/auditEntry'
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { StorageService } from '../storage/storage.service'
+import { TokenService } from '../token/token.service'
 import { AppUsageService } from '../app-usage/app-usage.service'
+import { CompressorService } from '../compressor/compressor.service'
 import { Meta } from '@angular/platform-browser'
 import { ApplicationInsightsService } from '../app-insights/app-insights.service'
 import { SubmissionService } from '../submission/submission.service'
@@ -20,8 +23,10 @@ export class CheckCompleteService {
   submissionPendingViewMinDisplay
 
   constructor(private auditService: AuditService,
+    private azureQueueService: AzureQueueService,
     private router: Router,
     private storageService: StorageService,
+    private tokenService: TokenService,
     private appUsageService: AppUsageService,
     private metaService: Meta,
     private auditEntryFactory: AuditEntryFactory,
@@ -57,11 +62,19 @@ export class CheckCompleteService {
     if (checkConfig.practice) {
       return this.onSuccess(startTime)
     }
+    const retryConfig: QueueMessageRetryConfig = {
+      DelayBetweenRetries: this.checkSubmissionApiErrorDelay,
+      MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
+    }
     this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionApiCalled())
     const items = this.storageService.getAllItems()
     const payload = this.getPayload(items)
     try {
-      await this.submissionService.submit(payload)
+      if (checkConfig.submissionMode === 'legacy') {
+        await this.legacySubmission(checkConfig, payload, retryConfig)
+      } else {
+        await this.submissionService.submit(payload)
+      }
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded())
       await this.onSuccess(startTime)
     } catch (error) {
@@ -74,6 +87,23 @@ export class CheckCompleteService {
         this.router.navigate(['/submission-failed'])
       }
     }
+  }
+
+  private async legacySubmission (checkConfig: any, payload: Record<string, any>, retryConfig: QueueMessageRetryConfig) {
+    let message;
+    const { url, token } = this.tokenService.getToken('checkComplete')
+    if (checkConfig.compressCompletedCheck) {
+      message = {
+        version: 2,
+        checkCode: payload['checkCode'],
+        schoolUUID: payload['schoolUUID'],
+        archive: CompressorService.compress(JSON.stringify(payload))
+      }
+    } else {
+      message = payload
+      message.version = 1
+    }
+    await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig)
   }
 
   /**

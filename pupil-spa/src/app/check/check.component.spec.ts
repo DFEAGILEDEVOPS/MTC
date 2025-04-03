@@ -47,7 +47,7 @@ describe('CheckComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [CheckComponent],
-      schemas: [NO_ERRORS_SCHEMA],         // we don't need to test subcomponents
+      schemas: [NO_ERRORS_SCHEMA],         // we don't need to test sub-components
       providers: [
         { provide: AnswerService, useClass: AnswerService, deps: [ MonotonicTimeService ] },
         { provide: AuditService, useClass: AuditServiceMock },
@@ -122,14 +122,13 @@ describe('CheckComponent', () => {
 
   describe('handleKeyboardEvent', () => {
     function dispatchKeyEvent (keyboardDict) {
-      keyboardDict.bubbles ??= true
-      keyboardDict.cancelable ??= true
       const event = new KeyboardEvent('keyup', keyboardDict)
+      event.initEvent('keyup', true, true)
       document.dispatchEvent(event)
       return event
     }
 
-    it('cancels (nearly) all keyboard events and returns false', fakeAsync(() => {
+    it('cancels (nearly) all keyboard events and returns false', () => {
       spyOn(component, 'handleKeyboardEvent').and.callThrough()
       const ev1 = dispatchKeyEvent({ key: '5' })
       expect(ev1.defaultPrevented).toBe(true)
@@ -139,21 +138,17 @@ describe('CheckComponent', () => {
       // and the user presses backspace on the loading page, you guessed it, they go back
       // to the previous page. Well played, Mozilla and Microsoft.
       const ev2 = dispatchKeyEvent({ key: 'Backspace' })
-      tick()
-      fixture.detectChanges()
       expect(ev2.defaultPrevented).toBe(true)
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(2)
 
       // Ordinary keys should be prevented from doing anything
       const ev3 = dispatchKeyEvent({ key: 'j' })
-      tick()
-      fixture.detectChanges()
       expect(ev3.defaultPrevented).toBe(true)
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(3)
 
       // it needs to return false
       expect(component.handleKeyboardEvent(new KeyboardEvent('keydown', { key: 'x' }))).toBe(false)
-    }))
+    })
 
     it('allows tab and enter keys for AX keyboard navigation', () => {
       spyOn(component, 'handleKeyboardEvent').and.callThrough()
@@ -270,7 +265,6 @@ describe('CheckComponent', () => {
       })
 
       answerService = fixture.debugElement.injector.get(AnswerService)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       setAnswerSpy = spyOn(answerService, 'setAnswer').and.callFake((factor1, factor2, userAnswer, sequenceNumber) => {})
     })
 

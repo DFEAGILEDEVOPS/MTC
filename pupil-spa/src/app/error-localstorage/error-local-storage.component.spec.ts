@@ -1,5 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing'
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { ErrorLocalStorageComponent } from './error-local-storage.component'
 import { Router } from '@angular/router'
 import { DeviceService } from '../services/device/device.service'

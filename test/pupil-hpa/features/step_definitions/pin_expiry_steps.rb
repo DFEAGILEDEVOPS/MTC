@@ -48,7 +48,7 @@ Then(/^I should have an expired pin$/) do
     sign_in_page.load;
     sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin]);
     sign_in_page.sign_in_button.click;
-    # confirmation_page.back_sign_in_page.click if confirmation_page.displayed?
+    confirmation_page.back_sign_in_page.click if confirmation_page.displayed?
     until sign_in_page.has_login_failure?
     end
   end
