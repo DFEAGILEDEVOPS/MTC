@@ -114,9 +114,7 @@ const checkStartService = {
     // Create the checks for each pupil
     const checks = []
     for (const pupilId of pupilIds) {
-      const usedFormIds = usedForms[pupilId]
-        ? usedForms[pupilId].map(f => f.id)
-        : []
+      const usedFormIds = usedForms[pupilId] ? usedForms[pupilId].map(f => f.id) : []
       const c = await checkStartService.initialisePupilCheck(
         pupilId,
         checkWindow,
@@ -134,7 +132,7 @@ const checkStartService = {
 
     try {
       // Create and return checks via spCreateChecks
-      // @ts-ignore
+      // @ts-ignore ramda doesnt work well with types
       newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
     } catch (error) {
       const pinGenerationFallbackEnabled = config.FeatureToggles.schoolPinGenFallbackEnabled
@@ -144,7 +142,7 @@ const checkStartService = {
         const schoolPin = await schoolPinService.generateSchoolPin(schoolId)
         logger.warn(`pin generated via http service for school.id:${schoolId} pin:${schoolPin}`)
         logger.warn(`2nd attempt at creating checks for school.id:${schoolId}...`)
-        // @ts-ignore
+        // @ts-ignore ramda doesnt work well with types
         newChecks = await pinGenerationDataService.sqlCreateBatch(checks)
       } else {
         // some other error occured...
@@ -290,24 +288,25 @@ const checkStartService = {
       const pupilConfig = pupilConfigs[o.pupil_id]
       pupilConfig.practice = !o.check_isLiveCheck
       pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
-      pupilConfig.submissionMode = config.FeatureToggles.checkSubmissionApi ? 'modern' : 'legacy'
-      let jwtToken, checkSubmissionData, checkCompleteData
+      pupilConfig.submissionMode = 'modern'
+      let checkCompleteData
 
-      if (config.FeatureToggles.checkSubmissionApi) {
-        const jwtSigningOptions = {
-          issuer: 'MTC Admin',
-          subject: o.pupil_uuid,
-          expiresIn: fiveDays // expires in 5 days
-        }
-        jwtToken = await jwtService.sign({
-          checkCode: o.check_checkCode
-        }, jwtSigningOptions)
-        checkSubmissionData = {
-          url: `${config.PupilApi.baseUrl}/submit`,
-          token: jwtToken
-        }
-      } else {
-        checkCompleteData = sasTokens[queueNameService.NAMES.CHECK_SUBMIT]
+      const jwtSigningOptions = {
+        issuer: 'MTC Admin',
+        subject: o.pupil_uuid,
+        expiresIn: fiveDays // expires in 5 days
+      }
+      const jwtToken = await jwtService.sign({
+        checkCode: o.check_checkCode
+      },
+      jwtSigningOptions)
+      const checkSubmissionData = {
+        url: `${config.PupilApi.baseUrl}/submit`,
+        token: jwtToken
+      }
+      const pupilFeedbackData = {
+        url: `${config.PupilApi.baseUrl}/feedback`,
+        token: jwtToken
       }
 
       const payload = {
@@ -330,9 +329,9 @@ const checkStartService = {
         tokens: {
           checkStarted: sasTokens[queueNameService.NAMES.CHECK_STARTED],
           pupilPreferences: sasTokens[queueNameService.NAMES.PUPIL_PREFS],
-          pupilFeedback: sasTokens[queueNameService.NAMES.PUPIL_FEEDBACK],
           checkComplete: checkCompleteData,
-          checkSubmission: checkSubmissionData
+          checkSubmission: checkSubmissionData,
+          pupilFeedback: pupilFeedbackData
         },
         questions: checkFormService.prepareQuestionData(
           JSON.parse(o.checkForm_formData)

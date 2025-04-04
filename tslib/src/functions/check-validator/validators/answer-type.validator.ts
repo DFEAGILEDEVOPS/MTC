@@ -7,8 +7,7 @@ export class AnswerTypeValidator implements ISubmittedCheckValidator {
         message: 'answers property missing'
       }
     }
-    for (let index = 0; index < check.answers.length; index++) {
-      const answerEntry = check.answers[index]
+    for (const answerEntry of check.answers) {
       if (typeof answerEntry.answer !== 'string') {
         return {
           message: `answer ${answerEntry.sequenceNumber} is not of required type (string)`

@@ -24,4 +24,6 @@ async function checkDatabaseIsUp () {
 }
 
 checkDatabaseIsUp()
-  .then(() => {})
+  .then(() => {
+    // do nothing
+  })

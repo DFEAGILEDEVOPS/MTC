@@ -7,8 +7,6 @@ const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 const sorting = require('../../../helpers/table-sorting')
 
-/* global describe, expect, jest, test, afterEach */
-
 describe('pupil service', () => {
   const getPupil = () => R.assoc('school', R.clone(schoolMock), pupilMock)
 

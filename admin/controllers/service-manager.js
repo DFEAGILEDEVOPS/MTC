@@ -401,7 +401,7 @@ const controller = {
       let school
       try {
         school = await schoolService.searchForSchool(parseInt(req.body.q?.trim(), 10))
-      } catch (error) {
+      } catch {
         return noSchoolFound(req, res, next)
       }
       if (!school) {
@@ -606,7 +606,7 @@ const controller = {
    * @param {object} res
    * @param {object} next
    */
-  getAuditPayload: async function getAuditPayload (req, res, next) {
+  getAuditPayload: async function getAuditPayload (req, res) {
     const auditEntryId = req.query.auditEntryId.trim()
     let payload
     try {
@@ -862,7 +862,7 @@ const controller = {
     res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupil.urlSlug.toLowerCase())}/confirm/${encodeURIComponent(targetSchool.urlSlug.toLowerCase())}`)
   },
 
-  getPupilMoveConfirm: async function getPupilMoveConfirm (req, res, next) {
+  getPupilMoveConfirm: async function getPupilMoveConfirm (req, res) {
     let pupil, school, pupilUrlSlug, schoolUrlSlug
     try {
       res.locals.pageTitle = 'Confirm move pupil'
@@ -884,7 +884,7 @@ const controller = {
     }
   },
 
-  postPupilMoveConfirmed: async function postPupilMoveConfirmed (req, res, next) {
+  postPupilMoveConfirmed: async function postPupilMoveConfirmed (req, res) {
     let pupil, school, pupilUrlSlug, schoolUrlSlug
     try {
       pupilUrlSlug = req.params.pupilSlug

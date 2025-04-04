@@ -29,7 +29,7 @@ describe('UserAgentParser', () => {
   })
 
   test('it returns macOS for the operating system', () => {
-    expect(sut.getOperatingSystem()).toBe('Mac OS')
+    expect(sut.getOperatingSystem()).toBe('macOS')
   })
 
   test('it returns 10 for the operating system major version', () => {

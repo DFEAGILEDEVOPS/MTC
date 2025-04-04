@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach test expect jest afterEach */
-
 const sqlService = require('../../../../services/data-access/sql.service')
 const sut = require('../../../../services/data-access/setting.data.service')
 

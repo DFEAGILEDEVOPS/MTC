@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe expect jest test */
-
 const httpMocks = require('node-mocks-http')
 
 describe('accessibility-statement page controller', () => {

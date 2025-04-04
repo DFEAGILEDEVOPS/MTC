@@ -16,7 +16,7 @@ const controller = {
     }
   },
 
-  rawPupilPayload: async function rawPupilPayload (req, res, next) {
+  rawPupilPayload: async function rawPupilPayload (req, res) {
     const checkCode = req.query.checkCode.trim()
     logger.info(`rawPupilPayload(): called for checkCode ${checkCode} by user '${req.user.UserName}' (id ${req.user.id})`)
     let response

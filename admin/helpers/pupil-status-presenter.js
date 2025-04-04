@@ -21,17 +21,13 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
   pupilStatusViewData.pupilsRequireAction = R.filter(p => R.includes(p.status, ['Error in processing', overdueLoggedIn, overdueStarted], p), pupilStatusData)
 
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
-    // @ts-ignore
     R.filter(p => R.includes(p.status, [notStarted, 'Restart'], p), pupilStatusData),
     ['Restart'],
     'Restart applied'
   )
 
   pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Signed in', 'Check processing', 'Check in progress'], p), pupilStatusData)
-
-  // @ts-ignore
   pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p) || !!p.reason, pupilStatusData)
-
   pupilStatusViewData.pupilsRequireActionCount = pupilStatusViewData.pupilsRequireAction.length || 0
   pupilStatusViewData.pupilsNotStartedCount = pupilStatusViewData.pupilsNotStarted.length || 0
   pupilStatusViewData.pupilsInProgressCount = pupilStatusViewData.pupilsInProgress.length || 0

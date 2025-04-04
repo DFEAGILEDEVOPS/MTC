@@ -1,4 +1,3 @@
-/* global describe, expect, test */
 const accessArrangementsOverviewPresenter = require('../../../helpers/access-arrangements-overview-presenter')
 
 describe('accessArrangementsOverviewPresenter', () => {

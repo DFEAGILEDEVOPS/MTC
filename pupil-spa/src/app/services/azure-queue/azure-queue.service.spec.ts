@@ -31,6 +31,7 @@ describe('AzureQueueService', () => {
   describe('sets message TTL to no expiry', () => {
     it('should set TTL option to -1 when putting message on queue', async () => {
       let actualUrl = ''
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       httpServiceSpy.postXml.and.callFake((queueUrl: string, message: any, headers: any) => {
         actualUrl = queueUrl
       })
@@ -65,7 +66,7 @@ describe('AzureQueueService', () => {
           }
         )
         fail('should have failed')
-      } catch (e) {
+      } catch {
         expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(1)
       }
     })
@@ -104,7 +105,7 @@ describe('AzureQueueService', () => {
           retryConfig
         )
         fail('should have failed')
-      } catch (e) {
+      } catch {
         expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(1)
       }
     })

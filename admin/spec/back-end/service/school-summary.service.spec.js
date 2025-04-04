@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe, test, expect, beforeEach, jest */
 const schoolSummaryService = require('../../../services/school-summary.service')
 const schoolSummaryDataService = require('../../../services/data-access/school-summary.data.service')
 

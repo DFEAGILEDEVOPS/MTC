@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe test expect beforeEach jest afterEach */
 const moment = require('moment')
 
 const checkWindowAddValidator = require('../../../../../lib/validator/check-window-v2/check-window-add-validator')

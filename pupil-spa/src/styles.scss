@@ -4,7 +4,7 @@
 $image-path: "../images/";
 
 // used by shared-styles (MTC): file-url()
-$path: "~/assets/images/";
+$path: "./assets/images/";
 
 /* Custom functions */
 @import "../lib/shared-styles/helpers/helpers";
@@ -310,5 +310,16 @@ ol, ul {
     list-style: none;
     padding: 0;
     margin: 0.8rem 0;
+  }
+}
+
+/*
+ * Disable pull to refresh on tablets
+ */
+@media screen and (pointer: coarse) {
+  html {
+    min-height: 100.3%;
+    overscroll-behavior-y: none; // Disable on ios 16 and newer
+    overscroll-behaviour: none; // Disable on chrome / android tablets
   }
 }

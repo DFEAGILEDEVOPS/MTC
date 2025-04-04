@@ -98,7 +98,6 @@ checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) 
   ]
   const result = await sqlService.readonlyQuery(sql, params)
   const obj = R.head(result)
-  // @ts-ignore
   return R.prop('cnt', obj)
 }
 

@@ -1,4 +1,3 @@
-/* global describe test fail expect afterAll */
 const redisService = require('../services/tech-support/redis.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const data = [

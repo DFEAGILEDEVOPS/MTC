@@ -7,7 +7,6 @@ const config = require('../config')
 const logger = require('../services/log.service').getLogger()
 const isAuthenticated = require('../authentication/middleware')
 const { getContactPage } = require('../controllers/contact')
-const { getPrivacyPage } = require('../controllers/privacy')
 const { getCookiesForm, getCookiesMtc } = require('../controllers/cookies')
 const { getAccessibilityStatementPage } = require('../controllers/accessibility-statement')
 const { getServiceManagerHome } = require('../controllers/service-manager')
@@ -45,7 +44,6 @@ router.get('/test-developer', isAuthenticated(roles.testDeveloper), (req, res, n
 router.get('/service-manager', isAuthenticated(roles.serviceManager), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Contact page */
 router.get('/contact', (req, res) => getContactPage(req, res))
-router.get('/privacy', (req, res) => getPrivacyPage(req, res))
 /* Cookies page */
 router.get('/cookies-form', (req, res) => getCookiesForm(req, res))
 router.get('/cookies-mtc', (req, res) => getCookiesMtc(req, res))

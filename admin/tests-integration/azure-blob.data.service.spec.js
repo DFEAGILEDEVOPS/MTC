@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect beforeAll afterAll fail */
 
 const { BlobServiceClient } = require('@azure/storage-blob')
 const uuid = require('uuid')
