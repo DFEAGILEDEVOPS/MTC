@@ -32,9 +32,10 @@ export enum EventType {
 }
 
 @Component({
-  selector: 'app-practice-question',
-  templateUrl: '../question/question.component.html',
-  styleUrls: ['../question/question.component.css']
+    selector: 'app-practice-question',
+    templateUrl: '../question/question.component.html',
+    styleUrls: ['../question/question.component.css'],
+    standalone: false
 })
 export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -207,23 +208,21 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     // On-screen Keypad buttons 0-9
     [this.button0, this.button1, this.button2, this.button3, this.button4, this.button5, this.button6, this.button7, this.button8,
       this.button9].forEach(button => {
-        // The keypad is not always rendered, e.g. due to the access arrangement
+        // The keypad is not always rendered, e.g. due to the access arrangement that removes the keypad
         if (button === undefined) {
-          return;
+          return
         }
         const f = this.renderer.listen(button.nativeElement, eventToListenTo, (event) => {
-          const that = this;
-          that.clickHandler(event);
-        });
-        this.cleanUpFunctions.push(f);
+          this.clickHandler(event)
+        })
+        this.cleanUpFunctions.push(f)
       }
-    );
+    )
 
     // On-screen Keypad Enter button should submit the answer
     if (this.buttonEnter) {
       const removeEnterListenerFunc = this.renderer.listen(this.buttonEnter.nativeElement, eventToListenTo, (event) => {
-        const that = this;
-        that.onClickSubmit(event);
+        this.onClickSubmit(event);
       });
       this.cleanUpFunctions.push(removeEnterListenerFunc);
     }
@@ -231,8 +230,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     // On-screen Keypad Backspace button should delete a char
     if (this.buttonBackspace) {
       const removeBackspaceListenerFunc = this.renderer.listen(this.buttonBackspace.nativeElement, eventToListenTo, (event) => {
-        const that = this;
-        that.onClickBackspace(event);
+        this.onClickBackspace(event);
       });
       this.cleanUpFunctions.push(removeBackspaceListenerFunc);
     }
@@ -315,38 +313,26 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * @param event
    * @param {Event} event
    */
-  clickHandler (event: PointerEvent | MouseEvent | TouchEvent | Event): void {
-    if (this.submitted) {
-      return;
-    }
+  clickHandler(event: Event): void {
+    if (this.submitted) return
 
-    let i: number;
-    // @ts-ignore - use of implicit any
-    if (event.target['id'] === '') {
-      // this is the span element, so to access the data-value attribute we need to access the parent
-      // @ts-ignore - use of implicit any
-      i = event.target['parentNode'].dataset.value;
-    } else {
-      // @ts-ignore - use of implicit any
-      i = event.target['dataset'].value;
-    }
+    const target = event.target as HTMLElement
+    const value = target.id === ''
+      ? target.parentElement?.dataset.value
+      : (target as HTMLElement & { dataset: DOMStringMap }).dataset.value
 
-    if (i === undefined) {
-      return;
-    }
+    if (!value) return
 
-    const input = i.toString();
-    this.addChar(input);
+    this.addChar(value)
 
-    // if it isn't a warmup question it must be a live question, so log the input.
     if (!this.isWarmUpQuestion) {
       this.registerInputService.storeEntry(
-        input,
+        value,
         this.getEventType(event),
         this.sequenceNumber,
         `${this.factor1}x${this.factor2}`,
         event.timeStamp
-      );
+      )
     }
   }
 
@@ -354,16 +340,16 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
-  onClickBackspace (event: Event) {
-    this.deleteChar();
+  onClickBackspace (event: Event) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    this.deleteChar()
   }
 
   /**
    * Called when the user clicks the enter button on the virtual keypad
    * @param {Object} event
    */
-  onClickSubmit (event: Event) {
-    this.onSubmit();
+  onClickSubmit (event: Event) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    this.onSubmit()
   }
 
   /**
@@ -504,7 +490,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       if (this.config.questionReader) {
         this.speechService.speakQueued('Delete ' + this.answer[this.answer.length - 1]);
       }
-      this.answer = this.answer.substr(0, this.answer.length - 1);
+      this.answer = this.answer.substring(0, this.answer.length - 1);
     }
   }
 
