@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe expect beforeEach jest test afterEach */
 const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')
@@ -163,7 +162,7 @@ describe('check-start.service', () => {
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').mockResolvedValue([])
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
       jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
-      // @ts-ignore
+      // @ts-ignore ramda doesnt work well with types
       jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
       jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis
       jest.spyOn(configService, 'getBatchConfig').mockResolvedValue(
@@ -209,7 +208,6 @@ describe('check-start.service', () => {
       config.FeatureToggles.schoolPinGenFallbackEnabled = true
       jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockImplementation(() => {
         const err = new Error()
-        // @ts-ignore
         err.number = 49999
         throw err
       })
@@ -259,10 +257,10 @@ describe('check-start.service', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
         jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true, userId, schoolId)
-        expect({}.hasOwnProperty.call(c, 'pupil_id'))
-        expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
-        expect({}.hasOwnProperty.call(c, 'checkForm_id'))
-        expect({}.hasOwnProperty.call(c, 'createdBy_userId'))
+        expect(c.pupil_id).toBeTruthy()
+        expect(c.checkWindow_id).toBeTruthy()
+        expect(c.checkForm_id).toBeTruthy()
+        expect(c.createdBy_userId).toBeTruthy()
       })
     })
 
@@ -270,10 +268,10 @@ describe('check-start.service', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
         jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false, userId, schoolId)
-        expect({}.hasOwnProperty.call(c, 'pupil_id'))
-        expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
-        expect({}.hasOwnProperty.call(c, 'checkForm_id'))
-        expect({}.hasOwnProperty.call(c, 'createdBy_userId'))
+        expect(c.pupil_id).toBeTruthy()
+        expect(c.checkWindow_id).toBeTruthy()
+        expect(c.checkForm_id).toBeTruthy()
+        expect(c.createdBy_userId).toBeTruthy()
       })
     })
   })
@@ -294,18 +292,11 @@ describe('check-start.service', () => {
         tokenData[queueNameService.NAMES.PUPIL_PREFS] = {
           queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab', url: 'xyz'
         }
-        tokenData[queueNameService.NAMES.PUPIL_FEEDBACK] = {
-          queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab', url: 'xyz'
-        }
-        tokenData[queueNameService.NAMES.CHECK_SUBMIT] = {
-          queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab', url: 'xyz'
-        }
         jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue(tokenData)
         const mockSignMethod = async (payload) => {
           return payload.checkCode
         }
         jest.spyOn(jwtService, 'sign').mockImplementation(mockSignMethod)
-        config.FeatureToggles.checkSubmissionApi = true
       })
 
       afterEach(() => {
@@ -395,31 +386,26 @@ describe('check-start.service', () => {
           })
       })
 
-      test('jwt token should only be generated when feature active', async () => {
-        config.FeatureToggles.checkSubmissionApi = false
-        await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        expect(jwtService.sign).not.toHaveBeenCalled()
-        config.FeatureToggles.checkSubmissionApi = true
-      })
-
       test('submission url should be sourced from config when feature active', async () => {
         const expectedUrl = `${config.PupilApi.baseUrl}/submit`
         const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(payload[0].tokens.checkSubmission.url).toStrictEqual(expectedUrl)
       })
 
-      test('checkComplete tokens data should be populated when submission feature inactive', async () => {
-        config.FeatureToggles.checkSubmissionApi = false
+      test('checkSubmission tokens data should be populated', async () => {
         const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        expect(payload[0].tokens.checkSubmission).toBeUndefined()
-        expect(payload[0].tokens.checkComplete).toBeDefined()
+        expect(payload[0].tokens.checkSubmission).toBeDefined()
       })
 
-      test('checkSubmission tokens data should be populated when submission feature active', async () => {
-        config.FeatureToggles.checkSubmissionApi = true
+      test('pupilFeedback tokens data should be populated', async () => {
         const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        expect(payload[0].tokens.checkComplete).toBeUndefined()
-        expect(payload[0].tokens.checkSubmission).toBeDefined()
+        expect(payload[0].tokens.pupilFeedback).toBeDefined()
+      })
+
+      test('pupilFeedback JWT token should be the same as check submission', async () => {
+        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(payload[0].tokens.pupilFeedback.token)
+          .toStrictEqual(payload[0].tokens.checkSubmission.token)
       })
     })
   })

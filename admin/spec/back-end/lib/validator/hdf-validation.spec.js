@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach, describe, test, expect */
-
 const hdfValidator = require('../../../../lib/validator/hdf-validator')
 
 describe('HDF validator', function () {

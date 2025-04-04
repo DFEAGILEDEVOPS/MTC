@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   window.MTCAdmin.pupilFilter()
 
-  /* global $ */
   $(function () {
     $('input[type=checkbox][name=optcol]').change(function () {
       if ($(this).is(':checked')) {

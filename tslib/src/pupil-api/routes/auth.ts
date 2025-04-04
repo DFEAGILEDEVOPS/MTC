@@ -13,7 +13,7 @@ export class AuthRouter {
   }
 
   public init (): any {
-    this.router.route('/').all(async (req: Request, res: Response) => { // eslint-disable-line @typescript-eslint/no-misused-promises
+    this.router.route('/').all(async (req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
       return this.authController.postAuth(req, res)
     })

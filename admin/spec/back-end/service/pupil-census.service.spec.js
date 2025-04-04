@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect, jest, test, afterEach */
 
 const pupilCensusService = require('../../../services/pupil-census.service')
 const jobDataService = require('../../../services/data-access/job.data.service')

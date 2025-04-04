@@ -4,6 +4,8 @@ import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './s
 import './../../common/bigint'
 const functionName = 'sync-results-init'
 
+// This is usually in GMT so 5pm GMT is equal to 6pm BST (wall clock time in summer)
+// Timezones are now supported: https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-javascript#ncrontab-time-zones
 app.timer(functionName, {
   schedule: '0 0 17 * * *',
   handler: syncResultsInit
@@ -11,7 +13,7 @@ app.timer(functionName, {
 
 export async function syncResultsInit (timer: Timer, context: InvocationContext): Promise<void> {
   if (timer.isPastDue) {
-    // This function could potentially deliver a lot of work to do to the functions, and none of it is urgent. No surprises!
+    // This function could potentially deliver a lot of work to the functions, and none of it is urgent. No surprises!
     context.log(`${functionName}: timer is past due, exiting.`)
     return
   }
@@ -20,7 +22,7 @@ export async function syncResultsInit (timer: Timer, context: InvocationContext)
     const syncResultsInitService = new SyncResultsInitService(context)
     // If called via http there could be a message passed in
     // TODO this might not be the correct way to access the http inputs
-    const options: ISyncResultsInitServiceOptions = context.triggerMetadata !== undefined ? context.triggerMetadata : {}
+    const options: ISyncResultsInitServiceOptions = context.triggerMetadata ?? {}
     const meta = await syncResultsInitService.processBatch(options)
     const memoryUsage = process.memoryUsage()
     const heapUsed = memoryUsage.heapUsed / 1024 / 1024

@@ -14,7 +14,7 @@ export function jsonReviver (key: any, value: any): any {
         if (d?.isValid()) {
           return d
         }
-      } catch (ignored) {}
+      } catch {}
     }
   }
   return value

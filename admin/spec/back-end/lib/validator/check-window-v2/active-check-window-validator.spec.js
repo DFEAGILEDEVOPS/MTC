@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, expect */
-
 const moment = require('moment-timezone')
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
 

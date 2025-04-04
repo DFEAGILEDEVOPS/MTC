@@ -106,8 +106,7 @@ export class SchoolImportService {
   private filterSchools (csvParsed: string[][], mapping: Record<string, number>): { filteredSchools: ISchoolRecord[], exclusionCount: number } {
     const filteredSchools: ISchoolRecord[] = []
     let exclusionCount = 0
-    for (let index = 0; index < csvParsed.length; index++) {
-      const row = csvParsed[index]
+    for (const row of csvParsed) {
       const schoolRecord = this.schoolRecordMapper.mapRow(row, mapping)
       const hasRequiredFields = this.predicates.hasRequiredFields(schoolRecord)
       const isOpen = this.predicates.isSchoolOpen(schoolRecord)

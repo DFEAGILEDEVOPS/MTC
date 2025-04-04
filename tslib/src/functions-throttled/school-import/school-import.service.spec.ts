@@ -166,9 +166,9 @@ describe('#SchoolImportService', () => {
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     try {
       await sut.process(csv, blobName)
-    } catch (ignored) {
+    } catch {
+      // ignored
     }
-
     expect(jobDataServiceMock.setJobComplete).toHaveBeenCalledWith(blobName, JobStatusCode.Failed, '', 'Headers "StatutoryLowAge" not found')
   })
 

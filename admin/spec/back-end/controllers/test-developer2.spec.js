@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach expect afterEach test jest */
-
 const httpMocks = require('node-mocks-http')
 const sut = require('../../../controllers/test-developer2')
 const checkFormPresenter = require('../../../helpers/check-form-presenter')
@@ -95,7 +93,7 @@ describe('test developer 2 controller:', () => {
       expect(checkFormV2Service.saveCheckForms).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
-    test('submits uploaded check form data processing', async () => {
+    test('error to be signalled when error occurs', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       jest.spyOn(res, 'redirect').mockImplementation()

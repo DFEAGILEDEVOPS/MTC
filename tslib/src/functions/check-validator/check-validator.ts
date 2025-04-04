@@ -123,8 +123,7 @@ export class CheckValidator {
   private async validateCheckStructure (submittedCheck: any): Promise<void> {
     const validators = this.validatorProvider.getValidators()
     const validationErrors: ICheckValidationError[] = []
-    for (let index = 0; index < validators.length; index++) {
-      const validator = validators[index]
+    for (const validator of validators) {
       const validationResult = validator.validate(submittedCheck)
       if (validationResult !== undefined) {
         validationErrors.push(validationResult)
@@ -132,8 +131,7 @@ export class CheckValidator {
     }
     if (validationErrors.length > 0) {
       let validationErrorsMessage = `${functionName}: check validation failed. checkCode: ${submittedCheck.checkCode}`
-      for (let index = 0; index < validationErrors.length; index++) {
-        const error = validationErrors[index]
+      for (const error of validationErrors) {
         validationErrorsMessage += `\n\t-\t${error.message}`
       }
       throw new Error(validationErrorsMessage)
@@ -143,8 +141,7 @@ export class CheckValidator {
     // network calls.
     const asyncValidators = this.validatorProvider.getAsyncValidators()
     const asyncValidationErrors: ICheckValidationError[] = []
-    for (let index = 0; index < asyncValidators.length; index++) {
-      const validator = asyncValidators[index]
+    for (const validator of asyncValidators) {
       const validationResult = await validator.validate(submittedCheck)
       if (validationResult !== undefined) {
         asyncValidationErrors.push(validationResult)
@@ -152,8 +149,7 @@ export class CheckValidator {
     }
     if (asyncValidationErrors.length > 0) {
       let asyncValidationErrorsMessage = `${functionName}: check validation failed. checkCode: ${submittedCheck.checkCode}`
-      for (let index = 0; index < asyncValidationErrors.length; index++) {
-        const error = asyncValidationErrors[index]
+      for (const error of asyncValidationErrors) {
         asyncValidationErrorsMessage += `\n\t-\t${error.message}`
       }
       throw new Error(asyncValidationErrorsMessage)

@@ -3,9 +3,10 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { LoginErrorService } from '../services/login-error/login-error.service';
 
 @Component({
-  selector: 'app-login-failure',
-  templateUrl: './login-failure.component.html',
-  styleUrls: ['./login-failure.component.scss']
+    selector: 'app-login-failure',
+    templateUrl: './login-failure.component.html',
+    styleUrls: ['./login-failure.component.scss'],
+    standalone: false
 })
 export class LoginFailureComponent implements OnInit, AfterViewInit {
 

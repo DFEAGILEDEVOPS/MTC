@@ -32,7 +32,7 @@ export class PrepareEventService {
           question = await this.questionService.findQuestion(audit.data.question)
           questionId = question.id
           questionNumber = audit.data.sequenceNumber
-        } catch (ignoreError) {
+        } catch {
           console.error(`Unable to find question [${audit.data.question}] for checkCode [${checkCode}]`)
           // the event will still get inserted, but it will not relate to a question.  The details will be in the eventData.
         }

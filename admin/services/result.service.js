@@ -124,7 +124,6 @@ const resultService = {
     return {
       generatedAt: moment(),
       schoolId,
-      // @ts-ignore - ignore
       pupils: pupilIdentificationFlagService.sortAndAddIdentificationFlags(this.createPupilData(data))
     }
   },
@@ -145,7 +144,9 @@ const resultService = {
       result = await this.getPupilResultDataFromDb(schoolId)
       try {
         await redisCacheService.set(redisKey, result, schoolResultsTtl)
-      } catch (ignored) {}
+      } catch {
+        // do nothing
+      }
     }
     return result
   }

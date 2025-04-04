@@ -33,7 +33,7 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
   // File not readable
   try {
     fileBuffer = fs.readFileSync(uploadedFile.file, 'utf8')
-  } catch (err) {
+  } catch {
     csvErrors.push(`${checkFormName} ${checkFormErrorMessages.isNotReadable}`)
     return csvErrors
   }
@@ -68,7 +68,9 @@ singleCheckFormValidator.validate = async (uploadedFile) => {
         }
         checkFormIntegerCount += row.length
       })
-      .on('data', () => {})
+      .on('data', () => {
+        // do nothing
+      })
       .on('end', () => resolve()
       )
       .on('error', error => reject(error)

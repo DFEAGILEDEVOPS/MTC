@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ActivatedRoute } from '@angular/router'
-import { RouterTestingModule } from '@angular/router/testing'
+import { RouterModule } from '@angular/router'
 
 import { SubmissionPendingComponent } from './submission-pending.component'
 import { CheckCompleteService } from '../services/check-complete/check-complete.service'
@@ -41,8 +41,8 @@ describe('SubmissionPendingComponent', () => {
     }
     TestBed.configureTestingModule({
       declarations: [SubmissionPendingComponent],
-      imports: [RouterTestingModule.withRoutes([])],
-      schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
+      imports: [RouterModule.forRoot([])],
+      schemas: [NO_ERRORS_SCHEMA], // we don't need to test subcomponents
       providers: [
         CheckCompleteService,
         TokenService,
@@ -72,6 +72,7 @@ describe('SubmissionPendingComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy()
   })
+
   describe('ngOnInit()', () => {
     it('calls check complete submit method', async () => {
       auditService = fixture.debugElement.injector.get(AuditService)
@@ -84,6 +85,7 @@ describe('SubmissionPendingComponent', () => {
       expect(checkCompleteService.submit).toHaveBeenCalled()
       expect(component.title).toBe('You have finished')
     })
+
     it('provides an appropriate title when a previous check is detected though a URL param', async () => {
       auditService = fixture.debugElement.injector.get(AuditService)
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService)
