@@ -9,18 +9,23 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": {
+              "base": "dist",
+              "browser": ""
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts",
+              "@angular/localize/init"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/lib",
-                "node_modules/govuk-elements-sass/public/sass/",
-                "node_modules/govuk_frontend_toolkit/"
+                "./src/lib",
+                "./node_modules/govuk-elements-sass/public/sass/",
+                "./node_modules/govuk_frontend_toolkit/"
               ]
             },
             "assets": [
@@ -31,13 +36,19 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
+            "sourceMap": {
+              "scripts": true,
+              "styles": false,
+              "vendor": true
+            },
             "optimization": true,
-            "namedChunks": true
-          },
+            "namedChunks": true,
+            "allowedCommonJsDependencies": [
+              "polly-js"
+            ],
+            "browser": "src/main.ts"
+           },
           "configurations": {
             "production": {
               "budgets": [
@@ -48,11 +59,13 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": true,
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "vendor": true
+              },
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -66,24 +79,27 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "pupil-spa:build"
+            "buildTarget": "pupil-spa:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "pupil-spa:build:production"
+              "buildTarget": "pupil-spa:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pupil-spa:build"
+            "buildTarget": "pupil-spa:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
+            "builderMode": "application",
+            "include": [
+              "**/*.spec.ts"
+            ],
             "karmaConfig": "./karma.conf.js",
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -92,7 +108,11 @@
                 "node_modules/govuk_frontend_toolkit/"
               ]
             },
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts",
+              "zone.js/testing",
+              "@angular/localize/init"
+            ],
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [

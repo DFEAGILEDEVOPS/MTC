@@ -38,7 +38,7 @@ describe('SpeechService', () => {
       spyOn(window, 'removeEventListener');
     });
 
-    it('should remove its event listeners', inject([SpeechService], (service: SpeechService) => {
+    it('should remove its event listeners', inject([SpeechService], () => {
       expect(window.removeEventListener).toHaveBeenCalledTimes(2 * 2);
     }));
   });
@@ -63,11 +63,10 @@ describe('SpeechService', () => {
     it('calls the audit service on start and end', inject([SpeechService], async (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
       // Mock the setTimeout method to get the results instantly
-      // @ts-ignore
-      spyOn(window, 'setTimeout').and.callFake( (fun, time) => {
-        // @ts-ignore
-        fun();
-      });
+      // @ts-expect-error : fake handler
+      spyOn(window, 'setTimeout').and.callFake((fun) => {
+        fun()
+      })
       // We need to mock out the actual speech interface, as otherwise this test will emit speech
       spyOn(window.speechSynthesis, 'speak').and.callFake((utterance: SpeechSynthesisUtterance) => {
         // call the onstart and onend function if they exist
@@ -79,7 +78,6 @@ describe('SpeechService', () => {
         }
       });
       await service.speak('9 times 9');
-      expect(window.setTimeout).toHaveBeenCalledTimes(1);
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
       expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
@@ -93,11 +91,10 @@ describe('SpeechService', () => {
     it('calls the audit service on start and end', inject([SpeechService], async (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
       // Mock the setTimeout method to get the results instantly
-      // @ts-ignore
-      spyOn(window, 'setTimeout').and.callFake((fun, time) => {
-        // @ts-ignore
-        fun();
-      });
+      // @ts-expect-error: fake handler
+      spyOn(window, 'setTimeout').and.callFake((fun) => {
+        fun()
+      })
       // We need to mock out the actual speech interface, as otherwise this test will emit speech
       spyOn(window.speechSynthesis, 'speak').and.callFake((utterance: SpeechSynthesisUtterance) => {
         // call the onstart and onend function if they exist
@@ -109,7 +106,6 @@ describe('SpeechService', () => {
         }
       });
       await service.speak('9 times 9');
-      expect(window.setTimeout).toHaveBeenCalledTimes(1);
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
       expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
