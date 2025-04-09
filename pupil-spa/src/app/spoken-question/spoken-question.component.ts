@@ -11,9 +11,10 @@ import { Subscription } from 'rxjs';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
-  selector: 'app-spoken-question',
-  templateUrl: '../question/question.component.html',
-  styleUrls: ['../question/question.component.css'],
+    selector: 'app-spoken-question',
+    templateUrl: '../question/question.component.html',
+    styleUrls: ['../question/question.component.css'],
+    standalone: false
 } )
 export class SpokenQuestionComponent extends QuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 

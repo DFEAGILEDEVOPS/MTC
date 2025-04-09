@@ -113,7 +113,7 @@ export class CsvTransformer {
       d.LAnum,
       d.AttemptID,
       d.FormID,
-      d.TestDate?.toISOString(),
+      d.TestDate?.format('YYYY-MM-DD'),
       d.TimeStart?.toISOString(),
       d.TimeComplete?.toISOString(),
       d.TimeTaken,
