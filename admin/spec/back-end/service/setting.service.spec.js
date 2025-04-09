@@ -1,5 +1,4 @@
 'use strict'
-/* global jest, describe, test, expect, afterEach */
 
 const settingDataService = require('../../../services/data-access/setting.data.service')
 const settingLogDataService = require('../../../services/data-access/setting-log.data.service')

@@ -1,5 +1,4 @@
 'use strict'
-/* globals describe test test expect jest afterEach */
 
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')

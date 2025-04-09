@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect fail test jest afterEach */
 const RA = require('ramda-adjunct')
 const moment = require('moment')
 
@@ -154,7 +153,7 @@ describe('result.service', () => {
       const schoolId = 2
       try {
         await resultService.getPupilResultData(schoolId)
-      } catch (error) {
+      } catch {
         fail()
       }
       expect(redisCacheService.get).toHaveBeenCalled()
@@ -178,7 +177,7 @@ describe('result.service', () => {
       let result
       try {
         result = await resultService.getPupilResultData(schoolId)
-      } catch (error) {
+      } catch {
         fail()
       }
       expect(result).toBeUndefined()

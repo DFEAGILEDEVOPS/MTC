@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 /**
  * Creates date validation data based on parameters
  */

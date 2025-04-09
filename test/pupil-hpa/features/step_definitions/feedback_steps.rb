@@ -75,8 +75,11 @@ Then(/^my feedback should be saved$/) do
   wait_until(60,2){SqlDbHelper.get_check(local_storage['checkCode'])['complete'] == true}
   stored_check = SqlDbHelper.get_check(local_storage['checkCode'])
   expect(stored_check['complete']).to eql true
-  saved_feedback = AzureTableHelper.get_pupil_feedback(stored_check['checkCode'])
-  expect(saved_feedback.properties['satisfactionRating']).to eql 'Very easy'
+  pupil_id = stored_check['pupil_id']
+  check_id = SqlDbHelper.get_check(stored_check['checkCode'])['id']
+  wait_until(6,2){SqlDbHelper.get_pupil_feedback(check_id,pupil_id,@school_id) != nil}
+  saved_feedback = SqlDbHelper.get_pupil_feedback(check_id,pupil_id,@school_id)
+  expect(saved_feedback['feedback']).to eql 'Very easy'
 end
 
 

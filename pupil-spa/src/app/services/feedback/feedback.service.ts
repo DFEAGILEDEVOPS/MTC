@@ -2,11 +2,18 @@ import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
+import { HttpService } from '../http/http.service'
+import { HttpHeaders } from '@angular/common/http'
 
 export interface IFeedbackService {
   postFeedback(): Promise<boolean>;
-  queueSubmit(payload: any): Promise<void>;
+  submitFeedback(payload: any): Promise<void>;
+}
+
+export interface IPupilFeedbackMessage {
+  version: number
+  checkCode?: string
+  feedback?: string
 }
 
 @Injectable()
@@ -16,7 +23,7 @@ export class FeedbackService implements IFeedbackService {
 
   constructor(private storageService: StorageService,
               private tokenService: TokenService,
-              private azureQueueService: AzureQueueService) {
+              private httpService: HttpService) {
     const {
       feedbackAPIErrorDelay,
       feedbackAPIErrorMaxAttempts
@@ -30,15 +37,15 @@ export class FeedbackService implements IFeedbackService {
     if (!storedFeedback) {
       return false;
     }
-    const satisfactionRating = storedFeedback.satisfactionRating.value;
+    const feedback = storedFeedback.satisfactionRating.value;
     const checkCode = storedFeedback.checkCode;
 
-    const payload = {
+    const payload: IPupilFeedbackMessage = {
       version: 2,
-      satisfactionRating,
+      feedback: feedback,
       checkCode
     };
-    await this.queueSubmit(payload);
+    await this.submitFeedback(payload);
     return true;
   }
 
@@ -47,13 +54,18 @@ export class FeedbackService implements IFeedbackService {
    * @param {Object} payload
    * @returns {Promise.<void>}
    */
-  async queueSubmit(payload: any) {
+  async submitFeedback(payload: any) {
     const { url, token } = this.tokenService.getToken('pupilFeedback');
     // Create a model for the payload
-    const retryConfig: QueueMessageRetryConfig = {
-      DelayBetweenRetries: this.feedbackAPIErrorDelay,
-      MaxAttempts: this.feedbackAPIErrorMaxAttempts
-    };
-    await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
+    const postBody: IPupilFeedbackMessage = {
+      version: 3,
+      feedback: payload.feedback,
+      checkCode: payload.checkCode
+    }
+    await this.httpService.post(url, postBody,
+          new HttpHeaders()
+          .set('Content-Type', 'application/json')
+          .set('Authorization', `Bearer ${token}`),
+          APP_CONFIG.checkSubmissionAPIErrorMaxAttempts)
   }
 }

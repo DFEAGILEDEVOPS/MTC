@@ -32,7 +32,7 @@ module.exports = async function (req, res, next) {
       const localFilename = fileObj.file
       try {
         await blobService.uploadLocalFile(container, remoteFilename, localFilename)
-      } catch (error) {
+      } catch {
         console.error(`ERROR: Failed to upload file ${fileObj.filename} to ${container}`)
       }
     }

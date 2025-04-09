@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, beforeEach, test, expect, jest, afterEach */
 
 const pupilMock = require('../../mocks/pupil')
 const sqlResponseMock = require('../../mocks/sql-modify-response')

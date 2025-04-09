@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach, describe, test, expect */
-
 const hdfConfirmValidator = require('../../../../lib/validator/hdf-confirm-validator')
 const hdfConfirmOptions = require('../../../../lib/consts/hdf-confirm-options')
 

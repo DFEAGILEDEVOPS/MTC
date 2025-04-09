@@ -1,5 +1,5 @@
 import { FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
-import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
+import mockPreparedCheck from '../../common/mocks/mock-prepared-check-2021.json'
 import { type CheckQuestion, type CompleteCheckAnswer } from '../../schemas/check-schemas/validated-check'
 
 let sut: FakeCompletedCheckGeneratorService
@@ -58,8 +58,7 @@ describe('submitted-check-generator-service', () => {
  * @param needle
  */
 function isValidAnswer (haystack: CheckQuestion[], needle: CompleteCheckAnswer): boolean {
-  for (let i = 0; i < haystack.length; i++) {
-    const questionToTest = haystack[i]
+  for (const questionToTest of haystack) {
     if (needle.factor1 === questionToTest.factor1 && needle.factor2 === questionToTest.factor2) {
       return true
     }

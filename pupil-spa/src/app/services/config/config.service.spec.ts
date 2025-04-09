@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing'
 import { AppConfigService } from './config.service'
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { throwError } from 'rxjs/internal/observable/throwError'
 import { of } from 'rxjs/internal/observable/of'
 
@@ -11,11 +11,13 @@ describe('AppConfigService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        AppConfigService
-      ]
-    })
+    imports: [],
+    providers: [
+        AppConfigService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     service = TestBed.inject(AppConfigService)
     http = TestBed.inject(HttpClient)
   })
@@ -29,14 +31,14 @@ describe('AppConfigService', () => {
     try {
       const loadResult = await service.load()
       expect(loadResult).toBe(true)
-    } catch (e) {
+    } catch {
       fail()
     }
   })
 
   it('returns false if the config json file does not exist', async () => {
     spyOn(http, 'get').and.callFake(() => {
-      return throwError(new HttpErrorResponse({
+      return throwError(() => new HttpErrorResponse({
         error: new Error('Not found'),
         status: 404,
         statusText: 'Not found'

@@ -1,5 +1,4 @@
 'use strict'
-/* global describe test expect beforeEach */
 
 const checkFormErrorMessages = require('../../../../../lib/errors/check-form')
 const multipleCheckFormsValidator = require('../../../../../lib/validator/check-form/multiple-check-forms-validator')

@@ -1,9 +1,10 @@
 import { PingService } from '../services/ping.service'
 import config from '../config'
 import { isNil } from 'ramda'
-const appInsights = require('applicationinsights')
+import * as appInsights from 'applicationinsights'
 
 const cloudRoleName = 'Pupil-API'
+let isAppInsightsSetup = false
 
 const connectionString = config.Logging.ApplicationInsights.ConnectionString
 if (isNil(connectionString)) {
@@ -25,19 +26,24 @@ if (isNil(connectionString)) {
     .setInternalLogging(false, true)
     .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
     .enableWebInstrumentation(false)
+
+  isAppInsightsSetup = true
   appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
   appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
 }
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
+    if (!isAppInsightsSetup) {
+      return
+    }
     appInsights.start()
     console.log('Application insights: started')
     const pingService = new PingService()
     let buildNumber
     try {
       buildNumber = await pingService.getBuildNumber()
-    } catch (error) {
+    } catch {
       buildNumber = 'NOT FOUND'
     }
     appInsights.defaultClient.commonProperties = {

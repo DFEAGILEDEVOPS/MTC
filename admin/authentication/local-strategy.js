@@ -85,7 +85,7 @@ async function saveInvalidLogonEvent (logonEvent, message) {
   }
 }
 
-async function saveValidLogonEvent (logonEvent, session) {
+async function saveValidLogonEvent (logonEvent) {
   try {
     logonEvent.isAuthenticated = true
     await adminLogonEventDataService.sqlCreate(logonEvent)

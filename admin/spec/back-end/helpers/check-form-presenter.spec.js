@@ -1,4 +1,3 @@
-/* global describe, expect, test */
 const moment = require('moment')
 
 const checkFormPresenter = require('../../../helpers/check-form-presenter')

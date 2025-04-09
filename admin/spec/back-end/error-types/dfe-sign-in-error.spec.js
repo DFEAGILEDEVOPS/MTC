@@ -1,6 +1,5 @@
 'use strict'
 const { DfeSignInError } = require('../../../error-types/dfe-signin-error')
-/* global describe expect test */
 
 describe('DfeSignInError class', () => {
   test('it initialises with 1 arg', () => {

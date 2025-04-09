@@ -36,7 +36,7 @@ export async function psReport1ListSchools (triggerInput: unknown, context: Invo
     // We need to store a filename for all the data to be written to during the staging process.
     const now = moment()
     const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}.csv`
-    await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context)
+    await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } })
     const schoolListService = new ListSchoolsService(logger)
     const messageSpec: ISchoolMessageSpecification = {
       jobUuid: jobInfo.jobUuid,

@@ -5,7 +5,6 @@ import { AuditService } from '../audit/audit.service'
 import { AuditServiceMock } from '../audit/audit.service.mock'
 import { IWindowRefService, WindowRefService } from '../window-ref/window-ref.service'
 import { MockWindowRefService } from '../window-ref/mock-window-ref.service'
-import { MonotonicTime } from '../../monotonic-time'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 import { StorageService } from '../storage/storage.service'
 import { StorageServiceMock } from '../storage/mock-storage.service'
@@ -16,7 +15,6 @@ let monotonicTimeService: MonotonicTimeService
 let mockWindowRefService: IWindowRefService
 
 describe('AnswerService', () => {
-  const toPoJo = (answer) => JSON.parse(JSON.stringify(answer))
   const mockDate = new Date('1970-01-01T09:00:00.000Z')
 
   beforeEach(() => {

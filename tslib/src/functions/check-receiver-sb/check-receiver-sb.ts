@@ -36,7 +36,7 @@ export class CheckReceiverServiceBus {
 
     try {
       await this.checkNotifierDataService.executeRequestsInTransaction([request])
-    } catch (error) {
+    } catch {
       context.error(`check-receiver: failed to write check received notification to database for check ${receivedCheck.checkCode}\n Falling back to check notification queue message.`)
       const receivedMessage: ICheckNotificationMessage = {
         version: 1,

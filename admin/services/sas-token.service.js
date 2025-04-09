@@ -33,7 +33,7 @@ const sasTokenService = {
       if (token) {
         return token
       }
-    } catch (error) {
+    } catch {
       logger.error(`Error retrieving cached cached sasToken for ${queueName}`)
     }
 
@@ -69,12 +69,8 @@ const sasTokenService = {
   getTokens: async function (hasLiveChecks, expiryDate) {
     const queueNames = [
       queueNameService.NAMES.CHECK_STARTED,
-      queueNameService.NAMES.PUPIL_PREFS,
-      queueNameService.NAMES.PUPIL_FEEDBACK
+      queueNameService.NAMES.PUPIL_PREFS
     ]
-    if (hasLiveChecks) {
-      queueNames.push(queueNameService.NAMES.CHECK_SUBMIT)
-    }
 
     // Attempt to retrieve all tokens from redis
     const redisKeys = queueNames.map(redisKeyService.getSasTokenKey)

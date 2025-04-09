@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, beforeEach, test, expect, jest, afterEach */
 
 const singlePupilValidationCSVService = require('../../../services/single-pupil-validation.service')
 const PupilValidator = require('../../../lib/validator/pupil-validator')

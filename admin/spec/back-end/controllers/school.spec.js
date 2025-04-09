@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach afterEach jest test expect */
-
 const helpdeskService = require('../../../services/helpdesk.service')
 const schoolHomePageService = require('../../../services/school-home-page/school-home-page.service')
 const schoolController = require('../../../controllers/school')

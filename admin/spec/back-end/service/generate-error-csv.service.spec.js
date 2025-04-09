@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, beforeEach, jest, test, expect fail */
 
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
 const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')

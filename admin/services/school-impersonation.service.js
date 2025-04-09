@@ -23,10 +23,9 @@ schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
   if (dfeNumberValidationError.hasError()) {
     return dfeNumberValidationError
   }
-  let school
-  try {
-    school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-  } catch (ignore) {}
+
+  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+
   // returns a validation error if the school record is not valid
   const schoolValidationError = schoolImpersonationValidator.isSchoolRecordValid(school)
   if (schoolValidationError.hasError()) {

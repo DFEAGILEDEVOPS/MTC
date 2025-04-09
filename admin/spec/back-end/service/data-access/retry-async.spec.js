@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, expect, fail beforeEach, test, jest, afterEach */
 
 const {
   asyncRetryHandler,
@@ -66,7 +65,7 @@ describe('async-retry', () => {
       }
       try {
         await asyncRetryHandler(func, strategy, () => true)
-      } catch (error) {
+      } catch {
         expect(callCount).toBe(maxAttempts)
       }
     })
@@ -84,7 +83,7 @@ describe('async-retry', () => {
       try {
         await asyncRetryHandler(func, retryPolicy, () => true)
         expect(callCount).toBe(3)
-      } catch (error) {
+      } catch {
         fail(`should have completed after 3 attempts. attempts made:${callCount}`)
       }
     })

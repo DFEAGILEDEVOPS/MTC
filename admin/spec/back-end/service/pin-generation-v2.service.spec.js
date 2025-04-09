@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect beforeEach test jest afterEach */
+
 const moment = require('moment')
 const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')

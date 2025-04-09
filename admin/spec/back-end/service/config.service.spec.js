@@ -1,5 +1,5 @@
 'use strict'
-/* global describe test expect jest afterEach */
+
 const R = require('ramda')
 
 const configService = require('../../../services/config.service')

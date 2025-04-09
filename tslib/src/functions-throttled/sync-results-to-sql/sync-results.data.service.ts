@@ -535,7 +535,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
   public async getSchoolId (schoolUuid: string): Promise<number | undefined> {
     const sql = 'SELECT id FROM mtc_admin.school WHERE urlslug = @urlSlug'
     const param = { name: 'urlSlug', value: schoolUuid, type: TYPES.UniqueIdentifier }
-    const data: Array<{ id: number }> = await this.sqlService.query(sql, [param])
+    const data: { id: number }[] = await this.sqlService.query(sql, [param])
     const school = R.head(data)
     if (school === undefined) {
       return undefined
