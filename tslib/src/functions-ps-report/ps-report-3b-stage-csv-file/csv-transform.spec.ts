@@ -32,7 +32,7 @@ describe('CsvTransformer Class', () => {
         LAnum: 999,
         AttemptID: 'attempt ID',
         FormID: 'form ID',
-        TestDate: moment('2020-06-29'),
+        TestDate: moment('2020-06-29T07:49:35.637Z'),
         TimeStart: moment('2020-06-29T07:49:35.637Z'),
         TimeComplete: moment('2020-06-29T07:49:35.637Z').add(2, 'minutes'),
         TimeTaken: 223.45,
