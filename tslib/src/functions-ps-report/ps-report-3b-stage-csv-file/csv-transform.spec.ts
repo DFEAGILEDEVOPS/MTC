@@ -214,7 +214,7 @@ describe('CsvTransformer Class', () => {
     test('it outputs the test date', () => {
       const s = sut.transform()
       const res = CSV.parse(s)
-      expect(res[0][24]).toBe('2020-06-29')
+      expect(res[0][24]).toBe('2020-06-29T07:49:35.637Z')
     })
 
     test('it outputs the time start', () => {
