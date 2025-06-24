@@ -89,7 +89,7 @@ describe('pupil-register controller:', () => {
       expect(args[1].showAddMultiplePupilButton).toBe(true)
     })
 
-    test('during the post check window phase the add pupil buttons are not available', async () => {
+    test('during the post check window phase the add pupil buttons are available', async () => {
       global.checkWindowPhase = checkWindowPhaseConsts.postCheckAdmin
       const res = getRes()
       const renderSpy = jest.spyOn(res, 'render')
@@ -97,8 +97,8 @@ describe('pupil-register controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButton).toBe(false)
-      expect(args[1].showAddMultiplePupilButton).toBe(false)
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(true)
     })
 
     test('during the post check window phase the add pupil button is available for STA-ADMIN', async () => {
@@ -111,7 +111,7 @@ describe('pupil-register controller:', () => {
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
       expect(args[1].showAddPupilButton).toBe(true)
-      expect(args[1].showAddMultiplePupilButton).toBe(false)
+      expect(args[1].showAddMultiplePupilButton).toBe(true)
     })
 
     test('during the post check window phase (readonly mode) the add pupil buttons are not available', async () => {
