@@ -4,7 +4,7 @@ const roles = require('../lib/consts/roles')
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
-const { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase, ifNotRole } = require('../availability/middleware')
+const { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase } = require('../availability/middleware')
 
 const pupilRegister = require('../controllers/pupil-register')
 const pupilController = require('../controllers/pupil')
@@ -18,28 +18,24 @@ router.get(
   '/pupil/add',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  ifNotRole(roles.staAdmin, isPostLiveOrLaterCheckPhase),
   pupilController.getAddPupil
 )
 router.post(
   '/pupil/add',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  ifNotRole(roles.staAdmin, isPostLiveOrLaterCheckPhase),
   pupilController.postAddPupil
 )
 router.get(
   '/pupil/add-batch-pupils',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isPostLiveOrLaterCheckPhase,
   pupilController.getAddMultiplePupils
 )
 router.post(
   '/pupil/add-batch-pupils',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isPostLiveOrLaterCheckPhase,
   pupilController.postAddMultiplePupils
 )
 router.get(
@@ -53,14 +49,12 @@ router.get(
   '/pupil/edit/:id',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isPostLiveOrLaterCheckPhase,
   pupilController.getEditPupilById
 )
 router.post(
   '/pupil/edit',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isPostLiveOrLaterCheckPhase,
   pupilController.postEditPupil
 )
 router.get(

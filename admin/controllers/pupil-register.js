@@ -10,7 +10,7 @@ const checkShowAddPupilButton = function checkShowAddPupilButton (checkWindowPha
   if (userRole === roles.staAdmin) {
     return true
   }
-  const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable, checkWindowPhaseConsts.postCheckAdmin]
+  const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable]
   const isUnavailablePhase = unavailablePhases.some((cwp) => checkWindowPhase === cwp, checkWindowPhase)
   if (isUnavailablePhase) {
     return false
@@ -22,7 +22,7 @@ const checkShowAddPupilButton = function checkShowAddPupilButton (checkWindowPha
 }
 
 const checkShowAddMultiplePupilButton = function checkShowAddMultiplePupilButton (checkWindowPhase, availabilityData) {
-  const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable, checkWindowPhaseConsts.postCheckAdmin]
+  const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable]
   const isUnavailablePhase = unavailablePhases.some((cwp) => checkWindowPhase === cwp, checkWindowPhase)
   if (isUnavailablePhase) {
     return false
@@ -63,7 +63,7 @@ const listPupils = async function listPupils (req, res, next) {
    */
   const showAddPupilButton = checkShowAddPupilButton(global.checkWindowPhase, availabilityData, req.user.role)
   const showAddMultiplePupilButton = checkShowAddMultiplePupilButton(global.checkWindowPhase, availabilityData)
-
+  const isStaAdmin = (req.user.role === roles.staAdmin)
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
@@ -71,7 +71,8 @@ const listPupils = async function listPupils (req, res, next) {
     availabilityData,
     showPupilAdminLink: req.user.role === roles.staAdmin || req.user.role === roles.helpdesk,
     showAddPupilButton,
-    showAddMultiplePupilButton
+    showAddMultiplePupilButton,
+    isStaAdmin
   })
 }
 
