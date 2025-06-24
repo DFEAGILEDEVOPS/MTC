@@ -155,8 +155,8 @@
                                 <td scope="row" <% if (highlight && highlight.has(p.urlSlug.toString())) { %>
                                     class="govuk-table__cell govuk-highlight-item"<% } %>>
                                         <div class="govuk-highlight-wrapper">
-                                            <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted &&
-                                                !availabilityData.checkWindowClosed && !p.frozen) { %>
+                                            <% if ((isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted &&
+                                                !availabilityData.adminWindowClosed && !p.frozen) || isStaAdmin) { %>
                                                 <a id="pupilName"
                                                     class="govuk-link govuk-!-font-weight-bold name-text-wrap"
                                                     href="/pupil-register/pupil/edit/<%= p.urlSlug %>">
