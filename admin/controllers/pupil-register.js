@@ -63,7 +63,7 @@ const listPupils = async function listPupils (req, res, next) {
    */
   const showAddPupilButton = checkShowAddPupilButton(global.checkWindowPhase, availabilityData, req.user.role)
   const showAddMultiplePupilButton = checkShowAddMultiplePupilButton(global.checkWindowPhase, availabilityData)
-
+  const isStaAdmin = (req.user.role === roles.staAdmin)
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
@@ -71,7 +71,9 @@ const listPupils = async function listPupils (req, res, next) {
     availabilityData,
     showPupilAdminLink: req.user.role === roles.staAdmin || req.user.role === roles.helpdesk,
     showAddPupilButton,
-    showAddMultiplePupilButton
+    showAddMultiplePupilButton,
+    isStaAdmin
+
   })
 }
 
