@@ -7,7 +7,7 @@ const roles = require('../lib/consts/roles')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 const checkShowAddPupilButton = function checkShowAddPupilButton (checkWindowPhase, availabilityData, userRole) {
-  if (userRole === roles.staAdmin) {
+  if (userRole === roles.staAdmin && !availabilityData.hdfSubmitted) {
     return true
   }
   const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable, checkWindowPhaseConsts.postCheckAdmin]
