@@ -989,12 +989,12 @@ const controller = {
       const pupil = await pupilService.fetchOnePupilBySlug(req.params.slug, pupilDetails.schoolId)
       pupilExampleYear = pupilPresenter.getPupilExampleYear()
       if (!pupil) {
-        return next(new Error(`Pupil ${req.params.id} not found`))
+        return next(new Error(`Pupil ${req.params.slug} not found`))
       }
 
       const pupilData = pupilAddService.formatPupilData(pupil)
       const isServiceManager = (req.user.role === roles.serviceManager)
-      req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
+      req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(req.params.slug).toLowerCase()}`)
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/pupil/edit', {
         formData: pupilData,
@@ -1002,7 +1002,8 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         pupilExampleYear,
         isServiceManager,
-        pupilDetails
+        pupilDetails,
+        pupil
       })
     } catch (error) {
       next(error)
