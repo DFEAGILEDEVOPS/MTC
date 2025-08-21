@@ -1,13 +1,13 @@
 <%
 let now = new Date();
 let currentYear = now.getFullYear();
-let createOrSave = '/service-manager/pupil/edit';
+let editUrl = '/service-manager/pupil/edit';
 
 %>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <%- partial('partials/_gds_session_expiry') %>
-        <form action="<%= createOrSave %>" method="post" novalidate class="govuk-form-button">
+        <form action="<%= editUrl %>" method="post" novalidate class="govuk-form-button">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                     <h1 class="govuk-fieldset__heading">
