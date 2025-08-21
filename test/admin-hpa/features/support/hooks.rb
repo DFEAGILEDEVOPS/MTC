@@ -256,7 +256,7 @@ end
 
 After('@remove_mod_school_hook') do
   step "I am logged in with a service manager"
-  step 'I navigate to the settings for MOD schools page'
+  step 'I navigate to the Settings for Ministry of Defence schools (MOD) schools page'
   mod_schools_page.remove_school(@school)
 end
 
