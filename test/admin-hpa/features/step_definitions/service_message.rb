@@ -1,18 +1,18 @@
-Given(/^I am on the manage service message page$/) do
+Given(/^I am on the service message page$/) do
   step 'I have signed in with service-manager'
-  admin_page.manage_service_message.click
+  admin_page.service_message.click
 end
 
 Then(/^it should match the design$/) do
-  expect(manage_service_message_page).to have_heading
-  expect(manage_service_message_page).to have_info_text
-  expect(manage_service_message_page).to have_create_message
-  expect(manage_service_message_page).to have_no_message
+  expect(service_message_page).to have_heading
+  expect(service_message_page).to have_info_text
+  expect(service_message_page).to have_create_message
+  expect(service_message_page).to have_no_message
 end
 
 Given(/^I am on the create service message page$/) do
-  step 'I am on the manage service message page'
-  manage_service_message_page.create_message.click
+  step 'I am on the service message page'
+  service_message_page.create_message.click
 end
 
 When(/^I submit the form with the service message I require$/) do
@@ -25,10 +25,10 @@ When(/^I submit the form with the service message I require$/) do
 end
 
 Then(/^the service message should be saved$/) do
-  expect(manage_service_message_page).to have_flash_message
-  expect(manage_service_message_page).to have_message
-  expect(manage_service_message_page.message[0].text).to eql @message[:title]
-  expect(manage_service_message_page).to have_remove_message
+  expect(service_message_page).to have_flash_message
+  expect(service_message_page).to have_message
+  expect(service_message_page.message[0].text).to eql @message[:title]
+  expect(service_message_page).to have_remove_message
   db_record = SqlDbHelper.get_service_message(@message[:title])
   expect(db_record['title']).to eql @message[:title]
   expect(db_record['message']).to eql @message[:message].gsub("\\r\\n", "\r\n")
@@ -54,11 +54,11 @@ Given(/^I have created multiple service messages$/) do
 end
 
 When(/^I decide to delete one of the messages$/) do
-  manage_service_message_page.remove_specific_service_message(@message_1[:title])
+  service_message_page.remove_specific_service_message(@message_1[:title])
 end
 
 Then(/^it should be removed from the system$/) do
-  expect(manage_service_message_page).to have_flash_message
+  expect(service_message_page).to have_flash_message
   db_record = SqlDbHelper.get_service_message(@message_1[:title])
   expect(db_record).to be_nil
   redis_record = REDIS_CLIENT.get('serviceMessage')
@@ -68,7 +68,7 @@ Then(/^it should be removed from the system$/) do
 end
 
 Then(/^I should be able to create another$/) do
-  manage_service_message_page.create_message.click
+  service_message_page.create_message.click
   expect(create_message_page).to be_displayed
 end
 
@@ -91,17 +91,17 @@ Given(/^I have previously created a service message$/) do
 end
 
 When(/^I edit the existing service message$/) do
-  manage_service_message_page.edit.click
+  service_message_page.edit.click
   @message = { title: @message[:title] + " Updated", message: 'This is an updated message' }
   @border_colour = 'Red'
   create_message_page.create_message(@message[:title], @message[:message], @border_colour)
 end
 
 Then(/^the service message should be updated$/) do
-  expect(manage_service_message_page).to have_flash_message
-  expect(manage_service_message_page).to have_message
-  expect(manage_service_message_page.message[0].text).to eql @message[:title]
-  expect(manage_service_message_page).to have_remove_message
+  expect(service_message_page).to have_flash_message
+  expect(service_message_page).to have_message
+  expect(service_message_page.message[0].text).to eql @message[:title]
+  expect(service_message_page).to have_remove_message
   db_record = SqlDbHelper.get_service_message(@message[:title])
   expect(db_record['title']).to eql @message[:title]
   expect(db_record['message']).to eql @message[:message].gsub("\\r\\n", "\r\n")

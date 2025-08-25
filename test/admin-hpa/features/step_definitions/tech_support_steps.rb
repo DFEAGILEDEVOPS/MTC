@@ -4,7 +4,7 @@ Then(/^I should be taken to the tech support homepage$/) do
   expect(tech_support_page).to have_check_view
 end
 
-Given(/^I am on the check view page$/) do
+Given(/^I am on the tech support check view page$/) do
   step 'I have logged in with tech-support'
   tech_support_page.check_view.click
 end
