@@ -184,7 +184,7 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getSceSettings: async function getSceSettings (req, res, next) {
-    res.locals.pageTitle = 'Settings for MOD'
+    res.locals.pageTitle = 'Settings for Ministry of Defence schools (MOD)'
     req.breadcrumbs(res.locals.pageTitle)
     const { hl } = req.query
     try {
@@ -265,7 +265,7 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getSceAddSchool: async function getSceAddSchool (req, res, next) {
-    req.breadcrumbs('Settings for MOD', '/service-manager/mod-settings')
+    req.breadcrumbs('Settings for Ministry of Defence schools (MOD)', '/service-manager/mod-settings')
     res.locals.pageTitle = 'Convert school to MOD'
     req.breadcrumbs(res.locals.pageTitle)
 
