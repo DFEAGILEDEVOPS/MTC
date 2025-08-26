@@ -58,8 +58,8 @@ Before('@new_school_no_password_hook') do
 end
 
 Before('@service_manager_message_hook') do
-  step 'I am on the manage service message page'
-  manage_service_message_page.remove_all_service_messages if manage_service_message_page.has_remove_message?
+  step 'I am on the service message page'
+  service_message_page.remove_all_service_messages if service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
@@ -112,8 +112,8 @@ Before('@incomplete_pupil_hook') do
 end
 
 After('@service_manager_message_hook') do
-  step 'I am on the manage service message page'
-  manage_service_message_page.remove_all_service_messages if manage_service_message_page.has_remove_message?
+  step 'I am on the service message page'
+  service_message_page.remove_all_service_messages if service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
@@ -256,7 +256,7 @@ end
 
 After('@remove_mod_school_hook') do
   step "I am logged in with a service manager"
-  step 'I navigate to the Settings for Ministry of Defence schools (MOD) schools page'
+  step 'I navigate to the settings for MOD schools page'
   mod_schools_page.remove_school(@school)
 end
 
