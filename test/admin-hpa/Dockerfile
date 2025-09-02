@@ -1,4 +1,4 @@
-FROM ruby:3.2.2
+FROM ruby:2.6.0
 
 COPY ./install-freetds.sh .
 RUN ./install-freetds.sh
@@ -39,17 +39,10 @@ RUN curl -sS -o - https://bootstrap.pypa.io/ez_setup.py | python && \
 #    ln -fs /opt/chromedriver-$CHROMEDRIVER_VERSION/chromedriver /usr/local/bin/chromedriver
 
 # Install Google Chrome
-#RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-#    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
-#    apt-get -o Acquire::Check-Valid-Until=false update && \
-#    apt-get -yqq install google-chrome-stable && \
-#    rm -rf /var/lib/apt/lists/*
-
-# Install Google Chrome using the current recommended approach
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-    apt-get update && \
-    apt-get install -y google-chrome-stable && \
+RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get -o Acquire::Check-Valid-Until=false update && \
+    apt-get -yqq install google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app

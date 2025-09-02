@@ -1,12 +1,5 @@
 {
-  "browsers": [
-    {
-      "browser_name": "chrome",
-      "major_browser_version": "132",
-      "browser_version": "132.0.6834.159",
-      "browser_ttl": 1756808330
-    }
-  ],
+  "browsers": [],
   "drivers": [],
   "stats": [
     {
