@@ -8,6 +8,7 @@
 
 - Docker (current LTS)
 - Node JS (best installed via [nvm](https://github.com/nvm-sh/nvm))
+- [Azure Functions Core Tools CLI](https://github.com/Azure/azure-functions-core-tools)
 - Text Editor
 - bash
 - Azure storage explorer
