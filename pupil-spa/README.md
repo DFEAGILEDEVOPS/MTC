@@ -56,7 +56,7 @@ Invalid Host header
 ```
 
 This is a security precaution in the server.  You can temporarily allow them by starting 
-the server like this:
+the server like this: 
 
 ```shell
 ng serve --disable-host-check
@@ -79,4 +79,4 @@ Sass include paths are setup in angular.json to allow these scss files to be pul
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To get additional help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
