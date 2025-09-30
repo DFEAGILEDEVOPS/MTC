@@ -143,13 +143,13 @@ describe('pupilStatusPresenter', () => {
           status: 'Overdue - check started but not received'
         },
         {
-          status: 'Overdue - signed in but check not started'
+          status: 'Overdue - signed in check not started'
         }
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilsRequireAction, checkWindowData)
       expect(pupilStatusViewData.pupilsRequireAction[0].status).toBe('Error in processing')
       expect(pupilStatusViewData.pupilsRequireAction[1].status).toBe('Overdue - check started but not received')
-      expect(pupilStatusViewData.pupilsRequireAction[2].status).toBe('Overdue - signed in but check not started')
+      expect(pupilStatusViewData.pupilsRequireAction[2].status).toBe('Overdue - signed in check not started')
     })
     test('collects total pupil count', () => {
       const pupils = [

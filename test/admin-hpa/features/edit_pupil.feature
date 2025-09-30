@@ -189,7 +189,8 @@ Feature:
 
   Scenario: 6 year 364 days old pupils cannot be added
     When I submit the form with the pupil dob 6 years and 364 days ago
-    Then I should see an error with the DOB
+    Then I should see an error with the DOB in header
+    Then I should see an error with the DOB above field
 
   @pupil_register_v2_hook
   Scenario: Redis cache is updated upon editing a pupil

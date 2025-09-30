@@ -118,7 +118,7 @@ class PupilStatusPage < SitePrism::Page
     when 'Restart applied'
       Timeout.timeout(20) { pupils_not_started.count.click until pupils_not_started_details.pupil_list.visible? }
       pupils_not_started_details.pupil_list.pupil_row.find { |r| r.text.include? name }
-    when "Pupil check not received", "Error in processing", 'Overdue - signed in but check not started'
+    when "Pupil check not received", "Error in processing", 'Overdue - signed in check not started'
       Timeout.timeout(20) { checks_that_require_action.count.click until checks_that_require_action_details.pupil_list.visible? }
       checks_that_require_action_details.pupil_list.pupil_row.find { |r| r.text.include? name }
     else

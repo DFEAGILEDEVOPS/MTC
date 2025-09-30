@@ -145,7 +145,7 @@ const pupilStatusService = {
       if (
         isOverdue(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
       ) {
-        status = 'Overdue - signed in but check not started'
+        status = 'Overdue - signed in check not started'
       }
     } else if (
       isNotNil(pupilLoginDate) &&
