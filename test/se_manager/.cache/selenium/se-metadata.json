@@ -8,8 +8,8 @@
       "os": "macos",
       "arch": "x86_64",
       "lang": "ruby",
-      "selenium_version": "4.28",
-      "stats_ttl": 1738152626
+      "selenium_version": "4.35",
+      "stats_ttl": 1756808328
     }
   ]
 }
