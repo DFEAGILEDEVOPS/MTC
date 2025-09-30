@@ -53,14 +53,12 @@ router.get(
   '/pupil/edit/:id',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isPostLiveOrLaterCheckPhase,
   pupilController.getEditPupilById
 )
 router.post(
   '/pupil/edit',
   isAdminWindowAvailable,
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isPostLiveOrLaterCheckPhase,
   pupilController.postEditPupil
 )
 router.get(

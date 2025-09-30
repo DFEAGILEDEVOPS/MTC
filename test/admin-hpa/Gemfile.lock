@@ -11,8 +11,8 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
-    addressable (2.8.6)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
     azure-storage-blob (2.0.3)
       azure-storage-common (~> 2.0)
       nokogiri (~> 1, >= 1.10.8)
@@ -27,7 +27,7 @@ GEM
     azure-storage-table (2.0.4)
       azure-storage-common (~> 2.0)
       nokogiri (~> 1, >= 1.10.8)
-    base64 (0.2.0)
+    base64 (0.3.0)
     bigdecimal (3.1.8)
     browserstack-local (1.4.3)
     bson (5.0.0)
@@ -117,8 +117,8 @@ GEM
     launchy (3.0.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
-    logger (1.6.5)
-    matrix (0.4.2)
+    logger (1.7.0)
+    matrix (0.4.3)
     method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.24.0)
@@ -131,9 +131,9 @@ GEM
     mutex_m (0.2.0)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    nokogiri (1.16.6-x86_64-darwin)
+    nokogiri (1.18.8-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-linux)
+    nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
     numbers_in_words (1.0.1)
     parallel (1.25.1)
@@ -146,10 +146,10 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    public_suffix (5.1.1)
-    racc (1.8.0)
-    rack (3.1.14)
-    rack-test (2.1.0)
+    public_suffix (6.0.2)
+    racc (1.8.1)
+    rack (3.1.16)
+    rack-test (2.2.0)
       rack (>= 1.3)
     rake (13.2.1)
     rb-readline (0.5.5)
@@ -157,9 +157,9 @@ GEM
       redis-client (>= 0.22.0)
     redis-client (0.22.2)
       connection_pool
-    regexp_parser (2.9.2)
+    regexp_parser (2.10.0)
     require_all (3.0.0)
-    rexml (3.4.0)
+    rexml (3.4.2)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -174,20 +174,20 @@ GEM
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
     ruby2_keywords (0.0.5)
-    rubyzip (2.4.1)
+    rubyzip (3.0.2)
     securerandom (0.3.1)
-    selenium-webdriver (4.28.0)
+    selenium-webdriver (4.35.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
+      rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     settingslogic (2.0.9)
-    site_prism (5.0.3)
+    site_prism (5.1)
       addressable (~> 2.8, >= 2.8.4)
-      capybara (~> 3.32)
-      site_prism-all_there (> 2, < 5)
-    site_prism-all_there (3.0.5)
+      capybara (~> 3.34)
+      site_prism-all_there (> 3, < 5)
+    site_prism-all_there (3.0.7)
     sys-uname (1.3.0)
       ffi (~> 1.1)
     tiny_tds (2.1.7)
@@ -203,6 +203,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-21
+  x86_64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
@@ -230,9 +231,9 @@ DEPENDENCIES
   require_all
   rspec
   securerandom
-  selenium-webdriver (~> 4.23, >= 4.23.0)
+  selenium-webdriver (~> 4.35, >= 4.35.0)
   settingslogic
-  site_prism (>= 5.0.2)
+  site_prism (>= 5.0.4)
   tiny_tds
   waitutil
 
