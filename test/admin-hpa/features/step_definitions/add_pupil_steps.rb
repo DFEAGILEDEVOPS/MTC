@@ -519,6 +519,13 @@ Then(/^I should see an error with the DOB$/) do
   expect(@page.error_summary.year.text).to include "Enter a valid date of birth"
 end
 
+Then(/^I should see an error with the DOB in header$/) do
+  expect(@page.error_summary.year.text).to include "Enter a valid date of birth"
+end
+Then(/^I should see an error with the DOB above field$/) do
+  expect(@page.error_messages.map { |message| message.text }).to include "Enter a valid date of birth"
+end
+
 When(/^I fill in the form with the pupil dob (\d+) years ago$/) do |years_old|
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   pupil_name = (0...8).map { (65 + rand(26)).chr }.join
