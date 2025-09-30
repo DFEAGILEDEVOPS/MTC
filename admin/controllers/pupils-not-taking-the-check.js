@@ -18,7 +18,7 @@ const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
  * @returns {Promise.<void>}
  */
 const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, next) {
-  res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
+  res.locals.pageTitle = 'Provide a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindowData
   let pupils
@@ -59,7 +59,7 @@ const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, 
  */
 const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck (req, res, next) {
   res.locals.pageTitle = 'Select pupil and reason'
-  req.breadcrumbs('Give a reason why a pupil is not taking the check', '/pupils-not-taking-the-check')
+  req.breadcrumbs('Provide a reason why a pupil is not taking the check', '/pupils-not-taking-the-check')
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
@@ -174,7 +174,7 @@ const removePupilNotTakingCheck = async function removePupilNotTakingCheck (req,
  * @return {Promise<*>}
  */
 const viewPupilsNotTakingTheCheck = async function viewPupilsNotTakingTheCheck (req, res, next) {
-  res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
+  res.locals.pageTitle = 'Provide a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   const highlight = req.query.hl || []
   let checkWindowData
