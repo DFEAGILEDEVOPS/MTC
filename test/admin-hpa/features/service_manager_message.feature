@@ -2,7 +2,7 @@
 Feature: Service manager message
 
   Scenario: Service manager can manage service messages
-    Given I am on the manage service message page
+    Given I am on the service message page
     Then it should match the design
 
   Scenario: Service manager can create a service message
