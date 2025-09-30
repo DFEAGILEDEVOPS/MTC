@@ -211,7 +211,7 @@ describe('pupil-status.service', () => {
         pinExpiresAt: moment().add(3, 'hours'),
         checkStartedAt: null
       })
-      expect(status).toBe('Overdue - signed in but check not started')
+      expect(status).toBe('Overdue - signed in check not started')
     })
 
     test('it identifies a pupil was allocated a check that then expired', () => {

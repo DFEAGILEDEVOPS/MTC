@@ -14,7 +14,7 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
-  const overdueLoggedIn = 'Overdue - signed in but check not started'
+  const overdueLoggedIn = 'Overdue - signed in check not started'
   const overdueStarted = 'Overdue - check started but not received'
   const notStarted = 'Not started'
 

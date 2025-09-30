@@ -194,14 +194,15 @@ const controller = {
       }
 
       const pupilData = pupilAddService.formatPupilData(pupil)
-
+      const isStaAdmin = (req.user.role === roles.staAdmin)
       req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
       req.breadcrumbs(res.locals.pageTitle)
       res.render('pupil-register/edit-pupil', {
         formData: pupilData,
         error: new ValidationError(),
         breadcrumbs: req.breadcrumbs(),
-        pupilExampleYear
+        pupilExampleYear,
+        isStaAdmin
       })
     } catch (error) {
       next(error)
