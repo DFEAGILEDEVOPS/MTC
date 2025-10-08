@@ -23,7 +23,7 @@ const pupilStatusPathRe = /^\/pupil-status$/
 const restartPathRe = /^\/restart\//
 const pupilRegisterPathRe = /^\/pupil-register\//
 const teacherHomePagePathRe = /^\/school\/school-home$/
-const pupilResultsPathRe = /^\/results\//
+const pupilResultsPathRe = /^\/results\/.*/
 
 /**
  * Return the service messages filtered by path.
