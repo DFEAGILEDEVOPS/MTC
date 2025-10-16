@@ -85,7 +85,7 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case pupilResultsPathRe.test(path):
               if (areaCode === 'M') filteredMessages.push(msg)
-              break  
+              break
           }
         }
       }
