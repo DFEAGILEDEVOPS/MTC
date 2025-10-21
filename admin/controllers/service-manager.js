@@ -9,7 +9,7 @@ const pupilEditService = require('../services/pupil-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
-const pupilValidator = require('../lib/validator/pupil-validator')
+const editPupilValidator = require('../lib/validator/edit-pupil-service-manager-validator')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
 const pupilPresenter = require('../helpers/pupil-presenter')
@@ -1033,7 +1033,7 @@ const controller = {
       if (!school) {
         return next(new Error('School not found'))
       }
-      validationError = await pupilValidator.validate(req.body, school.id)
+      validationError = await editPupilValidator.validate(req.body, school.id)
     } catch (error) {
       return next(error)
     }

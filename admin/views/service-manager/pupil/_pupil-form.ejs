@@ -19,6 +19,13 @@ let editUrl = '/service-manager/pupil/edit';
                 <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
                 <% } %>
 
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            Editing pupil details here should only be done in exceptional circumstances.
+                        </strong>
+                    </div>
                 <div class="govuk-form-group <%= err.isError('foreName') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="foreName">First name
                         <% if (err.isError('foreName')) { %>
