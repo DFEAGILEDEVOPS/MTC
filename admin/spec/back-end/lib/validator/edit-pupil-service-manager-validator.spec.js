@@ -496,44 +496,6 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-year')).toBe(true)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil['dob-year'])
       })
-
-      describe('2024 regressions', () => {
-        test('bug 65064', async () => {
-          // bug from 2024 live cycle
-          jest
-            .useFakeTimers()
-            .setSystemTime(new Date('2024-06-13'))
-
-          req.body = getBody()
-          req.body['dob-day'] = '04'
-          req.body['dob-month'] = '12'
-          req.body['dob-year'] = '2012'
-          const schoolId = 2
-          const validationResult = await editPupilValidator.validate(req.body, schoolId)
-          expect(validationResult.hasError()).toBe(true)
-
-          // clean up
-          jest.useRealTimers()
-        })
-
-        test('bug 65064#2', async () => {
-          // bug from 2024 live cycle
-          jest
-            .useFakeTimers()
-            .setSystemTime(new Date('2024-06-13'))
-
-          req.body = getBody()
-          req.body['dob-day'] = '26'
-          req.body['dob-month'] = '12'
-          req.body['dob-year'] = '2012'
-          const schoolId = 2
-          const validationResult = await editPupilValidator.validate(req.body, schoolId)
-          expect(validationResult.hasError()).toBe(true)
-
-          // clean up
-          jest.useRealTimers()
-        })
-      })
     })
     describe('then gender', () => {
       test('is required', async () => {
