@@ -1,6 +1,6 @@
 'use strict'
 
-const pupilValidator = require('../../../../lib/validator/pupil-validator')
+const editPupilValidator = require('../../../../lib/validator/edit-pupil-service-manager-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')
 const pupilMock = require('../../mocks/pupil')
 const pupilErrors = require('../../../../lib/errors/pupil')
@@ -55,7 +55,7 @@ describe('pupil validator', function () {
     test('allows a valid request', async () => {
       req.body = getBody()
       const schoolId = 2
-      const validationError = await pupilValidator.validate(req.body, schoolId)
+      const validationError = await editPupilValidator.validate(req.body, schoolId)
       expect(validationError.hasError()).toBe(false)
     })
 
@@ -64,7 +64,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
         expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
@@ -74,7 +74,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = 'Rén-\'e'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -82,7 +82,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = ' Pup il '
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -90,7 +90,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = ' '
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
         expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
@@ -101,7 +101,7 @@ describe('pupil validator', function () {
         for (const char of notAllowed()) {
           req.body.foreName = 'Réne' + char
           const schoolId = 2
-          const validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await editPupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('foreName')).toBe(true)
           expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameInvalidCharacters)
@@ -112,7 +112,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = 'Smithy99'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('foreName')).toBe(false)
       })
@@ -123,7 +123,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.middleNames = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('middleNames')).toBe(false)
       })
@@ -132,7 +132,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.middleNames = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('middleNames')).toBe(false)
       })
@@ -142,7 +142,7 @@ describe('pupil validator', function () {
         for (const char of notAllowed()) {
           req.body.middleNames = 'Réne' + char
           const schoolId = 2
-          const validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await editPupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('middleNames')).toBe(true)
           expect(validationError.get('middleNames')).toBe(pupilErrors.addPupil.middleNameInvalidCharacters)
@@ -153,7 +153,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.middleNames = 'Smithy99'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('middleNames')).toBe(false)
       })
@@ -164,7 +164,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
         expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
@@ -174,7 +174,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = 'Smithy99'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('lastName')).toBe(false)
       })
@@ -183,7 +183,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreName = 'Rén-\'e'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -191,7 +191,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = ' Pup il '
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -199,7 +199,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastName = ' '
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
         expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
@@ -210,7 +210,7 @@ describe('pupil validator', function () {
         for (const char of notAllowed()) {
           req.body.lastName = 'Réne' + char
           const schoolId = 2
-          const validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await editPupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('lastName')).toBe(true)
           expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameInvalidCharacters)
@@ -223,7 +223,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreNameAlias = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('foreNameAlias')).toBe(false)
       })
@@ -232,7 +232,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreNameAlias = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('foreNameAlias')).toBe(false)
       })
@@ -242,7 +242,7 @@ describe('pupil validator', function () {
         for (const char of notAllowed()) {
           req.body.foreNameAlias = 'Réne' + char
           const schoolId = 2
-          const validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await editPupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('foreNameAlias')).toBe(true)
           expect(validationError.get('foreNameAlias')).toBe(pupilErrors.addPupil.foreNameAliasInvalidCharacters)
@@ -253,7 +253,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.foreNameAlias = 'Smithy99'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('foreNameAlias')).toBe(false)
       })
@@ -264,7 +264,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastNameAlias = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('lastNameAlias')).toBe(false)
       })
@@ -273,7 +273,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastNameAlias = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('lastNameAlias')).toBe(false)
       })
@@ -283,7 +283,7 @@ describe('pupil validator', function () {
         for (const char of notAllowed()) {
           req.body.lastNameAlias = 'Réne' + char
           const schoolId = 2
-          const validationError = await pupilValidator.validate(req.body, schoolId)
+          const validationError = await editPupilValidator.validate(req.body, schoolId)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('lastNameAlias')).toBe(true)
           expect(validationError.get('lastNameAlias')).toBe(pupilErrors.addPupil.lastNameAliasInvalidCharacters)
@@ -294,7 +294,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.lastNameAlias = 'Smithy99'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('lastNameAlias')).toBe(false)
       })
@@ -309,7 +309,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '1'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -319,7 +319,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '07'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -329,7 +329,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '7'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -339,7 +339,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = (new Date().getFullYear() + 1).toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -355,7 +355,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -369,7 +369,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = ''
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -383,7 +383,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '01'
         req.body['dob-year'] = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -401,7 +401,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = (new Date().getFullYear() + 1).toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -417,7 +417,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = 'a'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -431,7 +431,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '12'
         req.body['dob-year'] = 'a'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -445,7 +445,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '13'
         req.body['dob-year'] = '200'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -461,7 +461,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '02'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -475,7 +475,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '010'
         req.body['dob-year'] = validYear.toString()
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
@@ -489,7 +489,7 @@ describe('pupil validator', function () {
         req.body['dob-month'] = '10'
         req.body['dob-year'] = '20101'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
@@ -509,7 +509,7 @@ describe('pupil validator', function () {
           req.body['dob-month'] = '12'
           req.body['dob-year'] = '2012'
           const schoolId = 2
-          const validationResult = await pupilValidator.validate(req.body, schoolId)
+          const validationResult = await editPupilValidator.validate(req.body, schoolId)
           expect(validationResult.hasError()).toBe(true)
 
           // clean up
@@ -527,7 +527,7 @@ describe('pupil validator', function () {
           req.body['dob-month'] = '12'
           req.body['dob-year'] = '2012'
           const schoolId = 2
-          const validationResult = await pupilValidator.validate(req.body, schoolId)
+          const validationResult = await editPupilValidator.validate(req.body, schoolId)
           expect(validationResult.hasError()).toBe(true)
 
           // clean up
@@ -540,7 +540,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.gender = ''
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('gender')).toBe(true)
         expect(validationError.get('gender')).toBe(pupilErrors.addPupil.genderRequired)
@@ -549,7 +549,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.gender = 'f'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBeFalsy()
       })
     })
@@ -561,7 +561,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'BADCODE'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -577,7 +577,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H813E00000121'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -592,7 +592,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H8131-0000121'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -607,7 +607,7 @@ describe('pupil validator', function () {
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H81311 000121'
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -622,7 +622,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H813111E00121'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -637,7 +637,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H8131111E0121'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -652,7 +652,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H81311111E121'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -667,7 +667,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H813111111E21'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -682,7 +682,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H8131111111E1'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -696,7 +696,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H81311ED111E1'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -711,7 +711,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'H801200001001'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
         expect(validationError.isError('upn')).toBe(false)
       })
@@ -722,7 +722,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'Z801200001001'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -736,7 +736,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'R900400001001'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -750,7 +750,7 @@ describe('pupil validator', function () {
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
         req.body.upn = 'G80120000101A'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -758,7 +758,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'g80120000101a '
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
 
@@ -766,7 +766,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101S'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -778,7 +778,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101I'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -790,7 +790,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101O'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toEqual([
@@ -802,7 +802,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body.upn = 'G80120000101A'
         const schoolId = 2
-        const validationError = await pupilValidator.validate(req.body, schoolId)
+        const validationError = await editPupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
       })
     })
@@ -825,7 +825,7 @@ describe('pupil validator', function () {
       // Make it looks like a new pupil
       req.body.urlSlug = undefined
       const schoolId = 2
-      const validationError = await pupilValidator.validate(req.body, schoolId)
+      const validationError = await editPupilValidator.validate(req.body, schoolId)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
       expect(validationError.get('upn')).toEqual([
@@ -836,7 +836,7 @@ describe('pupil validator', function () {
     test('it ensures the UPN is unique when editing pupil', async () => {
       req.body = getBody()
       const schoolId = 2
-      const validationError = await pupilValidator.validate(req.body, schoolId)
+      const validationError = await editPupilValidator.validate(req.body, schoolId)
       expect(validationError.hasError()).toBe(false)
       expect(validationError.isError('upn')).toBe(false)
       expect(validationError.get('upn')).toBe('')
