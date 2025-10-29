@@ -6,6 +6,7 @@ const fileValidator = require('../lib/validator/file-validator')
 const config = require('../config')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilService = require('../services/pupil.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
@@ -195,6 +196,13 @@ const controller = {
 
       const pupilData = pupilAddService.formatPupilData(pupil)
       const isStaAdmin = (req.user.role === roles.staAdmin)
+      const { checkComplete, attendanceId } = await pupilDataService.sqlFindCheckCompleteAndAttendance(req.params.id, req.user.schoolId)
+      let showEditButton
+      if (checkComplete === true || typeof attendanceId === 'number') {
+        showEditButton = false
+      } else {
+        showEditButton = true
+      }
       req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
       req.breadcrumbs(res.locals.pageTitle)
       res.render('pupil-register/edit-pupil', {
@@ -202,7 +210,8 @@ const controller = {
         error: new ValidationError(),
         breadcrumbs: req.breadcrumbs(),
         pupilExampleYear,
-        isStaAdmin
+        isStaAdmin,
+        showEditButton
       })
     } catch (error) {
       next(error)
@@ -219,9 +228,9 @@ const controller = {
     let pupil
     let school
     let validationError
+
     // In case we render an error page
     res.locals.pageTitle = 'Edit pupil data'
-
     try {
       pupil = await pupilService.fetchOnePupilBySlug(req.body.urlSlug, req.user.schoolId)
       if (!pupil) {
@@ -231,6 +240,12 @@ const controller = {
       school = await schoolService.findOneById(pupil.school_id)
       if (!school) {
         return next(new Error('School not found'))
+      }
+      const { checkComplete } =
+        await pupilDataService.sqlFindCheckCompleteAndAttendance(req.body.urlSlug, req.user.schoolId)
+      logger.info('Test: ', JSON.stringify(checkComplete))
+      if (checkComplete) {
+        return next(new Error('Pupil data cannot be edited as their check is complete'))
       }
 
       validationError = await pupilValidator.validate(req.body, school.id)
