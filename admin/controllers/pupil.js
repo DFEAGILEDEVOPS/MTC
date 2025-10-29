@@ -243,7 +243,6 @@ const controller = {
       }
       const { checkComplete } =
         await pupilDataService.sqlFindCheckCompleteAndAttendance(req.body.urlSlug, req.user.schoolId)
-      logger.info('Test: ', JSON.stringify(checkComplete))
       if (checkComplete) {
         return next(new Error('Pupil data cannot be edited as their check is complete'))
       }
