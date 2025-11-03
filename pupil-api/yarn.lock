@@ -155,7 +155,7 @@
     "@azure/logger" "^1.0.0"
     tslib "^2.2.0"
 
-"@azure/functions@^4.6.0":
+"@azure/functions@^4.7.2":
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/@azure/functions/-/functions-4.8.0.tgz#9a758175dededfef34ab3ea1b702fea43aa8c024"
   integrity sha512-LNtl3xZNE40vE7+SIST+GYQX5cnnI1M65fXPi26l9XCdPakuQrz54lHv+qQQt1GG5JbqLfQk75iM7A6Y9O+2dQ==
