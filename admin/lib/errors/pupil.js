@@ -21,6 +21,7 @@ module.exports.addPupil = {
   dobRequired: 'Enter a date of birth',
   dobInvalidChars: 'Enter a date of birth in the specified format',
   dobOutOfRange: 'Enter a valid date of birth',
+  dobInFuture: 'Date of birth cannot be in the future',
   dobMultipleRequiresReason: 'Enter a valid date of birth. If pupil is outside expected age range, use add single pupil function',
   'dob-day': 'Enter a valid day',
   'dob-month': 'Enter a valid month',
