@@ -50,22 +50,16 @@
               <label class="govuk-label" for="pupil-<%= pupil.urlSlug %>">
                 <%= pupil.fullName %>
               </label>
-            <% if (pupil.showDoB) { %>
-              <div class="govuk-font-greyed-out govuk-!-font-size-16">
-                Date of birth: <%= pupil.formattedDateOfBirth %>
-              </div>
-            <% } %>
-            </td>
-            <td scope="row">
-              <% if (pupil.attendanceCode === 'ANLLQ' || pupil.attendanceCode === 'ANLLH') { %>
-                -
-              <% } else { %>
-                <%= pupil.score %>
+              <% if (pupil.showDoB) { %>
+                <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                  Date of birth: <%= pupil.formattedDateOfBirth %>
+                </div>
               <% } %>
             </td>
-            <td scope="row"><%= pupil.status %></td>
-            </tr>
-            <% }) %>
+            <td scope="row" ><%= pupil.score %></td>
+            <td scope="row" ><%= pupil.status %></td>
+          </tr>
+        <% }) %>
         </tbody>
       </table>
       <div class="govuk-font-greyed-out govuk-!-font-size-16 govuk-!-margin-bottom-9">
