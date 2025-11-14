@@ -236,10 +236,24 @@ if (formData.urlSlug) {
                         </div>
                     </fieldset>
                 </div>
-
-                <button type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
+                <% if (showEditButton){%>
+                <button type="submit"  class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
                     <%= submitLabel %>
                 </button>
+                <% }else{ %>
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            You cannot modify a pupil's record once they have completed their check or have provided a reason for not completing it.
+                            To make changes, you must first initiate a restart.
+                        </strong>
+                    </div>
+                    <button type="submit" disabled="disabled" aria-disabled="true"
+                            class="govuk-button govuk-button--disabled" data-module="govuk-button">
+                        <%= submitLabel %>
+                    </button>
+                <%}%>
                 <a href="/pupil-register/pupils-list" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                     Cancel
                 </a>
