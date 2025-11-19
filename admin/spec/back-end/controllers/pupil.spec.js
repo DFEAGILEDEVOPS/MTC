@@ -6,6 +6,7 @@ const R = require('ramda')
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
 const pupilService = require('../../../services/pupil.service')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../../services/pupil-upload.service')
 const pupilValidator = require('../../../lib/validator/pupil-validator')
@@ -361,70 +362,100 @@ describe('pupil controller:', () => {
     })
   })
 
+  // eslint-disable-next-line jest/no-identical-title
   describe('postEditPupil', () => {
     const goodReqParams = {
-      method: 'GET',
+      method: 'POST',
       url: '/school/pupil/edit/pupil1234',
       session: {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       body: {
-        slug: 'pupil998'
+        urlSlug: 'pupil998'
+      },
+      user: {
+        schoolId: 42,
+        id: 1
       }
     }
 
-    test('makes a call to retrieve the pupil', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
-      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
-      // As we do not want to run any more of the controller code than we need to we can trigger an
-      // exception to bail out early, which saves mocking the remaining calls.
-      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => {
-        throw new Error('unit test early exit')
-      })
-      await sut.postEditPupil(req, res, next)
-      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
+    let req, res, next
+
+    beforeEach(() => {
+      req = getReq(goodReqParams)
+      res = getRes()
+      next = jest.fn()
     })
 
-    test('bails out if the pupil if not found', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
+    test('renders error page if pupil is not found', async () => {
       jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(null)
+
       await sut.postEditPupil(req, res, next)
-      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
+
+      expect(next).toHaveBeenCalledWith(new Error('Pupil pupil998 not found'))
     })
 
-    test('makes a call to retrieve the school', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
+    test('renders error page if school is not found', async () => {
       jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
-      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
-      // As we do not want to run any more of the controller code than we need to we can trigger an
-      // exception to bail out early, which saves mocking the remaining calls.
-      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => {
-        throw new Error('unit test early exit')
-      })
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(null)
+
       await sut.postEditPupil(req, res, next)
-      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
-      expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
+
+      expect(next).toHaveBeenCalledWith(new Error('School not found'))
     })
 
-    test('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully edited', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
+    test('renders error page if checkComplete is true', async () => {
       jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
-      jest.spyOn(pupilValidator, 'validate').mockResolvedValue(new ValidationError())
-      jest.spyOn(pupilEditService, 'update').mockImplementation()
+      jest.spyOn(pupilDataService, 'sqlFindCheckCompleteAndAttendance').mockResolvedValue({ checkComplete: true })
+
+      await sut.postEditPupil(req, res, next)
+
+      expect(next).toHaveBeenCalledWith(new Error('Pupil data cannot be edited as their check is complete'))
+    })
+
+    test('renders form with validation errors if validation fails', async () => {
+      const validationError = new ValidationError()
+      validationError.addError('field', 'error message')
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
+      jest.spyOn(pupilDataService, 'sqlFindCheckCompleteAndAttendance').mockResolvedValue({ checkComplete: false })
+      jest.spyOn(pupilValidator, 'validate').mockResolvedValue(validationError)
       jest.spyOn(res, 'render').mockImplementation()
-      // As we do not want to run any more of the controller code than we need to we can trigger an
-      // exception to bail out early, which saves mocking the remaining calls.
+
       await sut.postEditPupil(req, res, next)
-      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
-      expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
-      expect(pupilEditService.update).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalled()
+
+      expect(res.render).toHaveBeenCalledWith('pupil-register/edit-pupil', expect.objectContaining({
+        error: validationError
+      }))
+    })
+
+    test('updates pupil and redirects to pupil list on success', async () => {
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
+      jest.spyOn(pupilDataService, 'sqlFindCheckCompleteAndAttendance').mockResolvedValue({ checkComplete: false })
+      jest.spyOn(pupilValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilEditService, 'update').mockResolvedValue()
+      jest.spyOn(res, 'render').mockImplementation()
+
+      await sut.postEditPupil(req, res, next)
+
+      expect(pupilEditService.update).toHaveBeenCalledWith(pupilMock, req.body, req.user.schoolId, req.user.id)
+      expect(res.render).toHaveBeenCalledWith('redirect-delay.ejs', expect.objectContaining({
+        redirectMessage: 'Saving changes...'
+      }))
+    })
+
+    test('calls next with error if update fails', async () => {
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
+      jest.spyOn(pupilDataService, 'sqlFindCheckCompleteAndAttendance').mockResolvedValue({ checkComplete: false })
+      jest.spyOn(pupilValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilEditService, 'update').mockRejectedValue(new Error('Update failed'))
+
+      await sut.postEditPupil(req, res, next)
+
+      expect(next).toHaveBeenCalledWith(new Error('Update failed'))
     })
   })
 

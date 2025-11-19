@@ -4,11 +4,15 @@ const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
+const pupilService = require('../services/pupil.service')
+const pupilEditService = require('../services/pupil-edit.service')
 const sceService = require('../services/sce.service')
 const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
+const editPupilValidator = require('../lib/validator/edit-pupil-service-manager-validator')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
+const pupilPresenter = require('../helpers/pupil-presenter')
 const schoolService = require('../services/school.service')
 const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
@@ -23,6 +27,9 @@ const { ServiceManagerAttendanceService } = require('../services/service-manager
 const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const dateService = require('../services/date.service')
+const pupilAddService = require('../services/pupil-add-service')
+const roles = require('../lib/consts/roles')
+const config = require('../config')
 
 const controller = {
   /**
@@ -966,6 +973,96 @@ const controller = {
     } catch (error) {
       return thawPupilErrorHandler(req, res, next, error.message)
     }
+  },
+  /**
+   * Get pupil by id.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  getEditPupilById: async function getEditPupilById (req, res, next) {
+    const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(req.params.slug)
+    res.locals.pageTitle = 'Edit pupil data'
+    let pupilExampleYear
+    try {
+      const pupil = await pupilService.fetchOnePupilBySlug(req.params.slug, pupilDetails.schoolId)
+      pupilExampleYear = pupilPresenter.getPupilExampleYear()
+      if (!pupil) {
+        return next(new Error(`Pupil ${req.params.slug} not found`))
+      }
+
+      const pupilData = pupilAddService.formatPupilData(pupil)
+      const isServiceManager = (req.user.role === roles.serviceManager)
+      req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(req.params.slug).toLowerCase()}`)
+      req.breadcrumbs(res.locals.pageTitle)
+      res.render('service-manager/pupil/edit', {
+        formData: pupilData,
+        error: new ValidationError(),
+        breadcrumbs: req.breadcrumbs(),
+        pupilExampleYear,
+        isServiceManager,
+        pupilDetails,
+        pupil
+      })
+    } catch (error) {
+      next(error)
+    }
+  },
+  /**
+   * Post pupil
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  postEditPupil: async function postEditPupil (req, res, next) {
+    let pupil
+    let school
+    let validationError
+    // In case we render an error page
+    res.locals.pageTitle = 'Edit pupil data'
+    try {
+      const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(req.body.urlSlug)
+      pupil = await pupilService.fetchOnePupilBySlug(req.body.urlSlug, pupilDetails.schoolId)
+      if (!pupil) {
+        return next(new Error(`Pupil ${req.body.urlSlug} not found`))
+      }
+
+      school = await schoolService.findOneById(pupilDetails.schoolId)
+      if (!school) {
+        return next(new Error('School not found'))
+      }
+      validationError = await editPupilValidator.validate(req.body, school.id)
+    } catch (error) {
+      return next(error)
+    }
+
+    if (validationError.hasError()) {
+      const pupilExampleYear = pupilPresenter.getPupilExampleYear()
+      req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
+      req.breadcrumbs(res.locals.pageTitle)
+      return res.render('service-manager/pupil/edit', {
+        school,
+        formData: req.body,
+        error: validationError,
+        breadcrumbs: req.breadcrumbs(),
+        pupilExampleYear
+      })
+    }
+    try {
+      await pupilEditService.update(pupil, req.body, school.id, req.user.id)
+      req.flash('info', 'Changes to pupil details have been saved')
+    } catch (error) {
+      return next(error)
+    }
+    const highlight = JSON.stringify([pupil.urlSlug.toString()])
+    res.locals.isSubmitMetaRedirectUrl = true
+    res.locals.metaRedirectUrl = `/service-manager/pupil-summary/${encodeURIComponent(pupil.urlSlug.toLowerCase())}?hl=${highlight}`
+    res.locals.waitTimeBeforeMetaRedirectInSeconds = config.WaitTimeBeforeMetaRedirectInSeconds
+    res.render('redirect-delay.ejs', {
+      redirectMessage: 'Saving changes...'
+    })
   },
 
   getAttendanceCodes: async function getAttendanceCodes (req, res, next) {

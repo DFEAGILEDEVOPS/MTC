@@ -1,17 +1,13 @@
 <%
 let now = new Date();
 let currentYear = now.getFullYear();
-let createOrSave;
-if (formData.urlSlug) {
-    createOrSave = '/pupil-register/pupil/edit';
-} else {
-    createOrSave = '/pupil-register/pupil/add';
-}
+let editUrl = '/service-manager/pupil/edit';
+
 %>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <%- partial('partials/_gds_session_expiry') %>
-        <form action="<%= createOrSave %>" method="post" novalidate class="govuk-form-button">
+        <form action="<%= editUrl %>" method="post" novalidate class="govuk-form-button">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                     <h1 class="govuk-fieldset__heading">
@@ -23,6 +19,13 @@ if (formData.urlSlug) {
                 <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
                 <% } %>
 
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            Pupil details should only be edited here as a last resort, when no other option is available.
+                        </strong>
+                    </div>
                 <div class="govuk-form-group <%= err.isError('foreName') ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold" for="foreName">First name
                         <% if (err.isError('foreName')) { %>
@@ -236,25 +239,11 @@ if (formData.urlSlug) {
                         </div>
                     </fieldset>
                 </div>
-                <% if (showEditButton){%>
-                <button type="submit"  class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
+
+                <button type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
                     <%= submitLabel %>
                 </button>
-                <% }else{ %>
-                    <div class="govuk-warning-text">
-                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                        <strong class="govuk-warning-text__text">
-                            <span class="govuk-warning-text__assistive">Warning</span>
-                            You cannot modify a pupil's record once they have completed their check or have provided a reason for not completing it.
-                            To make changes, you must first initiate a restart.
-                        </strong>
-                    </div>
-                    <button type="submit" disabled="disabled" aria-disabled="true"
-                            class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                        <%= submitLabel %>
-                    </button>
-                <%}%>
-                <a href="/pupil-register/pupils-list" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                <a href="/service-manager/pupil-search" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                     Cancel
                 </a>
             </fieldset>
