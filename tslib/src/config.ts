@@ -134,6 +134,7 @@ export default {
   },
   LiveFormQuestionCount: getLinesPerCheck(),
   PsReport: {
+    PupilProcessingBatchSize: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_PUPIL_BATCH_SIZE, 10), 10), // Number of pupils to process in parallel
     StagingFile: {
       ReadMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE, 32), 10),
       WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE, 32), 10), // 32 x 32 = 1024 csv rows written per write

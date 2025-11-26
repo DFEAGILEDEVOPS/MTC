@@ -42,7 +42,12 @@ export async function psReport2PupilData (triggerInput: unknown, context: Invoca
   context.extraOutputs.set(psReportExportOutputQueue, output.psReportExportOutput)
   const end = performance.now()
   const durationInMilliseconds = end - start
-  if (config.Logging.DebugVerbosity > 1) {
-    logger.info(`processed ${output.psReportExportOutput.length} pupils, run took ${durationInMilliseconds} ms`)
+  
+  // Log processing summary with failure tracking
+  const totalPupils = output.successfulPupilCount + output.failedPupilCount
+  logger.info(`processed ${output.successfulPupilCount}/${totalPupils} pupils successfully for school ${incomingMessage.name}, run took ${durationInMilliseconds} ms`)
+  
+  if (output.failedPupilCount > 0) {
+    logger.warn(`${output.failedPupilCount} pupils failed to process for school ${incomingMessage.name}`)
   }
 }
