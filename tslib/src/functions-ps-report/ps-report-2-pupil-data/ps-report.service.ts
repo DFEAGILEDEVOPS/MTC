@@ -85,22 +85,22 @@ export class PsReportService {
    */
   private async processPupilsInBatches (pupils: readonly Pupil[], school: School, schoolUuid: string): Promise<PupilProcessingResult[]> {
     const results: PupilProcessingResult[] = []
-    
+
     for (let i = 0; i < pupils.length; i += this.batchSize) {
       const batch = pupils.slice(i, i + this.batchSize)
       const batchNumber = Math.floor(i / this.batchSize) + 1
       const totalBatches = Math.ceil(pupils.length / this.batchSize)
-      
+
       if (config.Logging.DebugVerbosity > 0) {
         this.logger.info(`${logName}: Processing batch ${batchNumber}/${totalBatches} (${batch.length} pupils) for school ${schoolUuid}`)
       }
-      
+
       // Process all pupils in this batch concurrently
       const batchPromises = batch.map(pupil => this.processPupil(pupil, school, schoolUuid))
       const batchResults = await Promise.all(batchPromises)
       results.push(...batchResults)
     }
-    
+
     return results
   }
 
@@ -148,11 +148,11 @@ export class PsReportService {
     const results = await this.processPupilsInBatches(pupils, school, incomingMessage.uuid)
 
     // Collect successful results and count failures
-    const successfulResults = results.filter(r => r.success && r.data !== undefined)
+    const successfulResults = results.filter((r): r is typeof results[number] & { data: NonNullable<typeof results[number]['data']> } => r.success && r.data !== undefined)
     const failedResults = results.filter(r => !r.success)
 
     const output: IPsReportServiceOutput = {
-      psReportExportOutput: successfulResults.map(r => r.data!),
+      psReportExportOutput: successfulResults.map(r => r.data),
       successfulPupilCount: successfulResults.length,
       failedPupilCount: failedResults.length
     }
@@ -166,13 +166,14 @@ export class PsReportService {
     if (failedResults.length > 0) {
       const failureRate = ((failedResults.length / pupils.length) * 100).toFixed(2)
       this.logger.warn(`${logName}: ${failedResults.length} pupils failed for school ${incomingMessage.uuid} (${failureRate}% failure rate)`)
-      
+
       // Log first few failures for debugging
       const failuresToLog = failedResults.slice(0, 5)
-      failuresToLog.forEach(failure => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions,@typescript-eslint/no-non-null-assertion
+      failuresToLog.forEach(failure => {successfulResults.map(r => r.data!),
         this.logger.warn(`${logName}: Failed pupil ${failure.pupilSlug}: ${failure.error}`)
       })
-      
+
       if (failedResults.length > 5) {
         this.logger.warn(`${logName}: ... and ${failedResults.length - 5} more failures`)
       }
