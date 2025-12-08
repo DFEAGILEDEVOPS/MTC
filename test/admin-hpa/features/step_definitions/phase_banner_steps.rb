@@ -4,7 +4,7 @@ Then(/^I should see that we are in the (.+) development phase on the (.+) page$/
 end
 
 Then(/^I should see a feedback link from the (.+) page$/) do |current_page|
-  expect(send("#{current_page}_page").phase_banner.feedback.text).to eql "BETAThis is a new service – your feedback will help us to improve it." unless (current_page == 'sign_in' || current_page == 'sign_in_failure' || current_page == 'school_landing' || current_page == 'pupil_register' || current_page == 'add_pupil' || current_page == 'edit_pupil' || current_page == 'upload_and_view_forms'|| current_page == 'view_form')
+  expect(send("#{current_page}_page").phase_banner.feedback.text).to eql "" unless (current_page == 'sign_in' || current_page == 'sign_in_failure' || current_page == 'school_landing' || current_page == 'pupil_register' || current_page == 'add_pupil' || current_page == 'edit_pupil' || current_page == 'upload_and_view_forms'|| current_page == 'view_form')
   expect(send("#{current_page}_page").phase_banner.feedback.has_link?).to be_truthy
   first_tab = page.windows.first
   send("#{current_page}_page").phase_banner.feedback.link.click

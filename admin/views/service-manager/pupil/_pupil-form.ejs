@@ -1,0 +1,265 @@
+<%
+let now = new Date();
+let currentYear = now.getFullYear();
+let editUrl = '/service-manager/pupil/edit';
+
+%>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <%- partial('partials/_gds_session_expiry') %>
+        <form action="<%= editUrl %>" method="post" novalidate class="govuk-form-button">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        <%= formData.urlSlug ? 'Edit pupil details' : 'Add pupil' %>
+                    </h1>
+                </legend>
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <% if (formData.urlSlug) { %>
+                <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
+                <% } %>
+
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            Pupil details should only be edited here as a last resort, when no other option is available.
+                        </strong>
+                    </div>
+                <div class="govuk-form-group <%= err.isError('foreName') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="foreName">First name
+                        <% if (err.isError('foreName')) { %>
+                        <span class="govuk-error-message"><%= err.get('foreName') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="foreName"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('foreName') ? 'govuk-input--error' : '' %>"
+                           name="foreName"
+                           value="<%= formData['foreName'] %>"/>
+                </div>
+
+                <div class="govuk-form-group <%= err.isError('middleNames') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="middleNames">Middle names<span
+                                class="label-optional"> (optional)</span>
+                        <% if (err.isError('middleNames')) { %>
+                        <span class="govuk-error-message"><%= err.get('middleNames') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="middleNames"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('middleNames') ? 'govuk-input--error' : '' %>"
+                           name="middleNames"
+                           value="<%= formData['middleNames'] %>"/>
+                </div>
+
+                <div class="govuk-form-group <%= err.isError('lastName') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Last name
+                        <% if (err.isError('lastName')) { %>
+                        <span class="govuk-error-message"><%= err.get('lastName') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="lastName"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('lastName') ? 'govuk-input--error' : '' %>"
+                           name="lastName"
+                           value="<%= formData['lastName'] %>"/>
+                </div>
+
+                <div class="govuk-form-group <%= err.isError('foreNameAlias') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="foreNameAlias">First name also known as<span
+                                class="label-optional"> (optional)</span>
+                        <% if (err.isError('foreNameAlias')) { %>
+                            <span class="govuk-error-message"><%= err.get('foreNameAlias') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="foreNameAlias"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('foreNameAlias') ? 'govuk-input--error' : '' %>"
+                           name="foreNameAlias"
+                           value="<%= formData['foreNameAlias'] %>"/>
+                </div>
+
+                <div class="govuk-form-group <%= err.isError('lastNameAlias') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="lastNameAlias">Last name also known as<span
+                                class="label-optional"> (optional)</span>
+                        <% if (err.isError('lastNameAlias')) { %>
+                            <span class="govuk-error-message"><%= err.get('lastNameAlias') %></span>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="lastNameAlias"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('lastNameAlias') ? 'govuk-input--error' : '' %>"
+                           name="lastNameAlias"
+                           value="<%= formData['lastNameAlias'] %>"/>
+                </div>
+
+                <% const upnErrors = err.get('upn') %>
+                <div class="govuk-form-group <% if (upnErrors && upnErrors.length > 0) { %> govuk-form-group--error<% } %>">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="upn">Unique pupil number (UPN)
+                        <% if (upnErrors) { %>
+                        <% upnErrors.map(e => { %>
+                        <label class="govuk-error-message"><%= e %></label>
+                        <% }) %>
+                        <% } %>
+                    </label>
+                    <input type="text"
+                           id="upn"
+                           class="govuk-input govuk-!-width-three-quarters <%= err.isError('upn') ? 'govuk-input--error' : '' %>"
+                           name="upn"
+                           value="<%= formData['upn'] %>"/>
+                </div>
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                          What is the UPN?
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p>
+                            The UPN is a 13-character code that identifies each pupil in the
+                            local authority maintained school system.
+                        </p>
+                        <p>
+                            If your pupil does not have a UPN, please follow the guidance on
+                            <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+                               href="https://www.gov.uk/government/publications/unique-pupil-numbers">how to generate UPNs (link opens in a new window)</a>.
+                        </p>
+                    </div>
+                </details>
+
+
+
+
+                <div class="govuk-form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'govuk-form-group--error' : '' %>"
+                     id="dob">
+                    <fieldset class="govuk-fieldset" aria-describedby="date-of-birth" role="group">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <span class="govuk-label govuk-!-font-weight-bold" id="date-of-birth">Date of birth</span>
+                        </legend>
+                        <span id="date-of-birth-hint" class="govuk-hint">
+                          Format: DD MM YYYY
+                        </span>
+                        <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
+                        <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>
+                            <div class="govuk-error-message"><%= err.get(dobErrors[0]) %></div>
+                        <% } else { %>
+                            <% dobErrors.map(f => { %>
+                                <% if (typeof err.get(f) !== 'boolean') { %>
+                                    <div class="govuk-error-message"><%= err.get(f) %></div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                        <div class="govuk-date-input" id="dob-group">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="dob-day">Day</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 <%= err.isError('dob-day') ? 'govuk-input--error' : '' %>"
+                                           id="dob-day"
+                                           name="dob-day"
+                                           type="number"
+                                           pattern="[0-9]*"
+                                           min="0"
+                                           max="31"
+                                           value="<%= formData['dob-day'] %>"/>
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="dob-month">Month</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 <%= err.isError('dob-month') ? 'govuk-input--error' : '' %>"
+                                           id="dob-month"
+                                           name="dob-month"
+                                           type="number"
+                                           pattern="[0-9]*"
+                                           min="0"
+                                           max="12"
+                                           value="<%= formData['dob-month'] %>"/>
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="dob-year">Year</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 <%= err.isError('dob-year') ? 'govuk-input--error' : '' %>"
+                                           id="dob-year" name="dob-year"
+                                           type="number"
+                                           pattern="[0-9]*"
+                                           min="0"
+                                           max="<%= currentYear %>"
+                                           value="<%= formData['dob-year'] %>">
+                                </div>
+                            </div>
+                        </div>
+                        <div id='js-age-warning' class='hide-age-content'>
+                            <div class="govuk-inset-text">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-!-width-three-quarters">
+                                        The expected age range of pupils taking the check is 8 to 9 years old.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-form-group <%= err.isError('gender') ? 'govuk-form-group--error' : '' %>" id="gender">
+                    <fieldset class="govuk-fieldset" role="radiogroup">
+                        <legend class="govuk-label govuk-!-font-weight-bold">Sex
+                            <% if (err.isError('gender')) { %>
+                                <span class="govuk-error-message"><%= err.get('gender') %></span>
+                            <% } %>
+                        </legend>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input
+                                    class="govuk-radios__input"
+                                    id="gender-female"
+                                    name="gender"
+                                    type="radio"
+                                    value="F"
+                                    <% if (formData['gender'] && formData['gender'].toUpperCase() === 'F') { %>checked="checked"<% } %>
+                                >
+                                <label class="govuk-label govuk-radios__label" for="gender-female">
+                                    Female
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input
+                                    class="govuk-radios__input"
+                                    id="gender-male"
+                                    name="gender"
+                                    type="radio"
+                                    value="M"
+                                    <% if (formData['gender'] && formData['gender'].toUpperCase() === 'M') { %>checked="checked"<% } %>
+                                >
+                                <label class="govuk-label govuk-radios__label" for="gender-male">
+                                    Male
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="submit" class="govuk-button govuk-!-margin-right-3 govuk-!-margin-bottom-9" data-module="govuk-button">
+                    <%= submitLabel %>
+                </button>
+                <a href="/service-manager/pupil-search" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    Cancel
+                </a>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<div class="govuk-back-to-top">
+    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+        <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+        </svg>Back to top
+    </a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    window.MTCAdmin.pupilForm()
+  })
+</script>

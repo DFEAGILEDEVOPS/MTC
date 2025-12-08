@@ -47,7 +47,7 @@
 
                            <td>
                                 &nbsp; &nbsp;
-                                <% if (pupil.reason) { %>
+                                <% if (pupil.reason && pupil.reasonCode !== 'ANLLQ' && pupil.reasonCode !== 'ANLLH' ) { %>
                                     <a class="govuk-link" href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
                                 <% } %>
                             </td>
