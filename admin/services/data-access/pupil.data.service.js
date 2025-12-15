@@ -72,23 +72,6 @@ pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, schoolId) 
   return R.head(results)
 }
 
-pupilDataService.sqlFindCheckCompleteAndAttendance = async function (urlSlug, schoolId) {
-  const params = [
-    { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug },
-    { name: 'schoolId', type: TYPES.Int, value: schoolId }
-  ]
-
-  const sql = `
-      SELECT TOP 1
-        checkComplete,
-        attendanceId
-      FROM [mtc_admin].[pupil] p
-      WHERE p.urlSlug = @urlSlug
-        AND p.school_id = @schoolId
-    `
-  const results = await sqlService.query(sql, params)
-  return R.head(results)
-}
 /**
  * Find a pupil by upn
  * @param upn
