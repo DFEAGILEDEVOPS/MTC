@@ -30,7 +30,7 @@ export class PsReportService {
     this.logger = logger
     this.dataService = dataService ?? new PsReportDataService(this.logger)
     this.batchSize = config.PsReport.PupilProcessingBatchSize
-    logger.info("${logName}: PsReportService initialized with batch size ${this.batchSize}")
+   logger.info(`${logName}: PsReportService initialized with batch size ${this.batchSize}`)
   }
 
   /**
