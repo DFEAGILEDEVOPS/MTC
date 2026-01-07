@@ -155,11 +155,17 @@
     "@azure/logger" "^1.0.0"
     tslib "^2.2.0"
 
-"@azure/functions@4.7.2":
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/@azure/functions/-/functions-4.7.2.tgz#0872c7530bc4356183514035f0c71c566a575f89"
-  integrity sha512-5ps8yz4gn6oZSzeQbpUreWHFYl/YS03F1Sk/pz7YJphfctRcHuLF5tcrdm9AyRiYzja4Bkd63bju+g/E27opPQ==
+"@azure/functions-extensions-base@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@azure/functions-extensions-base/-/functions-extensions-base-0.2.0.tgz#33bf691ba6da4259a28343992825c3af3c0ed06e"
+  integrity sha512-ncCkHBNQYJa93dBIh+toH0v1iSgCzSo9tr94s6SMBe7DPWREkaWh8cq33A5P4rPSFX1g5W+3SPvIzDr/6/VOWQ==
+
+"@azure/functions@^4.7.2":
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/@azure/functions/-/functions-4.10.0.tgz#6c753ec4471246c14ec0575e0d023e00d81bf0a5"
+  integrity sha512-hJ58IrZ4vyzcD/2FXTAoBr9iJO1gtb7jUbdU0lCOYOIeQNezVjNXaqLjECuP0GMGVq12RsqZoDfTRNo8xqcLYg==
   dependencies:
+    "@azure/functions-extensions-base" "0.2.0"
     cookie "^0.7.0"
     long "^4.0.0"
     undici "^5.29.0"
@@ -318,10 +324,10 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.1.tgz#b9da6a878a371829a0502c9b6c1c143ef6663f4d"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
-"@ioredis/commands@^1.1.1":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
-  integrity sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==
+"@ioredis/commands@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.5.0.tgz#3dddcea446a4b1dc177d0743a1e07ff50691652a"
+  integrity sha512-eUgLqrMf8nJkZxT24JvVRrQya1vZkQh8BBeYNwGDqa5I0VUi8ACx7uFvAaLxintokpTenkK6DASvo/bvNbBGow==
 
 "@js-joda/core@^5.6.1":
   version "5.6.3"
@@ -1236,10 +1242,10 @@ diagnostic-channel@1.1.1:
   dependencies:
     semver "^7.5.3"
 
-dotenv@^16.4.5:
-  version "16.4.7"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.7.tgz#0e20c5b82950140aa99be360a8a5f52335f53c26"
-  integrity sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==
+dotenv@^16.6.1:
+  version "16.6.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.6.1.tgz#773f0e69527a8315c7285d5ee73c4459d20a8020"
+  integrity sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==
 
 dunder-proto@^1.0.0:
   version "1.0.1"
@@ -2036,12 +2042,12 @@ invert-kv@^1.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
   integrity sha512-xgs2NH9AE66ucSq4cNG1nhSFghr5l6tdL15Pk+jl46bmmBapgoaY/AacXyaDznAqmGL99TiLSQgO/XazFSKYeQ==
 
-ioredis@^5.4.1:
-  version "5.4.2"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.4.2.tgz#ebb6f1a10b825b2c0fb114763d7e82114a0bee6c"
-  integrity sha512-0SZXGNGZ+WzISQ67QDyZ2x0+wVxjjUndtD8oSeik/4ajifeiRufed8fCb8QW8VMyi4MXcS+UO1k/0NGhvq1PAg==
+ioredis@^5.6.1:
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.9.0.tgz#72995f296dc3bcf1761cb61a15f2ba01fe4129a8"
+  integrity sha512-T3VieIilNumOJCXI9SDgo4NnF6sZkd6XcmPi6qWtw4xqbt8nNz/ZVNiIH1L9puMTSHZh1mUWA4xKa2nWPF4NwQ==
   dependencies:
-    "@ioredis/commands" "^1.1.1"
+    "@ioredis/commands" "1.5.0"
     cluster-key-slot "^1.1.0"
     debug "^4.3.4"
     denque "^2.1.0"
