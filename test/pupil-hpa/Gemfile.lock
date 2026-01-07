@@ -220,7 +220,7 @@ DEPENDENCIES
   colorize
   cucumber (>= 4.0.0)
   dotenv
-  httparty (>= 0.21.0)
+  httparty (>= 0.24.0)
   jwt
   mongo
   numbers_in_words (>= 0.4.0)
@@ -244,4 +244,4 @@ RUBY VERSION
    ruby 3.2.2p53
 
 BUNDLED WITH
-   2.4.6
+   2.4.19
