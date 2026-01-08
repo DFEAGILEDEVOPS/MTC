@@ -17,6 +17,7 @@ class CreateMessagePage < SitePrism::Page
   element :pupils_not_taking_check_page, '#area-N'
   element :restarts_page, '#area-R'
   element :school_landing_page, '#area-L'
+  element :results_page, '#area-M'
 
   def create_message(title_text, message_text, colour, target_area = nil)
     title.set title_text
