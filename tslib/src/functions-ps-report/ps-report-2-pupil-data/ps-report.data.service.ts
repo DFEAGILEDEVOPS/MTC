@@ -33,6 +33,8 @@ export interface IPsReportDataService {
   getPupilData (pupil: Pupil, school: School): Promise<PupilResult>
 
   getSchool (schoolId: number): Promise<School>
+
+  getBulkCheckData (pupils: readonly Pupil[]): Promise<Map<number, { check: CheckOrNull, config: CheckConfigOrNull, form: CheckFormOrNull, answers: AnswersOrNull, device: DeviceOrNull, events: EventsOrNull, inputAssistant: InputAssistantOrNull }>>
 }
 
 interface PupilRestart {
@@ -665,6 +667,258 @@ export class PsReportDataService {
    */
   public pupilIsNotTakingCheck (pupil: Pupil): boolean {
     return pupil.notTakingCheckCode !== null
+  }
+
+  /**
+   * Bulk fetch check data for multiple pupils in optimized queries
+   * Reduces database round trips from 7+ per pupil to ~3 total queries
+   */
+  public async getBulkCheckData (pupils: readonly Pupil[]): Promise<Map<number, { check: CheckOrNull, config: CheckConfigOrNull, form: CheckFormOrNull, answers: AnswersOrNull, device: DeviceOrNull, events: EventsOrNull, inputAssistant: InputAssistantOrNull }>> {
+    const result = new Map<number, any>()
+
+    // Initialize all pupils with null values
+    pupils.forEach(p => {
+      result.set(p.id, {
+        check: null,
+        config: null,
+        form: null,
+        answers: null,
+        device: null,
+        events: null,
+        inputAssistant: null
+      })
+    })
+
+    // Get all checkIds from pupils
+    const checkIds = pupils
+      .filter(p => p.currentCheckId !== null)
+      .map(p => p.currentCheckId as number)
+
+    if (checkIds.length === 0) {
+      return result
+    }
+
+    // Build dynamic SQL for multiple checkIds
+    const checkIdParams: any[] = []
+    const checkIdPlaceholders: string[] = []
+    checkIds.forEach((checkId, index) => {
+      checkIdPlaceholders.push(`@checkId${index}`)
+      checkIdParams.push({ name: `checkId${index}`, value: checkId, type: TYPES.Int })
+    })
+
+    try {
+      // 1. Fetch all check configs in one query
+      const configSql = `
+        SELECT check_id as checkId, payload
+          FROM mtc_admin.checkConfig
+         WHERE check_id IN (${checkIdPlaceholders.join(',')})
+      `
+      const configs = await this.sqlService.query(configSql, checkIdParams)
+      const configMap = new Map(configs.map((c: any) => [c.checkId, JSON.parse(c.payload)]))
+
+      // 2. Fetch all checks, forms, and basic info
+      const checkSql = `
+        SELECT
+          c.id as checkId,
+          c.pupil_id as pupilId,
+          c.checkCode,
+          c.checkForm_id,
+          cf.name as formName,
+          cf.formData,
+          c.checkWindow_id,
+          c.complete,
+          c.completedAt,
+          c.inputAssistantAddedRetrospectively,
+          c.isLiveCheck,
+          cr.mark,
+          c.processingFailed,
+          c.pupilLoginDate,
+          c.received,
+          ia.isRetrospective as inputAssistantRetrospective,
+          bfl.family as browserFamily,
+          ud.browserMajorVersion,
+          ud.browserMinorVersion,
+          ud.browserPatchVersion,
+          ud.ident as deviceId
+        FROM mtc_admin.[check] c
+          LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
+          LEFT JOIN mtc_admin.checkForm cf ON (c.checkForm_id = cf.id)
+          LEFT JOIN mtc_admin.checkInputAssistant ia ON (c.id = ia.check_id)
+          LEFT JOIN mtc_results.userDevice ud ON (cr.userDevice_id = ud.id)
+          LEFT JOIN mtc_results.browserFamilyLookup bfl ON (ud.browserFamilyLookup_id = bfl.id)
+        WHERE c.id IN (${checkIdPlaceholders.join(',')})
+      `
+      const checks = await this.sqlService.query(checkSql, checkIdParams)
+
+      // 3. Fetch all answers and inputs in one query (with aggregation)
+      const answersSql = `
+        SELECT
+          cr.check_id as checkId,
+          a.id,
+          a.answer,
+          q.code as questionCode,
+          CONCAT(q.factor1, 'x', q.factor2) as question,
+          a.isCorrect,
+          a.browserTimestamp,
+          a.questionNumber,
+          ui.userInput,
+          uitl.code as inputType,
+          ui.browserTimestamp as inputTimestamp
+        FROM mtc_results.checkResult cr
+          JOIN mtc_results.answer a ON (cr.id = a.checkResult_id)
+          JOIN mtc_admin.question q ON (a.question_id = q.id)
+          LEFT JOIN mtc_results.userInput ui ON (a.id = ui.answer_id)
+          LEFT JOIN mtc_results.userInputTypeLookup uitl ON (ui.userInputTypeLookup_id = uitl.id)
+        WHERE cr.check_id IN (${checkIdPlaceholders.join(',')})
+        ORDER BY cr.check_id, a.questionNumber, ui.browserTimestamp
+      `
+      const answersData = await this.sqlService.query(answersSql, checkIdParams)
+
+      // 4. Fetch all events in one query
+      const eventsSql = `
+        SELECT
+          cr.check_id as checkId,
+          e.id,
+          e.browserTimestamp,
+          etl.eventType,
+          e.eventData,
+          q.code as questionCode,
+          e.questionNumber,
+          IIF(q.id IS NOT NULL, CONCAT(q.factor1, 'x', q.factor2), NULL) AS question,
+          q.isWarmup
+        FROM mtc_results.event e
+          LEFT JOIN mtc_results.checkResult cr ON (e.checkResult_id = cr.id)
+          LEFT JOIN mtc_results.eventTypeLookup etl ON (e.eventTypeLookup_id = etl.id)
+          LEFT JOIN mtc_admin.question q ON (e.question_id = q.id)
+        WHERE cr.check_id IN (${checkIdPlaceholders.join(',')})
+        ORDER BY cr.check_id, e.browserTimestamp
+      `
+      const events = await this.sqlService.query(eventsSql, checkIdParams)
+
+      // Process and organize the data
+      const checkMap = new Map()
+      const answersMap = new Map<number, Answer[]>()
+      const eventsMap = new Map<number, Event[]>()
+
+      checks.forEach((c: any) => {
+        checkMap.set(c.checkId, c)
+      })
+
+      answersData.forEach((a: any) => {
+        if (!answersMap.has(a.checkId)) {
+          answersMap.set(a.checkId, [])
+        }
+        // Only add unique answers (inputs may duplicate answer rows)
+        const existing = answersMap.get(a.checkId)!
+        if (!existing.find(x => x.id === a.id)) {
+          existing.push(Object.freeze({
+            browserTimestamp: a.browserTimestamp,
+            id: a.id,
+            inputs: null,
+            isCorrect: a.isCorrect,
+            question: a.question,
+            questionCode: a.questionCode,
+            questionNumber: a.questionNumber,
+            response: a.answer
+          }))
+        }
+      })
+
+      events.forEach((e: any) => {
+        if (!eventsMap.has(e.checkId)) {
+          eventsMap.set(e.checkId, [])
+        }
+        eventsMap.get(e.checkId)!.push(Object.freeze({
+          browserTimestamp: e.browserTimestamp,
+          data: JSON.parse(e.eventData),
+          id: e.id,
+          isWarmup: e.isWarmup,
+          question: e.question,
+          questionCode: e.questionCode,
+          questionNumber: e.questionNumber,
+          type: e.eventType
+        }))
+      })
+
+      // Now populate the result map with processed data
+      pupils.forEach(pupil => {
+        if (pupil.currentCheckId !== null && checkMap.has(pupil.currentCheckId)) {
+          const checkData = checkMap.get(pupil.currentCheckId)
+          const checkId = pupil.currentCheckId
+
+          // Build check object
+          const check: Check = {
+            checkCode: checkData.checkCode,
+            checkFormId: checkData.checkForm_id,
+            checkWindowId: checkData.checkWindow_id,
+            complete: checkData.complete,
+            completedAt: checkData.completedAt,
+            id: checkData.checkId,
+            inputAssistantAddedRetrospectively: checkData.inputAssistantAddedRetrospectively,
+            isLiveCheck: checkData.isLiveCheck,
+            mark: checkData.mark,
+            processingFailed: checkData.processingFailed,
+            pupilLoginDate: checkData.pupilLoginDate,
+            received: checkData.received,
+            restartNumber: 0,
+            restartReason: null
+          }
+
+          // Build form object
+          let form: CheckFormOrNull = null
+          if (checkData.formName !== null) {
+            const formData = JSON.parse(checkData.formData)
+            form = Object.freeze({
+              id: checkData.checkForm_id,
+              name: checkData.formName,
+              items: formData.map((o: any, i: number) => ({
+                f1: o.f1,
+                f2: o.f2,
+                questionNumber: i + 1
+              }))
+            })
+            this.checkFormCache.set(checkData.checkForm_id, form)
+          }
+
+          // Build device object
+          let device: DeviceOrNull = null
+          if (checkData.deviceId !== null || checkData.browserFamily !== null) {
+            device = Object.freeze({
+              browserFamily: checkData.browserFamily,
+              browserMajorVersion: checkData.browserMajorVersion,
+              browserMinorVersion: checkData.browserMinorVersion,
+              browserPatchVersion: checkData.browserPatchVersion,
+              deviceId: checkData.deviceId,
+              type: null,
+              typeModel: null
+            })
+          }
+
+          // Build input assistant object
+          let inputAssistant: InputAssistantOrNull = null
+          if (checkData.inputAssistantRetrospective !== null) {
+            inputAssistant = Object.freeze({
+              isRetrospective: checkData.inputAssistantRetrospective
+            })
+          }
+
+          result.set(pupil.id, {
+            check: Object.freeze(check),
+            config: configMap.get(checkId) ?? null,
+            form,
+            answers: answersMap.get(checkId) ? Object.freeze(answersMap.get(checkId)) : null,
+            device,
+            events: eventsMap.get(checkId) ? Object.freeze(eventsMap.get(checkId)) : null,
+            inputAssistant
+          })
+        }
+      })
+    } catch (error) {
+      this.logger.error(`${functionName}: Error in getBulkCheckData: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw error
+    }
+
+    return result
   }
 
   /**

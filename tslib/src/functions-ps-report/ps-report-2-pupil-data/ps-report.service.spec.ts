@@ -25,7 +25,8 @@ describe('PsReportService', () => {
     psReportDataService = {
       getPupilData: jest.fn(),
       getPupils: jest.fn(),
-      getSchool: jest.fn()
+      getSchool: jest.fn(),
+      getBulkCheckData: jest.fn().mockResolvedValue(new Map())
     }
     outputBindings.psReportExportOutput = []
 

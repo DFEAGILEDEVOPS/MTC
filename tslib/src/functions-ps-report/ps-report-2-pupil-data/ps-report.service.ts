@@ -30,25 +30,68 @@ export class PsReportService {
     this.logger = logger
     this.dataService = dataService ?? new PsReportDataService(this.logger)
     this.batchSize = config.PsReport.PupilProcessingBatchSize
-   logger.info(`${logName}: PsReportService initialized with batch size ${this.batchSize}`)
+    logger.info(`${logName}: PsReportService initialized with batch size ${this.batchSize}`)
   }
 
   /**
-   * Process a single pupil and return the result with error handling
+   * Process pupils in batches to improve performance while limiting concurrent database connections
+   * Fetches all data for a batch in bulk before processing individual pupils
    */
-  private async processPupil (pupil: Pupil, school: School, schoolUuid: string): Promise<PupilProcessingResult> {
+  private async processPupilsInBatches (pupils: readonly Pupil[], school: School, schoolUuid: string): Promise<PupilProcessingResult[]> {
+    const results: PupilProcessingResult[] = []
+
+    for (let i = 0; i < pupils.length; i += this.batchSize) {
+      const batch = pupils.slice(i, i + this.batchSize)
+      const batchNumber = Math.floor(i / this.batchSize) + 1
+      const totalBatches = Math.ceil(pupils.length / this.batchSize)
+
+      if (config.Logging.DebugVerbosity > 0) {
+        this.logger.info(`${logName}: Processing batch ${batchNumber}/${totalBatches} (${batch.length} pupils) for school ${schoolUuid}`)
+      }
+
+      // Fetch all data for this batch in bulk (3-4 queries instead of 7+ per pupil)
+      const bulkCheckData = await this.dataService.getBulkCheckData(batch)
+
+      // Process all pupils in this batch concurrently using pre-fetched data
+      const batchPromises = batch.map(pupil => this.processPupilFromBulkData(pupil, school, schoolUuid, bulkCheckData))
+      const batchResults = await Promise.all(batchPromises)
+      results.push(...batchResults)
+    }
+
+    return results
+  }
+
+  /**
+   * Process a single pupil using pre-fetched bulk data
+   * This is much faster as all database queries are already done
+   */
+  private async processPupilFromBulkData (
+    pupil: Pupil,
+    school: School,
+    schoolUuid: string,
+    bulkCheckData: Map<number, any>
+  ): Promise<PupilProcessingResult> {
     try {
-      const result: PupilResult = await this.dataService.getPupilData(pupil, school)
+      const checkData = bulkCheckData.get(pupil.id) || {
+        check: null,
+        config: null,
+        form: null,
+        answers: null,
+        device: null,
+        events: null,
+        inputAssistant: null
+      }
+
       const pupilResult: PupilResult = {
-        answers: result.answers,
-        check: result.check,
-        checkConfig: result.checkConfig,
-        checkForm: result.checkForm,
-        device: result.device,
-        events: result.events,
-        pupil: result.pupil,
-        school: result.school,
-        inputAssistant: result.inputAssistant
+        answers: checkData.answers,
+        check: checkData.check,
+        checkConfig: checkData.config,
+        checkForm: checkData.form,
+        device: checkData.device,
+        events: checkData.events,
+        pupil,
+        school,
+        inputAssistant: checkData.inputAssistant
       }
 
       // Transform pupil data into report format
@@ -79,30 +122,6 @@ export class PsReportService {
         pupilSlug: pupil.slug
       }
     }
-  }
-
-  /**
-   * Process pupils in batches to improve performance while limiting concurrent database connections
-   */
-  private async processPupilsInBatches (pupils: readonly Pupil[], school: School, schoolUuid: string): Promise<PupilProcessingResult[]> {
-    const results: PupilProcessingResult[] = []
-
-    for (let i = 0; i < pupils.length; i += this.batchSize) {
-      const batch = pupils.slice(i, i + this.batchSize)
-      const batchNumber = Math.floor(i / this.batchSize) + 1
-      const totalBatches = Math.ceil(pupils.length / this.batchSize)
-
-      if (config.Logging.DebugVerbosity > 0) {
-        this.logger.info(`${logName}: Processing batch ${batchNumber}/${totalBatches} (${batch.length} pupils) for school ${schoolUuid}`)
-      }
-
-      // Process all pupils in this batch concurrently
-      const batchPromises = batch.map(pupil => this.processPupil(pupil, school, schoolUuid))
-      const batchResults = await Promise.all(batchPromises)
-      results.push(...batchResults)
-    }
-
-    return results
   }
 
   async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<IPsReportServiceOutput> {
@@ -170,8 +189,7 @@ export class PsReportService {
 
       // Log first few failures for debugging
       const failuresToLog = failedResults.slice(0, 5)
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions,@typescript-eslint/no-non-null-assertion
-      failuresToLog.forEach(failure => {successfulResults.map(r => r.data!),
+      failuresToLog.forEach(failure => {
         this.logger.warn(`${logName}: Failed pupil ${failure.pupilSlug}: ${failure.error}`)
       })
 
