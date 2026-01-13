@@ -692,7 +692,7 @@ export class PsReportDataService {
     // Get all checkIds from pupils
     const checkIds = pupils
       .filter(p => p.currentCheckId !== null)
-      .map(p => p.currentCheckId as number)
+      .map(p => p.currentCheckId!)
 
     if (checkIds.length === 0) {
       return result
@@ -809,8 +809,8 @@ export class PsReportDataService {
           answersMap.set(a.checkId, [])
         }
         // Only add unique answers (inputs may duplicate answer rows)
-        const existing = answersMap.get(a.checkId)!
-        if (!existing.find(x => x.id === a.id)) {
+        const existing = answersMap.get(a.checkId)
+        if (existing && !existing.find(x => x.id === a.id)) {
           existing.push(Object.freeze({
             browserTimestamp: a.browserTimestamp,
             id: a.id,
@@ -828,16 +828,19 @@ export class PsReportDataService {
         if (!eventsMap.has(e.checkId)) {
           eventsMap.set(e.checkId, [])
         }
-        eventsMap.get(e.checkId)!.push(Object.freeze({
-          browserTimestamp: e.browserTimestamp,
-          data: JSON.parse(e.eventData),
-          id: e.id,
-          isWarmup: e.isWarmup,
-          question: e.question,
-          questionCode: e.questionCode,
-          questionNumber: e.questionNumber,
-          type: e.eventType
-        }))
+        const eventsList = eventsMap.get(e.checkId)
+        if (eventsList) {
+          eventsList.push(Object.freeze({
+            browserTimestamp: e.browserTimestamp,
+            data: JSON.parse(e.eventData),
+            id: e.id,
+            isWarmup: e.isWarmup,
+            question: e.question,
+            questionCode: e.questionCode,
+            questionNumber: e.questionNumber,
+            type: e.eventType
+          }))
+        }
       })
 
       // Now populate the result map with processed data
