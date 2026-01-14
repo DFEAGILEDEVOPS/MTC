@@ -715,6 +715,7 @@ export class PsReportDataService {
       `
       const configs = await this.sqlService.query(configSql, checkIdParams)
       const configMap = new Map(configs.map((c: any) => [c.checkId, JSON.parse(c.payload)]))
+      this.logger.info(`${functionName}: Retrieved ${configs.length} check configs for ${checkIds.length} checks`)
 
       // 2. Fetch all checks, forms, and basic info
       const checkSql = `
@@ -739,7 +740,9 @@ export class PsReportDataService {
           ud.browserMajorVersion,
           ud.browserMinorVersion,
           ud.browserPatchVersion,
-          ud.ident as deviceId
+          ud.ident as deviceId,
+          (SELECT COUNT(*) FROM mtc_admin.[check] WHERE isLiveCheck = 1 AND pupil_id = c.pupil_id AND pupilLoginDate IS NOT NULL) - 1 as restartNumber,
+          (SELECT TOP 1 rrl.code FROM mtc_admin.pupilRestart pr JOIN mtc_admin.restartReasonLookup rrl ON (pr.restartReasonLookup_id = rrl.id) WHERE pr.pupil_id = c.pupil_id AND pr.isDeleted = 0 ORDER BY pr.id DESC) as restartReasonCode
         FROM mtc_admin.[check] c
           LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
           LEFT JOIN mtc_admin.checkForm cf ON (c.checkForm_id = cf.id)
@@ -749,6 +752,7 @@ export class PsReportDataService {
         WHERE c.id IN (${checkIdPlaceholders.join(',')})
       `
       const checks = await this.sqlService.query(checkSql, checkIdParams)
+      this.logger.info(`${functionName}: Retrieved ${checks.length} checks`)
 
       // 3. Fetch all answers and inputs in one query (with aggregation)
       const answersSql = `
@@ -794,6 +798,7 @@ export class PsReportDataService {
         ORDER BY cr.check_id, e.browserTimestamp
       `
       const events = await this.sqlService.query(eventsSql, checkIdParams)
+      this.logger.info(`${functionName}: Retrieved ${events.length} events`)
 
       // Process and organize the data
       const checkMap = new Map()
@@ -811,10 +816,22 @@ export class PsReportDataService {
         // Only add unique answers (inputs may duplicate answer rows)
         const existing = answersMap.get(a.checkId)
         if (existing && !existing.find(x => x.id === a.id)) {
+          // Build inputs from the query data
+          const inputs: Input[] = []
+          const inputKey = `input_${a.id}`
+          if (a.userInput !== null && a.inputType !== null && a.inputTimestamp !== null) {
+            inputs.push(Object.freeze({
+              answerId: a.id,
+              browserTimestamp: a.inputTimestamp,
+              input: a.userInput,
+              inputType: a.inputType
+            }))
+          }
+          
           existing.push(Object.freeze({
             browserTimestamp: a.browserTimestamp,
             id: a.id,
-            inputs: null,
+            inputs: inputs.length > 0 ? Object.freeze(inputs) : null,
             isCorrect: a.isCorrect,
             question: a.question,
             questionCode: a.questionCode,
@@ -849,7 +866,7 @@ export class PsReportDataService {
           const checkData = checkMap.get(pupil.currentCheckId)
           const checkId = pupil.currentCheckId
 
-          // Build check object
+          // Build check object with restart data
           const check: Check = {
             checkCode: checkData.checkCode,
             checkFormId: checkData.checkForm_id,
@@ -863,8 +880,8 @@ export class PsReportDataService {
             processingFailed: checkData.processingFailed,
             pupilLoginDate: checkData.pupilLoginDate,
             received: checkData.received,
-            restartNumber: 0,
-            restartReason: null
+            restartNumber: checkData.restartNumber ?? 0,
+            restartReason: checkData.restartReasonCode ?? null
           }
 
           // Build form object
@@ -916,10 +933,11 @@ export class PsReportDataService {
           })
         }
       })
-    } catch (error) {
-      this.logger.error(`${functionName}: Error in getBulkCheckData: ${error instanceof Error ? error.message : 'Unknown error'}`)
-      throw error
     }
+
+    // Log summary of what was processed
+    const resultsWithData = Array.from(result.values()).filter(r => r.check !== null)
+    this.logger.info(`${functionName}: getBulkCheckData completed: ${resultsWithData.length} pupils with check data out of ${pupils.length} total pupils`)
 
     return result
   }
@@ -929,36 +947,42 @@ export class PsReportDataService {
    * @param pupil
    */
   public async getPupilData (pupil: Pupil, school: School): Promise<PupilResult> {
-    const promises: [
-      Promise<CheckConfigOrNull>,
-      Promise<CheckOrNull>,
-      Promise<AnswersOrNull>,
-      Promise<DeviceOrNull>,
-      Promise<EventsOrNull>,
-      Promise<InputAssistantOrNull>
-    ] = [
-      this.getCheckConfig(pupil.currentCheckId),
-      this.getCheck(pupil),
-      this.getAnswers(pupil.currentCheckId),
-      this.getDevice(pupil.currentCheckId),
-      this.getEvents(pupil.currentCheckId),
-      this.getInputAssistantData(pupil.currentCheckId)
-    ]
-    const [checkConfig, check, answers, device, events, inputAssistant] = await Promise.all(promises)
-    let checkForm: CheckFormOrNull = null
-    if (check !== null) {
-      checkForm = await this.getCheckForm(check.checkFormId)
+    try {
+      const promises: [
+        Promise<CheckConfigOrNull>,
+        Promise<CheckOrNull>,
+        Promise<AnswersOrNull>,
+        Promise<DeviceOrNull>,
+        Promise<EventsOrNull>,
+        Promise<InputAssistantOrNull>
+      ] = [
+        this.getCheckConfig(pupil.currentCheckId),
+        this.getCheck(pupil),
+        this.getAnswers(pupil.currentCheckId),
+        this.getDevice(pupil.currentCheckId),
+        this.getEvents(pupil.currentCheckId),
+        this.getInputAssistantData(pupil.currentCheckId)
+      ]
+      const [checkConfig, check, answers, device, events, inputAssistant] = await Promise.all(promises)
+      let checkForm: CheckFormOrNull = null
+      if (check !== null) {
+        checkForm = await this.getCheckForm(check.checkFormId)
+      }
+      return Object.freeze({
+        pupil,
+        school,
+        checkConfig,
+        check,
+        checkForm,
+        answers,
+        device,
+        events,
+        inputAssistant
+      })
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+      this.logger.error(`${functionName}: getPupilData() failed for pupil ${pupil.id}: ${errorMsg}`)
+      throw error
     }
-    return Object.freeze({
-      pupil,
-      school,
-      checkConfig,
-      check,
-      checkForm,
-      answers,
-      device,
-      events,
-      inputAssistant
-    })
   }
 }
