@@ -818,7 +818,6 @@ export class PsReportDataService {
         if (existing && !existing.find(x => x.id === a.id)) {
           // Build inputs from the query data
           const inputs: Input[] = []
-          const inputKey = `input_${a.id}`
           if (a.userInput !== null && a.inputType !== null && a.inputTimestamp !== null) {
             inputs.push(Object.freeze({
               answerId: a.id,
@@ -940,7 +939,14 @@ export class PsReportDataService {
     this.logger.info(`${functionName}: getBulkCheckData completed: ${resultsWithData.length} pupils with check data out of ${pupils.length} total pupils`)
 
     return result
+  } catch (error) {
+    this.logger.error(`${functionName}: Error in getBulkCheckData: ${error}`)
+    if (error instanceof Error) {
+      this.logger.error(`${functionName}: Stack trace: ${error.stack}`)
+    }
+    throw error
   }
+}
 
   /**
    * Entry point to create the data structure to pass to the transform step in the psychometric report generation
