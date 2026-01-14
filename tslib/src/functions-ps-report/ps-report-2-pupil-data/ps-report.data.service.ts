@@ -741,7 +741,7 @@ export class PsReportDataService {
           ud.browserMinorVersion,
           ud.browserPatchVersion,
           ud.ident as deviceId,
-          (SELECT COUNT(*) FROM mtc_admin.[check] WHERE isLiveCheck = 1 AND pupil_id = c.pupil_id AND pupilLoginDate IS NOT NULL) - 1 as restartNumber,
+          CAST((SELECT COUNT(*) FROM mtc_admin.[check] WHERE isLiveCheck = 1 AND pupil_id = c.pupil_id AND pupilLoginDate IS NOT NULL) - 1 AS INT) as restartNumber,
           (SELECT TOP 1 rrl.code FROM mtc_admin.pupilRestart pr JOIN mtc_admin.restartReasonLookup rrl ON (pr.restartReasonLookup_id = rrl.id) WHERE pr.pupil_id = c.pupil_id AND pr.isDeleted = 0 ORDER BY pr.id DESC) as restartReasonCode
         FROM mtc_admin.[check] c
           LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
@@ -932,20 +932,19 @@ export class PsReportDataService {
           })
         }
       })
-    }
 
-    // Log summary of what was processed
-    const resultsWithData = Array.from(result.values()).filter(r => r.check !== null)
-    this.logger.info(`${functionName}: getBulkCheckData completed: ${resultsWithData.length} pupils with check data out of ${pupils.length} total pupils`)
+      // Log summary of what was processed
+      const resultsWithData = Array.from(result.values()).filter(r => r.check !== null)
+      this.logger.info(`${functionName}: getBulkCheckData completed: ${resultsWithData.length} pupils with check data out of ${pupils.length} total pupils`)
+    } catch (error: unknown) {
+      this.logger.error(`${functionName}: Error in getBulkCheckData: ${error}`)
+      if (error instanceof Error) {
+        this.logger.error(`${functionName}: Stack trace: ${error.stack}`)
+      }
+      throw error
+    }
 
     return result
-  } catch (error) {
-    this.logger.error(`${functionName}: Error in getBulkCheckData: ${error}`)
-    if (error instanceof Error) {
-      this.logger.error(`${functionName}: Stack trace: ${error.stack}`)
-    }
-    throw error
-  }
 }
 
   /**
@@ -985,7 +984,7 @@ export class PsReportDataService {
         events,
         inputAssistant
       })
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error'
       this.logger.error(`${functionName}: getPupilData() failed for pupil ${pupil.id}: ${errorMsg}`)
       throw error
