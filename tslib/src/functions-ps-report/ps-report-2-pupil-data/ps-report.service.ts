@@ -1,7 +1,7 @@
 import { type IPsReportDataService, PsReportDataService } from './ps-report.data.service'
 import { type Pupil, type PupilResult, type School } from './pupil-data.models'
 import { type ILogger } from '../../common/logger'
-import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
+import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
 import config from '../../config'
 import { ReportLine } from './report-line.class'
 import { type IPsychometricReportLine } from './transformer-models'
@@ -9,7 +9,7 @@ import { type IPsychometricReportLine } from './transformer-models'
 const logName = 'ps-report-2-pupil-data: PsReportService'
 
 export interface IPsReportServiceOutput {
-  psReportExportOutput: IPsychometricReportLine[]
+  psReportExportOutput: PsReportBatchMessage[]
   failedPupilCount: number
   successfulPupilCount: number
 }
@@ -171,8 +171,28 @@ export class PsReportService {
     const successfulResults = results.filter((r): r is typeof results[number] & { data: NonNullable<typeof results[number]['data']> } => r.success && r.data !== undefined)
     const failedResults = results.filter(r => !r.success)
 
+    // Batch the output results to reduce Service Bus message count from 500k to ~1k
+    const reportLines = successfulResults.map(r => r.data)
+    const outputMessageBatchSize = config.PsReport.OutputMessageBatchSize
+    const batchedMessages: PsReportBatchMessage[] = []
+
+    for (let i = 0; i < reportLines.length; i += outputMessageBatchSize) {
+      const batch = reportLines.slice(i, i + outputMessageBatchSize)
+      const batchNumber = Math.floor(i / outputMessageBatchSize) + 1
+      const totalBatches = Math.ceil(reportLines.length / outputMessageBatchSize)
+
+      batchedMessages.push({
+        jobUuid: incomingMessage.jobUuid,
+        batch,
+        batchNumber,
+        totalBatches,
+        schoolUuid: incomingMessage.uuid,
+        schoolName: incomingMessage.name
+      })
+    }
+
     const output: IPsReportServiceOutput = {
-      psReportExportOutput: successfulResults.map(r => r.data),
+      psReportExportOutput: batchedMessages,
       successfulPupilCount: successfulResults.length,
       failedPupilCount: failedResults.length
     }
@@ -181,7 +201,7 @@ export class PsReportService {
     const durationMs = endTime - startTime
     const avgTimePerPupil = pupils.length > 0 ? (durationMs / pupils.length).toFixed(2) : '0'
 
-    this.logger.info(`${logName}: School ${incomingMessage.name} processing complete: ${successfulResults.length} successful, ${failedResults.length} failed out of ${pupils.length} pupils (${durationMs}ms total, ${avgTimePerPupil}ms avg per pupil)`)
+    this.logger.info(`${logName}: School ${incomingMessage.name} processing complete: ${successfulResults.length} successful, ${failedResults.length} failed out of ${pupils.length} pupils (${durationMs}ms total, ${avgTimePerPupil}ms avg per pupil). Batched into ${batchedMessages.length} messages with batch size ${outputMessageBatchSize}`)
 
     if (failedResults.length > 0) {
       const failureRate = ((failedResults.length / pupils.length) * 100).toFixed(2)

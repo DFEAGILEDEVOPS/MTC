@@ -3,9 +3,8 @@ import { performance } from 'perf_hooks'
 import { PsReportService } from './ps-report.service'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
-import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
+import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
 import config from '../../config'
-import type { IPsychometricReportLine } from './transformer-models'
 
 const psReportExportOutputQueue = output.serviceBusQueue({
   queueName: 'ps-report-export',
@@ -20,7 +19,7 @@ app.serviceBusQueue('ps-report-2-pupil-data', {
 })
 
 export interface IOutputBinding {
-  psReportExportOutput: IPsychometricReportLine[]
+  psReportExportOutput: PsReportBatchMessage[]
 }
 
 /**
