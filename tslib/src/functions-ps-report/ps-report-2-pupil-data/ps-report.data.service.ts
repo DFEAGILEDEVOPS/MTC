@@ -691,8 +691,8 @@ export class PsReportDataService {
 
     // Get all checkIds from pupils
     const checkIds = pupils
-      .filter(p => p.currentCheckId !== null)
-      .map(p => p.currentCheckId!)
+      .filter((p): p is Pupil & { currentCheckId: number } => p.currentCheckId !== null)
+      .map(p => p.currentCheckId)
 
     if (checkIds.length === 0) {
       return result
