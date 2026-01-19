@@ -56,27 +56,23 @@ describe('PsReportService', () => {
     await expect(sut.process(psReportSchoolFanOutMessage)).rejects.toThrow('mock error')
   })
 
-  test('it calls getPupilData() once per pupil received', async () => {
-    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
+  test('it calls getBulkCheckData() once per batch of pupils', async () => {
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1, currentCheckId: 1 }, { id: 2, currentCheckId: 2 }, { id: 3, currentCheckId: 3 }])
     ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
+    ;(psReportDataService.getBulkCheckData as jest.Mock).mockResolvedValue(new Map())
     await sut.process(psReportSchoolFanOutMessage)
-    expect(psReportDataService.getPupilData).toHaveBeenCalledTimes(3)
+    // With default batch size 100, all 3 pupils fit in one batch
+    expect(psReportDataService.getBulkCheckData).toHaveBeenCalledTimes(1)
   })
 
   test('it returns failure counts when processing completes', async () => {
-    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1, slug: 'pupil-1' }, { id: 2, slug: 'pupil-2' }])
+    const mockPupilsWithChecks = [
+      { id: 1, slug: 'pupil-1', currentCheckId: 1 },
+      { id: 2, slug: 'pupil-2', currentCheckId: 2 }
+    ]
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce(mockPupilsWithChecks)
     ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
-    ;(psReportDataService.getPupilData as jest.Mock).mockResolvedValue({
-      pupil: { id: 1 },
-      school: mockSchool,
-      check: null,
-      checkConfig: null,
-      checkForm: null,
-      answers: null,
-      device: null,
-      events: null,
-      inputAssistant: null
-    })
+    ;(psReportDataService.getBulkCheckData as jest.Mock).mockResolvedValue(new Map())
     const result = await sut.process(psReportSchoolFanOutMessage)
     expect(result).toHaveProperty('successfulPupilCount')
     expect(result).toHaveProperty('failedPupilCount')
