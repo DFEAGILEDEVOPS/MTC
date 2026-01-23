@@ -23,16 +23,16 @@ jobs:
           key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
       - restore_cache:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm use; yarn install --frozen-lockfile
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm install; nvm use; yarn install --frozen-lockfile
       - run:
           name: Admin lint and ts compile
-          command: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm use; yarn lintAndBuild; rm -rf dist
+          command: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm install; nvm use; yarn lintAndBuild; rm -rf dist
       - run:
           name: Install JUnit coverage reporter for admin unit tests
-          command: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm use; yarn add --dev jest-junit
+          command: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm install; nvm use; yarn add --dev jest-junit
       - run:
           name: Admin unit tests with JUnit as reporter
-          command: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm use; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
+          command: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm install; nvm use; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
           environment:
             JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-spa;     nvm use; yarn install --frozen-lockfile
@@ -132,7 +132,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd ../admin-assets; ./copy-assets.sh
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm install; nvm use; cd ../admin-assets; ./copy-assets.sh
       - run: cd admin-assets && BUILDKIT=1 docker build .
       - run: docker images
 
