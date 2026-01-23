@@ -120,7 +120,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./pupil-api; nvm use; yarn install; yarn build; BUILDKIT=1 docker build .
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./pupil-api; nvm install; nvm use; yarn install; yarn build; BUILDKIT=1 docker build .
       - run: docker images
 
   docker_build_admin_assets:
