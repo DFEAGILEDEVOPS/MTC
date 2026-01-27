@@ -32,23 +32,13 @@ Configure these in the **Azure Portal** under your Function App → Configuratio
 |----------|-------------|-------------|-------------|
 | `PS_REPORT_PUPIL_BATCH_SIZE` | 10 | 100 | Number of pupils processed in parallel per database batch. |
 
-### Existing Variables (Unchanged)
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE` | 32 | Messages read per batch in Stage 3 |
-| `PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE` | 32 | Messages processed before writing to CSV |
-| `PS_REPORT_STAGING_WAIT_TIME_COMPLETE` | 600 | Seconds to wait before triggering completion |
-| `PS_REPORT_STAGING_POLL_INTERVAL` | 10 | Milliseconds between poll operations |
-
 ---
 
 ## How to Configure in Azure Portal
 
-1. Navigate to **Azure Portal** → **Function Apps** → Select your PS Report Function App
-2. Go to **Settings** → **Configuration**
-3. Under **Application settings**, click **+ New application setting**
-4. Add or update the following:
+1. Navigate to **Azure Portal** → **App Services** → Select your app e.g ppadmin-as-mtc for preprod
+2. Go to **Settings** → **Environment Variables**
+3Add or update the following:
 
 ```
 PS_REPORT_PUPIL_BATCH_SIZE = 100
