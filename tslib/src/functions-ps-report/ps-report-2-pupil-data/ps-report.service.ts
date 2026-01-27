@@ -171,25 +171,61 @@ export class PsReportService {
     const successfulResults = results.filter((r): r is typeof results[number] & { data: NonNullable<typeof results[number]['data']> } => r.success && r.data !== undefined)
     const failedResults = results.filter(r => !r.success)
 
-    // Batch the output results to reduce Service Bus message count from 500k to ~1k
+    // Batch the output results to reduce Service Bus message count, respecting 1MB size limit
+    // Azure Service Bus max message size is 1MB (1048576 bytes). We use a conservative limit of 900KB
+    // to account for AMQP encoding overhead and message metadata
     const reportLines = successfulResults.map(r => r.data)
-    const outputMessageBatchSize = config.PsReport.OutputMessageBatchSize
+    const MAX_SERVICE_BUS_MESSAGE_SIZE = 900000 // Conservative 900KB limit
     const batchedMessages: PsReportBatchMessage[] = []
 
-    for (let i = 0; i < reportLines.length; i += outputMessageBatchSize) {
-      const batch = reportLines.slice(i, i + outputMessageBatchSize)
-      const batchNumber = Math.floor(i / outputMessageBatchSize) + 1
-      const totalBatches = Math.ceil(reportLines.length / outputMessageBatchSize)
+    let currentBatch: IPsychometricReportLine[] = []
+    let currentBatchSize = 0
 
+    for (const reportLine of reportLines) {
+      // Estimate the size of this report line when serialized
+      const lineJson = JSON.stringify(reportLine)
+      const lineSize = Buffer.byteLength(lineJson, 'utf8')
+
+      // Check if adding this line would exceed the size limit
+      // Account for batch message wrapper (~500 bytes for metadata)
+      const messageWrapperSize = 500
+      const estimatedNewSize = currentBatchSize + lineSize + messageWrapperSize
+
+      if (estimatedNewSize > MAX_SERVICE_BUS_MESSAGE_SIZE && currentBatch.length > 0) {
+        // Current batch is at capacity, save it and start a new one
+        batchedMessages.push({
+          jobUuid: incomingMessage.jobUuid,
+          batch: currentBatch,
+          batchNumber: batchedMessages.length + 1,
+          totalBatches: -1, // Will update after all batches are created
+          schoolUuid: incomingMessage.uuid,
+          schoolName: incomingMessage.name
+        })
+        currentBatch = []
+        currentBatchSize = 0
+      }
+
+      currentBatch.push(reportLine)
+      currentBatchSize += lineSize
+    }
+
+    // Add the final batch if it has any data
+    if (currentBatch.length > 0) {
       batchedMessages.push({
         jobUuid: incomingMessage.jobUuid,
-        batch,
-        batchNumber,
-        totalBatches,
+        batch: currentBatch,
+        batchNumber: batchedMessages.length + 1,
+        totalBatches: -1, // Will update after all batches are created
         schoolUuid: incomingMessage.uuid,
         schoolName: incomingMessage.name
       })
     }
+
+    // Update totalBatches for all messages
+    const totalBatches = batchedMessages.length
+    batchedMessages.forEach(msg => {
+      msg.totalBatches = totalBatches
+    })
 
     const output: IPsReportServiceOutput = {
       psReportExportOutput: batchedMessages,
@@ -201,7 +237,7 @@ export class PsReportService {
     const durationMs = endTime - startTime
     const avgTimePerPupil = pupils.length > 0 ? (durationMs / pupils.length).toFixed(2) : '0'
 
-    this.logger.info(`${logName}: School ${incomingMessage.name} processing complete: ${successfulResults.length} successful, ${failedResults.length} failed out of ${pupils.length} pupils (${durationMs}ms total, ${avgTimePerPupil}ms avg per pupil). Batched into ${batchedMessages.length} messages with batch size ${outputMessageBatchSize}`)
+    this.logger.info(`${logName}: School ${incomingMessage.name} processing complete: ${successfulResults.length} successful, ${failedResults.length} failed out of ${pupils.length} pupils (${durationMs}ms total, ${avgTimePerPupil}ms avg per pupil). Batched into ${batchedMessages.length} size-limited messages`)
 
     if (failedResults.length > 0) {
       const failureRate = ((failedResults.length / pupils.length) * 100).toFixed(2)
