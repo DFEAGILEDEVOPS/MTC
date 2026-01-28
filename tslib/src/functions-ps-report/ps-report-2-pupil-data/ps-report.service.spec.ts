@@ -25,7 +25,8 @@ describe('PsReportService', () => {
     psReportDataService = {
       getPupilData: jest.fn(),
       getPupils: jest.fn(),
-      getSchool: jest.fn()
+      getSchool: jest.fn(),
+      getBulkCheckData: jest.fn().mockResolvedValue(new Map())
     }
     outputBindings.psReportExportOutput = []
 
@@ -55,11 +56,36 @@ describe('PsReportService', () => {
     await expect(sut.process(psReportSchoolFanOutMessage)).rejects.toThrow('mock error')
   })
 
-  test('it calls getPupilData() once per pupil received', async () => {
-    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
+  test('it calls getBulkCheckData() once per batch of pupils', async () => {
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1, currentCheckId: 1 }, { id: 2, currentCheckId: 2 }, { id: 3, currentCheckId: 3 }])
     ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
+    ;(psReportDataService.getBulkCheckData as jest.Mock).mockResolvedValue(new Map())
     await sut.process(psReportSchoolFanOutMessage)
-    expect(psReportDataService.getPupilData).toHaveBeenCalledTimes(3)
+    // With default batch size 100, all 3 pupils fit in one batch
+    expect(psReportDataService.getBulkCheckData).toHaveBeenCalledTimes(1)
+  })
+
+  test('it returns failure counts when processing completes', async () => {
+    const mockPupilsWithChecks = [
+      { id: 1, slug: 'pupil-1', currentCheckId: 1 },
+      { id: 2, slug: 'pupil-2', currentCheckId: 2 }
+    ]
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce(mockPupilsWithChecks)
+    ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
+    ;(psReportDataService.getBulkCheckData as jest.Mock).mockResolvedValue(new Map())
+    const result = await sut.process(psReportSchoolFanOutMessage)
+    expect(result).toHaveProperty('successfulPupilCount')
+    expect(result).toHaveProperty('failedPupilCount')
+    expect(result).toHaveProperty('psReportExportOutput')
+  })
+
+  test('it handles zero pupils gracefully', async () => {
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([])
+    const result = await sut.process(psReportSchoolFanOutMessage)
+    expect(result.successfulPupilCount).toBe(0)
+    expect(result.failedPupilCount).toBe(0)
+    expect(result.psReportExportOutput).toHaveLength(0)
+    expect(psReportDataService.getSchool).not.toHaveBeenCalled()
   })
 
   test.skip('it outputs the results from getPupilData() once per pupil onto the outputBinding', async () => {
