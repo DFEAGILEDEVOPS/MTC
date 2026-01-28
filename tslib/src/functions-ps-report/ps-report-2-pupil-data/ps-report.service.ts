@@ -172,10 +172,10 @@ export class PsReportService {
     const failedResults = results.filter(r => !r.success)
 
     // Batch the output results to reduce Service Bus message count, respecting 1MB size limit
-    // Azure Service Bus max message size is 1MB (1048576 bytes). We use a conservative limit of 900KB
-    // to account for AMQP encoding overhead and message metadata
+    // Azure Service Bus max message size is 1MB (1048576 bytes). We use a conservative limit of 600KB
+    // to account for AMQP encoding overhead (~15-20%), message wrapper metadata, and JSON structure
     const reportLines = successfulResults.map(r => r.data)
-    const MAX_SERVICE_BUS_MESSAGE_SIZE = 900000 // Conservative 900KB limit
+    const MAX_SERVICE_BUS_MESSAGE_SIZE = 600000 // Conservative 600KB limit
     const batchedMessages: PsReportBatchMessage[] = []
 
     let currentBatch: IPsychometricReportLine[] = []
@@ -187,9 +187,9 @@ export class PsReportService {
       const lineSize = Buffer.byteLength(lineJson, 'utf8')
 
       // Check if adding this line would exceed the size limit
-      // Account for batch message wrapper (~500 bytes for metadata)
-      const messageWrapperSize = 500
-      const estimatedNewSize = currentBatchSize + lineSize + messageWrapperSize
+      // Account for batch message wrapper overhead: jobUuid, metadata, array brackets, AMQP encoding
+      const messageWrapperBaseSize = 1000 // Wrapper structure ~1KB
+      const estimatedNewSize = currentBatchSize + lineSize + messageWrapperBaseSize
 
       if (estimatedNewSize > MAX_SERVICE_BUS_MESSAGE_SIZE && currentBatch.length > 0) {
         // Current batch is at capacity, save it and start a new one
