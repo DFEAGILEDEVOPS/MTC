@@ -812,14 +812,16 @@ export class PsReportDataService {
 
       // First pass: collect ALL inputs for each answer (SQL returns one row per input)
       answersData.forEach((a: any) => {
-        if (!answersWithInputsMap.has(a.checkId)) {
-          answersWithInputsMap.set(a.checkId, new Map())
+        let checkAnswers = answersWithInputsMap.get(a.checkId)
+        if (!checkAnswers) {
+          checkAnswers = new Map()
+          answersWithInputsMap.set(a.checkId, checkAnswers)
         }
-        const checkAnswers = answersWithInputsMap.get(a.checkId)!
-        if (!checkAnswers.has(a.id)) {
-          checkAnswers.set(a.id, [])
+        let answerInputs = checkAnswers.get(a.id)
+        if (!answerInputs) {
+          answerInputs = []
+          checkAnswers.set(a.id, answerInputs)
         }
-        const answerInputs = checkAnswers.get(a.id)!
         if (a.userInput !== null && a.inputType !== null && a.inputTimestamp !== null) {
           answerInputs.push(Object.freeze({
             answerId: a.id,
