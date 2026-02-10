@@ -804,29 +804,40 @@ export class PsReportDataService {
       const checkMap = new Map()
       const answersMap = new Map<number, Answer[]>()
       const eventsMap = new Map<number, Event[]>()
+      const answersWithInputsMap = new Map<number, Map<number, Input[]>>() // Track inputs per answer
 
       checks.forEach((c: any) => {
         checkMap.set(c.checkId, c)
       })
 
+      // First pass: collect ALL inputs for each answer (SQL returns one row per input)
+      answersData.forEach((a: any) => {
+        if (!answersWithInputsMap.has(a.checkId)) {
+          answersWithInputsMap.set(a.checkId, new Map())
+        }
+        const checkAnswers = answersWithInputsMap.get(a.checkId)!
+        if (!checkAnswers.has(a.id)) {
+          checkAnswers.set(a.id, [])
+        }
+        const answerInputs = checkAnswers.get(a.id)!
+        if (a.userInput !== null && a.inputType !== null && a.inputTimestamp !== null) {
+          answerInputs.push(Object.freeze({
+            answerId: a.id,
+            browserTimestamp: a.inputTimestamp,
+            input: a.userInput,
+            inputType: a.inputType
+          }))
+        }
+      })
+
+      // Second pass: build answer objects with all collected inputs
       answersData.forEach((a: any) => {
         if (!answersMap.has(a.checkId)) {
           answersMap.set(a.checkId, [])
         }
-        // Only add unique answers (inputs may duplicate answer rows)
         const existing = answersMap.get(a.checkId)
         if (existing && !existing.find(x => x.id === a.id)) {
-          // Build inputs from the query data
-          const inputs: Input[] = []
-          if (a.userInput !== null && a.inputType !== null && a.inputTimestamp !== null) {
-            inputs.push(Object.freeze({
-              answerId: a.id,
-              browserTimestamp: a.inputTimestamp,
-              input: a.userInput,
-              inputType: a.inputType
-            }))
-          }
-          
+          const inputs = answersWithInputsMap.get(a.checkId)?.get(a.id) ?? []
           existing.push(Object.freeze({
             browserTimestamp: a.browserTimestamp,
             id: a.id,
