@@ -56,6 +56,29 @@ export class CheckComponent implements OnInit, CanComponentDeactivate {
   }
 
   /**
+   * Prevent refresh shortcuts (F5, Ctrl+R, Cmd+R) from triggering page refresh.
+   * Must be handled on keydown as refresh happens before keyup.
+   * @param {KeyboardEvent} event
+   * @return {boolean}
+   */
+  @HostListener('document:keydown', [ '$event' ])
+  handleRefreshPrevention(event: KeyboardEvent) {
+    // Detect refresh-related shortcuts
+    const isF5 = event.key === 'F5';
+    const isCtrlR = event.key.toLowerCase() === 'r' && event.ctrlKey;
+    const isCmdR = event.key.toLowerCase() === 'r' && event.metaKey;
+
+    if (isF5 || isCtrlR || isCmdR) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('Refresh shortcut prevented');
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
    * By default, disable the keyboard during the check.
    * Prevents many issues, increases control.
    * NB This also disables <tab> used for keyboard navigation.
@@ -72,6 +95,18 @@ export class CheckComponent implements OnInit, CanComponentDeactivate {
         // tab end enter to click on buttons.
         return true;
     }
+
+    // Detect refresh-related shortcuts
+    const isF5 = event.key === 'F5';
+    const isCtrlR = event.key.toLowerCase() === 'r' && (event.ctrlKey);
+    const isCmdR = event.key.toLowerCase() === 'r' && (event.metaKey);
+
+    if (isF5 || isCtrlR || isCmdR) {
+      event.preventDefault();
+      console.log('Refresh prevented');
+      return false;
+    }
+
     event.preventDefault();
     return false;
   }
