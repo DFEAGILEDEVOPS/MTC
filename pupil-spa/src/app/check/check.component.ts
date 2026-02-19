@@ -96,7 +96,7 @@ export class CheckComponent implements OnInit, CanComponentDeactivate {
         return true;
     }
 
-    // Detect refresh-related shortcuts
+    // Detect refresh-related shortcuts (backup detection)
     const isF5 = event.key === 'F5';
     const isCtrlR = event.key.toLowerCase() === 'r' && (event.ctrlKey);
     const isCmdR = event.key.toLowerCase() === 'r' && (event.metaKey);
