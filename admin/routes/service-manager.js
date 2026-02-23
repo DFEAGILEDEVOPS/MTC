@@ -219,6 +219,17 @@ router.post('/pupil-search',
   serviceManagerController.postPupilSearch
 )
 
+router.get(
+  '/pupil/edit/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getEditPupilById
+)
+router.post(
+  '/pupil/edit',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postEditPupil
+)
+
 router.get('/pupil-summary/:slug',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getPupilSummary

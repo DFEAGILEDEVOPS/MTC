@@ -1,0 +1,47 @@
+<%
+const err = error;
+const input = (typeof formData !== 'undefined') ? formData : {};
+const heading = 'Edit pupil details';
+const submitLabel = 'Save';
+const headingClass = 'heading-xlarge';
+%>
+
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <% if (err.hasError()) { %>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        Check the pupil’s details</h2>
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <p>You need to fix the errors on this page before continuing. See highlighted errors below.</p>
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
+                                <% const errors = err.get(f) %>
+                                <% if (Array.isArray(errors)) { %>
+                                    <%  errors.map(e => { %>
+                                        <li><a href="#<%= f %>"><%= e %></a></li>
+                                <% }) } else { %>
+                                    <li><a href="#<%= f %>"><%= errors %></a></li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <%- partial('service-manager/pupil/_pupil-form', {
+        input: input,
+        err: err,
+        formData: input,
+        heading: heading,
+        submitLabel: submitLabel,
+        headingClass: headingClass,
+        formHeader: 'Edit',
+        pupilExampleYear: pupilExampleYear
+    }) %>
+</main>
