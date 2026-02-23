@@ -49,5 +49,5 @@ end
 
 Then(/^teachers should see the service unavailable page$/) do
   step 'I am logged in'
-  expect(page.text).to include "\nThe multiplication tables check service is currently closed\nThe multiplication tables check service opens on Monday 28 April 2025 for maintained schools, special schools and academies (including free schools) with year 4 pupils.\nFurther information is available on GOV.UK: https://www.gov.uk/government/collections/multiplication-tables-check\nSign out"
+  expect(page.text).to include "\nThe multiplication tables check service is currently closed\nThe multiplication tables check service opens in April 2026 for maintained schools, special schools and academies (including free schools) with year 4 pupils.\nFurther information is available on GOV.UK: https://www.gov.uk/government/collections/multiplication-tables-check\nSign out"
 end

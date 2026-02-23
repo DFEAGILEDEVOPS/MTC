@@ -221,7 +221,6 @@ const controller = {
     let validationError
     // In case we render an error page
     res.locals.pageTitle = 'Edit pupil data'
-
     try {
       pupil = await pupilService.fetchOnePupilBySlug(req.body.urlSlug, req.user.schoolId)
       if (!pupil) {
