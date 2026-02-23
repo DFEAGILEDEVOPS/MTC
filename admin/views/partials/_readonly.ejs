@@ -1,4 +1,4 @@
-<% if (availabilityData.hdfSubmitted) { %>
+<% if (availabilityData.hdfSubmitted && !user.role === roles.staAdmin) { %>
     <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
         Currently unavailable. This section is now read only.
     </div>

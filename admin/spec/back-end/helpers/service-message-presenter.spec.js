@@ -1,4 +1,3 @@
-/* global describe, expect, test */
 
 const serviceMessagePresenter = require('../../../helpers/service-message-presenter')
 

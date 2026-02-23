@@ -32,7 +32,7 @@ describe('CsvTransformer Class', () => {
         LAnum: 999,
         AttemptID: 'attempt ID',
         FormID: 'form ID',
-        TestDate: moment('2020-06-29'),
+        TestDate: moment('2020-06-29T07:49:35.637Z'),
         TimeStart: moment('2020-06-29T07:49:35.637Z'),
         TimeComplete: moment('2020-06-29T07:49:35.637Z').add(2, 'minutes'),
         TimeTaken: 223.45,
@@ -214,7 +214,7 @@ describe('CsvTransformer Class', () => {
     test('it outputs the test date', () => {
       const s = sut.transform()
       const res = CSV.parse(s)
-      expect(res[0][24]).toBe('2020-06-29')
+      expect(res[0][24]).toBe('2020-06-29T07:49:35.637Z')
     })
 
     test('it outputs the time start', () => {

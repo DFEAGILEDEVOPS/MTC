@@ -22,8 +22,7 @@ const serviceBusQueueAdminService = {
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
     const queues = await serviceBusQueueAdminService.getQueueNames()
     const messageCountPromises = []
-    for (let index = 0; index < queues.length; index++) {
-      const qName = queues[index]
+    for (const qName of queues) {
       messageCountPromises.push(getQueueMessageCount(qName))
     }
     return await Promise.all(messageCountPromises)

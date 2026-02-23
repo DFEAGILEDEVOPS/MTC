@@ -145,8 +145,7 @@ export interface Tokens {
   checkStarted: Token
   pupilPreferences: Token
   pupilFeedback: Token
-  jwt: Jwt
-  checkComplete: Token
+  checkSubmission: Jwt
 }
 
 export interface Token {

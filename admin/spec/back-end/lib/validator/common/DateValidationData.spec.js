@@ -1,4 +1,3 @@
-/* global describe, test, expect */
 
 const DateValidationData = require('../../../../../lib/validator/common/DateValidationData')
 

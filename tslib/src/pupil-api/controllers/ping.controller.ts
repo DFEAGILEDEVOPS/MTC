@@ -15,14 +15,14 @@ export class PingController {
     let commitId: object | string = 'NOT FOUND'
     try {
       buildNumber = await this.pingService.getBuildNumber()
-    } catch (error) {
-      // error
+    } catch {
+      // do nothing
     }
 
     try {
       commitId = await this.pingService.getCommitId()
-    } catch (error) {
-      // error
+    } catch {
+      // do nothing
     }
 
     res.setHeader('Content-Type', 'application/json')

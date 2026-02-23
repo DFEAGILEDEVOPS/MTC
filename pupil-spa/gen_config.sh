@@ -5,7 +5,7 @@ set -e
 # set -x
 scriptDir="$( cd "$( dirname "$0" )" >/dev/null && pwd )"
 envFile=${scriptDir}/../.env
-[[ -f ${envFile} ]] && source ${envFile}
+test -f "${envFile}" && . ${envFile}
 applicationInsightsConnectionString=${APPINSIGHTS_CONNECTION_STRING}
 apiBaseUrl=${PUPIL_API_BASE_URL:-"http://localhost:3003"}
 checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}

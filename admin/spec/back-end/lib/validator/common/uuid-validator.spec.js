@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe test expect beforeEach  */
-
 let sut
 
 const valueName = 'theUUID'

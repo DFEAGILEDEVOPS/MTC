@@ -5,11 +5,6 @@ import { type ICreateUserModel, UserApi } from '../create-user/user-api'
 
 const functionName = 'util-create-user'
 
-const outputCheckSubmissionStorageQueue = output.storageQueue({
-  connection: 'AZURE_STORAGE_CONNECTION_STRING',
-  queueName: 'check-submitted'
-})
-
 const outputCheckSubmissionServiceBusQueue = output.serviceBusQueue({
   connection: 'AZURE_SERVICE_BUS_CONNECTION_STRING',
   queueName: 'check-submission'
@@ -19,7 +14,7 @@ app.http(functionName, {
   methods: ['PUT'],
   authLevel: 'function', // TODO this was anonymous in v3 - why? ask QA about usage context
   handler: utilCreateUser,
-  extraOutputs: [outputCheckSubmissionStorageQueue, outputCheckSubmissionServiceBusQueue]
+  extraOutputs: [outputCheckSubmissionServiceBusQueue]
 })
 
 function finish (start: number, context: InvocationContext): void {

@@ -46,7 +46,7 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
-  unless status == 'Not started' || status == "Overdue - signed in but check not started"
+  unless status == 'Not started' || status == "Overdue - signed in check not started"
     Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete'] } unless status == 'Error in processing' || status == 'Pupil check not received' || status == 'Signed in'
     Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['processingFailed'] } if status == 'Error in processing'
     Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until (SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['pupilLoginDate']).is_a?(Time) } if status == 'Signed in'

@@ -49,10 +49,10 @@ Feature: Pupil Status Outcome
     Then I can see the status for the pupil is 'Restart applied'
 
   @incomplete_pupil_hook
-  Scenario: Pupil status is 'Overdue - Signed in but check not started' when a pupil logs in but has not started the check
+  Scenario: Pupil status is 'Overdue - Signed in check not started' when a pupil logs in but has not started the check
     Given there is a pupil with an incomplete status
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Overdue - signed in but check not started'
+    Then I can see the status for the pupil is 'Overdue - signed in check not started'
     And I should see a red error box at the top of the page
 
   Scenario: Pupil status changes to Complete when pupil take 2nd check

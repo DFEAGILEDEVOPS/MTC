@@ -18,8 +18,8 @@ class Logger {
     console.info('Log level is set to `%s`', this.level)
 
     let format
-    if (config.Logging.SendToAppInsights) {
-      format = winston.format.simple()
+    if (config.Monitoring.ApplicationInsights.ConnectionString) {
+      format = winston.format.json()
     } else {
       format = winston.format.combine(
         winston.format.colorize({ all: true }),

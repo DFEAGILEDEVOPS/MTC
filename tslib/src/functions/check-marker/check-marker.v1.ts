@@ -52,7 +52,7 @@ export class CheckMarkerV1 {
       checkResult = this.markCheck(markingData, validatedCheck.RowKey)
       const markingEntity = this.createMarkingEntity(checkResult, validatedCheck.PartitionKey)
       outputs.checkResultTable.push(markingEntity)
-    } catch (error) {
+    } catch {
       const failure = this.createProcessingFailureMessage(validatedCheck)
       outputs.checkNotificationQueue.push(failure)
       return outputs

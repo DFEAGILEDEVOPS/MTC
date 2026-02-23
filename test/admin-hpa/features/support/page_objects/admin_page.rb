@@ -14,8 +14,8 @@ class AdminPage < SitePrism::Page
   element :mod_schools_settings, 'a', text: "Settings for Ministry of Defence schools (MOD)"
   element :mod_schools_settings_text, 'p', text: 'Set timezones, convert and remove school listed as MOD'
   element :school_page_settings_text, 'p', text: 'Change the settings within the school pages'
-  element :manage_service_message, 'a', text: 'Manage service message'
-  element :manage_service_message_text, 'p', text: 'Add or delete a global service message for the school homepage'
+  element :service_message, 'a', text: 'Service message'
+  element :service_message_text, 'p', text: 'Add or delete a global service message for the school homepage'
   element :school_search, 'a', text: 'Manage organisations'
   element :school_search_text, 'p', text: 'Upload, add or edit schools'
   element :pupil_search, 'h2 a', text: 'Pupil Search'

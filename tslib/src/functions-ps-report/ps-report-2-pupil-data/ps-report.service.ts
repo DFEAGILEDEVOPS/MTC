@@ -42,8 +42,7 @@ export class PsReportService {
     const output: IPsReportServiceOutput = {
       psReportExportOutput: []
     }
-    for (let i = 0; i < pupils.length; i++) {
-      const pupil = pupils[i]
+    for (const pupil of pupils) {
       if (school === undefined) {
         school = await this.dataService.getSchool(pupil.schoolId)
       }

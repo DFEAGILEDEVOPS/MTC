@@ -1,5 +1,4 @@
 'use strict'
-/* global jest, describe, test, expect */
 
 const fs = require('fs-extra')
 

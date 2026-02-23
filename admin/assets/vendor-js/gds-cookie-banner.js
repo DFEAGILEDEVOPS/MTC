@@ -1,12 +1,13 @@
 // https://github.com/alphagov/govuk_publishing_components/blob/master/app/assets/javascripts/govuk_publishing_components/components/cookie-banner.js
-/* eslint-disable no-var */
 'use strict'
 
 window.GOVUK = window.GOVUK || {}
 window.GOVUK.Modules = window.GOVUK.Modules || {};
 
 (function (Modules) {
-  function CookieBanner () { }
+  function CookieBanner () {
+    // constructor
+  }
 
   CookieBanner.prototype.start = function ($module) {
     this.$module = $module[0]
@@ -37,7 +38,7 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
   CookieBanner.prototype.showCookieMessage = function () {
     // Show the cookie banner if not in the cookie settings page or in an iframe
     if (!this.isInCookiesPage() && !this.isInIframe()) {
-      var shouldHaveCookieMessage = (this.$module && window.GOVUK.cookie('cookies_preferences_set') !== 'true')
+      const shouldHaveCookieMessage = (this.$module && window.GOVUK.cookie('cookies_preferences_set') !== 'true')
 
       if (shouldHaveCookieMessage) {
         this.$module.style.display = 'block'

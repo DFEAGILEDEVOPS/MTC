@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, test, expect, beforeEach, jest, afterEach */
 const dateService = require('../../../../services/date.service')
 const moment = require('moment')
 const pinValidator = require('../../../../lib/validator/pin-validator')

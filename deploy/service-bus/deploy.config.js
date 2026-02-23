@@ -111,6 +111,9 @@ const config = {
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC, 10) : oneGigabyte,
       defaultMessageTimeToLive: sixHours,
       maxDeliveryCount: 1
+    },
+    {
+      name: 'pupil-feedback'
     }
   ]
 }

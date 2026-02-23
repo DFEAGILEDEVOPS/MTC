@@ -1,4 +1,4 @@
-export enum ServiceBusQueueName {
+export enum ServiceBusQueueNames {
   checkCompletion = 'check-completion',
   checkMarking = 'check-marking',
   checkNotification = 'check-notification',
@@ -12,5 +12,6 @@ export enum ServiceBusQueueName {
   pupilLogin = 'pupil-login',
   queueReplay = 'queue-replay',
   syncResultsToDbComplete = 'sync-results-to-db-complete',
-  psReportExec = 'ps-report-exec'
+  psReportExec = 'ps-report-exec',
+  pupilFeedback = 'pupil-feedback'
 }

@@ -68,7 +68,7 @@ export class PupilPrefsService {
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICalled());
       await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICallSucceeded());
-    } catch (error) {
+    } catch {
       this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICallFailed());
     }
   }
@@ -89,7 +89,7 @@ export class PupilPrefsService {
       const contrastSetting = config && this.contrastSettings.find(f => f.code === config.colourContrastCode);
       this.accessArrangements.contrast = (contrastSetting && contrastSetting.val) || 'bow';
     }
-    if (!this.accessArrangements.fontSize) {
+    if (!this.accessArrangements?.fontSize) {
       this.fontSettings = AccessArrangementsConfig.fontSettings;
       const fontSetting = config && this.fontSettings.find(f => f.code === config.fontSizeCode);
       this.accessArrangements.fontSize = (fontSetting && fontSetting.val) || 'regular';

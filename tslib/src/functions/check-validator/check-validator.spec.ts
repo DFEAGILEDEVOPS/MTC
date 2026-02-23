@@ -14,7 +14,7 @@ import { type ITableService } from '../../azure/table-service'
 import { type TableEntity } from '@azure/data-tables'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
-import * as mockSubmittedCheckV3 from '../../schemas/check-schemas/mock-valid-submitted-check.2023.json'
+import * as mockSubmittedCheckV3 from '../../common/mocks/mock-valid-submitted-check.2023.json'
 import * as R from 'ramda'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 

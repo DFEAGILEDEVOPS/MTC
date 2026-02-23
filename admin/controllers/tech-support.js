@@ -31,7 +31,7 @@ const controller = {
     }
   },
   /**
- * Renders the check view input form
+ * Renders the tech support check view input form
  * @param {object} req
  * @param {object} res
  * @param {function} next
@@ -39,7 +39,7 @@ const controller = {
  */
   getCheckViewPage: async function getCheckViewPage (req, res, next, error = null) {
     res.locals.pageTitle = 'Tech Support Check View'
-    req.breadcrumbs('Check View')
+    req.breadcrumbs('Tech Support Check View')
     try {
       return res.render('tech-support/check-view', {
         breadcrumbs: req.breadcrumbs(),
@@ -53,7 +53,7 @@ const controller = {
     }
   },
   /**
-   * Renders check view summary
+   * Renders tech support check view summary
    * @param {object} req
    * @param {object} res
    * @param {object} next
@@ -73,12 +73,16 @@ const controller = {
         found = true
         try {
           checkReceived = await checkDiagnosticsService.getReceivedCheckEntityByCheckCode(checkCode)
-        } catch (ignored) {}
+        } catch {
+          // ignore
+        }
         try {
           checkMarked = await checkDiagnosticsService.getMarkedCheckEntityByCheckCode(checkCode)
-        } catch (ignored) {}
+        } catch {
+          // ignore
+        }
       }
-      req.breadcrumbs('Check View')
+      req.breadcrumbs('Tech Support Check View')
       res.render('tech-support/check-view', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
@@ -102,7 +106,7 @@ const controller = {
    * @param {*} next
    * @returns
    */
-  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res, next) {
+  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res) {
     const jsonError = {
       error: 'Error'
     }
@@ -133,7 +137,7 @@ const controller = {
    * @param {*} next
    * @returns
    */
-  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res, next) {
+  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res) {
     const jsonError = {
       error: 'Error'
     }
@@ -164,7 +168,7 @@ const controller = {
    * @param {object} res
    * @param {object} next
    */
-  getReceivedCheckPayload: async function getReceivedCheckPayload (req, res, next) {
+  getReceivedCheckPayload: async function getReceivedCheckPayload (req, res) {
     const checkCode = req.query.checkCode.trim()
     let payload
     try {
@@ -252,7 +256,6 @@ const controller = {
       } else {
         // Key is not allowed / not found
         const error = new Error('Invalid key')
-        // @ts-ignore
         error.status = 404
         return next(error)
       }
@@ -380,8 +383,8 @@ const controller = {
   },
 
   showQueueOverview: async function showQueueOverview (req, res, next) {
-    req.breadcrumbs('Queue Overview')
-    res.locals.pageTitle = 'Queue Overview'
+    req.breadcrumbs('Queues Overview')
+    res.locals.pageTitle = 'Queues Overview'
     try {
       const sbQueueInfo = await queueMgmtService.getServiceBusQueueSummary()
       const storageQueueInfo = await queueMgmtService.getStorageAccountQueueSummary()
@@ -402,7 +405,7 @@ const controller = {
         res.redirect('/tech-support/queue-overview')
       }
       const title = `Clear Service Bus Queue: ${queueName}`
-      req.breadcrumbs('Queue Overview', '/tech-support/queue-overview')
+      req.breadcrumbs('Queues Overview', '/tech-support/queue-overview')
       req.breadcrumbs(title)
       res.locals.pageTitle = title
       res.render('tech-support/queue-purge-confirm', {
@@ -434,7 +437,7 @@ const controller = {
   getCheckResultsResyncCheck: async function getCheckResultsResyncCheck (req, res, next, error = new ValidationError()) {
     try {
       res.locals.pageTitle = 'Check Results - Resync Check'
-      req.breadcrumbs('Resync Single Check')
+      req.breadcrumbs('Check Results - Resync Check')
       res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         error,
@@ -456,7 +459,7 @@ const controller = {
         return controller.getCheckResultsResyncCheck(req, res, next, validationError)
       }
       await resultsResyncService.resyncSingleCheck(checkCode)
-      req.breadcrumbs('Resync Single Check')
+      req.breadcrumbs('Check Results - Resync Check')
       res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
@@ -473,7 +476,7 @@ const controller = {
   getCheckResultsResyncSchool: async function getCheckResultsResyncSchool (req, res, next, error = new ValidationError()) {
     try {
       res.locals.pageTitle = 'Resync School Results'
-      req.breadcrumbs('Check Results - Resync School')
+      req.breadcrumbs('Resync School Results')
       res.render('tech-support/results-resync-school', {
         breadcrumbs: req.breadcrumbs(),
         error,
@@ -495,7 +498,7 @@ const controller = {
         return controller.getCheckResultsResyncSchool(req, res, next, validationError)
       }
       await resultsResyncService.resyncChecksForSchool(schoolUuid)
-      req.breadcrumbs('Check Results - Resync School')
+      req.breadcrumbs('Resync School Results')
       res.render('tech-support/results-resync-school', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
@@ -512,7 +515,7 @@ const controller = {
   getCheckResultsResyncAll: async function getCheckResultsResyncAll (req, res, next, error = new ValidationError()) {
     try {
       res.locals.pageTitle = 'Resync All Results'
-      req.breadcrumbs('Check Results - Resync All')
+      req.breadcrumbs('Resync All Results')
       res.render('tech-support/results-resync-all', {
         breadcrumbs: req.breadcrumbs(),
         error,
@@ -530,7 +533,7 @@ const controller = {
     const resyncAll = req.body.resyncAll === 'true' // convert string to bool- the user must tick the checkbox
     try {
       await resultsResyncService.resyncAllChecks(resyncAll)
-      req.breadcrumbs('Check Results - Resync All')
+      req.breadcrumbs('Resync All Results')
       res.render('tech-support/results-resync-all', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
@@ -580,8 +583,8 @@ const controller = {
 
   getCheckSubmit: async function getCheckSubmit (req, res, next) {
     try {
-      res.locals.pageTitle = 'Submit Check'
-      req.breadcrumbs('Submit Check')
+      res.locals.pageTitle = 'Submit a check direct to queue'
+      req.breadcrumbs('Submit a check direct to queue')
       res.render('tech-support/check-submit', {
         breadcrumbs: req.breadcrumbs(),
         response: ''
@@ -592,10 +595,10 @@ const controller = {
   },
 
   postCheckSubmit: async function postCheckSubmit (req, res, next) {
-    res.locals.pageTitle = 'Submit Check'
+    res.locals.pageTitle = 'Submit a check direct to queue'
     try {
       await CheckSubmitService.submitV3CheckPayload(req.body.isJson, req.body.payload)
-      req.breadcrumbs('Submit Check')
+      req.breadcrumbs('Submit a check direct to queue')
       res.render('tech-support/check-submit', {
         breadcrumbs: req.breadcrumbs(),
         formData: {
@@ -611,8 +614,8 @@ const controller = {
 
   getSbQueueSubmit: async function getSbQueueSubmit (req, res, next) {
     try {
-      req.breadcrumbs('Submit Service Bus Queue Message')
-      res.locals.pageTitle = 'Submit Service Bus Queue Message'
+      req.breadcrumbs('Submit a message to a service bus queue')
+      res.locals.pageTitle = 'Submit a message to a service bus queue'
       res.render('tech-support/sb-queue-submit', {
         breadcrumbs: req.breadcrumbs(),
         error: ''
@@ -622,8 +625,8 @@ const controller = {
     }
   },
 
-  postSbQueueSubmit: async function postSbQueueSubmit (req, res, next) {
-    res.locals.pageTitle = 'Submit Service Bus Queue Message'
+  postSbQueueSubmit: async function postSbQueueSubmit (req, res) {
+    res.locals.pageTitle = 'Submit a message to a service bus queue'
     try {
       await queueMgmtService.sendServiceBusQueueMessage(req.body.queueName, req.body.message, req.body.contentType)
       return res.redirect('/tech-support/queue-overview')

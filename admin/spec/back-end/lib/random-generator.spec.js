@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe, test, expect */
-
 const randomGenerator = require('../../../lib/random-generator')
 
 describe('random-generator', () => {

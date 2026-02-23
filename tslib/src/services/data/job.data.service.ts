@@ -2,7 +2,6 @@ import { TYPES, MAX } from 'mssql'
 import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
-import { type ILogger } from '../../common/logger'
 const { isArray } = require('ramda-adjunct')
 
 export type JobStatusOutcomes = (JobStatusCode.Failed | JobStatusCode.CompletedWithErrors | JobStatusCode.CompletedSuccessfully)
@@ -24,7 +23,7 @@ export class JobDataService implements IJobDataService {
     this.sqlService = new SqlService()
   }
 
-  async setJobStarted (jobSlug: string, options?: { meta?: object }, logger?: ILogger): Promise<IModifyResult> {
+  async setJobStarted (jobSlug: string, options?: { meta?: object }): Promise<IModifyResult> {
     const params: ISqlParameter[] = [
       {
         name: 'startedAt',

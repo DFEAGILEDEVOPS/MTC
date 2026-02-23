@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, test, expect jest beforeEach afterEach */
 
 const sut = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')

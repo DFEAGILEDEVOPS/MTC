@@ -8,9 +8,10 @@ import { CheckStartService } from '../services/check-start/check-start.service';
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
 
 @Component({
-  selector: 'app-questions-intro',
-  templateUrl: './questions-intro.component.html',
-  styleUrls: ['./questions-intro.component.scss']
+    selector: 'app-questions-intro',
+    templateUrl: './questions-intro.component.html',
+    styleUrls: ['./questions-intro.component.scss'],
+    standalone: false
 })
 export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
 

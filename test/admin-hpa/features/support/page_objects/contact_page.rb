@@ -1,8 +1,8 @@
 class ContactPage < SitePrism::Page
   set_url '/contact'
 
-  element :heading, '.govuk-heading-xl'
-  element :contact_information, '.govuk-inset-text', text: "National curriculum assessments helpline 0300 303 3013"
-  element :email_information, '.govuk-inset-text', text: "Email assessments@education.gov.uk"
-
+  element :heading, '.govuk-heading-xl', text:'Contact'
+  element :MTC_help_centre, '.govuk-link', text:'MTC help centre'
+  element :virtual_assistant, '.govuk-link', text: 'virtual assistant'
+  element :contact_us, '.govuk-link', text: 'contact us'
 end

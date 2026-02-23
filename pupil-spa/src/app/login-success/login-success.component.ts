@@ -11,9 +11,10 @@ import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { UserService } from '../services/user/user.service';
 
 @Component({
-  selector: 'app-login-success',
-  templateUrl: './login-success.component.html',
-  styleUrls: ['./login-success.component.css']
+    selector: 'app-login-success',
+    templateUrl: './login-success.component.html',
+    styleUrls: ['./login-success.component.css'],
+    standalone: false
 })
 export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 

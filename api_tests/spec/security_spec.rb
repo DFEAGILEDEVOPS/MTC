@@ -38,7 +38,7 @@ describe 'Security API spec' do
                                                                           "data:; frame-src 'none'; object-src 'none'; connect-src *; media-src data:"
       expect(response.headers['content-type']).to eql "text/html"
       expect(response.headers['server']).to eql 'nginx'
-      expect(response.headers['strict-transport-security']).to eql "max-age=31536000;"
+      expect(response.headers['strict-transport-security']).to eql "max-age=31536000; includeSubDomains; preload"
       expect(response.headers['vary']).to eql "Accept-Encoding"
       expect(response.headers['x-content-type-options']).to eql 'nosniff'
       expect(response.headers['x-dns-prefetch-control']).to eql 'off'

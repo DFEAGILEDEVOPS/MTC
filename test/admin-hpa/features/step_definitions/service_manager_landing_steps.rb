@@ -76,9 +76,9 @@ Then(/^I should be given the option to update mod schools$/) do
   expect(admin_page).to have_mod_schools_settings_text
 end
 
-Then(/^I should be given the option to manage service messages$/) do
-  expect(admin_page).to have_manage_service_message
-  expect(admin_page).to have_manage_service_message_text
+Then(/^I should be given the option to service messages$/) do
+  expect(admin_page).to have_service_message
+  expect(admin_page).to have_service_message_text
 end
 
 Then(/^I should be given the option to manage organisations/) do
@@ -102,7 +102,7 @@ And(/^the service managers homepage should match design$/) do
   step "I should be given the option to upload pupil census data"
   step "I should be given the option to adjust settings on pupil check"
   step "I should be given the option to update mod schools"
-  step "I should be given the option to manage service messages"
+  step "I should be given the option to service messages"
   step "I should be given some guidance"
   step "I should be given the option to manage organisations"
   step 'I should be given the option to manage attendance codes'

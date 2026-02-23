@@ -96,8 +96,10 @@ RUN apt-get update && apt-get install -y dotnet-sdk-7.0
 # powershell
 # Update the list of packages
 RUN apt-get update
+
 # Download the Microsoft repository GPG keys
 RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+
 # Register the Microsoft repository GPG keys
 RUN dpkg -i packages-microsoft-prod.deb
 # Delete the the Microsoft repository GPG keys file
@@ -147,19 +149,22 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/$RUBY_VERSION" >> ~
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
-ENV CURRENT_NODE_VERSION=18.12.0
-ENV PREVIOUS_NODE_VERSION=16.17.1
+ENV CURRENT_NODE_VERSION=20.18.0
+ENV PREVIOUS_NODE_VERSION=18.12.0
+# remove once Angular has parity with rest of solution runtimes
+ENV ANGULAR_SPA_NODE_VERSION=16.17.1
 
 RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \
   && nvm install $CURRENT_NODE_VERSION \
   && nvm install $PREVIOUS_NODE_VERSION \
+  && nvm install $ANGULAR_SPA_NODE_VERSION \
   && nvm alias default $CURRENT_NODE_VERSION
 
 # install azuredevops agent service
 # https://github.com/microsoft/azure-pipelines-agent/releases
 ARG TARGETARCH=amd64
-ARG AGENT_VERSION=3.241.0
+ARG AGENT_VERSION=3.248.0
 
 WORKDIR /azp
 RUN if [ "$TARGETARCH" = "amd64" ]; then \

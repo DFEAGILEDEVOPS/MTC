@@ -1,4 +1,3 @@
-/* globals describe jest beforeEach expect test afterEach */
 const moment = require('moment')
 const sut = require('../../../services/pupil-pin-presentation-service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')

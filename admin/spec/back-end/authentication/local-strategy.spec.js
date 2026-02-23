@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe jest test expect */
-
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 

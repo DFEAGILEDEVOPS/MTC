@@ -159,7 +159,7 @@ export class PrepareAnswersAndInputsDataService {
       let question: DBQuestion
       try {
         question = await this.questionService.findQuestion(markedAnswer.question)
-      } catch (error) {
+      } catch {
         throw new Error(`Unable to find valid question for [${markedAnswer.question}] from checkCode [${markedCheck.checkCode}]`)
       }
       const suffix = `${j}`

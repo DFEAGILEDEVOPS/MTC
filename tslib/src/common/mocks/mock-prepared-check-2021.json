@@ -1,0 +1,105 @@
+{
+  "checkCode": "56D0B68B-2A8B-4598-BB2B-CD0D1A7290EF",
+  "config": {
+    "audibleSounds": false,
+    "checkTime": 30,
+    "colourContrast": false,
+    "fontSize": false,
+    "inputAssistance": false,
+    "loadingTime": 3,
+    "nextBetweenQuestions": false,
+    "numpadRemoval": false,
+    "practice": false,
+    "questionReader": false,
+    "questionTime": 6,
+    "compressCompletedCheck": true
+  },
+  "createdAt": "2021-06-25T09:11:40.601Z",
+  "pinExpiresAtUtc": "2021-06-25T22:59:59.999Z",
+  "pinValidFromUtc": "2021-06-25T07:00:00.000Z",
+  "pupil": {
+    "firstName": "Juliana",
+    "lastName": "Brewer",
+    "dob": "19 October 2010",
+    "checkCode": "56D0B68B-2A8B-4598-BB2B-CD0D1A7290EF",
+    "uuid": "5F4FB2B3-4902-4E3C-9665-5B6D1B64463B"
+  },
+  "questions": [
+    {
+      "order": 1,
+      "factor1": 2,
+      "factor2": 5
+    },
+    {
+      "order": 2,
+      "factor1": 11,
+      "factor2": 2
+    },
+    {
+      "order": 3,
+      "factor1": 5,
+      "factor2": 10
+    },
+    {
+      "order": 4,
+      "factor1": 4,
+      "factor2": 4
+    },
+    {
+      "order": 5,
+      "factor1": 3,
+      "factor2": 9
+    },
+    {
+      "order": 6,
+      "factor1": 2,
+      "factor2": 4
+    },
+    {
+      "order": 7,
+      "factor1": 3,
+      "factor2": 3
+    },
+    {
+      "order": 8,
+      "factor1": 4,
+      "factor2": 9
+    },
+    {
+      "order": 9,
+      "factor1": 6,
+      "factor2": 5
+    },
+    {
+      "order": 10,
+      "factor1": 12,
+      "factor2": 12
+    }
+  ],
+  "school": {
+    "name": "Example School One",
+    "uuid": "1F2A90D0-35C2-4D01-B26C-912C9CCEFEA2"
+  },
+  "tokens": {
+    "checkStarted": {
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
+      "url": "https://myqueue.queue.core.windows.net/check-started",
+      "queueName": "check-started"
+    },
+    "pupilPreferences": {
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
+      "url": "https://myqueue.queue.core.windows.net/pupil-prefs",
+      "queueName": "pupil-prefs"
+    },
+    "pupilFeedback": {
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
+      "url": "https://myqueue.queue.core.windows.net/pupil-feedback",
+      "queueName": "pupil-feedback"
+    },
+    "checkSubmission": {
+      "token": "string",
+      "url": "string"
+    }
+  },
+  "updatedAt": "2021-06-02T09:11:40.601Z"
+}

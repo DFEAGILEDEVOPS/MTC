@@ -1,6 +1,5 @@
 'use strict'
 
-/* global describe expect fail beforeEach test jest afterEach */
 const logger = require('../../../services/log.service').getLogger()
 const moment = require('moment')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
@@ -212,7 +211,7 @@ describe('pupil-status.service', () => {
         pinExpiresAt: moment().add(3, 'hours'),
         checkStartedAt: null
       })
-      expect(status).toBe('Overdue - signed in but check not started')
+      expect(status).toBe('Overdue - signed in check not started')
     })
 
     test('it identifies a pupil was allocated a check that then expired', () => {

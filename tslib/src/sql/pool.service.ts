@@ -53,7 +53,6 @@ async function waitForConnection (): Promise<void> {
         if (pool.connected) {
           resolve()
         } else {
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           waitForConnectionPoolToBeReadyExecutor(resolve, reject)
         }
       } else {
@@ -65,6 +64,5 @@ async function waitForConnection (): Promise<void> {
   // This simply waits for  30 seconds, for the pool to become connected.
   // Since this is also an async function, if this fails after 30 seconds, execution stops
   // and an error is thrown.
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   await new Promise(waitForConnectionPoolToBeReadyExecutor)
 }

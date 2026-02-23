@@ -1,4 +1,4 @@
-@access_arrangement_feature
+@access_arrangements_feature
 @check_feature
 @complete_page_feature
 @cookies_feature

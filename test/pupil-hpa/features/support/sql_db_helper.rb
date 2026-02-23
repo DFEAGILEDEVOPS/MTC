@@ -540,4 +540,11 @@ class SqlDbHelper
     row
   end
 
+  def self.get_pupil_feedback(check_id,pupil_id, school_id)
+    sql = "SELECT * FROM mtc_admin.pupilFeedback WHERE pupil_id = #{pupil_id} and check_id = #{check_id} and school_id = #{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    row = result.first
+    result.cancel
+    row
+  end
 end

@@ -36,8 +36,7 @@ export class PreparedCheckSyncService {
     if (checkReferences.length === 0) {
       return
     }
-    for (let index = 0; index < checkReferences.length; index++) {
-      const ref = checkReferences[index]
+    for (const ref of checkReferences) {
       this.logger.info(`${this.name}: syncing check: checkCode:${ref.checkCode}`)
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
       const preparedCheck: IPreparedCheck = await this.redisService.get(cacheKey) as IPreparedCheck

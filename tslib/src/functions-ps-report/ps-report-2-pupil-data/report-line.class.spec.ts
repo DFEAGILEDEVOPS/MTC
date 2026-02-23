@@ -1,7 +1,8 @@
 import { ReportLine } from './report-line.class'
 import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-check'
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
-import { pupil as pupilAnnulled } from './mocks/pupil-not-attending-annulled'
+import { pupil as pupilAnnulledMaladmin } from './mocks/pupil-not-attending-annulled'
+import { pupil as pupilAnnulledCheating } from './mocks/pupil-not-attending-annulled-cheating'
 import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
 import { pupil as pupilIncompleteCorrupt } from './mocks/pupil-not-attending-corrupt'
 import { pupil as pupilCompleteRestartAvailableCorrupt } from './mocks/pupil-complete-and-restart-available-corrupt'
@@ -47,7 +48,7 @@ describe('report line class', () => {
       if (Array.isArray(sut.answers) && sut.answers.length > 1) {
         try {
           sut.answers[1].isCorrect = true // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.answers[1].isCorrect).toBe(false)
       }
     })
@@ -58,7 +59,7 @@ describe('report line class', () => {
       if (Array.isArray(sut.answers) && sut.answers.length > 1) {
         try {
           sut.answers[1].inputs[0].input = '66' // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.answers[1].inputs[0].input).toBe('4')
       }
     })
@@ -73,7 +74,7 @@ describe('report line class', () => {
       if (sut.check !== null) {
         try {
           sut.check.mark = 26 // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.check.mark).toBe(1)
       }
     })
@@ -88,7 +89,7 @@ describe('report line class', () => {
       if (sut.checkConfig !== null) {
         try {
           sut.checkConfig.audibleSounds = true // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.checkConfig.audibleSounds).toBe(false)
       }
     })
@@ -103,7 +104,7 @@ describe('report line class', () => {
       if (sut.checkForm !== null) {
         try {
           sut.checkForm.items[0].f1 = 9 // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.checkForm.items[0].f1).toBe(1)
       }
     })
@@ -118,7 +119,7 @@ describe('report line class', () => {
       if (sut.device !== null) {
         try {
           sut.device.browserFamily = 'TEST' // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.device.browserFamily).toBe('CHROME')
       }
     })
@@ -133,7 +134,7 @@ describe('report line class', () => {
       if (sut.events !== null) {
         try {
           sut.events[0].type = 'QuestionIntroRendered' // attempt modification - compiler/interpreter should throw
-        } catch (error) {}
+        } catch {}
         expect(sut.events[0].type).toBe('CheckStarted')
       }
     })
@@ -261,12 +262,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           thisCheckConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           {
@@ -300,12 +301,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           thisCheckConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           {
@@ -339,12 +340,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           thisCheckConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           {
@@ -364,12 +365,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
-          null,
+          answers,
+          check,
           checkConfig,
-          null,
-          null,
-          null,
+          checkForm,
+          device,
+          events,
           pupilCompletedCheck,
           school,
           null
@@ -698,6 +699,24 @@ describe('report line class', () => {
         const out = report.transform()
         expect(out.PupilStatus).toBe('Incomplete')
       })
+
+      test('if the pupil has had a pin generated but not logged in, then the check timing data should not be shown', () => {
+        const report = new ReportLine(
+          null,
+          checkIncomplete,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilIncomplete,
+          school,
+          null
+        )
+        const out = report.transform()
+        expect(out.PauseLength).toBeNull()
+        expect(out.QDisplayTime).toBeNull()
+        expect(out.AccessArr).toBe('')
+      })
     })
 
     describe('check fields', () => {
@@ -815,8 +834,9 @@ describe('report line class', () => {
     })
   })
 
-  describe('pupil is marked as annulled', () => {
+  describe('pupil is marked as annulled for maladmin after completing a check', () => {
     let sut: ReportLine
+
     beforeEach(() => {
       sut = new ReportLine(
         answers,
@@ -825,7 +845,7 @@ describe('report line class', () => {
         checkForm,
         device,
         events,
-        pupilAnnulled,
+        pupilAnnulledMaladmin,
         school,
         null
       )
@@ -854,9 +874,55 @@ describe('report line class', () => {
       expect(out.ReasonNotTakingCheck).toBe('Q')
     })
 
-    test('the pupil status is set to Not taking the Check', () => {
+    test('the pupil status is set to whatever it was before it was annulled', () => {
       const out = sut.transform()
-      expect(out.PupilStatus).toBe('Not taking the Check')
+      expect(out.PupilStatus).toMatch(/^(Complete|Incomplete)$/)
+    })
+  })
+
+  describe('pupil is marked as annulled cheating after completing a check', () => {
+    let sut: ReportLine
+
+    beforeEach(() => {
+      sut = new ReportLine(
+        answers,
+        check,
+        checkConfig,
+        checkForm,
+        device,
+        events,
+        pupilAnnulledCheating,
+        school,
+        null
+      )
+    })
+
+    test('it is defined', () => {
+      expect(sut).toBeDefined()
+    })
+
+    test('the check data is initialised', () => {
+      const out = sut.transform()
+      expect(out.PauseLength).not.toBeNull()
+      expect(out.QDisplayTime).not.toBeNull()
+      expect(out.AttemptID).not.toBeNull()
+      expect(out.FormID).not.toBeNull()
+      expect(out.TestDate).not.toBeNull()
+      expect(out.TimeStart).not.toBeNull()
+      expect(out.FormMark).toBeNull()
+      expect(out.BrowserType).not.toBeNull()
+      expect(out.DeviceID).not.toBeNull()
+      expect(out.answers).not.toHaveLength(0)
+    })
+
+    test('the pupil has the annulled code', () => {
+      const out = sut.transform()
+      expect(out.ReasonNotTakingCheck).toBe('H')
+    })
+
+    test('the pupil status is set to whatever it was before it was annulled', () => {
+      const out = sut.transform()
+      expect(out.PupilStatus).toMatch(/^(Complete|Incomplete)$/)
     })
   })
 

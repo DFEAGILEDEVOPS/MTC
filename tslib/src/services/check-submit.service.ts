@@ -1,4 +1,4 @@
-import { ServiceBusQueueName } from '../azure/service-bus-queue.names'
+import { ServiceBusQueueNames } from '../azure/service-bus-queue.names'
 import { ServiceBusQueueService, type IServiceBusQueueService } from '../azure/service-bus.queue.service'
 
 export interface ICheckSubmitService {
@@ -19,6 +19,6 @@ export class CheckSubmitService {
     if (payload === undefined) {
       throw new Error('payload is required')
     }
-    return this.queueService.dispatch({ body: payload }, ServiceBusQueueName.checkSubmission)
+    return this.queueService.dispatch({ body: payload }, ServiceBusQueueNames.checkSubmission)
   }
 }

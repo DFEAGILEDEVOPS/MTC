@@ -2,14 +2,14 @@
 Feature:
   MOD Schools
 
-  Scenario: Settings for MOD schools page matches design
+  Scenario: Settings for Ministry of Defence schools (MOD) schools page matches design
     Given I have signed in with service-manager
-    When I navigate to the settings for MOD schools page
+    When I navigate to the Settings for Ministry of Defence schools (MOD) schools page
     Then i should see that the MOD schools page matches design
 
   @remove_mod_school_hook
   Scenario: Service manager can update a school to a mod school
-    Given I am on the MOD schools page
+    Given I am on the Settings for Ministry of Defence schools (MOD) page
     When I update a school to be of a different time zone
     Then the MOD schools page should reflect this
 
@@ -20,7 +20,7 @@ Feature:
 
   Scenario: Mod schools page lists schools that have an lea code of 702
     Given I have signed in with service-manager
-    When I navigate to the settings for MOD schools page
+    When I navigate to the Settings for Ministry of Defence schools (MOD) schools page
     Then I should see a list of schools with the LEA code of 702
 
   @remove_mod_school_hook

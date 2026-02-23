@@ -58,8 +58,8 @@ Before('@new_school_no_password_hook') do
 end
 
 Before('@service_manager_message_hook') do
-  step 'I am on the manage service message page'
-  manage_service_message_page.remove_all_service_messages if manage_service_message_page.has_remove_message?
+  step 'I am on the service message page'
+  service_message_page.remove_all_service_messages if service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
@@ -112,8 +112,8 @@ Before('@incomplete_pupil_hook') do
 end
 
 After('@service_manager_message_hook') do
-  step 'I am on the manage service message page'
-  manage_service_message_page.remove_all_service_messages if manage_service_message_page.has_remove_message?
+  step 'I am on the service message page'
+  service_message_page.remove_all_service_messages if service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
@@ -167,6 +167,7 @@ Before("@hdf_hook") do
   SqlDbHelper.delete_pupils_not_taking_check(@school['id'])
   SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
   step "I have signed in with #{@username}"
+  sleep 2
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
   @page = pupil_reason_page

@@ -335,7 +335,9 @@ describe('SyncResultsDataService', () => {
       ;(mockSqlService.modifyWithTransaction as jest.SpyInstance).mockRejectedValue(new Error('mock sql error'))
       try {
         await sut.insertToDatabase([{ sql: '', params: [] }], 'checkCode-2')
-      } catch (ignore) {}
+      } catch {
+        // do nothing
+      }
       expect(mockLogger.error).toHaveBeenCalledWith('sync-results-to-sql: data service: ERROR: Failed to insert transaction to the' +
         ' database for checkCode [checkCode-2]\nOriginal Error: mock sql error')
     })

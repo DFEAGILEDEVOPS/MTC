@@ -8,8 +8,7 @@ const service = {
     const queueServiceClient = QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const queueNames = await getQueueNames(queueServiceClient)
     const queueInfo = []
-    for (let index = 0; index < queueNames.length; index++) {
-      const queueName = queueNames[index]
+    for (const queueName of queueNames) {
       const queueClient = queueServiceClient.getQueueClient(queueName)
       const properties = await queueClient.getProperties()
       queueInfo.push({

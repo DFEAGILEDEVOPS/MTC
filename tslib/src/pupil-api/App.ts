@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import logger from './services/log.service'
 import authRoutes from './routes/auth'
 import submitRoutes from './routes/submit'
+import feedbackRoutes from './routes/feedback'
 import pingRoute from './routes/ping'
 import headRoute from './routes/head'
 import * as corsOptions from './helpers/cors-options'
@@ -55,6 +56,7 @@ class App {
     this.express.use('/ping', pingRoute)
     this.express.use('/auth', authRoutes)
     this.express.use('/submit', submitRoutes)
+    this.express.use('/feedback', feedbackRoutes)
     this.express.use(headRoute)
 
     // catch 404 and forward to error handler
@@ -65,7 +67,7 @@ class App {
     })
 
     // error handler
-    this.express.use(function (err: any, req: any, res: any, next: any) {
+    this.express.use(function (err: any, req: any, res: any) {
       const errorId = uuidv4()
       // only providing error information in development
       // @TODO: change this to a real logger with an error string that contains

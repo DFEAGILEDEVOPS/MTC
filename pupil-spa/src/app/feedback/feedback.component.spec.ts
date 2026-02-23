@@ -50,7 +50,7 @@ describe('FeedbackComponent', () => {
     injector.compileComponents()
     // We need to return null when check for existing feedback in `componentValidate()` so the component does not navigate away
     spyOn(storageService, 'getFeedback').and.returnValue(null)
-    spyOn(storageService, 'setFeedback').and.callFake(function (feedbackData) {})
+    spyOn(storageService, 'setFeedback').and.callFake(function (feedbackData) {}) // eslint-disable-line @typescript-eslint/no-unused-vars
     spyOn(storageService, 'getPupil').and.returnValue({ checkCode: '0000-0000-0000-0000'})
     spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(true)
   }))
@@ -59,8 +59,7 @@ describe('FeedbackComponent', () => {
     fixture = TestBed.createComponent(FeedbackComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
-    spyOn(component, 'onSelectionChange').and.callFake(function (key, value) {})
-
+    spyOn(component, 'onSelectionChange').and.callFake(() => {})
   })
 
   it('should be created', () => {

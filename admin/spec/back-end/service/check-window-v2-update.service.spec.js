@@ -1,5 +1,4 @@
 'use strict'
-/* global describe beforeEach expect test jest afterEach */
 
 const moment = require('moment')
 const { v4: uuidv4 } = require('uuid')

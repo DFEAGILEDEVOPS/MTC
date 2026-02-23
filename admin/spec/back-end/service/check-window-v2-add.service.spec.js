@@ -1,5 +1,4 @@
 'use strict'
-/* global describe beforeEach expect test jest afterEach */
 
 const activeCheckWindowValidator = require('../../../lib/validator/check-window-v2/active-check-window-validator')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')

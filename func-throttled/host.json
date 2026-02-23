@@ -1,9 +1,10 @@
 {
   "version": "2.0",
+  "functionTimeout": "12:00:00", // 12 hours: function has at most this long to complete or it will be terminated.
   "logging": {
     "logLevel": {
       "default": "Error",
-      "Function": "Trace"
+      "Function": "Information"
     }
   },
   "extensions": {
@@ -31,7 +32,7 @@
       "messageHandlerOptions": {
         "autoComplete": true,
         "maxConcurrentCalls": 1,
-        "maxAutoRenewDuration": "00:05:00"
+        "maxAutoRenewDuration": "12:00:00" // Allow service-bus messages to be renewed for this long as the maximum duration.
       },
       "sessionHandlerOptions": {
         "autoComplete": false,

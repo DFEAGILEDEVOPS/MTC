@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach describe test expect jest afterEach */
-
 const groupValidator = require('../../../../lib/validator/group-validator')
 const groupDataService = require('../../../../services/data-access/group.data.service')
 const groupErrorMessages = require('../../../../lib/errors/group').group

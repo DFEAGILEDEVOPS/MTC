@@ -1,7 +1,5 @@
 'use strict'
 
-/* global beforeEach, describe, test, expect */
-
 const settingsValidator = require('../../../../lib/validator/settings-validator')
 
 describe('Settings validator', function () {

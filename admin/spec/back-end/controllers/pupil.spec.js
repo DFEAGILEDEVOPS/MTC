@@ -1,5 +1,4 @@
 'use strict'
-/* global describe beforeEach test expect jest afterEach */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -242,7 +241,7 @@ describe('pupil controller:', () => {
         expect(next).toHaveBeenCalled()
       })
 
-      test('calls next for any error that is returned from pupilUpload service', async () => {
+      test('calls next for an object indicating error that is returned from pupilUpload service', async () => {
         jest.spyOn(fileValidator, 'validate').mockResolvedValue(new ValidationError())
         jest.spyOn(pupilUploadService, 'upload').mockResolvedValue({ error: 'error' })
         const res = getRes()

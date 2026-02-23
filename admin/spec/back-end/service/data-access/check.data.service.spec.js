@@ -1,5 +1,4 @@
 'use strict'
-/* global describe, beforeEach, test, expect, jest, afterEach */
 
 const checkMock = require('../../mocks/check')
 const sqlService = require('../../../../services/data-access/sql.service')

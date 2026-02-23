@@ -19,8 +19,8 @@ export async function utilCompressBase64 (request: HttpRequest, context: Invocat
     }
   }
 
-  let compressed: string = ''
-  let temp: string = ''
+  let compressed = ''
+  let temp = ''
 
   if (request.headers.get('content-type') === 'application/json') {
     temp = JSON.stringify(await request.json())

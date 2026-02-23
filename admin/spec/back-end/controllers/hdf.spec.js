@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe jest test expect beforeEach afterEach */
-
 const httpMocks = require('node-mocks-http')
 const moment = require('moment')
 
@@ -86,7 +84,7 @@ describe('attendance controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('availability/section-unavailable', (
         {
-          title: "Headteacher's declaration form",
+          title: 'Headteacher\'s declaration form',
           breadcrumbs: undefined
         })
       )

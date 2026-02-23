@@ -78,7 +78,7 @@ async function process (notifications: ICheckNotificationMessage[], context: Inv
     const batchNotifier = new BatchCheckNotifier(undefined, context)
     await batchNotifier.notify(notifications)
     await completeMessages(messages, receiver, context)
-  } catch (error) {
+  } catch {
     // sql transaction failed, abandon...
     await abandonMessages(messages, receiver, context)
   }
@@ -90,8 +90,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
   // the sql updates are idempotent and as such replaying a message
   // will not have an adverse effect.
   context.log(`${functionName}: batch processed successfully, completing all messages in batch`)
-  for (let index = 0; index < messageBatch.length; index++) {
-    const msg = messageBatch[index]
+  for (const msg of messageBatch) {
     try {
       await receiver.completeMessage(msg)
     } catch (error) {
@@ -111,8 +110,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
 }
 
 async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: InvocationContext): Promise<void> {
-  for (let index = 0; index < messageBatch.length; index++) {
-    const msg = messageBatch[index]
+  for (const msg of messageBatch) {
     try {
       await receiver.abandonMessage(msg)
     } catch (error) {

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, test, expect, jest, afterEach */
+
 const R = require('ramda')
 const service = require('../../../services/payload.service')
 const payloadDataService = require('../../../services/data-access/payload.data.service')

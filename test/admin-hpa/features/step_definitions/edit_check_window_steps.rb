@@ -161,7 +161,7 @@ When(/^I submit a valid change$/) do
   @check_window_hash[:check_name] = 'Updated' + @check_window_hash[:check_name]
   @check_window_hash[:admin_end_day] = @admin_end_date.day
   @check_window_hash[:admin_end_month] = @admin_end_date.month
-  @check_window_hash[:admin_end_year] = @admin_end_date.year + 5
+  @check_window_hash[:admin_end_year] = @admin_end_date.year + 4
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
 end

@@ -1,15 +1,22 @@
 {
-  "browsers": [],
+  "browsers": [
+    {
+      "browser_name": "chrome",
+      "major_browser_version": "132",
+      "browser_version": "132.0.6834.159",
+      "browser_ttl": 1760560415
+    }
+  ],
   "drivers": [],
   "stats": [
     {
       "browser": "chrome",
-      "browser_version": "130",
+      "browser_version": "132",
       "os": "macos",
       "arch": "x86_64",
       "lang": "ruby",
-      "selenium_version": "4.23",
-      "stats_ttl": 1730283225
+      "selenium_version": "4.35",
+      "stats_ttl": 1760560413
     }
   ]
 }

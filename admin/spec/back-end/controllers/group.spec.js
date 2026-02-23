@@ -1,7 +1,5 @@
 'use strict'
 
-/* global describe beforeEach afterEach expect jest test */
-
 const httpMocks = require('node-mocks-http')
 
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
@@ -152,7 +150,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(happy path)', () => {
+      describe('(happy path) #2', () => {
         beforeEach(() => {
           jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
           jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
@@ -218,7 +216,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #2', () => {
         beforeEach(() => {
           jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
           jest.spyOn(groupService, 'getPupils').mockResolvedValue(Promise.reject(new Error()))
@@ -306,7 +304,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #2', () => {
         test('should fail when form has errors', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
@@ -338,7 +336,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #3', () => {
         test('should fail when getPupils fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
@@ -368,7 +366,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #4', () => {
         beforeEach(() => {
           jest.spyOn(groupValidator, 'validate').mockResolvedValue()
           jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
@@ -461,7 +459,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #2', () => {
         test('should execute next when getGroupById fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
@@ -495,7 +493,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #3', () => {
         test('should execute next when form validation fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
@@ -532,7 +530,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #4', () => {
         test('should execute next when getPupils fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
@@ -569,7 +567,7 @@ describe('group controller', () => {
         })
       })
 
-      describe('(unhappy path)', () => {
+      describe('(unhappy path) #5', () => {
         test('should execute next when update fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)

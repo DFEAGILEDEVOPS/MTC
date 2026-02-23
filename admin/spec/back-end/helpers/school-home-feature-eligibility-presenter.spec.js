@@ -1,4 +1,3 @@
-/* global describe, beforeEach, expect, test, jest, afterEach */
 
 const moment = require('moment-timezone')
 

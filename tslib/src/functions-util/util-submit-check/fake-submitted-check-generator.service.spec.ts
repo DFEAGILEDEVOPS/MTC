@@ -1,6 +1,6 @@
 import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
-import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
+import mockPreparedCheck from '../../common/mocks/mock-prepared-check-2021.json'
 import { FakeCompletedCheckGeneratorService, type ICompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import { type ICompressionService } from '../../common/compression-service'
 import { type IPreparedCheckService } from '../../caching/prepared-check.service'

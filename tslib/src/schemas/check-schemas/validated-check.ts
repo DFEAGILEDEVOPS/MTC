@@ -50,7 +50,6 @@ export interface TokenInfo {
   checkStarted: QueueAuthToken
   pupilPreferences: QueueAuthToken
   pupilFeedback: QueueAuthToken
-  checkComplete?: QueueAuthToken
   checkSubmission: {
     token: string
     url: string

@@ -33,7 +33,7 @@ And(/^I should see a valid response$/) do
   expect(parsed_response['tokens']['pupilPreferences']['url']).to include '/pupil-prefs'
   expect(parsed_response['tokens']['pupilPreferences']['token']).to_not be_nil
   expect(parsed_response['tokens']['checkSubmission']['url']).to include '/submit'
-  expect(parsed_response['tokens']['pupilFeedback']['url']).to include '/pupil-feedback'
+  expect(parsed_response['tokens']['pupilFeedback']['url']).to include '/feedback'
   expect(parsed_response['tokens']['pupilFeedback']['token']).to_not be_nil
 end
 

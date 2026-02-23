@@ -1,5 +1,4 @@
 'use strict'
-/* global describe beforeAll test expect fail afterAll jest */
 
 const path = require('path')
 const fs = require('fs')

@@ -9,14 +9,14 @@ const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 const controller = {
   /**
-   * Renders manage service message overview page
+   * Renders service message overview page
    * @param req
    * @param res
    * @param next
    * @returns {Promise.<void>}
    */
   getServiceMessage: async function getServiceMessage (req, res, next) {
-    res.locals.pageTitle = 'Manage service message'
+    res.locals.pageTitle = 'Service message'
     req.breadcrumbs(res.locals.pageTitle)
     // Ensure the service-manager sees content from the DB rather than the cache, as the cache is not the source of truth.
     const rawServiceMessages = await administrationMessageService.getRawServiceMessages()
@@ -40,7 +40,7 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getServiceMessageForm: async function getServiceMessageForm (req, res, next, err = undefined) {
-    req.breadcrumbs('Manage service message', '/service-message')
+    req.breadcrumbs('Service message', '/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
     let areaCodes = []
@@ -129,7 +129,7 @@ const controller = {
         return
       }
       const areaCodes = await ServiceMessageCodesService.getAreaCodes()
-      req.breadcrumbs('Manage service message', '/service-message')
+      req.breadcrumbs('Service message', '/service-message')
       res.locals.pageTitle = 'Edit service message'
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-message/service-message-form', {

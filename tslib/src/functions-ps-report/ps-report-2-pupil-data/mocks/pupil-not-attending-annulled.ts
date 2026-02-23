@@ -2,8 +2,8 @@ import type { Pupil } from '../pupil-data.models'
 import moment from 'moment'
 
 export const pupil: Pupil = {
-  checkComplete: null,
-  currentCheckId: null,
+  checkComplete: false,
+  currentCheckId: 1,
   dateOfBirth: moment.utc('2012-04-01'),
   forename: 'Tester',
   gender: 'M',

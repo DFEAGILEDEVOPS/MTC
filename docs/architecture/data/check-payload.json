@@ -127,11 +127,6 @@
     },
     "jwt": {
       "token": "token-disabled"
-    },
-    "checkComplete": {
-      "token": "st=2020-12-16T16%3A17%3A00Z&se=2020-12-17T17%3A22%3A00Z&sp=a&sv=2018-03-28&sig=<redacted>",
-      "url": "https://my-storage-account.queue.core.windows.net/check-submitted",
-      "queueName": "check-submitted"
     }
   },
   "audit": [
