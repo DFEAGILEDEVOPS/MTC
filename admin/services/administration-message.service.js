@@ -23,6 +23,7 @@ const pupilStatusPathRe = /^\/pupil-status$/
 const restartPathRe = /^\/restart\//
 const pupilRegisterPathRe = /^\/pupil-register\//
 const teacherHomePagePathRe = /^\/school\/school-home$/
+const pupilResultsPathRe = /^\/results\/.*/
 
 /**
  * Return the service messages filtered by path.
@@ -80,6 +81,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case hdfPathRe.test(path):
               if (areaCode === 'H') filteredMessages.push(msg)
+              break
+
+            case pupilResultsPathRe.test(path):
+              if (areaCode === 'M') filteredMessages.push(msg)
               break
           }
         }
