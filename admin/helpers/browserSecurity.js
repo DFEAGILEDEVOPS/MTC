@@ -7,8 +7,8 @@ const config = require('../config')
 const init = (app) => {
   app.use(helmet())
   app.use(nocache())
-  const scriptSources = ['\'self\'', '\'unsafe-inline\'', 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://az416426.vo.msecnd.net']
-  const styleSources = ['\'self\'', '\'unsafe-inline\'']
+  const scriptSources = ['\'self\'', 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://az416426.vo.msecnd.net']
+  const styleSources = ['\'self\'']
   const imgSources = ['\'self\'', 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'data:']
   const objectSources = ['\'self\'']
 
@@ -21,7 +21,7 @@ const init = (app) => {
   }
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ['\'self\''],
+      defaultSrc: ['\'none\''],
       scriptSrc: scriptSources,
       fontSrc: ['\'self\'', 'data:', config.AssetPath],
       styleSrc: styleSources,
