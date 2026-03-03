@@ -24,7 +24,7 @@ RUN yarn build:prod
 
 ### STAGE 2: Setup ###
 
-FROM nginx:stable-alpine
+FROM nginx:1.29.5-alpine3.23
 
 # defer until SSL integrated, need to get package
 # RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
