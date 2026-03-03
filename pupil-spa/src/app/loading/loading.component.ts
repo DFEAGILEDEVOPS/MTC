@@ -67,6 +67,31 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     this.config = this.questionService.getConfig();
   }
 
+
+  /**
+   * Prevent refresh shortcuts (F5, Ctrl+R, Cmd+R) from triggering page refresh.
+   * Must be handled on keydown as refresh happens before keyup.
+   * @param {KeyboardEvent} event
+   * @return {boolean}
+   */
+  @HostListener('document:keydown', [ '$event' ])
+  handleRefreshPrevention(event: KeyboardEvent) {
+    // Detect refresh-related shortcuts
+    const isF5 = event.key === 'F5';
+    const isCtrlR = event.key.toLowerCase() === 'r' && event.ctrlKey;
+    const isCmdR = event.key.toLowerCase() === 'r' && event.metaKey;
+
+    if (isF5 || isCtrlR || isCmdR) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('Refresh shortcut prevented');
+      return false;
+    }
+    
+    return true;
+  }
+
+
   /**
    * Prevent Backspace doing anything while the load-page is showing - some browsers will
    * go back a page.
