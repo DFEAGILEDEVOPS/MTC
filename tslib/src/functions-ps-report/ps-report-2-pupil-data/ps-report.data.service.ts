@@ -765,6 +765,7 @@ export class PsReportDataService {
           a.isCorrect,
           a.browserTimestamp,
           a.questionNumber,
+          ui.id as userInputId,
           ui.userInput,
           uitl.code as inputType,
           ui.browserTimestamp as inputTimestamp
@@ -774,7 +775,7 @@ export class PsReportDataService {
           LEFT JOIN mtc_results.userInput ui ON (a.id = ui.answer_id)
           LEFT JOIN mtc_results.userInputTypeLookup uitl ON (ui.userInputTypeLookup_id = uitl.id)
         WHERE cr.check_id IN (${checkIdPlaceholders.join(',')})
-        ORDER BY cr.check_id, a.questionNumber, a.id, ui.browserTimestamp
+        ORDER BY cr.check_id, a.questionNumber, a.id, ui.browserTimestamp, ui.id
       `
       const answersData = await this.sqlService.query(answersSql, checkIdParams)
 
