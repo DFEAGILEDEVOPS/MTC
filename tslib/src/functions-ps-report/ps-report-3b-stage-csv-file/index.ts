@@ -6,7 +6,7 @@ import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transfor
 import { jsonReviver } from '../../common/json-reviver'
 import { PsReportStagingDataService } from './ps-report-staging.data.service'
 import { CsvTransformer } from './csv-transformer'
-import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
+import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
 const RA = require('ramda-adjunct')
 
 const functionName = 'ps-report-3b-stage-csv-file'
@@ -181,21 +181,33 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
 
 async function process (context: InvocationContext, messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
-    const psReportData: IPsychometricReportLine[] = messageBatch.map(m => { return revive(m.body as IPsychometricReportLine) })
+    // Extract batched pupil results from messages and flatten them
+    const psReportData: IPsychometricReportLine[] = []
+    let batchCount = 0
+
+    for (const message of messageBatch) {
+      const batchMessage = reviveBatch(message.body as PsReportBatchMessage)
+      psReportData.push(...batchMessage.batch)
+      batchCount += 1
+      context.trace(`${logPrefix}: received batch message ${batchMessage.batchNumber}/${batchMessage.totalBatches} with ${batchMessage.batch.length} pupils from school ${batchMessage.schoolName}`)
+    }
+
+    context.log(`${logPrefix}: received ${batchCount} batch messages containing total ${psReportData.length} pupils for processing`)
+    
     const csvTransformer = new CsvTransformer(context, psReportData)
     const linesOfData = csvTransformer.transform()
     await psReportStagingDataService.appendDataToBlob(linesOfData)
     await completeMessages(messageBatch, receiver, context)
-  } catch {
-    // sql transaction failed, abandon...
+  } catch (error) {
+    // transaction failed, abandon messages...
+    context.error(`${logPrefix}: error processing batch: ${error instanceof Error ? error.message : 'unknown error'}`)
     await abandonMessages(messageBatch, receiver, context)
   }
 }
 
 /**
- * JSON reviver for Date instantiation.  Message bodies are already JSON revived, but not to moment objects.
- * @param incomingMessage
+ * JSON reviver for batched messages containing multiple pupil results
  */
-function revive (message: IPsychometricReportLine): IPsychometricReportLine {
-  return JSON.parse(JSON.stringify(message), jsonReviver) as IPsychometricReportLine
+function reviveBatch (message: PsReportBatchMessage): PsReportBatchMessage {
+  return JSON.parse(JSON.stringify(message), jsonReviver) as PsReportBatchMessage
 }
