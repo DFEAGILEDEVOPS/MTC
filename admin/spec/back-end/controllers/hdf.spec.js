@@ -287,7 +287,6 @@ describe('attendance controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       const validationError = new ValidationError()
-      validationError.addError('confirmBoxes', true)
       jest.spyOn(hdfConfirmValidator, 'validate').mockResolvedValue(validationError)
       jest.spyOn(sut, 'getConfirmSubmit').mockImplementation()
       jest.spyOn(res, 'redirect').mockImplementation()
