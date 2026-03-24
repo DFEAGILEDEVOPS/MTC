@@ -24,11 +24,6 @@ module.exports.validate = function (hdfConfirmData) {
     validationError.addError('noSelection', hdfConfirmErrorMessages.noSelection)
   }
 
-  if (confirm === confirmOptions.confirmAll && (pupilDetails !== 'checked' || uniquePins !== 'checked' ||
-    staffConfirm !== 'checked' || disruptionConfirm !== 'checked')) {
-    validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
-  }
-
   if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo === undefined || noPupilsFurtherInfo === '')) {
     validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfo)
   }
