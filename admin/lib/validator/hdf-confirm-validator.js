@@ -13,10 +13,6 @@ module.exports.validate = function (hdfConfirmData) {
   const validationError = new ValidationError()
   const {
     confirm,
-    pupilDetails,
-    uniquePins,
-    staffConfirm,
-    disruptionConfirm,
     noPupilsFurtherInfo
   } = hdfConfirmData
 
