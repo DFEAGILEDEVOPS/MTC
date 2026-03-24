@@ -1,0 +1,55 @@
+trigger:
+  - main
+  - testing/automation-scripts
+
+pr:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: NODE_VERSION
+    value: '20'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '$(NODE_VERSION)'
+    displayName: 'Install Node.js'
+
+  - checkout: self
+
+  - task: Cache@2
+    inputs:
+      key: 'npm | "$(Agent.OS)" | test/pupil-hpa/package-lock.json'
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+      path: $(HOME)/.npm
+    displayName: 'Cache npm dependencies'
+
+  - script: |
+      cd test/pupil-hpa
+      npm ci
+    displayName: 'Install dependencies for Playwright tests'
+
+  - script: npx playwright install --with-deps
+    workingDirectory: test/pupil-hpa
+    displayName: 'Install Playwright browsers'
+
+  - script: |
+      cd test/pupil-hpa
+      npm run test:accessibility
+    displayName: 'Run Accessibility tests'
+    env:
+      PLAYWRIGHT_HTML_REPORT_OPEN: never
+      PUPIL_BASE_URL: 'https://testpupil-as-mtc.azurewebsites.net'
+      ADMIN_BASE_URL: 'https://testadmin-as-mtc.azurewebsites.net'
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: 'test/pupil-hpa/playwright-report'
+      ArtifactName: 'MTC-Accessibility-Test-Report'
+      publishLocation: 'Container'
+    displayName: 'Upload Accessibility test report'

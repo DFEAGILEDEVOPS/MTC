@@ -7,6 +7,7 @@
     "test:api": "playwright test api-request-context.playwright.spec.ts",
     "test:api:remote": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.playwright.spec.ts",
     "test:api:remote:current": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts",
+    "test:api:ping": "playwright test get-ping-guideline.playwright.spec.ts --reporter=line",
     "test:accessibility": "playwright test accessibility.playwright.spec.ts --reporter=line",
     "test:e2e": "playwright test mtc-signin-and-check.playwright.spec.ts"
   },
