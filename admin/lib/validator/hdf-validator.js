@@ -39,7 +39,7 @@ module.exports.validate = function (hdfData) {
   }
 
   if (isHeadteacher !== 'Y') {
-    const jobTitleValue = jobTitle.trim() || '';
+    const jobTitleValue = jobTitle.trim() || ''
     if (isEmpty(jobTitleValue) || jobTitleValue.length < 1 || jobTitleValue.length > 128) {
       validationError.addError('jobTitle', hdfErrorMessages.jobTitleLength)
     }
