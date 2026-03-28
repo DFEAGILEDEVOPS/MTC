@@ -20,8 +20,8 @@ describe('AzureQueueService', () => {
       ]
     })
     .compileComponents()
-    initialProductionFlag = APP_CONFIG.production
     sut = TestBed.inject(AzureQueueService)
+    initialProductionFlag = APP_CONFIG.production
   })
 
   afterEach(() => {
