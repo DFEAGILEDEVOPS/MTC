@@ -37,7 +37,8 @@
     "node": ">= 18"
   },
   "resolutions": {
-    "**/**/marked": "4.3.0"
+    "**/**/marked": "4.3.0",
+    "**/**/form-data": "4.0.4"
   },
   "dependencies": {
     "@azure/data-tables": "^13.2.1",
