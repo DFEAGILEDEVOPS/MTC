@@ -2,6 +2,9 @@
   "name": "pupil-spa",
   "version": "0.1.0",
   "license": "GPL-3.0",
+  "resolutions": {
+    "**/**/lodash": "4.18.0"
+  },
   "scripts": {
     "ng": "ng",
     "start": "export NODE_OPTIONS=--dns-result-order=ipv4first && yarn genconfig && yarn run gulp setSecretEnvVars && yarn build:prod && yarn run http-server ./dist/ -p 4200 --proxy http://localhost:4200?",
