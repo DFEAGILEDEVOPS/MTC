@@ -50,5 +50,8 @@
   },
   "moduleNameMapper": {
     "helmet": "<root>/node_modules/helmet/index.cjs"
+  },
+  "resolutions": {
+    "**/**/braces": "3.0.3"
   }
 }
