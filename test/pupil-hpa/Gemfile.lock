@@ -228,7 +228,7 @@ DEPENDENCIES
   parallel_tests
   poltergeist (>= 1.18.1)
   pry
-  rack (>= 3.1.14)
+  rack (>= 3.1.17)
   rake
   rb-readline
   redis
