@@ -4,7 +4,7 @@
       "browser_name": "chrome",
       "major_browser_version": "132",
       "browser_version": "132.0.6834.159",
-      "browser_ttl": 1760560415
+      "browser_ttl": 1776069437
     }
   ],
   "drivers": [],
@@ -13,10 +13,10 @@
       "browser": "chrome",
       "browser_version": "132",
       "os": "macos",
-      "arch": "x86_64",
+      "arch": "arm64",
       "lang": "ruby",
       "selenium_version": "4.35",
-      "stats_ttl": 1760560413
+      "stats_ttl": 1776069436
     }
   ]
 }

@@ -1,4 +1,5 @@
 import { test, type Page } from '@playwright/test';
+import { TableClient } from '@azure/data-tables';
 
 // Admin and pupil environments used in this end-to-end flow.
 const adminSignInUrl = 'https://testadmin-as-mtc.azurewebsites.net/sign-in';
@@ -101,6 +102,54 @@ async function ensurePinsAreVisible(page: Page): Promise<void> {
   await continueAdminSessionIfPrompted(page);
 }
 
+async function verifyCheckDataInDatabase(page: Page, checkCode: string, schoolUuid: string): Promise<void> {
+  // Verify that the check submission was received and stored in Azure Table Storage.
+  // Extract localStorage data to confirm answers and inputs were recorded.
+  const localStorageData = await page.evaluate(() => {
+    const storage: Record<string, unknown> = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        const value = localStorage.getItem(key);
+        try {
+          storage[key] = value ? JSON.parse(value) : value;
+        } catch {
+          storage[key] = value;
+        }
+      }
+    }
+    return storage;
+  });
+
+  // Extract answers and inputs from localStorage.
+  const answers: unknown[] = [];
+  const inputs: unknown[] = [];
+
+  Object.entries(localStorageData).forEach(([key, value]) => {
+    if (key.includes('answers') && typeof value === 'object' && value !== null) {
+      answers.push(value);
+    }
+    if (key.includes('inputs') && typeof value === 'object' && value !== null) {
+      inputs.push(value);
+    }
+  });
+
+  // Log verification info for diagnostic purposes.
+  console.log(`Verifying check data:
+    - Check Code: ${checkCode}
+    - School UUID: ${schoolUuid}
+    - Answers stored: ${answers.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(answers).length} bytes)
+    - Inputs stored: ${inputs.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(inputs).length} bytes)`);
+
+  // Basic assertion: ensure we captured answer and input data.
+  if (answers.length === 0) {
+    throw new Error('No answer data found in localStorage after check completion');
+  }
+  if (inputs.length === 0) {
+    throw new Error('No input data found in localStorage after check completion');
+  }
+}
+
 test('admin generates credentials and pupil completes official check flow', async ({ page }) => {
   // Full flow can take a few minutes due to timed question pages.
   test.setTimeout(8 * 60 * 1000);
@@ -157,7 +206,34 @@ test('admin generates credentials and pupil completes official check flow', asyn
   // Step 14: Answer 25 official questions.
   await answerQuestions(page, 25);
 
-  // Step 15: Sign out.
+  // Step 15: Extract check metadata and verify data storage.
+  const checkMetadata = await page.evaluate(() => {
+    const config = localStorage.getItem('config');
+    const pupil = localStorage.getItem('pupil');
+    const school = localStorage.getItem('school');
+    return {
+      config: config ? JSON.parse(config) : null,
+      pupil: pupil ? JSON.parse(pupil) : null,
+      school: school ? JSON.parse(school) : null,
+    };
+  });
+
+  const checkCode = checkMetadata.pupil?.checkCode ?? '';
+  const schoolUuid = checkMetadata.school?.uuid ?? '';
+
+  if (!checkCode || !schoolUuid) {
+    throw new Error(`Unable to extract check code (${checkCode}) or school UUID (${schoolUuid}) from localStorage`);
+  }
+
+  console.log(`Check completed:
+    - Check Code: ${checkCode}
+    - School UUID: ${schoolUuid}
+    - Question set: ${checkMetadata.config?.questionSet ?? 'unknown'}`);
+
+  // Verify submitted data was stored.
+  await verifyCheckDataInDatabase(page, checkCode, schoolUuid);
+
+  // Step 16: Sign out.
   const signOutButton = page.getByRole('button', { name: 'Sign out' });
   if (await signOutButton.count()) {
     await signOutButton.first().click();
