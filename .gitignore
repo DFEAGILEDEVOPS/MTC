@@ -108,7 +108,7 @@ test-output/*/*
 *.log
 func.out
 
-.env*
+admin/.env
 *.env
 
 /test-output
