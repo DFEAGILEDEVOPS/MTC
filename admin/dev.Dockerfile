@@ -1,4 +1,4 @@
-FROM node:16.17.1
+FROM node:24.14.1
 EXPOSE 3001 2222
 RUN mkdir -p /mtc/admin
 WORKDIR /mtc/admin
