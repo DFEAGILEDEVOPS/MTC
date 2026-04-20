@@ -260,9 +260,9 @@ describe('attendance controller:', () => {
       session: { hdfFormData: { isHeadTeacher: 'Y', firstName: 'Bob', lastName: 'Jones' } },
       body: {
         confirm: 'Y',
-        pupilDetails: 'checked',
-        uniquePins: 'checked',
-        staffConfirm: 'checked'
+        pupilDetails: [],
+        uniquePins: [],
+        staffConfirm: 'Y',
       }
     }
 
@@ -286,8 +286,7 @@ describe('attendance controller:', () => {
     test('renders confirm and submit form if validator error occurs', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      const validationError = new ValidationError()
-      validationError.addError('confirmBoxes', true)
+      const validationError = new ValidationError('confirmCheckCount', 'Please confirm the check count')
       jest.spyOn(hdfConfirmValidator, 'validate').mockResolvedValue(validationError)
       jest.spyOn(sut, 'getConfirmSubmit').mockImplementation()
       jest.spyOn(res, 'redirect').mockImplementation()
@@ -295,7 +294,7 @@ describe('attendance controller:', () => {
       await sut.postConfirmSubmit(req, res)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(sut.getConfirmSubmit).toHaveBeenCalled()
-      expect(res.error).toEqual(validationError)
+      expect(res.error).toBe(validationError)
     })
   })
 

@@ -7,8 +7,11 @@
       <h1 class="heading-xlarge">Accessibility statement for the multiplication tables check service</h1>
       <p>
         This statement applies to content published on the multiplication tables check (MTC) service.
-        This includes the school administration application accessed via DfE Sign-in and the pupil try it out and official
-        <a class="govuk-link" href="/">check application.</a>
+        This includes the school administration application accessed via <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+        href="https://services.signin.education.gov.uk/">DfE Sign-in</a> and the pupil try it out and official
+        <a class="govuk-link" target="_blank" rel="noopener noreferrer"
+        href="https://pupil.multiplication-tables-check.service.gov.uk/sign-in">
+        check application</a>
       </p>
 
       <p>
@@ -24,7 +27,9 @@
 
       <p>
         The Standards and Testing Agency (STA) is committed to making websites accessible,
-        in accordance with The Public Sector Bodies (Websites and Mobile Applications) Accessibility Regulations 2018.
+        in accordance with <a href="https://www.legislation.gov.uk/uksi/2018/952/contents/made"
+        class="govuk-link"  rel="noopener noreferrer"  target="_blank"
+        >The Public Sector Bodies (Websites and Mobile Applications) (No.2) Accessibility Regulations 2018</a>.
       </p>
 
       <h3 class="heading-medium">Conformance status</h3>
@@ -92,7 +97,7 @@
 
       <p>The school administration website does not currently have any built-in access arrangements.</p>
 
-      <p>The school administration website has been designed to be compatible with current versions (as of April 2025) of the following screen readers:</p>
+      <p>The school administration website has been designed to be compatible with current versions (as of April 2026) of the following screen readers:</p>
 
       <ul class="list list-bullet">
         <li>job access with speech (JAWS)</li>
@@ -134,6 +139,11 @@
 
       <p>Parts of the MTC service are not fully accessible for example:</p>
       <ul class="list list-bullet">
+        <li>within the pupil check application, the interface is not announced to third-party screen reader users, including the on-screen number pad/calculator controls. This means third-party screen reader users cannot use this feature, regardless of the timed nature of the check. It should however be noted that the pupil check does have a built-in screen reader that can be enabled.</li>
+        <li>within the pupil register, the pupil list table is not usable with a screen reader and per-row actions are not descriptive (for example, multiple links labelled only “View”). This makes the page unusable for screen reader users.</li>
+        <li>on some Official Check pages, mobile zoom and text resizing are prevented due to viewport settings, which can be a barrier for low vision users.</li>
+        <li>some pages include non-interactive elements in the tab order and inconsistent focus behaviour, increasing effort and confusion for keyboard users.</li>
+        <li>some links and controls do not provide clear purpose (for example, empty links, missing href values, or generic link text).</li>
         <li>some feedback messages are not clearly associated with form fields, instead all feedback is presented at the top of the page.</li>
         <li>focus indicators and tab order for keyboard users may be inconsistent with the layout.</li>
         <li>some elements and images are missing descriptive alternative text, their function should, however, be evident by their location.</li>
@@ -147,6 +157,12 @@
         <li>some elements such as filters and controls will not be accessible by keyboard. Please use the search box where possible to navigate the site and manual operation may be required.</li>
         <li>screen reader users may have a different experience to content provided on screen.</li>
       </ul>
+
+      <p class="govuk-body">These parts of the MTC service will be reviewed as part of our annual review of the service.</p>
+
+      <h3 class="govuk-heading-m">Content not within the scope of the accessibility regulations</h3>
+
+      <p class="govuk-body">We do not currently have any content that is out of scope of the accessibility regulations.</p>      
 
       <h3 class="heading-medium">How to request content in an accessible format</h3>
 
@@ -182,28 +198,31 @@
         with the <a href="https://www.w3.org/TR/WCAG21/" class="govuk-link"
       target="_blank" rel="noopener noreferrer">
       Web Content Accessibility Guidelines V2.2</a> level A and level
-      AA, and these tests have been carried out internally.
+      AA.
       </p>
 
       <h3 class="heading-medium">What we’re doing to improve accessibility</h3>
 
       <p class="govuk-body">We audit our content annually and update the service according to report findings.</p>
 
+      <h3 class="govuk-heading-m">Preparation of this accessibility statement</h3>
+
       <p>This statement was prepared based on an
         independent accessibility audit of the full MTC service carried out
-        in July 2019. It was last updated on 20 February 2025 following an
-        annual accessibility assurance audit.</p>
-      <div class="back-to-top-container">
+        in July 2019. The service is reviewed and this statement updated yearly. It was last reviewed in March 2026 following a limited, high-level sample accessibility review.</p>
+      
+        <div class="back-to-top-container">
         <a [routerLink]="['/accessibility-statement']" fragment="top">Back to top</a>
       </div>
     </div>
     <div class="column-one-third add-title-margin">
       <br />
       <aside role="complementary" class="support-column">
-        <h3 class="heading-medium">Related</h3>
-        <nav role="navigation">
-          <ul class="list">
+        <h2 class="heading-medium">Related</h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
             <li>
+              <a class="govuk-link" href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter">Privacy notice on multiplication tables check</a>
             </li>
           </ul>
         </nav>
