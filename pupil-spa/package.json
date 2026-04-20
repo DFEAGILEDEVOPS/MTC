@@ -2,6 +2,10 @@
   "name": "pupil-spa",
   "version": "0.1.0",
   "license": "GPL-3.0",
+  "resolutions": {
+    "**/**/lodash": "4.18.0",
+    "**/**/braces": "3.0.3"
+  },
   "scripts": {
     "ng": "ng",
     "start": "export NODE_OPTIONS=--dns-result-order=ipv4first && yarn genconfig && yarn run gulp setSecretEnvVars && yarn build:prod && yarn run http-server ./dist/ -p 4200 --proxy http://localhost:4200?",
@@ -23,7 +27,7 @@
   "dependencies": {
     "@angular/animations": "^19.0.6",
     "@angular/common": "^19.0.6",
-    "@angular/compiler": "^19.2.17",
+    "@angular/compiler": "^19.2.18",
     "@angular/core": "^19.0.6",
     "@angular/forms": "^19.0.6",
     "@angular/localize": "^19.0.6",
@@ -60,7 +64,7 @@
     "@types/node": "20",
     "@typescript-eslint/eslint-plugin": "8.18.2",
     "@typescript-eslint/parser": "8.18.2",
-    "axios": "^1.6.0",
+    "axios": "^1.15.0",
     "eslint": "^8.53.0",
     "eslint-utils": "^3.0.0",
     "fs-extra": "^11.2.0",

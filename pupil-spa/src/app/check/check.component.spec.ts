@@ -185,6 +185,87 @@ describe('CheckComponent', () => {
     })
   })
 
+  describe('handleRefreshPrevention', () => {
+    function dispatchKeydownEvent (keyboardDict) {
+      keyboardDict.bubbles ??= true
+      keyboardDict.cancelable ??= true
+      const event = new KeyboardEvent('keydown', keyboardDict)
+      document.dispatchEvent(event)
+      return event
+    }
+
+    it('should prevent F5 key and call preventDefault', () => {
+      const event = new KeyboardEvent('keydown', { key: 'F5' })
+      spyOn(event, 'preventDefault')
+      spyOn(event, 'stopPropagation')
+      
+      const result = component.handleRefreshPrevention(event)
+      
+      expect(event.preventDefault).toHaveBeenCalled()
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(result).toBe(false)
+    })
+
+    it('should prevent Ctrl+R and call preventDefault', () => {
+      const event = new KeyboardEvent('keydown', { key: 'r', ctrlKey: true })
+      spyOn(event, 'preventDefault')
+      spyOn(event, 'stopPropagation')
+      
+      const result = component.handleRefreshPrevention(event)
+      
+      expect(event.preventDefault).toHaveBeenCalled()
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(result).toBe(false)
+    })
+
+    it('should prevent Cmd+R (metaKey without altKey) and call preventDefault', () => {
+      const event = new KeyboardEvent('keydown', { key: 'r', metaKey: true, altKey: false })
+      spyOn(event, 'preventDefault')
+      spyOn(event, 'stopPropagation')
+      
+      const result = component.handleRefreshPrevention(event)
+      
+      expect(event.preventDefault).toHaveBeenCalled()
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(result).toBe(false)
+    })
+
+    it('should handle case-insensitive R key', () => {
+      const eventLowerR = new KeyboardEvent('keydown', { key: 'r', metaKey: true })
+      const eventUpperR = new KeyboardEvent('keydown', { key: 'R', metaKey: true })
+      spyOn(eventLowerR, 'preventDefault')
+      spyOn(eventUpperR, 'preventDefault')
+      
+      const result1 = component.handleRefreshPrevention(eventLowerR)
+      const result2 = component.handleRefreshPrevention(eventUpperR)
+      
+      expect(eventLowerR.preventDefault).toHaveBeenCalled()
+      expect(eventUpperR.preventDefault).toHaveBeenCalled()
+      expect(result1).toBe(false)
+      expect(result2).toBe(false)
+    })
+
+    it('should not prevent non-refresh keys', () => {
+      const event = new KeyboardEvent('keydown', { key: 'a' })
+      spyOn(event, 'preventDefault')
+      
+      const result = component.handleRefreshPrevention(event)
+      
+      expect(event.preventDefault).not.toHaveBeenCalled()
+      expect(result).toBe(true)
+    })
+
+    it('should not prevent R key without modifier keys', () => {
+      const event = new KeyboardEvent('keydown', { key: 'r' })
+      spyOn(event, 'preventDefault')
+      
+      const result = component.handleRefreshPrevention(event)
+      
+      expect(event.preventDefault).not.toHaveBeenCalled()
+      expect(result).toBe(true)
+    })
+  })
+
   describe('warmup click handlers', () => {
     it('changes state for warmupIntroClickHandler()', () => {
       detectStateChange(component, 'warmupIntroClickHandler')

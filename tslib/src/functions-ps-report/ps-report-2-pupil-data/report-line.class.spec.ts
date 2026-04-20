@@ -715,7 +715,7 @@ describe('report line class', () => {
         const out = report.transform()
         expect(out.PauseLength).toBeNull()
         expect(out.QDisplayTime).toBeNull()
-        expect(out.AccessArr).toBe('')
+        expect(out.AccessArr).toBeNull()
       })
     })
 
@@ -1036,7 +1036,7 @@ describe('report line class', () => {
 
       test('the pupils access arrangements are mapped', () => {
         const out = sut.transform()
-        expect(out.AccessArr).toBe('')
+        expect(out.AccessArr).toBeNull()
       })
     })
 
