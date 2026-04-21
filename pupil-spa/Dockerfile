@@ -13,7 +13,9 @@ COPY package.json .
 COPY yarn.lock .
 
 ## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
-RUN yarn install --frozen-lockfile --ignore-engines && mkdir /ng-app && cp -R ./node_modules ./ng-app
+RUN yarn cache clean --all && \
+    yarn install --frozen-lockfile --ignore-engines --network-timeout 600000 && \
+    mkdir /ng-app && cp -R ./node_modules ./ng-app
 
 WORKDIR /ng-app
 
