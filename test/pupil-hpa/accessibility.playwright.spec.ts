@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 const pupilBaseUrl = process.env.PUPIL_BASE_URL ?? 'https://testpupil-as-mtc.azurewebsites.net';
 const adminBaseUrl = process.env.ADMIN_BASE_URL ?? 'https://testadmin-as-mtc.azurewebsites.net';
 
-function violationSummary(violations: { id: string; impact: string | null; description: string }[]): string {
+function violationSummary(violations: { id: string; impact?: string | null; description: string }[]): string {
   if (!violations.length) {
     return 'No WCAG violations detected.';
   }

@@ -49,6 +49,63 @@ async function answerQuestions(page: Page, count: number): Promise<void> {
   }
 }
 
+async function isOnFinishScreen(page: Page): Promise<boolean> {
+  if (page.url().includes('/check-complete')) {
+    return true;
+  }
+
+  const thankYouHeading = page.getByRole('heading', { name: 'Thank you', level: 1 });
+  if (await thankYouHeading.isVisible({ timeout: 300 }).catch(() => false)) {
+    return true;
+  }
+
+  const finishedHeading = page.getByRole('heading', { name: 'You have finished' });
+  return finishedHeading.isVisible({ timeout: 300 }).catch(() => false);
+}
+
+async function answerQuestionsUntilFinished(page: Page, maxQuestions = 60): Promise<number> {
+  let previousQuestion = '';
+  let answeredCount = 0;
+
+  while (answeredCount < maxQuestions) {
+    if (await isOnFinishScreen(page)) {
+      return answeredCount;
+    }
+
+    let answeredThisTurn = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      if (await isOnFinishScreen(page)) {
+        return answeredCount;
+      }
+
+      let current: string;
+      try {
+        current = await getCurrentQuestionText(page);
+      } catch {
+        if (await isOnFinishScreen(page)) {
+          return answeredCount;
+        }
+        await page.waitForTimeout(200);
+        continue;
+      }
+
+      if (current !== previousQuestion) {
+        previousQuestion = await answerQuestion(page);
+        answeredCount += 1;
+        answeredThisTurn = true;
+        break;
+      }
+      await page.waitForTimeout(200);
+    }
+
+    if (!answeredThisTurn) {
+      throw new Error(`Timed out waiting for next question or finish screen after answering ${answeredCount} official question(s).`);
+    }
+  }
+
+  throw new Error(`Exceeded safety limit of ${maxQuestions} official question(s) without reaching finish screen.`);
+}
+
 async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
   // Admin can show a session keep-alive modal; accept it when present.
   const sessionPromptYes = page.getByRole('button', { name: 'Yes', exact: true });
@@ -134,12 +191,12 @@ async function verifyCheckDataInDatabase(page: Page, checkCode: string, schoolUu
     }
   });
 
-  // Log verification info for diagnostic purposes.
-  console.log(`Verifying check data:
-    - Check Code: ${checkCode}
-    - School UUID: ${schoolUuid}
-    - Answers stored: ${answers.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(answers).length} bytes)
-    - Inputs stored: ${inputs.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(inputs).length} bytes)`);
+  // // Log verification info for diagnostic purposes.
+  // console.log(`Verifying check data:
+  //   - Check Code: ${checkCode}
+  //   - School UUID: ${schoolUuid}
+  //   - Answers stored: ${answers.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(answers).length} bytes)
+  //   - Inputs stored: ${inputs.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(inputs).length} bytes)`);
 
   // Basic assertion: ensure we captured answer and input data.
   if (answers.length === 0) {
@@ -203,8 +260,9 @@ test('admin generates credentials and pupil completes official check flow', asyn
   await page.getByRole('button', { name: 'Next' }).click();
   await page.getByRole('button', { name: 'Start now' }).click();
 
-  // Step 14: Answer 25 official questions.
-  await answerQuestions(page, 25);
+  // Step 14: Answer official questions until the finish screen appears.
+  const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);
+  console.log(`Official questions answered before finish: ${officialQuestionsAnswered}`);
 
   // Step 15: Extract check metadata and verify data storage.
   const checkMetadata = await page.evaluate(() => {
@@ -225,10 +283,10 @@ test('admin generates credentials and pupil completes official check flow', asyn
     throw new Error(`Unable to extract check code (${checkCode}) or school UUID (${schoolUuid}) from localStorage`);
   }
 
-  console.log(`Check completed:
-    - Check Code: ${checkCode}
-    - School UUID: ${schoolUuid}
-    - Question set: ${checkMetadata.config?.questionSet ?? 'unknown'}`);
+  // console.log(`Check completed:
+  //   - Check Code: ${checkCode}
+  //   - School UUID: ${schoolUuid}
+  //   - Question set: ${checkMetadata.config?.questionSet ?? 'unknown'}`);
 
   // Verify submitted data was stored.
   await verifyCheckDataInDatabase(page, checkCode, schoolUuid);
