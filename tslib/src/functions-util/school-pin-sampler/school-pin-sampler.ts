@@ -28,7 +28,7 @@ export class SchoolPinSampler {
     if (randomiseSample) {
       const rangen = new RandomGenerator()
       for (let index = 0; index < size; index++) {
-        const randomIndex = rangen.generateNumberFromRangeInclusive(0, allZones.length)
+        const randomIndex = rangen.generateNumberFromRangeInclusive(0, allZones.length - 1)
         const randomZone = allZones[randomIndex]
         reducedZoneset.push(randomZone)
       }
