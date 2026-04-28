@@ -1,6 +1,6 @@
-import { PupilFeedbackService, type IPupilFeedbackMessage } from './feedback.service'
+import { PupilFeedbackService, type IPupilFeedbackMessage } from './feedback.service.js'
 import { v4 as uuidv4 } from 'uuid'
-import type { ISqlService, ISqlParameter } from '../../sql/sql.service'
+import type { ISqlService, ISqlParameter } from '../../sql/sql.service.js'
 
 let sut: PupilFeedbackService
 let message: IPupilFeedbackMessage

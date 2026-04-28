@@ -1,5 +1,5 @@
-import { PsReportStagingDataService } from '../functions-ps-report/ps-report-3b-stage-csv-file/ps-report-staging.data.service'
-import { ConsoleLogger, type ILogger } from '../common/logger'
+import { PsReportStagingDataService } from '../functions-ps-report/ps-report-3b-stage-csv-file/ps-report-staging.data.service.js'
+import { ConsoleLogger, type ILogger } from '../common/logger.js'
 import * as iconv from 'iconv-lite'
 
 describe('PS Report 3b Stage CSV File Data Service', () => {

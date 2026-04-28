@@ -1,4 +1,4 @@
-import { type Check } from '../pupil-data.models'
+import { type Check } from '../pupil-data.models.js'
 
 // A check that has not been logged into yet.
 export const check: Check = {

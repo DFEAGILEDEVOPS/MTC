@@ -1,5 +1,5 @@
-import { ServiceBusQueueNames } from '../azure/service-bus-queue.names'
-import { ServiceBusQueueService, type IServiceBusQueueService } from '../azure/service-bus.queue.service'
+import { ServiceBusQueueNames } from '../azure/service-bus-queue.names.js'
+import { ServiceBusQueueService, type IServiceBusQueueService } from '../azure/service-bus.queue.service.js'
 
 export interface ICheckSubmitService {
   submit (payload: any): Promise<void>

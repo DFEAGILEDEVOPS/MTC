@@ -1,7 +1,7 @@
-import { CheckStartedService, type ICheckStartedMessage } from './check-started.service'
-import { RedisServiceMock } from '../../caching/redis-service.mock'
-import { type IRedisService } from '../../caching/redis-service'
-import { type ICheckStartedDataService } from './check-started.data.service'
+import { CheckStartedService, type ICheckStartedMessage } from './check-started.service.js'
+import { RedisServiceMock } from '../../caching/redis-service.mock.js'
+import { type IRedisService } from '../../caching/redis-service.js'
+import { type ICheckStartedDataService } from './check-started.data.service.js'
 
 let sut: CheckStartedService
 let redisServiceMock: IRedisService

@@ -1,14 +1,31 @@
-import * as sql from '../sql/sql.service'
+import * as sql from '../sql/sql.service.js'
 import * as mssql from 'mssql'
-import { v4 as uuidv4 } from 'uuid'
 import moment, { isMoment } from 'moment'
 const RA = require('ramda-adjunct')
 
 let sut: sql.SqlService
+let testUuidCounter = 0
+
+// Generate unique test UUIDs to avoid data collisions
+const generateTestUuid = (): string => {
+  testUuidCounter++
+  const hex = testUuidCounter.toString(16).padStart(8, '0')
+  return `${hex}-0000-4000-8000-000000000000`
+}
 
 describe('SqlService', () => {
   beforeEach(async () => {
+    testUuidCounter = 0
     sut = new sql.SqlService()
+  })
+
+  afterEach(async () => {
+    // Clean up integration test data
+    try {
+      await sut.modify('TRUNCATE TABLE mtc_admin.integrationTest', [])
+    } catch (error) {
+      // Ignore truncate errors during cleanup
+    }
   })
 
   afterAll(async () => {
@@ -98,7 +115,7 @@ describe('SqlService', () => {
   })
 
   test('modifyWithTransaction: rolls back all statements in the batch upon failure', async () => {
-    const uuid = uuidv4()
+    const uuid = generateTestUuid()
     const requests = new Array<sql.ITransactionRequest>()
     requests.push({
       sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)
@@ -131,7 +148,7 @@ describe('SqlService', () => {
   })
 
   test('modifyWithTransaction: commits all statements in the batch when no errors are raised', async () => {
-    const uuid = uuidv4()
+    const uuid = generateTestUuid()
     const requests = new Array<sql.ITransactionRequest>()
     requests.push({
       sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)

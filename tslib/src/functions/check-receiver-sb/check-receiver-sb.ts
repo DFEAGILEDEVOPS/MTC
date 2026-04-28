@@ -1,10 +1,10 @@
 import { type InvocationContext } from '@azure/functions'
-import { TableService } from '../../azure/table-service'
+import { TableService } from '../../azure/table-service.js'
 import Moment from 'moment'
-import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { type SubmittedCheckMessage, type ValidateCheckMessageV1, type ReceivedCheckTableEntity } from '../../schemas/models'
-import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message.js'
+import { type SubmittedCheckMessage, type ValidateCheckMessageV1, type ReceivedCheckTableEntity } from '../../schemas/models.js'
+import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service.js'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
 const tableService = new TableService()
 
 export class CheckReceiverServiceBus {

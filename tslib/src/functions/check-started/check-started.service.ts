@@ -1,7 +1,7 @@
-import { type IRedisService, RedisService } from '../../caching/redis-service'
+import { type IRedisService, RedisService } from '../../caching/redis-service.js'
 import * as R from 'ramda'
-import config from '../../config'
-import { CheckStartedDataService, type ICheckStartedDataService } from './check-started.data.service'
+import config from '../../config.js'
+import { CheckStartedDataService, type ICheckStartedDataService } from './check-started.data.service.js'
 
 export class CheckStartedService {
   private readonly redisService: IRedisService

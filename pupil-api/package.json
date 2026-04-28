@@ -2,12 +2,13 @@
   "name": "pupil-api",
   "version": "1.0.0",
   "private": false,
+  "type": "module",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "yarn sync && yarn run gulp",
+    "build": "yarn sync && yarn run gulp --gulpfile gulpfile.cjs",
     "clean": "rm -rf dist rm -f .env",
     "start": "node ./dist/pupil-api/index.js",
-    "sync": "node ./sync-tslib-deps.js && yarn install"
+    "sync": "node ./sync-tslib-deps.cjs && yarn install"
   },
   "engines": {
     "node": ">= 18"

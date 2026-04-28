@@ -1,6 +1,6 @@
 import { type Timer, app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service'
+import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service.js'
 import './../../common/bigint'
 const functionName = 'sync-results-init'
 
