@@ -23,7 +23,7 @@ describe('SqlService', () => {
     // Clean up integration test data
     try {
       await sut.modify('TRUNCATE TABLE mtc_admin.integrationTest', [])
-    } catch (error) {
+    } catch (_error) {
       // Ignore truncate errors during cleanup
     }
   })
