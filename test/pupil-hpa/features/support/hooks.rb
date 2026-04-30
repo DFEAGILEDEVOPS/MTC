@@ -57,8 +57,13 @@ end
 
 After('@check_started_hook') do
   p @check_code
-  (wait_until(60, 1) {SqlDbHelper.get_check(@check_code)['startedAt'].is_a?(Time)}) unless @check_code.nil?
-  p (SqlDbHelper.get_check(@check_code)['startedAt']) unless @check_code.nil?
+  unless @check_code.nil?
+    wait_until(60, 1) do
+      started_at = SqlDbHelper.get_check(@check_code)['startedAt']
+      !started_at.nil?
+    end
+    p(SqlDbHelper.get_check(@check_code)['startedAt'])
+  end
 end
 
 After do |scenario|

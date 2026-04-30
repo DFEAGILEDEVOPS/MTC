@@ -5,15 +5,19 @@ import { CheckNotificationType, type ICheckNotificationMessage } from '../../sch
 import { type SubmittedCheckMessage, type ValidateCheckMessageV1, type ReceivedCheckTableEntity } from '../../schemas/models.js'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service.js'
 import { ConsoleLogger, type ILogger } from '../../common/logger.js'
+import { CompressionService } from '../../common/compression-service.js'
+import { CheckStartedDataService, type ICheckStartedDataService } from '../check-started/check-started.data.service.js'
 const tableService = new TableService()
 
 export class CheckReceiverServiceBus {
   private readonly checkNotifierDataService: IBatchCheckNotifierDataService
   private readonly logService: ILogger
+  private readonly checkStartedDataService: ICheckStartedDataService
 
-  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService, logger?: ILogger) {
+  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService, logger?: ILogger, checkStartedDataService?: ICheckStartedDataService) {
     this.logService = logger ?? new ConsoleLogger()
     this.checkNotifierDataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
+    this.checkStartedDataService = checkStartedDataService ?? new CheckStartedDataService()
   }
 
   async process (context: InvocationContext, receivedCheck: SubmittedCheckMessage): Promise<ICheckReceiverOutputs> {
@@ -27,6 +31,7 @@ export class CheckReceiverServiceBus {
     }
 
     await tableService.createEntity('receivedCheck', receivedCheckEntity)
+    await this.applyStartedAtFallback(context, receivedCheck)
     // as per #48506 - check-receiver will now handle this event instead of check-notifier-batch
     const request = this.checkNotifierDataService.createCheckReceivedRequest(receivedCheck.checkCode.toLowerCase())
     const output: ICheckReceiverOutputs = {
@@ -53,6 +58,35 @@ export class CheckReceiverServiceBus {
     }
     output.checkValidationQueue = [message]
     return output
+  }
+
+  private async applyStartedAtFallback (context: InvocationContext, receivedCheck: SubmittedCheckMessage): Promise<void> {
+    try {
+      const parsedCheck = this.getParsedSubmittedCheckPayload(receivedCheck)
+      const startedAt = parsedCheck?.audit?.find((event: { type?: string, clientTimestamp?: string, browserTimestamp?: string }) => event?.type === 'CheckStarted')?.clientTimestamp ??
+        parsedCheck?.audit?.find((event: { type?: string, clientTimestamp?: string, browserTimestamp?: string }) => event?.type === 'CheckStarted')?.browserTimestamp
+
+      if (startedAt !== undefined && startedAt !== null && startedAt !== '') {
+        await this.checkStartedDataService.updateCheckStartedDate(receivedCheck.checkCode, new Date(startedAt))
+      }
+    } catch (error) {
+      context.warn(`check-receiver: unable to apply startedAt fallback for check ${receivedCheck.checkCode}: ${String(error)}`)
+    }
+  }
+
+  private getParsedSubmittedCheckPayload (receivedCheck: SubmittedCheckMessage): any {
+    const compressionService = new CompressionService()
+    let payloadString = ''
+
+    if (receivedCheck.version === 2) {
+      payloadString = compressionService.decompressFromUTF16(receivedCheck.archive)
+    } else if (receivedCheck.version === 3) {
+      payloadString = compressionService.decompressFromBase64(receivedCheck.archive)
+    } else {
+      payloadString = compressionService.decompressFromGzip(receivedCheck.archive)
+    }
+
+    return JSON.parse(payloadString)
   }
 }
 

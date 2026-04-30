@@ -19,8 +19,19 @@ export class CheckStartedDataService implements ICheckStartedDataService {
     ]
     return this.sqlService.modify(sql, params)
   }
+
+  async isLiveCheck (checkCode: string): Promise<boolean> {
+    const sql = `SELECT isLiveCheck FROM [mtc_admin].[check] WHERE checkCode = @checkCode`
+    const params = [
+      { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier }
+    ]
+    const results = await this.sqlService.query(sql, params)
+    const first = results?.[0]
+    return first?.isLiveCheck === true
+  }
 }
 
 export interface ICheckStartedDataService {
   updateCheckStartedDate (checkCode: string, checkStartedDateTime: Date): Promise<IModifyResult>
+  isLiveCheck (checkCode: string): Promise<boolean>
 }

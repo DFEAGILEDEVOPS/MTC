@@ -185,6 +185,25 @@ describe('restart controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
     })
 
+    test('submits all eligible pupils when select all is used', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.body = {
+        allPupils: 'on'
+      }
+      jest.spyOn(restartService, 'getPupilsEligibleForRestart').mockResolvedValue([{ id: 11 }, { id: 22 }])
+      jest.spyOn(restartService, 'restart').mockResolvedValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineRestartsEligibility').mockImplementation()
+      const controller = require('../../../controllers/restart').postSubmitRestartList
+      await controller(req, res, next)
+      expect(restartService.getPupilsEligibleForRestart).toHaveBeenCalledWith(req.user.schoolId)
+      expect(restartService.restart).toHaveBeenCalledWith([11, 22], undefined, req.user.id, req.user.schoolId)
+      expect(req.flash).toHaveBeenCalledWith('info', 'Restarts made for 2 pupils')
+      expect(res.redirect).toHaveBeenCalled()
+    })
+
     test('renders a specific flash message for 1 pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)

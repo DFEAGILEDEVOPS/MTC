@@ -1,14 +1,22 @@
-import { type Timer, app, type InvocationContext } from '@azure/functions'
+import { type HttpRequest, type HttpResponseInit, type Timer, app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service.js'
 import './../../common/bigint'
 const functionName = 'sync-results-init'
+const httpFunctionName = 'sync-results-init-http'
 
 // This is usually in GMT so 5pm GMT is equal to 6pm BST (wall clock time in summer)
 // Timezones are now supported: https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=python-v2%2Cisolated-process%2Cnodejs-v4&pivots=programming-language-javascript#ncrontab-time-zones
 app.timer(functionName, {
   schedule: '0 0 17 * * *',
   handler: syncResultsInit
+})
+
+app.http(httpFunctionName, {
+  methods: ['POST'],
+  authLevel: 'anonymous',
+  route: 'sync-results-init',
+  handler: syncResultsInitHttp
 })
 
 export async function syncResultsInit (timer: Timer, context: InvocationContext): Promise<void> {
@@ -37,5 +45,40 @@ export async function syncResultsInit (timer: Timer, context: InvocationContext)
     }
     context.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
+  }
+}
+
+export async function syncResultsInitHttp (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  const start = performance.now()
+  try {
+    const syncResultsInitService = new SyncResultsInitService(context)
+    const options = await request.json() as ISyncResultsInitServiceOptions
+    const meta = await syncResultsInitService.processBatch(options)
+    const memoryUsage = process.memoryUsage()
+    const heapUsed = memoryUsage.heapUsed / 1024 / 1024
+    const end = performance.now()
+    const durationInMilliseconds = end - start
+    const timeStamp = new Date().toISOString()
+    context.log(`${httpFunctionName}: ${timeStamp} processed ${meta.messagesSent} records with ${meta.messagesErrored} messages failed to send, run took ${Math.round(durationInMilliseconds) / 1000} secs, total memory usage (heap used) ${Math.round(heapUsed * 100) / 100} MB`)
+    return {
+      status: 202,
+      jsonBody: {
+        messagesSent: meta.messagesSent,
+        messagesErrored: meta.messagesErrored,
+        totalChecks: meta.totalChecks
+      }
+    }
+  } catch (error: any) {
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.error(`${httpFunctionName}: ERROR: ${errorMessage}`)
+    return {
+      status: 500,
+      jsonBody: {
+        error: errorMessage
+      }
+    }
   }
 }

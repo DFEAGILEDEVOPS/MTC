@@ -142,7 +142,11 @@ end
 Then(/^the input assistant info should be stored$/) do
   pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])['id']
   check_id = SqlDbHelper.get_check_id(@check_code)
-  db_record = SqlDbHelper.get_check_input_assistant(pupil_id,check_id)
+  db_record = nil
+  wait_until(60, 2) do
+    db_record = SqlDbHelper.get_check_input_assistant(pupil_id, check_id)
+    !db_record.nil?
+  end
   expect(db_record['isRetrospective']).to eql false
   expect(db_record['foreName']).to eql 'Test'
   expect(db_record['lastName']).to eql 'Assistant'
