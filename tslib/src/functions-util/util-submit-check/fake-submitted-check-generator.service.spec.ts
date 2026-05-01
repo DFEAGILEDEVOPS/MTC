@@ -1,9 +1,9 @@
-import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
-import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
+import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service.js'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion.js'
 import mockPreparedCheck from '../../common/mocks/mock-prepared-check-2021.json'
-import { FakeCompletedCheckGeneratorService, type ICompletedCheckGeneratorService } from './fake-completed-check-generator.service'
-import { type ICompressionService } from '../../common/compression-service'
-import { type IPreparedCheckService } from '../../caching/prepared-check.service'
+import { FakeCompletedCheckGeneratorService, type ICompletedCheckGeneratorService } from './fake-completed-check-generator.service.js'
+import { type ICompressionService } from '../../common/compression-service.js'
+import { type IPreparedCheckService } from '../../caching/prepared-check.service.js'
 
 let sut: FakeCompletedCheckMessageGeneratorService
 let preparedCheckServiceMock: IPreparedCheckService

@@ -1,4 +1,4 @@
-import { MaxAttemptsCalculator } from './max-attempts-calculator'
+import { MaxAttemptsCalculator } from './max-attempts-calculator.js'
 
 let sut: MaxAttemptsCalculator
 

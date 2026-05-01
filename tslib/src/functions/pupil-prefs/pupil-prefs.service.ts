@@ -1,8 +1,8 @@
-import { type IModifyResult, SqlService, type ITransactionRequest } from '../../sql/sql.service'
+import { type IModifyResult, SqlService, type ITransactionRequest } from '../../sql/sql.service.js'
 import { TYPES } from 'mssql'
-import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
-import { RedisService } from '../../caching/redis-service'
-import { type ILogger } from '../../common/logger'
+import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings.js'
+import { RedisService } from '../../caching/redis-service.js'
+import { type ILogger } from '../../common/logger.js'
 
 export class PupilPrefsService {
   private readonly dataService: IPupilPrefsDataService

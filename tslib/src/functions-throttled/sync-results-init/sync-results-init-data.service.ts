@@ -1,7 +1,7 @@
-import { type UnsynchronisedCheck } from './models'
-import { validate as validateUUID } from 'uuid'
+import { type UnsynchronisedCheck } from './models.js'
+import { isValidUuid } from '../../common/uuid.js'
 import { TYPES } from 'mssql'
-import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service.js'
 
 export interface ISyncResultsInitDataService {
   getUnsynchronisedChecks (): Promise<UnsynchronisedCheck[]>
@@ -39,7 +39,7 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
    * @param checkCode
    */
   async getCheckToResynchronise (checkCode: string): Promise<UnsynchronisedCheck[]> {
-    if (!validateUUID(checkCode)) {
+    if (!isValidUuid(checkCode)) {
       throw new Error('Invalid checkCode')
     }
     const sql = `
@@ -62,7 +62,7 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
    * @param schoolUUID
    */
   async getSchoolToResynchonise (schoolUUID: string): Promise<UnsynchronisedCheck[]> {
-    if (!validateUUID(schoolUUID)) {
+    if (!isValidUuid(schoolUUID)) {
       throw new Error('Invalid schoolUUID')
     }
     const sql = `

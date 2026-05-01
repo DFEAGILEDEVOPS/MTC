@@ -1,5 +1,5 @@
 import type { Response } from 'express'
-import { DefaultSecurityHeaders } from '../routes/default-security-headers'
+import { DefaultSecurityHeaders } from '../routes/default-security-headers.js'
 
 const apiResponse = {
   unauthorised: (res: Response): Response => {

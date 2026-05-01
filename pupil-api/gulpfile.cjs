@@ -1,20 +1,24 @@
 'use strict'
 
 const gulp = require('gulp')
-const ts = require('gulp-typescript')
 const yarn = require('gulp-yarn')
 const clean = require('gulp-clean')
-const proj = ts.createProject('../tslib/tsconfig.json')
+const { execSync } = require('child_process')
+const path = require('path')
 
 gulp.task('clean', () => {
   return gulp.src(['./dist'], { read: false, allowEmpty: true })
     .pipe(clean())
 })
 
-gulp.task('compileTslib', () => {
-  return proj.src()
-    .pipe(proj())
-    .js.pipe(gulp.dest('./dist'))
+gulp.task('compileTslib', (done) => {
+  execSync('yarn build', { cwd: path.resolve(__dirname, '../tslib'), stdio: 'inherit' })
+  done()
+})
+
+gulp.task('copyTslibDist', () => {
+  return gulp.src(['../tslib/dist/**/*'], { encoding: false })
+    .pipe(gulp.dest('./dist'))
 })
 
 gulp.task('yarnInstall', () => {
@@ -34,4 +38,4 @@ gulp.task('copyEnvForDist', () => {
   .pipe(gulp.dest('./'))
 })
 
-gulp.task('default', gulp.series('clean', 'yarnInstall', 'compileTslib', 'deleteSpecFiles', 'copyEnvForDist'))
+gulp.task('default', gulp.series('clean', 'yarnInstall', 'compileTslib', 'copyTslibDist', 'deleteSpecFiles', 'copyEnvForDist'))

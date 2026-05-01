@@ -1,4 +1,4 @@
-import { PreparedCheckMergeService, type ICheckConfig, type IPreparedCheckMergeDataService } from './prepared-check-merge.service'
+import { PreparedCheckMergeService, type ICheckConfig, type IPreparedCheckMergeDataService } from './prepared-check-merge.service.js'
 
 let sut: PreparedCheckMergeService
 let dataServiceMock: IPreparedCheckMergeDataService

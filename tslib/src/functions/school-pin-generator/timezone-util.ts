@@ -1,5 +1,5 @@
 import momentTz from 'moment-timezone'
-import * as tzMetaData from 'moment-timezone/data/meta/latest.json'
+import tzMetaData from 'moment-timezone/data/meta/latest.json'
 
 export interface Timezone {
   name: string

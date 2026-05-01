@@ -1,4 +1,4 @@
-import type { Pupil } from '../pupil-data.models'
+import type { Pupil } from '../pupil-data.models.js'
 import moment from 'moment'
 
 // An pupil who completed a check and was then annulled for cheating.
