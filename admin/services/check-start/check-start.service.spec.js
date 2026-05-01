@@ -17,7 +17,7 @@ const config = require('../../config')
 const { JwtService } = require('../jwt/jwt.service')
 const jwtService = JwtService.getInstance()
 const R = require('ramda')
-const uuid = require('uuid')
+const uuid = require('../../lib/uuid')
 
 const checkFormMock = {
   id: 100,

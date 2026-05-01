@@ -1,5 +1,5 @@
 const R = require('ramda')
-const { validate: uuidValidator } = require('uuid')
+const { validate: uuidValidator } = require('../lib/uuid')
 const preparedCheckSyncService = require('../services/prepared-check-sync.service')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
