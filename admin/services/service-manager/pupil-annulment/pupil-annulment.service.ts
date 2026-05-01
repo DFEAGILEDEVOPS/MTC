@@ -1,4 +1,4 @@
-import { validate as validateUuid } from 'uuid'
+import { validate as validateUuid } from '../../../lib/uuid'
 import { PupilAnnulmentDataService } from './pupil-annulment.data.service'
 const redisKeyService = require('../../redis-key.service')
 const redisCacheService = require('../../data-access/redis-cache.service')

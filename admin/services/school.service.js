@@ -1,5 +1,5 @@
 'use strict'
-const uuid = require('uuid')
+const uuid = require('../lib/uuid')
 const schoolDataService = require('../services/data-access/school.data.service')
 const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')

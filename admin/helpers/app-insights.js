@@ -1,6 +1,5 @@
 'use strict'
 
-const appInsights = require('applicationinsights')
 const config = require('../config')
 // const {
 //   getBuildNumber
@@ -9,7 +8,13 @@ const config = require('../config')
 const cloudRoleName = 'Admin-App'
 
 const startInsightsIfConfigured = () => {
+  if (config.Environment === 'Local-Dev') {
+    console.log('skipping application insights startup in Local-Dev')
+    return
+  }
+
   if (config.Monitoring.ApplicationInsights.ConnectionString) {
+    const appInsights = require('applicationinsights')
     console.log('initialising application insights module')
     appInsights.setup(config.Monitoring.ApplicationInsights.ConnectionString)
       .setAutoCollectRequests(true)
