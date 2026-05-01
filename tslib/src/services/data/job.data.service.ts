@@ -1,6 +1,6 @@
 import { TYPES, MAX } from 'mssql'
-import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
-import { JobStatusCode } from '../../common/job-status-code'
+import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service.js'
+import { JobStatusCode } from '../../common/job-status-code.js'
 import moment from 'moment'
 const { isArray } = require('ramda-adjunct')
 

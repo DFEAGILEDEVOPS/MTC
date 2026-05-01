@@ -1,12 +1,12 @@
-import { SchoolImportService } from './school-import.service'
+import { SchoolImportService } from './school-import.service.js'
 import { ConnectionPool } from 'mssql'
-import config from '../../config'
-import { SchoolImportJobOutput } from './SchoolImportJobOutput'
-import { type ISchoolDataService } from './data-access/school.data.service'
-import { SchoolImportError } from './SchoolImportError'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
-import { type IJobDataService } from '../../services/data/job.data.service'
-import { JobStatusCode } from '../../common/job-status-code'
+import config from '../../config.js'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput.js'
+import { type ISchoolDataService } from './data-access/school.data.service.js'
+import { SchoolImportError } from './SchoolImportError.js'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
+import { type IJobDataService } from '../../services/data/job.data.service.js'
+import { JobStatusCode } from '../../common/job-status-code.js'
 
 let sut: SchoolImportService
 let jobResult: SchoolImportJobOutput

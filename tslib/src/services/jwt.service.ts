@@ -1,5 +1,5 @@
-import * as jwt from 'jsonwebtoken'
-import config from '../config'
+import jwt from 'jsonwebtoken'
+import config from '../config.js'
 
 const createJwtAsync = async (payload: any, signingOptions: jwt.SignOptions): Promise<any> => {
   return new Promise((resolve, reject) => {

@@ -2,9 +2,9 @@ import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
-import * as parser from './common/parsing'
+import * as parser from './common/parsing.js'
 
-const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+const globalDotEnvFile = path.resolve(process.cwd(), '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
     console.log('globalDotEnvFile found', globalDotEnvFile)

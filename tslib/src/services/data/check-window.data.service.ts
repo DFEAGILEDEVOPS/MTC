@@ -1,5 +1,5 @@
-import { SqlService } from '../../sql/sql.service'
-import { type ICheckWindow } from '../../schemas/check-window'
+import { SqlService } from '../../sql/sql.service.js'
+import { type ICheckWindow } from '../../schemas/check-window.js'
 
 export interface ICheckWindowDataService {
   getActiveCheckWindow (): Promise<ICheckWindow>

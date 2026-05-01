@@ -1,6 +1,6 @@
 import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { type ICheckStartedMessage, CheckStartedService } from './check-started.service'
+import { type ICheckStartedMessage, CheckStartedService } from './check-started.service.js'
 const functionName = 'check-started'
 
 app.storageQueue(functionName, {

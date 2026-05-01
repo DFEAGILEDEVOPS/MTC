@@ -1,7 +1,7 @@
-import { RedisAuthController } from './auth.controller'
+import { RedisAuthController } from './auth.controller.js'
 import * as httpMocks from 'node-mocks-http'
-import logger from '../services/log.service'
-import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
+import logger from '../services/log.service.js'
+import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service.js'
 import type { Request } from 'express'
 
 class RedisPupilAuthServiceMock implements IPupilAuthenticationService {
@@ -164,6 +164,32 @@ describe('redis auth controller', () => {
     expect(res.statusCode).toBe(200) // it succeeds even though the trailing space is superflous
     const authArgs = redisPupilAuthServiceMock.mock.calls[0]
     expect(authArgs[0]).toBe('xyz') // trailing space removed
+  })
+
+  test('normalizes schoolPin to lowercase before authentication', async () => {
+    req.body = {
+      pupilPin: '123',
+      schoolPin: ' AbC ',
+      buildVersion: '123'
+    }
+    const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
+    await sut.postAuth(req, res)
+    expect(res.statusCode).toBe(200)
+    const authArgs = redisPupilAuthServiceMock.mock.calls[0]
+    expect(authArgs[0]).toBe('abc')
+  })
+
+  test('trims leading and trailing whitespace from the pupilPin', async () => {
+    req.body = {
+      pupilPin: ' 1234 ',
+      schoolPin: 'abc',
+      buildVersion: '123'
+    }
+    const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
+    await sut.postAuth(req, res)
+    expect(res.statusCode).toBe(200)
+    const authArgs = redisPupilAuthServiceMock.mock.calls[0]
+    expect(authArgs[1]).toBe('1234')
   })
 })
 
