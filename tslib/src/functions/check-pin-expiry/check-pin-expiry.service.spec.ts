@@ -1,4 +1,4 @@
-import { CheckPinExpiryService } from './check-pin-expiry.service.js'
+import { CheckPinExpiryService } from './check-pin-expiry.service'
 
 describe('CheckPinExpiryService', () => {
   const sqlServiceMock = {

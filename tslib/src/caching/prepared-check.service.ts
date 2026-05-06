@@ -1,5 +1,5 @@
-import { type IRedisService, RedisService } from './redis-service.js'
-import redisKeyService from './redis-key.service.js'
+import { type IRedisService, RedisService } from './redis-service'
+import redisKeyService from './redis-key.service'
 
 export interface IPreparedCheckService {
   fetch (checkCode: string): Promise<unknown>

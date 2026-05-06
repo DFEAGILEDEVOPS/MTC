@@ -1,5 +1,5 @@
-import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types.js'
-import { isValidUuid } from '../../../common/uuid.js'
+import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types'
+import { validate } from 'uuid'
 
 export class CheckCodeValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {
@@ -8,7 +8,7 @@ export class CheckCodeValidator implements ISubmittedCheckValidator {
         message: 'checkCode property missing'
       }
     }
-    if (!isValidUuid(check.checkCode)) {
+    if (!validate(check.checkCode)) {
       return {
         message: 'checkCode is not a valid UUID'
       }

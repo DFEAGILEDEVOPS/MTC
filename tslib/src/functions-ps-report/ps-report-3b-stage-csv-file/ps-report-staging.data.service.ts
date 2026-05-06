@@ -1,6 +1,6 @@
 import { BlobServiceClient, type AppendBlobClient } from '@azure/storage-blob'
-import type { ILogger } from '../../common/logger.js'
-import config from '../../config.js'
+import type { ILogger } from '../../common/logger'
+import config from '../../config'
 export class PsReportStagingDataService {
   private readonly logName = 'PsReportStagingDataService'
   private readonly blobService: BlobServiceClient

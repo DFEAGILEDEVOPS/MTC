@@ -1,4 +1,4 @@
-import { type ISqlService } from '../../sql/sql.service.js'
+import { type ISqlService } from '../../sql/sql.service'
 
 export class CheckPinExpiryService {
   private readonly sqlService: ISqlService

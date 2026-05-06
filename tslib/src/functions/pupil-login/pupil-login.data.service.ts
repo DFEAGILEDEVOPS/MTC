@@ -1,5 +1,5 @@
 import { TYPES } from 'mssql'
-import { type IModifyResult, SqlService } from '../../sql/sql.service.js'
+import { type IModifyResult, SqlService } from '../../sql/sql.service'
 
 export interface IPupilLoginDataService {
   updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<IModifyResult>

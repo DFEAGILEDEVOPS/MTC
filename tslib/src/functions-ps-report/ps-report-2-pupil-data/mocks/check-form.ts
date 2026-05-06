@@ -1,4 +1,4 @@
-import { type CheckForm } from '../pupil-data.models.js'
+import { type CheckForm } from '../pupil-data.models'
 
 export const checkForm: CheckForm = {
   id: 9,

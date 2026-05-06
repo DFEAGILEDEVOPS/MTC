@@ -1,4 +1,4 @@
-import { PingService } from './ping.service.js'
+import { PingService } from './ping.service'
 
 let sut: PingService
 

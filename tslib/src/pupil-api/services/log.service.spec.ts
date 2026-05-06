@@ -1,4 +1,4 @@
-import { Logger } from './log.service.js'
+import { Logger } from './log.service'
 
 describe('logger class', () => {
   test('can initialise', () => {

@@ -1,6 +1,6 @@
-import { type ReceivedCheckFunctionBindingEntity } from '../schemas/models.js'
+import { type ReceivedCheckFunctionBindingEntity } from '../schemas/models'
 import { v4 as uuid } from 'uuid'
-import { ReceivedCheckBindingEntityTransformer } from './receivedCheckBindingEntityTransformer.js'
+import { ReceivedCheckBindingEntityTransformer } from './receivedCheckBindingEntityTransformer'
 
 let sut: ReceivedCheckBindingEntityTransformer
 

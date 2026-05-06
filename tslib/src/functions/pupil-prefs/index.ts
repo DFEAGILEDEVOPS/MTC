@@ -1,6 +1,6 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { type IPupilPreferenceUpdate, PupilPrefsService } from './pupil-prefs.service.js'
+import { type IPupilPreferenceUpdate, PupilPrefsService } from './pupil-prefs.service'
 
 const functionName = 'pupil-prefs'
 

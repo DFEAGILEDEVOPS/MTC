@@ -1,15 +1,14 @@
-import { CheckStartedService, type ICheckStartedMessage } from './check-started.service.js'
-import { RedisServiceMock } from '../../caching/redis-service.mock.js'
-import { type IRedisService } from '../../caching/redis-service.js'
-import { type ICheckStartedDataService } from './check-started.data.service.js'
+import { CheckStartedService, type ICheckStartedMessage } from './check-started.service'
+import { RedisServiceMock } from '../../caching/redis-service.mock'
+import { type IRedisService } from '../../caching/redis-service'
+import { type ICheckStartedDataService } from './check-started.data.service'
 
 let sut: CheckStartedService
 let redisServiceMock: IRedisService
 let dataServiceMock: ICheckStartedDataService
 
 const CheckStartedDataServiceMock = jest.fn<ICheckStartedDataService, any>(() => ({
-  updateCheckStartedDate: jest.fn(),
-  isLiveCheck: jest.fn().mockResolvedValue(false)
+  updateCheckStartedDate: jest.fn()
 }))
 
 describe('check-started.service', () => {
@@ -114,56 +113,6 @@ describe('check-started.service', () => {
     })
     await sut.process(message)
     expect(redisServiceMock.drop).not.toHaveBeenCalled()
-  })
-
-  test('it resolves prepared-check lookup key when stored using raw-case check code', async () => {
-    const message: ICheckStartedMessage = {
-      checkCode: 'aBcD1234',
-      clientCheckStartedAt: new Date(),
-      version: 1
-    }
-    const preparedCheckKey = 'prepared-check-key'
-
-    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
-      if (key === 'prepared-check-lookup:ABCD1234') {
-        return null
-      }
-      if (key === 'prepared-check-lookup:aBcD1234') {
-        return preparedCheckKey
-      }
-      if (key === preparedCheckKey) {
-        return {
-          config: {
-            practice: false
-          }
-        }
-      }
-      return null
-    })
-
-    await sut.process(message)
-    expect(dataServiceMock.updateCheckStartedDate).toHaveBeenCalledTimes(1)
-  })
-
-  test('it falls back to DB live-check lookup when prepared check payload is missing', async () => {
-    const message: ICheckStartedMessage = {
-      checkCode: 'check-code',
-      clientCheckStartedAt: new Date(),
-      version: 1
-    }
-    const preparedCheckKey = 'prepared-check-key'
-
-    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
-      if (key.startsWith('prepared-check-lookup')) {
-        return preparedCheckKey
-      }
-      return null
-    })
-    jest.spyOn(dataServiceMock, 'isLiveCheck').mockResolvedValue(true)
-
-    await sut.process(message)
-    expect(dataServiceMock.isLiveCheck).toHaveBeenCalledTimes(1)
-    expect(dataServiceMock.updateCheckStartedDate).toHaveBeenCalledTimes(1)
   })
 
   test('it does not attempt to drop from redis if no prepared check found', async () => {

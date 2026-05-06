@@ -2,10 +2,10 @@ import * as os from 'os'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
-import * as parser from './helpers/parsing.js'
-import { type LogLevel } from './services/log.service.js'
+import * as parser from './helpers/parsing'
+import { type LogLevel } from './services/log.service'
 
-const globalDotEnvFile = path.resolve(process.cwd(), '.env')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 export const LocalDev = 'Local-Dev'
 
 try {

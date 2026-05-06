@@ -1,9 +1,9 @@
-import { PreparedCheckSyncService } from './prepared-check-sync.service.js'
-import { type IPreparedCheckMergeService, type ICheckConfig } from './prepared-check-merge.service.js'
-import { type IPreparedCheckSyncDataService, type IActiveCheckReference } from './prepared-check-sync.data.service.js'
-import { type IRedisService } from '../../caching/redis-service.js'
-import { RedisServiceMock } from '../../caching/redis-service.mock.js'
-import { ConsoleLogger, type ILogger } from '../../common/logger.js'
+import { PreparedCheckSyncService } from './prepared-check-sync.service'
+import { type IPreparedCheckMergeService, type ICheckConfig } from './prepared-check-merge.service'
+import { type IPreparedCheckSyncDataService, type IActiveCheckReference } from './prepared-check-sync.data.service'
+import { type IRedisService } from '../../caching/redis-service'
+import { RedisServiceMock } from '../../caching/redis-service.mock'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 
 let sut: PreparedCheckSyncService
 let dataServiceMock: IPreparedCheckSyncDataService

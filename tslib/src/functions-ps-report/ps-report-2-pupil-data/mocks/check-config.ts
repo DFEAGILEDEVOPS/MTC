@@ -1,4 +1,4 @@
-import { type CheckConfig } from '../pupil-data.models.js'
+import { type CheckConfig } from '../pupil-data.models'
 
 export const checkConfig: CheckConfig = {
   audibleSounds: false,

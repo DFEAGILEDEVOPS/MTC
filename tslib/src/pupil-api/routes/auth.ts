@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Request, Response } from 'express'
-import { RedisAuthController } from '../controllers/auth.controller.js'
+import { RedisAuthController } from '../controllers/auth.controller'
 
 export class AuthRouter {
   router: Router

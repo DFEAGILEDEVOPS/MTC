@@ -1,11 +1,9 @@
-import config from '../config.js'
-import type { CorsOptions } from 'cors'
-
+import config from '../config'
 const whitelist = config.Cors.Whitelist.split(',')
 
-const options: CorsOptions = {
-  origin: function (origin: string | undefined, callback: (error: Error | null, flag?: boolean) => void) {
-    if (origin === undefined || whitelist.includes(origin)) {
+const options = {
+  origin: function (origin: string, callback: (error?: Error | null, flag?: boolean) => void) {
+    if (whitelist.includes(origin) || origin === undefined) {
       callback(null, true)
     } else {
       callback(new Error(`CORS policy does not allow ${origin}`))
@@ -13,4 +11,4 @@ const options: CorsOptions = {
   }
 }
 
-export default options
+module.exports = options

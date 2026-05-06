@@ -1,4 +1,4 @@
-import { type School } from '../pupil-data.models.js'
+import { type School } from '../pupil-data.models'
 
 export const school: School = {
   estabCode: 999,

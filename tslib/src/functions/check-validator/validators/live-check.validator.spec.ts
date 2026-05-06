@@ -1,5 +1,5 @@
-import { type ICheckValidationError } from './validator-types.js'
-import { LiveCheckValidator } from './live-check.validator.js'
+import { type ICheckValidationError } from './validator-types'
+import { LiveCheckValidator } from './live-check.validator'
 
 let sut: LiveCheckValidator
 

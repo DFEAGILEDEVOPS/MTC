@@ -1,5 +1,5 @@
-import { type IEventService, EventService } from './event.service.js'
-import { type ISqlService } from '../../sql/sql.service.js'
+import { type IEventService, EventService } from './event.service'
+import { type ISqlService } from '../../sql/sql.service'
 
 describe('EventService', () => {
   let sut: IEventService

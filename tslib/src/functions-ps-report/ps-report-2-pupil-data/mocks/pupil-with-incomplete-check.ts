@@ -1,4 +1,4 @@
-import { type Pupil } from '../pupil-data.models.js'
+import { type Pupil } from '../pupil-data.models'
 import moment from 'moment'
 
 export const pupil: Pupil = {

@@ -1,7 +1,7 @@
 import { TYPES } from 'mssql'
-import { type ILogger } from '../../common/logger.js'
-import { type ISqlService, SqlService } from '../../sql/sql.service.js'
-import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages.js'
+import { type ILogger } from '../../common/logger'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 
 export interface School {
   id: number

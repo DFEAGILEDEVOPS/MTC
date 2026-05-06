@@ -1,6 +1,6 @@
-import { type Input } from './pupil-data.models.js'
+import { type Input } from './pupil-data.models'
 import * as R from 'ramda'
-import { type IReportLineAnswer } from './transformer-models.js'
+import { type IReportLineAnswer } from './transformer-models'
 
 export class ReportLineAnswer {
   private _questionNumber: number | null = null
