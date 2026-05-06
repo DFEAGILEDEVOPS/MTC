@@ -1,4 +1,4 @@
-import tableSorting from './table-sorting.js'
+import tableSorting from './table-sorting'
 
 interface IPerson {
   firstName: string

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Request, Response } from 'express'
-import { SubmitController } from '../controllers/submit.controller.js'
+import { SubmitController } from '../controllers/submit.controller'
 
 export class SubmitRouter {
   router: Router

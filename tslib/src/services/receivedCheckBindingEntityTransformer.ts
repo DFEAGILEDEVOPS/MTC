@@ -1,4 +1,4 @@
-import { type ReceivedCheckFunctionBindingEntity, type ReceivedCheckTableEntity } from '../schemas/models.js'
+import { type ReceivedCheckFunctionBindingEntity, type ReceivedCheckTableEntity } from '../schemas/models'
 
 /**
  * When you retrieve a table storage entity via an Azure functions binding

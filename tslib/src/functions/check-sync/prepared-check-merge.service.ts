@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { SqlService } from '../../sql/sql.service.js'
+import { SqlService } from '../../sql/sql.service'
 import type moment from 'moment'
 
 export interface IPreparedCheckMergeDataService {

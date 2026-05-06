@@ -1,7 +1,7 @@
-import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models.js'
+import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
 import * as CSV from 'csv-string'
 import moment from 'moment'
-import { type ILogger } from '../../common/logger.js'
+import { type ILogger } from '../../common/logger'
 
 export interface CsvData {
   PupilDatabaseId: number

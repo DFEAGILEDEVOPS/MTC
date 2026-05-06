@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express'
-import logger from '../services/log.service.js'
-import apiResponse from '../helpers/api-response.js'
-import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service.js'
-import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service.js'
+import logger from '../services/log.service'
+import apiResponse from '../helpers/api-response'
+import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service'
+import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
 
 export class RedisAuthController {
   private readonly redisAuthService: IPupilAuthenticationService
@@ -25,9 +25,7 @@ export class RedisAuthController {
     if (schoolPin === undefined || pupilPin === undefined || buildVersion === undefined) return apiResponse.unauthorised(res)
 
     try {
-      const normalizedSchoolPin = String(schoolPin).trim().toLowerCase()
-      const normalizedPupilPin = String(pupilPin).trim()
-      const data = await this.redisAuthService.authenticate(normalizedSchoolPin, normalizedPupilPin, buildVersion)
+      const data = await this.redisAuthService.authenticate(schoolPin.trim(), pupilPin, buildVersion)
       if (data === undefined) {
         return apiResponse.unauthorised(res)
       }

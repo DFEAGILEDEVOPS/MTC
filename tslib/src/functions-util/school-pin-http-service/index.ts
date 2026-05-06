@@ -1,7 +1,7 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
-import { SchoolPinReplenishmnentService } from '../../functions/school-pin-generator/school-pin-replenishment.service.js'
+import { SchoolPinReplenishmnentService } from '../../functions/school-pin-generator/school-pin-replenishment.service'
 import { performance } from 'perf_hooks'
-import config from '../../config.js'
+import config from '../../config'
 const functionName = 'util-school-pin-generator'
 
 app.http(functionName, {

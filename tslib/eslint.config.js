@@ -1,14 +1,9 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import pluginJest from 'eslint-plugin-jest'
-import globals from 'globals'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+const eslint = require('@eslint/js')
+const tseslint = require('typescript-eslint')
+const pluginJest = require('eslint-plugin-jest');
+const globals = require('globals')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-export default tseslint.config(
+module.exports = tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.strict,
   tseslint.configs.stylisticTypeChecked,

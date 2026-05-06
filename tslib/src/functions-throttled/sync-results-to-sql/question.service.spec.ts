@@ -1,6 +1,6 @@
-import { type IQuestionService, QuestionService } from './question.service.js'
-import { type ISqlService } from '../../sql/sql.service.js'
-import { type DBQuestion } from './models.js'
+import { type IQuestionService, QuestionService } from './question.service'
+import { type ISqlService } from '../../sql/sql.service'
+import { type DBQuestion } from './models'
 
 describe('QuestionService', () => {
   let sut: IQuestionService

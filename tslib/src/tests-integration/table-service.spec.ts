@@ -1,7 +1,7 @@
-import { TableService } from '../azure/table-service.js'
+import { TableService } from '../azure/table-service'
 import { TableClient, TableServiceClient } from '@azure/data-tables'
 import { v4 as uuid } from 'uuid'
-import config from '../config.js'
+import config from '../config'
 
 const commonPrefix = 'mtcIntegrationTest'
 const testRunTableNames: string[] = []

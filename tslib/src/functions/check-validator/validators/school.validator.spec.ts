@@ -1,5 +1,5 @@
-import { SchoolValidator } from './school.validator.js'
-import { type ICheckValidationError } from './validator-types.js'
+import { SchoolValidator } from './school.validator'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: SchoolValidator
 

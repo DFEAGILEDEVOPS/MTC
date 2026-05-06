@@ -1,4 +1,4 @@
-import { type ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord.js'
+import { type ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
 const RA = require('ramda-adjunct')
 
 const schoolsInGibraltarLaCode = 704

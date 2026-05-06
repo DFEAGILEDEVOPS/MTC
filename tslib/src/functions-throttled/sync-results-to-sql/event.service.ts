@@ -1,5 +1,5 @@
-import { type ISqlService, SqlService } from '../../sql/sql.service.js'
-import { type DBEventType } from './models.js'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type DBEventType } from './models'
 import { NVarChar } from 'mssql'
 
 export interface IEventService {

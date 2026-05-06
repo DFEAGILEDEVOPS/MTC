@@ -1,5 +1,5 @@
-import { AuditValidator } from './audit.validator.js'
-import { type ICheckValidationError } from './validator-types.js'
+import { AuditValidator } from './audit.validator'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: AuditValidator
 

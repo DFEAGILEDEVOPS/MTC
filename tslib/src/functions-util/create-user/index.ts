@@ -1,7 +1,7 @@
 import { app, output, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import config from '../../config.js'
-import { type ICreateUserModel, UserApi } from '../create-user/user-api.js'
+import config from '../../config'
+import { type ICreateUserModel, UserApi } from '../create-user/user-api'
 
 const functionName = 'util-create-user'
 

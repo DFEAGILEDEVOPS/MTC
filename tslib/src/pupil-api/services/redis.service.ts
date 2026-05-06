@@ -1,7 +1,7 @@
 import { Redis } from 'ioredis'
 import type { RedisOptions } from 'ioredis'
-import config from '../config.js'
-import { Logger } from './log.service.js'
+import config from '../config'
+import { Logger } from './log.service'
 
 export interface IRedisService {
   /**

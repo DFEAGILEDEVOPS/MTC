@@ -1,4 +1,4 @@
-import { SqlService } from '../../sql/sql.service.js'
+import { SqlService } from '../../sql/sql.service'
 
 export interface ISchoolPinDataService {
   getAllowedWords (): Promise<string[]>

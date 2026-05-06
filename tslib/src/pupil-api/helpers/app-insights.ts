@@ -1,5 +1,5 @@
-import { PingService } from '../services/ping.service.js'
-import config from '../config.js'
+import { PingService } from '../services/ping.service'
+import config from '../config'
 import { isNil } from 'ramda'
 import * as appInsights from 'applicationinsights'
 

@@ -1,5 +1,5 @@
-import config from '../pupil-api/config.js'
-import { type ServiceBusQueueNames } from './service-bus-queue.names.js'
+import config from '../pupil-api/config'
+import { type ServiceBusQueueNames } from './service-bus-queue.names'
 import { ServiceBusAdministrationClient, ServiceBusClient } from '@azure/service-bus'
 
 export interface IServiceBusQueueService {

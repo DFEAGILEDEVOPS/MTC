@@ -1,5 +1,5 @@
-import { EstabTypeCode, EstabTypeGroupCode, type ISchoolRecord, EstabStatusCode } from './data-access/ISchoolRecord.js'
-import { Predicates } from './predicates.js'
+import { EstabTypeCode, EstabTypeGroupCode, type ISchoolRecord, EstabStatusCode } from './data-access/ISchoolRecord'
+import { Predicates } from './predicates'
 
 let sut: Predicates
 let school: ISchoolRecord

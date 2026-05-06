@@ -1,4 +1,4 @@
-import { type ISubmittedCheckValidator, type CheckValidationResult } from './validator-types.js'
+import { type ISubmittedCheckValidator, type CheckValidationResult } from './validator-types'
 
 export class AnswerTypeValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {
