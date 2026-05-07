@@ -127,46 +127,70 @@ end
 
 
 When(/^I enter end dates that are on the same day as the start date$/) do
-  today_date = Date.today
-  @admin_start_date = today_date.next_year(5) + 3
-  @admin_end_date = today_date.next_year(5) + 3
-  @familiarisation_start_date = today_date.next_year(5) + 3
-  @familiarisation_end_date = today_date.next_year(5) + 3
-  @live_start_date = today_date.next_year(5) + 3
-  @live_end_date = today_date.next_year(5) +3
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
-  @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: @admin_start_date.day,
-                        admin_start_month: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.year,
-                        admin_end_day: @admin_end_date.day,
-                        admin_end_month: @admin_end_date.month,
-                        admin_end_year: @admin_end_date.year,
-                        familiarisation_start_day: @familiarisation_start_date.day,
-                        familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: @familiarisation_start_date.year,
-                        familiarisation_end_day: @familiarisation_end_date.day,
-                        familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: @familiarisation_end_date.year,
-                        live_start_day: @live_start_date.day,
-                        live_start_month: @live_start_date.month,
-                        live_start_year: @live_start_date.year,
-                        live_end_day: @live_end_date.day,
-                        live_end_month: @live_end_date.month,
-                        live_end_year: @live_end_date.year
-  }
+  if @check_window_hash
+    # Edit context: set all 6 dates to the same day (admin_start) so start == end
+    # for every period, and admin_end >= fam_end >= live_end (all equal) is satisfied
+    same_day   = @check_window_hash[:admin_start_day]
+    same_month = @check_window_hash[:admin_start_month]
+    same_year  = @check_window_hash[:admin_start_year]
+    @check_window_hash[:admin_end_day]               = same_day
+    @check_window_hash[:admin_end_month]             = same_month
+    @check_window_hash[:admin_end_year]              = same_year
+    @check_window_hash[:familiarisation_start_day]   = same_day
+    @check_window_hash[:familiarisation_start_month] = same_month
+    @check_window_hash[:familiarisation_start_year]  = same_year
+    @check_window_hash[:familiarisation_end_day]     = same_day
+    @check_window_hash[:familiarisation_end_month]   = same_month
+    @check_window_hash[:familiarisation_end_year]    = same_year
+    @check_window_hash[:live_start_day]              = same_day
+    @check_window_hash[:live_start_month]            = same_month
+    @check_window_hash[:live_start_year]             = same_year
+    @check_window_hash[:live_end_day]                = same_day
+    @check_window_hash[:live_end_month]              = same_month
+    @check_window_hash[:live_end_year]               = same_year
+  else
+    # Create context: build a new check window with start == end dates
+    today_date = Date.today
+    @admin_start_date = today_date.next_year(5) + 3
+    @admin_end_date = today_date.next_year(5) + 3
+    @familiarisation_start_date = today_date.next_year(5) + 3
+    @familiarisation_end_date = today_date.next_year(5) + 3
+    @live_start_date = today_date.next_year(5) + 3
+    @live_end_date = today_date.next_year(5) + 3
+    check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
+    @check_window_hash = {check_name: check_window_name,
+                          admin_start_day: @admin_start_date.day,
+                          admin_start_month: @admin_start_date.month,
+                          admin_start_year: @admin_start_date.year,
+                          admin_end_day: @admin_end_date.day,
+                          admin_end_month: @admin_end_date.month,
+                          admin_end_year: @admin_end_date.year,
+                          familiarisation_start_day: @familiarisation_start_date.day,
+                          familiarisation_start_month: @familiarisation_start_date.month,
+                          familiarisation_start_year: @familiarisation_start_date.year,
+                          familiarisation_end_day: @familiarisation_end_date.day,
+                          familiarisation_end_month: @familiarisation_end_date.month,
+                          familiarisation_end_year: @familiarisation_end_date.year,
+                          live_start_day: @live_start_date.day,
+                          live_start_month: @live_start_date.month,
+                          live_start_year: @live_start_date.year,
+                          live_end_day: @live_end_date.day,
+                          live_end_month: @live_end_date.month,
+                          live_end_year: @live_end_date.year
+    }
+  end
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click
 end
 
 When(/^I enter dates that are inside of active check window$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
-  @admin_end_date = today_date + 3
-  @familiarisation_start_date = today_date + 3
-  @familiarisation_end_date = today_date + 3
-  @live_start_date = today_date + 3
-  @live_end_date = today_date +3
+  @admin_start_date = today_date + 1
+  @admin_end_date = today_date + 1
+  @familiarisation_start_date = today_date + 1
+  @familiarisation_end_date = today_date + 1
+  @live_start_date = today_date + 1
+  @live_end_date = today_date + 1
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
