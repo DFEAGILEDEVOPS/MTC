@@ -1,6 +1,6 @@
-import { SqlService } from '../../sql/sql.service.js'
+import { SqlService } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
-import { type ICheckConfig } from './prepared-check-merge.service.js'
+import { type ICheckConfig } from './prepared-check-merge.service'
 
 export interface IPreparedCheckSyncDataService {
   getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]>

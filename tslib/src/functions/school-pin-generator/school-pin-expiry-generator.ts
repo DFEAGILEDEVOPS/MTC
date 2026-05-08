@@ -1,6 +1,6 @@
 import * as momentTz from 'moment-timezone'
-import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider.js'
-import { type IDateTimeService, DateTimeService } from '../../common/datetime.service.js'
+import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider'
+import { type IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
 export class SchoolPinExpiryGenerator {
   private readonly dateTimeService: IDateTimeService

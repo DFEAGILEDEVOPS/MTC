@@ -1,5 +1,5 @@
-import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types.js'
-import * as RA from 'ramda-adjunct'
+import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types'
+const { isArray, isObj } = require('ramda-adjunct')
 
 export class CheckConfigValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {
@@ -8,12 +8,12 @@ export class CheckConfigValidator implements ISubmittedCheckValidator {
         message: 'config property missing'
       }
     }
-    if (RA.isArray(check.config) === true) {
+    if (isArray(check.config) === true) {
       return {
         message: 'config property is not an object'
       }
     }
-    if (RA.isObj(check.config) === false) {
+    if (isObj(check.config) === false) {
       return {
         message: 'config property is not an object'
       }

@@ -1,10 +1,10 @@
 import { Request, TYPES, Transaction, type IResult, ISOLATION_LEVEL } from 'mssql'
-import { type ILogger, ConsoleLogger } from '../common/logger.js'
-import retry, { retryOnAllSoftErrorsPredicate } from './async-retry.js'
-import config from '../config.js'
+import { type ILogger, ConsoleLogger } from '../common/logger'
+import retry, { retryOnAllSoftErrorsPredicate } from './async-retry'
+import config from '../config'
 import * as R from 'ramda'
-import { DateTimeService, type IDateTimeService } from '../common/datetime.service.js'
-import * as connectionPool from './pool.service.js'
+import { DateTimeService, type IDateTimeService } from '../common/datetime.service'
+import * as connectionPool from './pool.service'
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,

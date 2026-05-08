@@ -1,4 +1,4 @@
-import { type IPreparedCheckSyncMessage } from '../check-sync/IPreparedCheckSyncMessage.js'
+import { type IPreparedCheckSyncMessage } from '../check-sync/IPreparedCheckSyncMessage'
 
 export interface IPupilPrefsFunctionBindings {
   checkSyncQueue: IPreparedCheckSyncMessage[]

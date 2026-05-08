@@ -1,5 +1,5 @@
-import { SqlService, type ISqlService } from '../../sql/sql.service.js'
-import { type DBQuestion } from './models.js'
+import { SqlService, type ISqlService } from '../../sql/sql.service'
+import { type DBQuestion } from './models'
 
 export interface IQuestionService {
   findQuestion (question: string): Promise<DBQuestion>

@@ -309,24 +309,21 @@ class SqlDbHelper
   end
 
   def self.wait_for_check_result_row(check_id)
-    retries = 0
-    loop do
+    begin
+      retries ||= 0
       sleep 2
       p 'waiting for check result record'
-      check_result = get_check_result(check_id)
-      return check_result['id'] unless check_result.nil?
-
-      retries += 1
-      if retries >= 60
-        raise "Timed out waiting for checkResult row for check_id #{check_id}"
-      end
+      a = get_check_result_id(check_id)
+    rescue NoMethodError => e
+      retry if (retries += 1) < 60
     end
   end
 
   def self.get_check_result_id(check_id)
-    check_result = get_check_result(check_id)
-    return nil if check_result.nil?
-
+    sql = "SELECT * FROM [mtc_results].[checkResult] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    check_result = result.first
+    result.cancel
     check_result['id']
   end
 
@@ -477,41 +474,14 @@ class SqlDbHelper
   end
 
   def self.wait_for_received_check(check_code)
-    retries = 0
-    loop do
+    begin
+      retries ||= 0
       sleep 1
       p 'waiting for check to be received'
-      check = received_check(check_code)
-      return check unless check.nil?
-
-      retries += 1
-      if retries >= 60
-        raise "Timed out waiting for received check for checkCode #{check_code}"
-      end
-    end
-  end
-
-  def self.get_check_pin_for_check(check_id)
-    sql = "SELECT * FROM [mtc_admin].[checkPin] WHERE check_id='#{check_id}'"
-    result = SQL_CLIENT.execute(sql)
-    check_pin = result.first
-    result.cancel
-    check_pin
-  end
-
-  def self.wait_for_check_pin_removal(check_code)
-    retries = 0
-    check_id = get_check_id(check_code)
-    loop do
-      sleep 1
-      p 'waiting for check pin to be removed'
-      check_pin = get_check_pin_for_check(check_id)
-      return if check_pin.nil?
-
-      retries += 1
-      if retries >= 60
-        raise "Timed out waiting for checkPin removal for checkCode #{check_code}"
-      end
+      received_check(check_code)
+    rescue NoMethodError => e
+      p "retry number" + retries.to_s
+      retry if (retries += 1) < 60
     end
   end
 

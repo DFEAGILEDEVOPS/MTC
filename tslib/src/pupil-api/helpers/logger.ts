@@ -1,5 +1,5 @@
 import morgan from 'morgan'
-import config, { LocalDev } from '../config.js'
+import config, { LocalDev } from '../config'
 
 let initialised: boolean
 

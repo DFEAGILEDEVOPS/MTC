@@ -1,4 +1,4 @@
-import { type IPsReportLogEntry } from './ps-report-log-entry.js'
+import { type IPsReportLogEntry } from './ps-report-log-entry'
 import moment from 'moment'
 export class PsLogEntryFormatter {
   formatEntry (message: IPsReportLogEntry): string {

@@ -1,6 +1,6 @@
 import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { type IPupilFeedbackMessage, PupilFeedbackService } from './feedback.service.js'
+import { type IPupilFeedbackMessage, PupilFeedbackService } from './feedback.service'
 
 const functionName = 'pupil-feedback'
 const service = new PupilFeedbackService()

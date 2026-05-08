@@ -1,4 +1,4 @@
-import { ValidatorProvider } from './validator.provider.js'
+import { ValidatorProvider } from './validator.provider'
 
 let sut: ValidatorProvider
 

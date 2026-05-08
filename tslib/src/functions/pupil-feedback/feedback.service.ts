@@ -1,5 +1,5 @@
 import { TYPES } from 'mssql'
-import { type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service.js'
+import { type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
 
 export interface IPupilFeedbackMessage {
   version: number

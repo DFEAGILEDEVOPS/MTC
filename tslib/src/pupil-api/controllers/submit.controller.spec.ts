@@ -1,9 +1,9 @@
-import { SubmitController, MaxPayloadSize } from './submit.controller.js'
+import { SubmitController, MaxPayloadSize } from './submit.controller'
 import * as httpMocks from 'node-mocks-http'
 import type { Request, Response } from 'express'
-import logger from '../services/log.service.js'
-import { type IJwtService } from '../../services/jwt.service.js'
-import { type ICheckSubmitService } from '../../services/check-submit.service.js'
+import logger from '../services/log.service'
+import { type IJwtService } from '../../services/jwt.service'
+import { type ICheckSubmitService } from '../../services/check-submit.service'
 import { ServiceBusError } from '@azure/service-bus'
 
 let req: Request

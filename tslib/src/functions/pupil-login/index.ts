@@ -1,6 +1,6 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PupilLoginService, type IPupilLoginMessage } from './pupil-login.service.js'
+import { PupilLoginService, type IPupilLoginMessage } from './pupil-login.service'
 
 const functionName = 'pupil-login'
 const pupilLoginService = new PupilLoginService()

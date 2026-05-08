@@ -1,4 +1,4 @@
-import { JwtSecretValidator } from './jwt-secret.validator.js'
+import { JwtSecretValidator } from './jwt-secret.validator'
 
 describe('jwt-secret.validator', () => {
   test('throws when jwtSecret is undefined', () => {

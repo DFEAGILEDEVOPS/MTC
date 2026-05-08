@@ -1,8 +1,8 @@
-import { type IRedisService } from './redis-service.js'
-import { RedisServiceMock } from './redis-service.mock.js'
+import { type IRedisService } from './redis-service'
+import { RedisServiceMock } from './redis-service.mock'
 import { faker } from '@faker-js/faker'
-import redisKeyService from './redis-key.service.js'
-import { PreparedCheckService } from './prepared-check.service.js'
+import redisKeyService from './redis-key.service'
+import { PreparedCheckService } from './prepared-check.service'
 
 let sut: PreparedCheckService
 let redisServiceMock: IRedisService
