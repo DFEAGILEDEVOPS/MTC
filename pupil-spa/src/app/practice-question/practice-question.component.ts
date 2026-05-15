@@ -121,7 +121,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   @Input() public soundComponent: any;
 
-  public shouldShowQuestion: boolean;
+  public shouldShowQuestion: boolean = true;
 
   @Input() public factor1 = 0;
 
@@ -168,7 +168,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     const accessArrangementsData = storageService.getAccessArrangements();
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
-    this.shouldShowQuestion = true;
   }
 
   ngOnInit () {
