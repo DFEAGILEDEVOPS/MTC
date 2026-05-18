@@ -1,0 +1,41 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Test UPN Generator</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <p class="govuk-body">Generate sample Unique Pupil Numbers (UPNs) for testing purposes.</p>
+
+            <div class="govuk-inset-text" id="upn-result">
+                <h2 class="govuk-heading-m">Generated UPN</h2>
+                <p class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" id="generated-upn"><%= upn %></p>
+            </div>
+
+            <form action="/test-developer/upn-generator" method="get" novalidate>
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Generate New UPN
+                </button>
+            </form>
+
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">UPN Format</span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">A permanent UPN consists of 13 characters:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>1 check letter (A-Z, excluding I, O, S)</li>
+                        <li>3 digit LA code</li>
+                        <li>4 digit establishment number</li>
+                        <li>2 digit year</li>
+                        <li>3 digit serial number</li>
+                    </ul>
+                </div>
+            </details>
+
+            <a href="/test-developer/" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Back
+            </a>
+        </div>
+    </div>
+</main>

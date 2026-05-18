@@ -1,5 +1,7 @@
 'use strict'
 
+const upnGeneratorService = require('../services/upn-generator.service')
+
 /**
  * Display landing page for 'test developer' role.
  * @param req
@@ -19,6 +21,22 @@ const getTestDeveloperHomePage = async function getTestDeveloperHomePage (req, r
   }
 }
 
+const getUpnGenerator = async function getUpnGenerator (req, res, next) {
+  res.locals.pageTitle = 'Test UPN Generator'
+  try {
+    req.breadcrumbs('Home', '/test-developer/home')
+    req.breadcrumbs(res.locals.pageTitle)
+    const upn = upnGeneratorService.generateUpn()
+    res.render('test-developer/upn-generator', {
+      breadcrumbs: req.breadcrumbs(),
+      upn
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
-  getTestDeveloperHomePage
+  getTestDeveloperHomePage,
+  getUpnGenerator
 }
