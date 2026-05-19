@@ -234,7 +234,9 @@ controller.postConfirmSubmit = async function postConfirmSubmit (req, res, next)
   const hdfFormData = req.session.hdfFormData
   validationError = await hdfValidator.validate(hdfFormData)
   if (validationError.hasError()) {
-    return next(new Error('Invalid HDF form data'))
+    // behave like a validation failure (render confirm/submit again)
+    res.error = validationError
+    return controller.getConfirmSubmit(req, res, next)
   }
 
   try {

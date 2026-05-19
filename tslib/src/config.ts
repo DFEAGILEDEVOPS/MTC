@@ -134,6 +134,8 @@ export default {
   },
   LiveFormQuestionCount: getLinesPerCheck(),
   PsReport: {
+    PupilProcessingBatchSize: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_PUPIL_BATCH_SIZE, 100), 10), // Number of pupils to process in parallel (increased from 10 to 100 for better throughput)
+    OutputMessageBatchSize: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_OUTPUT_MESSAGE_BATCH_SIZE, 500), 10), // Number of pupil results to batch into a single Service Bus message (reduces 500k messages to ~1k)
     StagingFile: {
       ReadMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE, 32), 10),
       WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE, 32), 10), // 32 x 32 = 1024 csv rows written per write

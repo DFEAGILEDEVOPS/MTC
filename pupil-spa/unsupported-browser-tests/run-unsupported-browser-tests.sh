@@ -1,4 +1,5 @@
-#!/bin/sh -eux
+#!/usr/bin/env bash
+set -eux
 
 # Variables
 DOCKER_IMAGE_NAME='pupil-spa'

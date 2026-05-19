@@ -10,6 +10,9 @@
   "engines": {
     "node": ">= 18"
   },
+  "resolutions": {
+    "**/**/brace-expansion": "5.0.5"
+  },
   "scripts": {
     "new": "node ./engine/create-migration.js",
     "new-seed": "node ./engine/create-seed.js",

@@ -3,9 +3,8 @@ import { performance } from 'perf_hooks'
 import { PsReportService } from './ps-report.service'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
-import type { PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
+import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
 import config from '../../config'
-import type { IPsychometricReportLine } from './transformer-models'
 
 const psReportExportOutputQueue = output.serviceBusQueue({
   queueName: 'ps-report-export',
@@ -20,7 +19,7 @@ app.serviceBusQueue('ps-report-2-pupil-data', {
 })
 
 export interface IOutputBinding {
-  psReportExportOutput: IPsychometricReportLine[]
+  psReportExportOutput: PsReportBatchMessage[]
 }
 
 /**
@@ -42,7 +41,12 @@ export async function psReport2PupilData (triggerInput: unknown, context: Invoca
   context.extraOutputs.set(psReportExportOutputQueue, output.psReportExportOutput)
   const end = performance.now()
   const durationInMilliseconds = end - start
-  if (config.Logging.DebugVerbosity > 1) {
-    logger.info(`processed ${output.psReportExportOutput.length} pupils, run took ${durationInMilliseconds} ms`)
+  
+  // Log processing summary with failure tracking
+  const totalPupils = output.successfulPupilCount + output.failedPupilCount
+  logger.info(`processed ${output.successfulPupilCount}/${totalPupils} pupils successfully for school ${incomingMessage.name}, run took ${durationInMilliseconds} ms`)
+  
+  if (output.failedPupilCount > 0) {
+    logger.warn(`${output.failedPupilCount} pupils failed to process for school ${incomingMessage.name}`)
   }
 }

@@ -36,3 +36,21 @@ export interface PsReportStagingCompleteMessage {
   filename: string
   jobUuid: string
 }
+
+/**
+ * Batched message for ps-report-export queue containing multiple pupil report lines.
+ * This batches 50-500 pupils per message to reduce queue message count from 500k to ~1k.
+ */
+export interface PsReportBatchMessage {
+  jobUuid: string
+  batch: IPsychometricReportLine[]
+  batchNumber: number
+  totalBatches: number
+  schoolUuid: string
+  schoolName: string
+}
+
+/**
+ * Type import for the report line interface
+ */
+import type { IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'

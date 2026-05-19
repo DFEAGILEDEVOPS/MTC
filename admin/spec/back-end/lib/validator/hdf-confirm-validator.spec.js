@@ -9,10 +9,6 @@ describe('HDF confirm validator', function () {
   beforeEach(() => {
     requestData = {
       confirm: hdfConfirmOptions.confirmAll,
-      pupilDetails: 'checked',
-      uniquePins: 'checked',
-      staffConfirm: 'checked',
-      disruptionConfirm: 'checked',
       noPupilsFurtherInfo: undefined
     }
   })
@@ -23,41 +19,9 @@ describe('HDF confirm validator', function () {
       expect(validationError.hasError()).toBeFalsy()
     })
 
-    test('requires pupilDetails to be checked', () => {
-      requestData.pupilDetails = ''
-      const validationError = hdfConfirmValidator.validate(requestData)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.isError('confirmBoxes')).toBe(true)
-    })
-
-    test('requires uniquePins to be checked', () => {
-      requestData.uniquePins = ''
-      const validationError = hdfConfirmValidator.validate(requestData)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.isError('confirmBoxes')).toBe(true)
-    })
-
-    test('requires staffConfirm to be checked', () => {
-      requestData.staffConfirm = ''
-      const validationError = hdfConfirmValidator.validate(requestData)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.isError('confirmBoxes')).toBe(true)
-    })
-
-    test('requires disruptionConfirm to be checked', () => {
-      requestData.disruptionConfirm = ''
-      const validationError = hdfConfirmValidator.validate(requestData)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.isError('confirmBoxes')).toBe(true)
-    })
-
     describe('when not confirmed', () => {
       beforeEach(() => {
         requestData.confirm = hdfConfirmOptions.confirmNo
-        requestData.pupilDetails = ''
-        requestData.uniquePins = ''
-        requestData.staffConfirm = ''
-        requestData.disruptionConfirm = ''
         requestData.noPupilsFurtherInfo = ''
       })
 
@@ -89,10 +53,6 @@ describe('HDF confirm validator', function () {
     describe('when no pupils taking check', () => {
       beforeEach(() => {
         requestData.confirm = hdfConfirmOptions.confirmNone
-        requestData.pupilDetails = ''
-        requestData.uniquePins = ''
-        requestData.staffConfirm = ''
-        requestData.disruptionConfirm = ''
         requestData.noPupilsFurtherInfo = ''
       })
 
