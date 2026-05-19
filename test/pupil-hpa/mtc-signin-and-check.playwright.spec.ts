@@ -1,21 +1,7 @@
 import { test, expect, type Page, type TestInfo } from '@playwright/test';
+import { environmentUrls } from './playwright.config';
 
-type EnvironmentName = 'dev' | 'test' | 'preprod';
-
-const environmentUrls: Record<EnvironmentName, { adminBaseUrl: string; pupilBaseUrl: string }> = {
-  dev: {
-    adminBaseUrl: 'https://devadmin-as-mtc.azurewebsites.net',
-    pupilBaseUrl: 'https://devpupil-as-mtc.azurewebsites.net'
-  },
-  test: {
-    adminBaseUrl: 'https://testadmin-as-mtc.azurewebsites.net',
-    pupilBaseUrl: 'https://testpupil-as-mtc.azurewebsites.net'
-  },
-  preprod: {
-    adminBaseUrl: 'https://pp-admin.multiplication-tables-check.service.gov.uk',
-    pupilBaseUrl: 'https://pp-pupil.multiplication-tables-check.service.gov.uk'
-  }
-};
+type EnvironmentName = keyof typeof environmentUrls;
 
 function getEnvironmentUrls(testInfo: TestInfo): { env: EnvironmentName; adminBaseUrl: string; pupilBaseUrl: string } {
   const env = testInfo.project.name.split('-')[0] as EnvironmentName;
@@ -137,6 +123,27 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
   }
 }
 
+async function clickThroughNextUntilStartNow(page: Page, maxNextClicks = 10): Promise<void> {
+  const startNowButton = page.getByRole('button', { name: 'Start now', exact: true });
+
+  for (let i = 0; i <= maxNextClicks; i += 1) {
+    if (await startNowButton.isVisible({ timeout: 400 }).catch(() => false)) {
+      await startNowButton.click();
+      return;
+    }
+
+    const nextButton = page.getByRole('button', { name: 'Next', exact: true });
+    if (await nextButton.isVisible({ timeout: 400 }).catch(() => false)) {
+      await nextButton.click();
+      continue;
+    }
+
+    await page.waitForTimeout(200);
+  }
+
+  throw new Error(`Could not find 'Start now' after ${maxNextClicks} 'Next' click(s).`);
+}
+
 async function proceedAfterPupilSelection(page: Page, adminBaseUrl: string): Promise<void> {
   // Confirm selected pupils on the sticky footer. Fallback to direct navigation if hidden.
   const confirmButton = page.getByRole('button', { name: 'Confirm' }).or(page.locator('button:has-text("Confirm")')).first();
@@ -238,16 +245,13 @@ test('admin generates credentials and pupil completes official check flow', asyn
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   // Step 9-10: Move through intro screens and start practice.
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByRole('button', { name: 'Start now' }).click();
+  await clickThroughNextUntilStartNow(page);
 
   // Step 11: Answer 3 practice questions.
   await answerQuestions(page, 3);
 
   // Step 12-13: Continue and start official check.
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByRole('button', { name: 'Start now' }).click();
+  await clickThroughNextUntilStartNow(page);
 
   // Step 14: Answer official questions until the finish screen appears.
   const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);

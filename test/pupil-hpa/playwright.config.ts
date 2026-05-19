@@ -2,6 +2,21 @@ import { defineConfig } from '@playwright/test';
 
 const isCI = process.env.CI === '1' || process.env.CI === 'true';
 
+export const environmentUrls = {
+  dev: {
+    adminBaseUrl: 'https://devadmin-as-mtc.azurewebsites.net',
+    pupilBaseUrl: 'https://devpupil-as-mtc.azurewebsites.net'
+  },
+  test: {
+    adminBaseUrl: 'https://testadmin-as-mtc.azurewebsites.net',
+    pupilBaseUrl: 'https://testpupil-as-mtc.azurewebsites.net'
+  },
+  preprod: {
+    adminBaseUrl: 'https://pp-admin.multiplication-tables-check.service.gov.uk',
+    pupilBaseUrl: 'https://pp-pupil.multiplication-tables-check.service.gov.uk'
+  }
+};
+
 export default defineConfig({
   testDir: '.',
   testMatch: '*.playwright.spec.ts',
