@@ -1,5 +1,10 @@
 {
+  "scripts": {
+    "save:auth": "ts-node scripts/saveAuth.ts"
+  },
   "devDependencies": {
-    "@types/node": "^25.5.0"
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.0",
+    "ts-node": "^10.9.2"
   }
 }

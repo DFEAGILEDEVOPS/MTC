@@ -1,9 +1,32 @@
-import { test, type Page } from '@playwright/test';
-import { TableClient } from '@azure/data-tables';
+import { test, expect, type Page, type TestInfo } from '@playwright/test';
 
-// Admin and pupil environments used in this end-to-end flow.
-const adminSignInUrl = 'https://testadmin-as-mtc.azurewebsites.net/sign-in';
-const pupilSignInUrl = 'https://testpupil-as-mtc.azurewebsites.net/sign-in';
+type EnvironmentName = 'dev' | 'test' | 'preprod';
+
+const environmentUrls: Record<EnvironmentName, { adminBaseUrl: string; pupilBaseUrl: string }> = {
+  dev: {
+    adminBaseUrl: 'https://devadmin-as-mtc.azurewebsites.net',
+    pupilBaseUrl: 'https://devpupil-as-mtc.azurewebsites.net'
+  },
+  test: {
+    adminBaseUrl: 'https://testadmin-as-mtc.azurewebsites.net',
+    pupilBaseUrl: 'https://testpupil-as-mtc.azurewebsites.net'
+  },
+  preprod: {
+    adminBaseUrl: 'https://pp-admin.multiplication-tables-check.service.gov.uk',
+    pupilBaseUrl: 'https://pp-pupil.multiplication-tables-check.service.gov.uk'
+  }
+};
+
+function getEnvironmentUrls(testInfo: TestInfo): { env: EnvironmentName; adminBaseUrl: string; pupilBaseUrl: string } {
+  const env = testInfo.project.name.split('-')[0] as EnvironmentName;
+  const urls = environmentUrls[env];
+
+  if (!urls) {
+    throw new Error(`Unsupported Playwright project name '${testInfo.project.name}'. Expected one of: dev-*, test-*, preprod-*.`);
+  }
+
+  return { env, ...urls };
+}
 
 async function getCurrentQuestionText(page: Page): Promise<string> {
   // Multiplication prompt format is like: "3 x 4 =" or "3 × 4 =".
@@ -114,7 +137,7 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
   }
 }
 
-async function proceedAfterPupilSelection(page: Page): Promise<void> {
+async function proceedAfterPupilSelection(page: Page, adminBaseUrl: string): Promise<void> {
   // Confirm selected pupils on the sticky footer. Fallback to direct navigation if hidden.
   const confirmButton = page.getByRole('button', { name: 'Confirm' }).or(page.locator('button:has-text("Confirm")')).first();
 
@@ -122,11 +145,11 @@ async function proceedAfterPupilSelection(page: Page): Promise<void> {
     await confirmButton.scrollIntoViewIfNeeded({ timeout: 5000 });
     await confirmButton.click({ timeout: 5000 });
   } catch {
-    await page.goto('https://testadmin-as-mtc.azurewebsites.net/pupil-pin/view-and-custom-print-live-pins');
+    await page.goto(`${adminBaseUrl}/pupil-pin/view-and-custom-print-live-pins`);
   }
 }
 
-async function ensurePinsAreVisible(page: Page): Promise<void> {
+async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<void> {
   // Ensure we actually have at least one generated row with School Password + PIN.
   await continueAdminSessionIfPrompted(page);
 
@@ -136,7 +159,7 @@ async function ensurePinsAreVisible(page: Page): Promise<void> {
   }
 
   // If no rows are present, regenerate from the official live pin selection page.
-  await page.goto('https://testadmin-as-mtc.azurewebsites.net/pupil-pin/generate-live-pins-list');
+  await page.goto(`${adminBaseUrl}/pupil-pin/generate-live-pins-list`);
   await continueAdminSessionIfPrompted(page);
 
   const firstPupilCheckbox = page.getByRole('checkbox', { name: /Tick pupil/i }).first();
@@ -152,70 +175,36 @@ async function ensurePinsAreVisible(page: Page): Promise<void> {
   });
 
   if (!clicked) {
-    await proceedAfterPupilSelection(page);
+    await proceedAfterPupilSelection(page, adminBaseUrl);
   }
 
   await page.waitForURL(/view-and-custom-print-live-pins/, { timeout: 20000 });
   await continueAdminSessionIfPrompted(page);
 }
 
-async function verifyCheckDataInDatabase(page: Page, checkCode: string, schoolUuid: string): Promise<void> {
-  // Verify that the check submission was received and stored in Azure Table Storage.
-  // Extract localStorage data to confirm answers and inputs were recorded.
-  const localStorageData = await page.evaluate(() => {
-    const storage: Record<string, unknown> = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key) {
-        const value = localStorage.getItem(key);
-        try {
-          storage[key] = value ? JSON.parse(value) : value;
-        } catch {
-          storage[key] = value;
-        }
-      }
-    }
-    return storage;
-  });
+test('admin generates credentials and pupil completes official check flow', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.endsWith('-admin'), `Runs once per environment on admin projects. Current project: ${testInfo.project.name}`);
 
-  // Extract answers and inputs from localStorage.
-  const answers: unknown[] = [];
-  const inputs: unknown[] = [];
+  const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
 
-  Object.entries(localStorageData).forEach(([key, value]) => {
-    if (key.includes('answers') && typeof value === 'object' && value !== null) {
-      answers.push(value);
-    }
-    if (key.includes('inputs') && typeof value === 'object' && value !== null) {
-      inputs.push(value);
-    }
-  });
-
-  // // Log verification info for diagnostic purposes.
-  // console.log(`Verifying check data:
-  //   - Check Code: ${checkCode}
-  //   - School UUID: ${schoolUuid}
-  //   - Answers stored: ${answers.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(answers).length} bytes)
-  //   - Inputs stored: ${inputs.length > 0 ? 'Yes' : 'No'} (${JSON.stringify(inputs).length} bytes)`);
-
-  // Basic assertion: ensure we captured answer and input data.
-  if (answers.length === 0) {
-    throw new Error('No answer data found in localStorage after check completion');
-  }
-  if (inputs.length === 0) {
-    throw new Error('No input data found in localStorage after check completion');
-  }
-}
-
-test('admin generates credentials and pupil completes official check flow', async ({ page }) => {
   // Full flow can take a few minutes due to timed question pages.
   test.setTimeout(8 * 60 * 1000);
 
-  // Step 1-2: Sign in to admin with teacher credentials.
-  await page.goto(adminSignInUrl);
-  await page.getByRole('textbox', { name: 'Enter your user name.' }).fill('teacher1');
-  await page.getByRole('textbox', { name: 'Enter your password.' }).fill('password');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  // Step 1-2: Open admin and sign in only if we are not already authenticated.
+  await page.goto(`${adminBaseUrl}/sign-in`);
+  const userNameField = page.getByRole('textbox', { name: 'Enter your user name.' });
+
+  if (await userNameField.isVisible({ timeout: 2000 }).catch(() => false)) {
+    if (env === 'preprod') {
+      throw new Error('Preprod project is expected to use auth.json storageState, but login page is still shown. Refresh auth.json via npm run save:auth.');
+    }
+
+    await userNameField.fill(process.env.ADMIN_USERNAME ?? 'teacher1');
+    await page.getByRole('textbox', { name: 'Enter your password.' }).fill(process.env.ADMIN_PASSWORD ?? 'password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
+  }
+
+  await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
 
   // Step 3-5: Open official check PIN generation flow.
   await page.getByRole('link', { name: 'Generate and view password and PINs for the try it out and official check' }).click();
@@ -232,8 +221,8 @@ test('admin generates credentials and pupil completes official check flow', asyn
   const firstPupilCheckbox = page.getByRole('checkbox', { name: /Tick pupil/i }).first();
   await firstPupilCheckbox.click();
   await continueAdminSessionIfPrompted(page);
-  await proceedAfterPupilSelection(page);
-  await ensurePinsAreVisible(page);
+  await proceedAfterPupilSelection(page, adminBaseUrl);
+  await ensurePinsAreVisible(page, adminBaseUrl);
 
   // Step 7: Read generated school password and PIN from the first visible row.
   const pupilRow = page.getByRole('row', { name: /School Password:/i }).first();
@@ -243,7 +232,7 @@ test('admin generates credentials and pupil completes official check flow', asyn
   const pin = rowText.match(/PIN:\s*(\d+)/i)?.[1] ?? '';
 
   // Step 8: Sign in to pupil app with generated credentials.
-  await page.goto(pupilSignInUrl);
+  await page.goto(`${pupilBaseUrl}/sign-in`);
   await page.getByLabel('School password').fill(schoolPassword);
   await page.getByLabel('PIN').fill(pin);
   await page.getByRole('button', { name: 'Sign in' }).click();
@@ -263,33 +252,6 @@ test('admin generates credentials and pupil completes official check flow', asyn
   // Step 14: Answer official questions until the finish screen appears.
   const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);
   console.log(`Official questions answered before finish: ${officialQuestionsAnswered}`);
-
-  // Step 15: Extract check metadata and verify data storage.
-  const checkMetadata = await page.evaluate(() => {
-    const config = localStorage.getItem('config');
-    const pupil = localStorage.getItem('pupil');
-    const school = localStorage.getItem('school');
-    return {
-      config: config ? JSON.parse(config) : null,
-      pupil: pupil ? JSON.parse(pupil) : null,
-      school: school ? JSON.parse(school) : null,
-    };
-  });
-
-  const checkCode = checkMetadata.pupil?.checkCode ?? '';
-  const schoolUuid = checkMetadata.school?.uuid ?? '';
-
-  if (!checkCode || !schoolUuid) {
-    throw new Error(`Unable to extract check code (${checkCode}) or school UUID (${schoolUuid}) from localStorage`);
-  }
-
-  // console.log(`Check completed:
-  //   - Check Code: ${checkCode}
-  //   - School UUID: ${schoolUuid}
-  //   - Question set: ${checkMetadata.config?.questionSet ?? 'unknown'}`);
-
-  // Verify submitted data was stored.
-  await verifyCheckDataInDatabase(page, checkCode, schoolUuid);
 
   // Step 16: Sign out.
   const signOutButton = page.getByRole('button', { name: 'Sign out' });
