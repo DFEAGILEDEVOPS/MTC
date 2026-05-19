@@ -41,6 +41,16 @@ async function answerQuestion(page: Page): Promise<string> {
   return questionText;
 }
 
+async function clickNextBetweenQuestionsIfPresent(page: Page, timeout = 300): Promise<boolean> {
+  const nextButton = page.getByRole('button', { name: 'Next', exact: true });
+  if (await nextButton.isVisible({ timeout }).catch(() => false)) {
+    await nextButton.click();
+    return true;
+  }
+
+  return false;
+}
+
 async function answerQuestions(page: Page, count: number): Promise<void> {
   let previousQuestion = '';
 
@@ -48,7 +58,23 @@ async function answerQuestions(page: Page, count: number): Promise<void> {
   for (let i = 0; i < count; i += 1) {
     // Wait for the next question text so we do not double-submit the same prompt.
     for (let retry = 0; retry < 30; retry += 1) {
-      const current = await getCurrentQuestionText(page);
+      if (await clickNextBetweenQuestionsIfPresent(page)) {
+        await page.waitForTimeout(150);
+        continue;
+      }
+
+      let current: string;
+      try {
+        current = await getCurrentQuestionText(page);
+      } catch {
+        if (await clickNextBetweenQuestionsIfPresent(page)) {
+          await page.waitForTimeout(150);
+          continue;
+        }
+        await page.waitForTimeout(200);
+        continue;
+      }
+
       if (current !== previousQuestion || i === 0) {
         previousQuestion = await answerQuestion(page);
         break;
@@ -87,12 +113,21 @@ async function answerQuestionsUntilFinished(page: Page, maxQuestions = 60): Prom
         return answeredCount;
       }
 
+      if (await clickNextBetweenQuestionsIfPresent(page)) {
+        await page.waitForTimeout(150);
+        continue;
+      }
+
       let current: string;
       try {
         current = await getCurrentQuestionText(page);
       } catch {
         if (await isOnFinishScreen(page)) {
           return answeredCount;
+        }
+        if (await clickNextBetweenQuestionsIfPresent(page)) {
+          await page.waitForTimeout(150);
+          continue;
         }
         await page.waitForTimeout(200);
         continue;
@@ -156,6 +191,50 @@ async function proceedAfterPupilSelection(page: Page, adminBaseUrl: string): Pro
   }
 }
 
+async function getPupilsCompletedCount(page: Page): Promise<number> {
+  const parseCount = (text: string): number | null => {
+    const normalized = text.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+    const completionMatch = normalized.match(/Pupils completed\s+([\d,]+)\s+of\s+[\d,]+\s+pupils/i);
+    if (!completionMatch) {
+      return null;
+    }
+    return Number(completionMatch[1].replace(/,/g, ''));
+  };
+
+  const completionLabel = page.getByText(/Pupils completed/i).first();
+  await completionLabel.waitFor({ state: 'visible', timeout: 10000 });
+
+  const candidateTexts: string[] = [];
+
+  const labelText = await completionLabel.innerText().catch(() => '');
+  if (labelText) {
+    candidateTexts.push(labelText);
+  }
+
+  const containerText = await completionLabel
+    .locator('xpath=ancestor::*[self::section or self::div or self::li][1]')
+    .innerText()
+    .catch(() => '');
+  if (containerText) {
+    candidateTexts.push(containerText);
+  }
+
+  const bodyText = await page.locator('body').innerText();
+  candidateTexts.push(bodyText);
+
+  for (const candidate of candidateTexts) {
+    const parsed = parseCount(candidate);
+    if (parsed !== null) {
+      return parsed;
+    }
+  }
+
+  const debugSnippet = candidateTexts
+    .map((text, index) => `[candidate ${index + 1}] ${text.replace(/\s+/g, ' ').trim().slice(0, 300)}`)
+    .join(' | ');
+  throw new Error(`Unable to parse pupils completed count. Debug text: ${debugSnippet}`);
+}
+
 async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<void> {
   // Ensure we actually have at least one generated row with School Password + PIN.
   await continueAdminSessionIfPrompted(page);
@@ -213,7 +292,13 @@ test('admin generates credentials and pupil completes official check flow', asyn
 
   await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
 
-  // Step 3-5: Open official check PIN generation flow.
+  // Step 3: Check current completion count before generating pins.
+  await page.getByRole('link', { name: 'See how many of your pupils have completed the official check' }).click();
+  const numberOfPupilsCompleted = await getPupilsCompletedCount(page);
+  console.log(`Pupils completed before check: ${numberOfPupilsCompleted}`);
+  await page.goBack();
+
+  // Step 4-5: Open official check PIN generation flow.
   await page.getByRole('link', { name: 'Generate and view password and PINs for the try it out and official check' }).click();
   await page.getByRole('button', { name: 'Official check' }).click();
   const generatePinsTrigger = page
@@ -264,4 +349,33 @@ test('admin generates credentials and pupil completes official check flow', asyn
   } else {
     await page.getByRole('link', { name: 'Sign out' }).click();
   }
+
+  // Step 17: Return to admin and sign in again with the same credentials.
+  await page.goto(`${adminBaseUrl}/sign-in`);
+  const userNameFieldPostCheck = page.getByRole('textbox', { name: 'Enter your user name.' });
+  if (await userNameFieldPostCheck.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await userNameFieldPostCheck.fill(process.env.ADMIN_USERNAME ?? 'teacher1');
+    await page.getByRole('textbox', { name: 'Enter your password.' }).fill(process.env.ADMIN_PASSWORD ?? 'password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
+  }
+  await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
+
+  // Step 18: Verify the completion count has increased by 1.
+  await page.getByRole('link', { name: 'See how many of your pupils have completed the official check' }).click();
+  const expectedCompletedCount = numberOfPupilsCompleted + 1;
+  await expect
+    .poll(
+      async () => {
+        await page.reload();
+        return getPupilsCompletedCount(page);
+      },
+      {
+        timeout: 45000,
+        intervals: [1000, 2000, 3000],
+        message: `Expected pupils completed count to reach ${expectedCompletedCount}`,
+      },
+    )
+    .toBe(expectedCompletedCount);
+  const numberOfPupilsCompletedAfter = await getPupilsCompletedCount(page);
+  console.log(`Pupils completed after check: ${numberOfPupilsCompletedAfter}`);
 });
