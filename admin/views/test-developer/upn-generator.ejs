@@ -6,32 +6,30 @@
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">Generate sample Unique Pupil Numbers (UPNs) for testing purposes.</p>
 
-            <div class="govuk-inset-text" id="upn-result">
-                <h2 class="govuk-heading-m">Generated UPN</h2>
-                <p class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" id="generated-upn"><%= upn %></p>
-            </div>
-
             <form action="/test-developer/upn-generator" method="get" novalidate>
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-!-font-weight-bold" for="count">Number of UPNs to generate (max 20)</label>
+                    <input type="number"
+                           id="count"
+                           class="govuk-input govuk-input--width-4"
+                           name="count"
+                           min="1"
+                           max="20"
+                           value="<%= count %>"/>
+                </div>
                 <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Generate New UPN
+                    Generate
                 </button>
             </form>
 
-            <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">UPN Format</span>
-                </summary>
-                <div class="govuk-details__text">
-                    <p class="govuk-body">A permanent UPN consists of 13 characters:</p>
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>1 check letter (A-Z, excluding I, O, S)</li>
-                        <li>3 digit LA code</li>
-                        <li>4 digit establishment number</li>
-                        <li>2 digit year</li>
-                        <li>3 digit serial number</li>
-                    </ul>
-                </div>
-            </details>
+            <% if (upns.length > 0) { %>
+            <h2 class="govuk-heading-m">Generated UPN<%= upns.length > 1 ? 's' : '' %></h2>
+            <ol class="govuk-list govuk-list--number">
+                <% upns.forEach(function(upn) { %>
+                <li class="govuk-body govuk-!-font-weight-bold"><%= upn %></li>
+                <% }) %>
+            </ol>
+            <% } %>
 
             <a href="/test-developer/" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                 Back

@@ -24,12 +24,21 @@ const getTestDeveloperHomePage = async function getTestDeveloperHomePage (req, r
 const getUpnGenerator = async function getUpnGenerator (req, res, next) {
   res.locals.pageTitle = 'Test UPN Generator'
   try {
-    req.breadcrumbs('Home', '/test-developer/home')
     req.breadcrumbs(res.locals.pageTitle)
-    const upn = upnGeneratorService.generateUpn()
+    const generate = req.query.count !== undefined
+    let count = parseInt(req.query.count, 10) || 1
+    if (count < 1) count = 1
+    if (count > 20) count = 20
+    const upns = []
+    if (generate) {
+      for (let i = 0; i < count; i++) {
+        upns.push(upnGeneratorService.generateUpn())
+      }
+    }
     res.render('test-developer/upn-generator', {
       breadcrumbs: req.breadcrumbs(),
-      upn
+      upns,
+      count
     })
   } catch (error) {
     next(error)
