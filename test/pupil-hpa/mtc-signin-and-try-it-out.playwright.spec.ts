@@ -1,4 +1,4 @@
-import { test, expect, type Page, type TestInfo } from '@playwright/test';
+import { test, expect, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { environmentUrls } from './playwright.config';
 
 type EnvironmentName = keyof typeof environmentUrls;
@@ -159,24 +159,71 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
 }
 
 async function clickThroughNextUntilStartNow(page: Page, maxNextClicks = 10): Promise<void> {
-  const startNowButton = page.getByRole('button', { name: 'Start now', exact: true });
-
-  for (let i = 0; i <= maxNextClicks; i += 1) {
-    if (await startNowButton.isVisible({ timeout: 400 }).catch(() => false)) {
-      await startNowButton.click();
-      return;
+  const clickIfActionable = async (locator: Locator): Promise<boolean> => {
+    if (!await locator.isVisible({ timeout: 400 }).catch(() => false)) {
+      return false;
     }
 
-    const nextButton = page.getByRole('button', { name: 'Next', exact: true });
-    if (await nextButton.isVisible({ timeout: 400 }).catch(() => false)) {
-      await nextButton.click();
+    await locator.scrollIntoViewIfNeeded().catch(() => undefined);
+    await locator.waitFor({ state: 'visible', timeout: 1500 }).catch(() => undefined);
+
+    const isDisabled = await locator.isDisabled().catch(() => false);
+    if (isDisabled) {
+      return false;
+    }
+
+    try {
+      await locator.click({ timeout: 2000 });
+      return true;
+    } catch {
+      // Fallback for occasional overlay/intercept issues in headed CI runs.
+      try {
+        await locator.click({ timeout: 2000, force: true });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  };
+
+  const startNowLocators: Locator[] = [
+    page.getByRole('button', { name: 'Start now', exact: true }),
+    page.getByRole('link', { name: 'Start now', exact: true }),
+    page.locator('button:has-text("Start now")').first(),
+  ];
+
+  const nextLocators: Locator[] = [
+    page.getByRole('button', { name: 'Next', exact: true }),
+    page.getByRole('link', { name: 'Next', exact: true }),
+    page.locator('button:has-text("Next")').first(),
+  ];
+
+  let successfulNextClicks = 0;
+  while (successfulNextClicks < maxNextClicks) {
+    for (const startNowLocator of startNowLocators) {
+      if (await clickIfActionable(startNowLocator)) {
+        return;
+      }
+    }
+
+    let clickedNext = false;
+    for (const nextLocator of nextLocators) {
+      if (await clickIfActionable(nextLocator)) {
+        successfulNextClicks += 1;
+        clickedNext = true;
+        break;
+      }
+    }
+
+    if (!clickedNext) {
+      await page.waitForTimeout(300);
       continue;
     }
 
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(250);
   }
 
-  throw new Error(`Could not find 'Start now' after ${maxNextClicks} 'Next' click(s).`);
+  throw new Error(`Could not find 'Start now' after ${successfulNextClicks} successful 'Next' click(s).`);
 }
 
 async function proceedAfterPupilSelection(page: Page, adminBaseUrl: string): Promise<void> {
@@ -188,6 +235,43 @@ async function proceedAfterPupilSelection(page: Page, adminBaseUrl: string): Pro
     await confirmButton.click({ timeout: 5000 });
   } catch {
     await page.goto(`${adminBaseUrl}/pupil-pin/view-and-custom-print-live-pins`);
+  }
+}
+
+async function selectFirstPupilCheckboxOrFail(page: Page, context: string): Promise<void> {
+  const firstPupilCheckbox = page.getByRole('checkbox', { name: /Tick pupil/i }).first();
+
+  try {
+    await firstPupilCheckbox.waitFor({ state: 'visible', timeout: 12000 });
+    await firstPupilCheckbox.scrollIntoViewIfNeeded().catch(() => undefined);
+
+    const disabled = await firstPupilCheckbox.isDisabled().catch(() => false);
+    if (disabled) {
+      throw new Error('first Tick pupil checkbox is disabled');
+    }
+
+    try {
+      await firstPupilCheckbox.click({ timeout: 5000 });
+    } catch {
+      await firstPupilCheckbox.click({ timeout: 3000, force: true });
+    }
+  } catch {
+    const url = page.url();
+    const heading = (await page.getByRole('heading', { level: 1 }).first().innerText().catch(() => 'unavailable')).trim();
+    const tickPupilCount = await page.getByRole('checkbox', { name: /Tick pupil/i }).count().catch(() => 0);
+    const anyCheckboxCount = await page.getByRole('checkbox').count().catch(() => 0);
+    const mainTextSnippet = (await page.locator('main').innerText().catch(() => ''))
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 260);
+
+    throw new Error(
+      `[${context}] Could not select first pupil checkbox ('Tick pupil'). `
+      + `URL: ${url}. H1: "${heading}". `
+      + `Tick pupil checkboxes found: ${tickPupilCount}. Any checkboxes found: ${anyCheckboxCount}. `
+      + `Main content snippet: "${mainTextSnippet || 'unavailable'}". `
+      + 'Likely causes: no pupils available, wrong page state, or selector/text changed.'
+    );
   }
 }
 
@@ -248,8 +332,7 @@ async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<v
   await page.goto(`${adminBaseUrl}/pupil-pin/generate-live-pins-list`);
   await continueAdminSessionIfPrompted(page);
 
-  const firstPupilCheckbox = page.getByRole('checkbox', { name: /Tick pupil/i }).first();
-  await firstPupilCheckbox.click();
+  await selectFirstPupilCheckboxOrFail(page, 'Regenerate live pins');
   await continueAdminSessionIfPrompted(page);
 
   // Sticky confirm can be hidden/off-screen in headed mode; click via DOM as fallback.
@@ -285,7 +368,7 @@ test('admin generates credentials, pupil completes try it out check flow', async
       throw new Error('Preprod project is expected to use auth.json storageState, but login page is still shown. Refresh auth.json via npm run save:auth.');
     }
 
-    await userNameField.fill(process.env.ADMIN_USERNAME ?? 'teacher1');
+    await userNameField.fill(process.env.ADMIN_USERNAME ?? 'teacher2');
     await page.getByRole('textbox', { name: 'Enter your password.' }).fill(process.env.ADMIN_PASSWORD ?? 'password');
     await page.getByRole('button', { name: 'Sign in' }).click();
   }
@@ -304,8 +387,7 @@ test('admin generates credentials, pupil completes try it out check flow', async
   await continueAdminSessionIfPrompted(page);
 
   // Step 6: Select the first available pupil and confirm selection.
-  const firstPupilCheckbox = page.getByRole('checkbox', { name: /Tick pupil/i }).first();
-  await firstPupilCheckbox.click();
+  await selectFirstPupilCheckboxOrFail(page, 'Initial try it out selection');
   await continueAdminSessionIfPrompted(page);
   await proceedAfterPupilSelection(page, adminBaseUrl);
   await ensurePinsAreVisible(page, adminBaseUrl);

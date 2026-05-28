@@ -285,7 +285,7 @@ test('admin generates credentials, pupil completes official check flow and admin
       throw new Error('Preprod project is expected to use auth.json storageState, but login page is still shown. Refresh auth.json via npm run save:auth.');
     }
 
-    await userNameField.fill(process.env.ADMIN_USERNAME ?? 'teacher1');
+    await userNameField.fill(process.env.ADMIN_USERNAME ?? 'teacher2');
     await page.getByRole('textbox', { name: 'Enter your password.' }).fill(process.env.ADMIN_PASSWORD ?? 'password');
     await page.getByRole('button', { name: 'Sign in' }).click();
   }
@@ -354,7 +354,7 @@ test('admin generates credentials, pupil completes official check flow and admin
   await page.goto(`${adminBaseUrl}/sign-in`);
   const userNameFieldPostCheck = page.getByRole('textbox', { name: 'Enter your user name.' });
   if (await userNameFieldPostCheck.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await userNameFieldPostCheck.fill(process.env.ADMIN_USERNAME ?? 'teacher1');
+    await userNameFieldPostCheck.fill(process.env.ADMIN_USERNAME ?? 'teacher2');
     await page.getByRole('textbox', { name: 'Enter your password.' }).fill(process.env.ADMIN_PASSWORD ?? 'password');
     await page.getByRole('button', { name: 'Sign in' }).click();
   }
