@@ -209,7 +209,7 @@ async function selectPupilByName(page: Page, pupilName: string): Promise<void> {
 	await checkboxByLabel.check().catch(async () => checkboxByLabel.click({ force: true }));
 }
 
-test('admin generates creds for Mcclure, Molly and pupil completes official check with high contrast enabled throughout', async ({ page }, testInfo) => {
+test('admin generates creds and pupil completes official check with high contrast enabled throughout', async ({ page }, testInfo) => {
 	test.skip(!testInfo.project.name.endsWith('-admin'), `Runs once per environment on admin projects. Current project: ${testInfo.project.name}`);
 
 	const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
