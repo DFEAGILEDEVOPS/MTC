@@ -278,6 +278,25 @@ async function bulkMarkPupilsAsNotTaking(
   password: string,
   retriesRemaining = 1
 ): Promise<void> {
+  const hasNoSelectablePupilsRemaining = async (): Promise<boolean> => {
+    const noPupilsFoundText = page.getByText('No pupils found.');
+    if (await noPupilsFoundText.isVisible({ timeout: 700 }).catch(() => false)) {
+      return true;
+    }
+
+    const noPupilCheckboxes = (await page.locator('input[name="pupil"]').count().catch(() => 0)) === 0;
+    const noAttendanceReasonRadios = (await page.locator('input[name="attendanceCode"]').count().catch(() => 0)) === 0;
+
+    if (noPupilCheckboxes && noAttendanceReasonRadios) {
+      const noPupilsAddedText = page.getByText('No pupils added');
+      if (await noPupilsAddedText.isVisible({ timeout: 700 }).catch(() => false)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const detectSelectPupilsState = async (): Promise<'signin' | 'ready' | 'no-pupils' | 'unknown'> => {
     const signInField = page.getByRole('textbox', { name: 'Enter your user name.' });
     if (await signInField.isVisible({ timeout: 1200 }).catch(() => false)) {
@@ -371,6 +390,11 @@ async function bulkMarkPupilsAsNotTaking(
       await loginAsAdmin(page, adminBaseUrl, username, password);
       return bulkMarkPupilsAsNotTaking(page, adminBaseUrl, username, password, retriesRemaining - 1);
     }
+
+    if (await hasNoSelectablePupilsRemaining()) {
+      return;
+    }
+
     throw new Error(`Attendance reason options were not available for user '${username}'. Current URL: ${page.url()}`);
   }
 
