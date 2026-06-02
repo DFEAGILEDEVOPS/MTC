@@ -26,7 +26,7 @@ export class CheckReceiverServiceBus {
       processingError: ''
     }
 
-    await tableService.createEntity('receivedCheck', receivedCheckEntity)
+    await tableService.upsertEntity('receivedCheck', receivedCheckEntity)
     // as per #48506 - check-receiver will now handle this event instead of check-notifier-batch
     const request = this.checkNotifierDataService.createCheckReceivedRequest(receivedCheck.checkCode.toLowerCase())
     const output: ICheckReceiverOutputs = {
