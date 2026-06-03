@@ -32,7 +32,9 @@ describe('UserService', () => {
     setPupil: jasmine.Spy,
     setQuestions: jasmine.Spy,
     setSchool: jasmine.Spy,
-    setToken: jasmine.Spy
+    setToken: jasmine.Spy,
+    getPupil: jasmine.Spy,
+    getCompletedSubmission: jasmine.Spy
   }
   let metaServiceSpy: {
     getTag: jasmine.Spy
@@ -42,7 +44,8 @@ describe('UserService', () => {
   beforeEach(() => {
     httpServiceSpy = jasmine.createSpyObj('HttpService', ['postJson'])
     storageServiceSpy = jasmine.createSpyObj('StorageService',
-      ['clear', 'setQuestions', 'setConfig', 'setPupil', 'setSchool', 'setToken', 'getAccessArrangements']
+      ['clear', 'setQuestions', 'setConfig', 'setPupil', 'setSchool', 'setToken', 'getAccessArrangements',
+        'getPupil', 'getCompletedSubmission']
     )
     metaServiceSpy = jasmine.createSpyObj('MetaService', ['getTag'])
     metaServiceSpy.getTag.and.returnValue('some-build-number')
@@ -144,6 +147,52 @@ describe('UserService', () => {
       expect(auditService.addEntry).toHaveBeenCalled()
       const auditArgs = auditServiceSpy.calls.argsFor(0)
       expect(auditArgs[0] instanceof LoginSuccessAuditEntryClass).toBeTrue()
+    })
+
+    it('should clear storage on a fresh login (no existing pupil in storage)', async () => {
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      storageServiceSpy.getPupil.and.returnValue(undefined)
+      storageServiceSpy.getCompletedSubmission.and.returnValue(false)
+
+      await userService.login('abc12345', '9999a')
+
+      expect(storageServiceSpy.clear).toHaveBeenCalledTimes(1)
+    })
+
+    it('should clear storage when re-logging in for a different check (different checkCode)', async () => {
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      const incomingPupil = mockLoginResponseBody[pupilDataKey.toString()] as any
+      storageServiceSpy.getPupil.and.returnValue({ checkCode: 'a-different-check-code' })
+      storageServiceSpy.getCompletedSubmission.and.returnValue(false)
+
+      await userService.login('abc12345', '9999a')
+
+      expect(incomingPupil).toBeTruthy()
+      expect(storageServiceSpy.clear).toHaveBeenCalledTimes(1)
+    })
+
+    it('should clear storage when the previous check has already been submitted', async () => {
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      const incomingPupil = mockLoginResponseBody[pupilDataKey.toString()] as any
+      storageServiceSpy.getPupil.and.returnValue({ checkCode: incomingPupil && incomingPupil.checkCode })
+      storageServiceSpy.getCompletedSubmission.and.returnValue(true)
+
+      await userService.login('abc12345', '9999a')
+
+      expect(storageServiceSpy.clear).toHaveBeenCalledTimes(1)
+    })
+
+    it('should NOT clear storage when re-logging in to the same in-progress check', async () => {
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      const incomingPupil = mockLoginResponseBody[pupilDataKey.toString()] as any
+      // Same checkCode and submission not yet completed: this is a refresh-and-resume scenario
+      storageServiceSpy.getPupil.and.returnValue({ checkCode: incomingPupil && incomingPupil.checkCode })
+      storageServiceSpy.getCompletedSubmission.and.returnValue(false)
+
+      await userService.login('abc12345', '9999a')
+
+      expect(incomingPupil).toBeTruthy()
+      expect(storageServiceSpy.clear).not.toHaveBeenCalled()
     })
   })
 

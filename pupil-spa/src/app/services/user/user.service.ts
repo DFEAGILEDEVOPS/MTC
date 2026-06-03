@@ -38,7 +38,22 @@ export class UserService {
     return this.http.postJson(`${APP_CONFIG.apiBaseUrl}/auth`, { schoolPin, pupilPin, buildVersion })
       .then(data => {
         this.loggedIn = true
-        this.storageService.clear()
+
+        // If the pupil is re-logging-in to the same in-progress check (e.g. after
+        // a browser refresh), preserve their existing answers, inputs, audit
+        // entries, check state and check start time. Otherwise, fully clear
+        // local storage so a fresh check starts from a clean slate.
+        const incomingPupil = data[pupilStorageKey.toString()]
+        const existingPupil = this.storageService.getPupil()
+        const sameCheckInProgress =
+          !!existingPupil &&
+          !!incomingPupil &&
+          existingPupil.checkCode === incomingPupil.checkCode &&
+          !this.storageService.getCompletedSubmission()
+
+        if (!sameCheckInProgress) {
+          this.storageService.clear()
+        }
 
         // Create a login success event in the audit trail
         this.auditService.addEntry(
