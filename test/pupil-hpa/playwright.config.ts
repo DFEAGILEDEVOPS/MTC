@@ -41,9 +41,24 @@ export default defineConfig({
   },
 
   projects: [
-    //dev 
+    {
+      name: 'dev-setup',
+      testMatch: 'ensure-pupil.setup.playwright.ts',
+      use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
+    },
+    //dev
     {
       name: 'dev-admin',
+      use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
+    },
+    {
+      name: 'dev-check',
+      testMatch: [
+        'mtc-signin-and-check.playwright.spec.ts',
+        'mtc-signin-and-try-it-out.playwright.spec.ts',
+        'mtc-accessibility-check.playwright.spec.ts',
+      ],
+      dependencies: ['dev-setup'],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -52,7 +67,22 @@ export default defineConfig({
     },
     //test
     {
+      name: 'test-setup',
+      testMatch: 'ensure-pupil.setup.playwright.ts',
+      use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
+    },
+    {
       name: 'test-admin',
+      use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
+    },
+    {
+      name: 'test-check',
+      testMatch: [
+        'mtc-signin-and-check.playwright.spec.ts',
+        'mtc-signin-and-try-it-out.playwright.spec.ts',
+        'mtc-accessibility-check.playwright.spec.ts',
+      ],
+      dependencies: ['test-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {

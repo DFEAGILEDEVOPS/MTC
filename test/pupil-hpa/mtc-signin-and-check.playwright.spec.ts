@@ -269,7 +269,7 @@ async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<v
 }
 
 test('admin generates credentials, pupil completes official check flow and admin verifies completion', async ({ page }, testInfo) => {
-  test.skip(!testInfo.project.name.endsWith('-admin'), `Runs once per environment on admin projects. Current project: ${testInfo.project.name}`);
+  test.skip(!testInfo.project.name.endsWith('-admin') && !testInfo.project.name.endsWith('-check'), `Runs once per environment on admin or check projects. Current project: ${testInfo.project.name}`);
 
   const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
 

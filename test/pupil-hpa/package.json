@@ -9,8 +9,8 @@
     "test:api:remote:current": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts",
     "test:api:ping": "playwright test get-ping-guideline.playwright.spec.ts --reporter=line",
     "test:accessibility": "playwright test accessibility.playwright.spec.ts --reporter=line",
-    "test:e2e": "playwright test --workers=1 mtc-signin-and-check.playwright.spec.ts mtc-signin-and-try-it-out.playwright.spec.ts mtc-accessibility-check.playwright.spec.ts view-pupil-results.playwright.spec.ts sign-hdf.playwright.spec.ts",
-    "test:all:remote": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts mtc-signin-and-check.playwright.spec.ts mtc-signin-and-try-it-out.playwright.spec.ts mtc-accessibility-check.playwright.spec.ts --reporter=line"
+    "test:e2e": "playwright test --project=test-check --workers=1 && playwright test sign-hdf.playwright.spec.ts view-pupil-results.playwright.spec.ts --project=test-admin --workers=1",
+    "test:all:remote": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test --project=test-check --reporter=line && PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --project=test-admin --reporter=line"
   },
   "keywords": [],
   "author": "",
