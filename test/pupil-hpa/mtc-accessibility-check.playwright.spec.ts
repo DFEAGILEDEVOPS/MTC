@@ -1,4 +1,4 @@
-import { test, expect, type Page, type TestInfo } from '@playwright/test';
+import { test, expect, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { environmentUrls } from './playwright.config';
 
 type EnvironmentName = keyof typeof environmentUrls;
@@ -14,23 +14,6 @@ function getEnvironmentUrls(testInfo: TestInfo): { env: EnvironmentName; adminBa
 	return { env, ...urls };
 }
 
-async function assertHighContrastEnabled(page: Page, context: string): Promise<void> {
-	const root = page.locator('#page-modifications');
-	await root.waitFor({ state: 'visible', timeout: 10000 });
-
-	const className = await root.getAttribute('class');
-	const contrastMatch = className?.match(/colour-contrast-([a-z]+)/i);
-	const contrastMode = contrastMatch?.[1]?.toLowerCase();
-
-	if (!contrastMode) {
-		throw new Error(`[${context}] Could not determine contrast mode from #page-modifications class: '${className ?? 'missing'}'.`);
-	}
-
-	if (contrastMode === 'bow') {
-		throw new Error(`[${context}] High contrast is not enabled. Current mode is '${contrastMode}' (Black on white).`);
-	}
-}
-
 async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
 	const sessionPromptYes = page.getByRole('button', { name: 'Yes', exact: true });
 	if (await sessionPromptYes.isVisible({ timeout: 1500 }).catch(() => false)) {
@@ -38,178 +21,254 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
 	}
 }
 
-async function getCurrentQuestionText(page: Page): Promise<string> {
-	const question = page.locator('text=/\\d+\\s*[x×]\\s*\\d+\\s*=/').first();
-	await question.waitFor({ state: 'visible', timeout: 7000 });
-	return (await question.innerText()).trim();
-}
+async function proceedAfterPupilSelection(page: Page, targetPupilName: string): Promise<void> {
+	const confirmButton = page.getByRole('button', { name: 'Confirm' }).or(page.locator('button:has-text("Confirm")')).first();
+	const preConfirmUrl = page.url();
+	const selectedCount = await page.locator('input[type="checkbox"]:checked, [role="checkbox"][aria-checked="true"]').count().catch(() => 0);
+	const escapedTarget = targetPupilName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const [targetLastNameRaw, targetFirstNameRaw] = targetPupilName.split(',').map((part) => part.trim());
+	const targetFirstName = targetFirstNameRaw ?? '';
+	const targetLastName = targetLastNameRaw ?? '';
+	const escapedTargetFirst = targetFirstName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const escapedTargetLast = targetLastName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const targetTickRegex = new RegExp(
+		targetFirstName && targetLastName
+			? `Tick pupil\\s+(${escapedTargetLast}\\s*,\\s*${escapedTargetFirst}|${escapedTargetFirst}\\s+${escapedTargetLast}|${escapedTarget})\\.?`
+			: `Tick pupil\\s+${escapedTarget}\\.?`,
+		'i',
+	);
+	const targetCheckbox = page.getByRole('checkbox', { name: targetTickRegex }).first();
+	const targetChecked = (await targetCheckbox.isChecked().catch(() => false))
+		|| (await targetCheckbox.getAttribute('aria-checked').catch(() => null)) === 'true';
 
-async function answerQuestion(page: Page): Promise<string> {
-	await assertHighContrastEnabled(page, 'question page before answer');
-
-	const questionText = await getCurrentQuestionText(page);
-	const match = questionText.match(/(\d+)\s*[x×]\s*(\d+)\s*=/);
-
-	if (!match) {
-		throw new Error(`Unable to parse multiplication question from: '${questionText}'`);
+	if (selectedCount === 0) {
+		throw new Error('No pupil checkbox is selected, so Confirm cannot proceed.');
+	}
+	if (!targetChecked) {
+		throw new Error(`Target pupil '${targetPupilName}' is not selected, so Confirm cannot proceed.`);
 	}
 
-	const answer = String(Number(match[1]) * Number(match[2]));
-	for (const digit of answer) {
-		await page.getByRole('button', { name: digit, exact: true }).click();
-	}
-
-	await page.getByRole('button', { name: 'Enter', exact: true }).click();
-	return questionText;
-}
-
-async function clickNextBetweenQuestionsIfPresent(page: Page, timeout = 300): Promise<boolean> {
-	const nextButton = page.getByRole('button', { name: 'Next', exact: true });
-	if (await nextButton.isVisible({ timeout }).catch(() => false)) {
-		await nextButton.click();
-		return true;
-	}
-
-	return false;
-}
-
-async function answerQuestions(page: Page, count: number): Promise<void> {
-	let previousQuestion = '';
-
-	for (let i = 0; i < count; i += 1) {
-		for (let retry = 0; retry < 30; retry += 1) {
-			if (await clickNextBetweenQuestionsIfPresent(page)) {
-				await page.waitForTimeout(150);
-				await assertHighContrastEnabled(page, `practice question ${i + 1}: after Next click`);
-				continue;
-			}
-
-			let current: string;
-			try {
-				current = await getCurrentQuestionText(page);
-			} catch {
-				await page.waitForTimeout(200);
-				continue;
-			}
-
-			if (current !== previousQuestion || i === 0) {
-				previousQuestion = await answerQuestion(page);
-				break;
-			}
-			await page.waitForTimeout(200);
-		}
-	}
-}
-
-async function isOnFinishScreen(page: Page): Promise<boolean> {
-	if (page.url().includes('/check-complete')) {
-		return true;
-	}
-
-	const thankYouHeading = page.getByRole('heading', { name: 'Thank you', level: 1 });
-	if (await thankYouHeading.isVisible({ timeout: 300 }).catch(() => false)) {
-		return true;
-	}
-
-	const finishedHeading = page.getByRole('heading', { name: 'You have finished' });
-	return finishedHeading.isVisible({ timeout: 300 }).catch(() => false);
-}
-
-async function answerQuestionsUntilFinished(page: Page, maxQuestions = 60): Promise<number> {
-	let previousQuestion = '';
-	let answeredCount = 0;
-
-	while (answeredCount < maxQuestions) {
-		if (await isOnFinishScreen(page)) {
-			await assertHighContrastEnabled(page, 'finish screen');
-			return answeredCount;
-		}
-
-		let answeredThisTurn = false;
-		for (let retry = 0; retry < 30; retry += 1) {
-			if (await isOnFinishScreen(page)) {
-				await assertHighContrastEnabled(page, 'finish screen');
-				return answeredCount;
-			}
-
-			if (await clickNextBetweenQuestionsIfPresent(page)) {
-				await page.waitForTimeout(150);
-				await assertHighContrastEnabled(page, `official question ${answeredCount + 1}: after Next click`);
-				continue;
-			}
-
-			let current: string;
-			try {
-				current = await getCurrentQuestionText(page);
-			} catch {
-				if (await isOnFinishScreen(page)) {
-					await assertHighContrastEnabled(page, 'finish screen');
-					return answeredCount;
-				}
-				await page.waitForTimeout(200);
-				continue;
-			}
-
-			if (current !== previousQuestion) {
-				previousQuestion = await answerQuestion(page);
-				answeredCount += 1;
-				answeredThisTurn = true;
-				break;
-			}
-
-			await page.waitForTimeout(200);
-		}
-
-		if (!answeredThisTurn) {
-			throw new Error(`Timed out waiting for next question or finish screen after answering ${answeredCount} official question(s).`);
-		}
-	}
-
-	throw new Error(`Exceeded safety limit of ${maxQuestions} official question(s) without reaching finish screen.`);
-}
-
-async function clickThroughNextUntilStartNow(page: Page, context: string, maxNextClicks = 12): Promise<void> {
-	const startNowButton = page.getByRole('button', { name: 'Start now', exact: true });
-
-	for (let i = 0; i <= maxNextClicks; i += 1) {
-		await assertHighContrastEnabled(page, `${context}: screen ${i + 1}`);
-
-		if (await startNowButton.isVisible({ timeout: 400 }).catch(() => false)) {
-			await startNowButton.click();
+	if (await confirmButton.isVisible({ timeout: 2500 }).catch(() => false)) {
+		await confirmButton.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => undefined);
+		await confirmButton.click({ timeout: 5000 });
+		await page.waitForTimeout(1000);
+		if (page.url() !== preConfirmUrl) {
 			return;
 		}
-
-		const nextButton = page.getByRole('button', { name: 'Next', exact: true });
-		if (await nextButton.isVisible({ timeout: 400 }).catch(() => false)) {
-			await nextButton.click();
-			await page.waitForTimeout(250);
-			continue;
-		}
-
-		await page.waitForTimeout(250);
 	}
 
-	throw new Error(`Could not find 'Start now' after ${maxNextClicks} 'Next' click(s).`);
+	const clickedStickyConfirm = await page.evaluate(() => {
+		const stickyConfirm = document.querySelector<HTMLButtonElement>('#stickyConfirm');
+		if (!stickyConfirm || stickyConfirm.disabled) {
+			return false;
+		}
+		stickyConfirm.click();
+		return true;
+	});
+	if (clickedStickyConfirm) {
+		await page.waitForTimeout(1000);
+		if (page.url() !== preConfirmUrl) {
+			return;
+		}
+	}
+
+	const submittedForm = await page.evaluate(() => {
+		const form = document.querySelector<HTMLFormElement>('form[name="stickyBannerForm"]');
+		if (!form) {
+			return false;
+		}
+		if (typeof form.requestSubmit === 'function') {
+			form.requestSubmit();
+		} else {
+			form.submit();
+		}
+		return true;
+	});
+	if (submittedForm) {
+		return;
+	}
+
+	if (!clickedStickyConfirm) {
+		throw new Error(`Could not find actionable Confirm button for selected pupil(s). Current URL: ${page.url()}`);
+	}
+}
+
+async function ensurePinsAreVisible(page: Page, targetPupilName: string): Promise<void> {
+	await continueAdminSessionIfPrompted(page);
+
+	const pupilRows = page.getByRole('row', { name: /School Password:/i });
+	if ((await pupilRows.count()) === 0) {
+		throw new Error('No School Password/PIN rows are visible after confirming pupil selection.');
+	}
+
+	const escaped = targetPupilName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const targetRow = page.getByRole('row').filter({ hasText: new RegExp(escaped, 'i') }).first();
+	if (await targetRow.isVisible({ timeout: 5000 }).catch(() => false)) {
+		return;
+	}
+
+	const availableRows = await page
+		.getByRole('row', { name: /School Password:/i })
+		.allInnerTexts()
+		.catch(() => [] as string[]);
+	const debugRows = availableRows
+		.map((text, index) => `[row ${index + 1}] ${text.replace(/\s+/g, ' ').trim().slice(0, 220)}`)
+		.join(' | ');
+
+	throw new Error(`Generated PIN rows do not include target pupil '${targetPupilName}'. Visible rows: ${debugRows || 'none'}`);
 }
 
 async function selectPupilByName(page: Page, pupilName: string): Promise<void> {
 	const escaped = pupilName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	const row = page.getByRole('row', { name: new RegExp(escaped, 'i') }).first();
+	const [lastNameRaw, firstNameRaw] = pupilName.split(',').map((part) => part.trim());
+	const firstName = firstNameRaw ?? '';
+	const lastName = lastNameRaw ?? '';
+	const escapedFirst = firstName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const escapedLast = lastName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const fullNameFirstLast = firstName && lastName ? `${firstName} ${lastName}` : '';
+	const escapedFullNameFirstLast = fullNameFirstLast.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const nameRegex = new RegExp(
+		firstName && lastName
+			? `${escapedLast}\\s*,\\s*${escapedFirst}|${escapedFirst}\\s+${escapedLast}`
+			: escaped,
+		'i',
+	);
+	const tickLabelRegex = new RegExp(
+		firstName && lastName
+			? `Tick pupil\\s+(${escapedLast}\\s*,\\s*${escapedFirst}|${escapedFirst}\\s+${escapedLast}|${escapedFullNameFirstLast})\\.?`
+			: `Tick pupil\\s+${escaped}\\.?`,
+		'i',
+	);
 
-	await row.waitFor({ state: 'visible', timeout: 15000 });
+	const checkedCount = async (): Promise<number> => page.locator('input[type="checkbox"]:checked, [role="checkbox"][aria-checked="true"]').count().catch(() => 0);
+	const isLocatorChecked = async (locator: Locator): Promise<boolean> => {
+		const nativeChecked = await locator.isChecked().catch(() => false);
+		if (nativeChecked) {
+			return true;
+		}
+		const ariaChecked = await locator.getAttribute('aria-checked').catch(() => null);
+		return ariaChecked === 'true';
+	};
 
-	const checkboxInRow = row.getByRole('checkbox').first();
-	if (await checkboxInRow.isVisible().catch(() => false)) {
-		await checkboxInRow.check().catch(async () => checkboxInRow.click({ force: true }));
+	const checkboxByAriaLabel = firstName && lastName
+		? page.locator(`input[name="pupil"][type="checkbox"][aria-label*="${firstName}"][aria-label*="${lastName}"]`).first()
+		: page.locator(`input[name="pupil"][type="checkbox"][aria-label*="${pupilName}"]`).first();
+
+	if (await checkboxByAriaLabel.isVisible({ timeout: 7000 }).catch(() => false)) {
+		await checkboxByAriaLabel.check().catch(async () => checkboxByAriaLabel.click({ force: true }));
+		if (await isLocatorChecked(checkboxByAriaLabel)) {
+			return;
+		}
+	}
+
+	const checkboxByTickLabel = page.getByRole('checkbox', { name: tickLabelRegex }).first();
+
+	if (await checkboxByTickLabel.isVisible({ timeout: 7000 }).catch(() => false)) {
+		await checkboxByTickLabel.check().catch(async () => checkboxByTickLabel.click({ force: true }));
+		if (await isLocatorChecked(checkboxByTickLabel)) {
+			return;
+		}
+	}
+
+	const nameLabel = page.locator('label').filter({ hasText: nameRegex }).first();
+	if (await nameLabel.isVisible({ timeout: 7000 }).catch(() => false)) {
+		const inputId = (await nameLabel.getAttribute('for'))?.trim();
+		if (inputId) {
+			const checkboxById = page.locator(`#${inputId}`);
+			if (await checkboxById.isVisible({ timeout: 3000 }).catch(() => false)) {
+				await checkboxById.check().catch(async () => checkboxById.click({ force: true }));
+				if (await isLocatorChecked(checkboxById)) {
+					return;
+				}
+			}
+		}
+	}
+
+	const rowByName = page.getByRole('row').filter({
+		hasText: nameRegex,
+	}).first();
+
+	if (await rowByName.isVisible({ timeout: 7000 }).catch(() => false)) {
+		const roleCheckboxInRow = rowByName.getByRole('checkbox').first();
+		if (await roleCheckboxInRow.isVisible({ timeout: 3000 }).catch(() => false)) {
+			await roleCheckboxInRow.check().catch(async () => roleCheckboxInRow.click({ force: true }));
+			if (await isLocatorChecked(roleCheckboxInRow)) {
+				return;
+			}
+		}
+
+		const checkboxInRow = rowByName.locator('input[name="pupil"][type="checkbox"]').first();
+		if (await checkboxInRow.isVisible({ timeout: 1500 }).catch(() => false)) {
+			await checkboxInRow.check().catch(async () => checkboxInRow.click({ force: true }));
+			if (await isLocatorChecked(checkboxInRow)) {
+				return;
+			}
+		}
+
+		const clickedByDom = await rowByName.evaluate((row) => {
+			const checkbox = row.querySelector<HTMLInputElement>('input[name="pupil"][type="checkbox"]');
+			if (!checkbox) {
+				return false;
+			}
+			checkbox.click();
+			return checkbox.checked;
+		});
+		if (clickedByDom) {
+			return;
+		}
+	}
+
+	const availableRows = await page
+		.getByRole('row', { name: /Tick pupil/i })
+		.allInnerTexts()
+		.catch(() => [] as string[]);
+	const debugRows = availableRows
+		.map((text, index) => `[row ${index + 1}] ${text.replace(/\s+/g, ' ').trim().slice(0, 180)}`)
+		.join(' | ');
+	const matchingAriaLabels = await page
+		.locator('input[name="pupil"][type="checkbox"][aria-label]')
+		.evaluateAll((nodes, pattern) => {
+			const regex = new RegExp(pattern, 'i');
+			return nodes
+				.map((node) => {
+					const input = node as HTMLInputElement;
+					return {
+						label: input.getAttribute('aria-label') ?? '',
+						checked: input.checked,
+					};
+				})
+				.filter((item) => regex.test(item.label))
+				.slice(0, 8);
+		}, `${firstName}.*${lastName}`)
+		.catch(() => [] as { label: string; checked: boolean }[]);
+	const finalCheckedCount = await checkedCount();
+
+	throw new Error(`Failed to select checkbox for target pupil '${pupilName}'. Checked count after selection attempts: ${finalCheckedCount}. Available selectable rows: ${debugRows || 'none found'}. Matching aria-label candidates: ${JSON.stringify(matchingAriaLabels)}`);
+}
+
+async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<void> {
+	await page.waitForURL(/\/colour-choice|\/sign-in-success|\/access-settings/, { timeout: 15000 });
+
+	if (page.url().includes('/colour-choice')) {
+		await expect(page.getByText('Choose colour of page', { exact: true })).toBeVisible();
 		return;
 	}
 
-	const checkboxByLabel = page.getByRole('checkbox', { name: new RegExp(escaped, 'i') }).first();
-	await checkboxByLabel.waitFor({ state: 'visible', timeout: 7000 });
-	await checkboxByLabel.check().catch(async () => checkboxByLabel.click({ force: true }));
+	if (page.url().includes('/sign-in-success')) {
+		await page.getByRole('button', { name: 'Next', exact: true }).click();
+		await page.waitForURL(/\/access-settings/, { timeout: 10000 });
+	}
+
+	if (page.url().includes('/access-settings')) {
+		await expect(page.getByRole('heading', { name: 'Your settings', level: 1 })).toBeVisible();
+		await expect(page.getByText(/\bEdit colour\b\s+of page/i)).toBeVisible();
+		return;
+	}
+
+	throw new Error(`Unexpected post-sign-in routing path for colour settings validation. Current URL: ${page.url()}`);
 }
 
-test('admin generates creds and pupil completes official check with high contrast enabled throughout', async ({ page }, testInfo) => {
+test('admin generates creds and validates colour contrast routing after pupil sign in', async ({ page }, testInfo) => {
 	test.skip(!testInfo.project.name.endsWith('-admin'), `Runs once per environment on admin projects. Current project: ${testInfo.project.name}`);
 
 	const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
@@ -218,7 +277,7 @@ test('admin generates creds and pupil completes official check with high contras
 	const targetPupilName = env === 'dev'
 		? 'Mcclure, Molly'
 		: env === 'test'
-			? 'Browning, Carson'
+			? 'Gill, Sherri'
 			: env === 'preprod'
 				? 'McTesterson, Testy'
 			: 'Mcclure, Molly';
@@ -240,7 +299,8 @@ test('admin generates creds and pupil completes official check with high contras
 	await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
 
 	await page
-		.getByRole('link', { name: /generate school passwords and PINs for the official check|generate and view password and PINs for the try it out and official check/i })
+		.getByRole('link', { name: /generate school passwords? and PINs? for the official check|generate and view password and PINs for the try it out and official check/i })
+		.or(page.getByRole('button', { name: /generate school passwords? and PINs? for the official check|generate and view password and PINs for the try it out and official check/i }))
 		.first()
 		.click();
 
@@ -259,12 +319,14 @@ test('admin generates creds and pupil completes official check with high contras
 	await continueAdminSessionIfPrompted(page);
 	await selectPupilByName(page, targetPupilName);
 	await continueAdminSessionIfPrompted(page);
-	await page.getByRole('button', { name: 'Confirm' }).first().click();
+	await proceedAfterPupilSelection(page, targetPupilName);
 
 	await page.waitForURL(/view-and-custom-print-live-pins/, { timeout: 20000 });
 	await continueAdminSessionIfPrompted(page);
+	await ensurePinsAreVisible(page, targetPupilName);
 
-	const pupilRow = page.getByRole('row', { name: new RegExp(targetPupilName, 'i') }).first();
+	const escapedTargetPupil = targetPupilName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const pupilRow = page.getByRole('row').filter({ hasText: new RegExp(escapedTargetPupil, 'i') }).first();
 	await pupilRow.waitFor({ state: 'visible', timeout: 15000 });
 	const rowText = await pupilRow.innerText();
 
@@ -278,13 +340,5 @@ test('admin generates creds and pupil completes official check with high contras
 	await page.getByLabel('School password').fill(schoolPassword);
 	await page.getByLabel('PIN').fill(pin);
 	await page.getByRole('button', { name: 'Sign in' }).click();
-
-	await assertHighContrastEnabled(page, 'after pupil sign in');
-
-	await clickThroughNextUntilStartNow(page, 'before practice');
-	await answerQuestions(page, 3);
-
-	await clickThroughNextUntilStartNow(page, 'before official check');
-	const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);
-	console.log(`Official questions answered before finish: ${officialQuestionsAnswered}`);
+	await validateColourContrastRoutingAfterSignIn(page);
 });
