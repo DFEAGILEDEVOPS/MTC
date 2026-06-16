@@ -1,4 +1,6 @@
 import { test, expect, type Locator, type Page, type TestInfo } from '@playwright/test';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { environmentUrls } from './playwright.config';
 
 type EnvironmentName = keyof typeof environmentUrls;
@@ -246,6 +248,20 @@ async function selectPupilByName(page: Page, pupilName: string): Promise<void> {
 	throw new Error(`Failed to select checkbox for target pupil '${pupilName}'. Checked count after selection attempts: ${finalCheckedCount}. Available selectable rows: ${debugRows || 'none found'}. Matching aria-label candidates: ${JSON.stringify(matchingAriaLabels)}`);
 }
 
+async function readAccessibilitySetupState(env: EnvironmentName): Promise<string> {
+	const statePath = path.resolve(process.cwd(), 'test-results', `accessibility-setup-state-${env}.json`);
+	try {
+		const raw = await fs.readFile(statePath, 'utf8');
+		const state = JSON.parse(raw) as { fullName: string };
+		if (!state.fullName) {
+			throw new Error(`accessibility-setup-state-${env}.json is missing 'fullName'`);
+		}
+		return state.fullName;
+	} catch (err) {
+		throw new Error(`Could not read accessibility setup state from '${statePath}'. Run the accessibility setup project first. Cause: ${String(err)}`);
+	}
+}
+
 async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<void> {
 	await page.waitForURL(/\/colour-choice|\/sign-in-success|\/access-settings/, { timeout: 15000 });
 
@@ -269,18 +285,26 @@ async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<voi
 }
 
 test('admin generates creds and validates colour contrast routing after pupil sign in', async ({ page }, testInfo) => {
-	test.skip(!testInfo.project.name.endsWith('-admin') && !testInfo.project.name.endsWith('-check'), `Runs once per environment on admin or check projects. Current project: ${testInfo.project.name}`);
+	test.skip(!testInfo.project.name.endsWith('-accessibility') && !testInfo.project.name.endsWith('-admin') && !testInfo.project.name.endsWith('-check'), `Runs on accessibility, admin, or check projects. Current project: ${testInfo.project.name}`);
 
 	const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
 	const adminUsername = process.env.ADMIN_USERNAME ?? 'teacher2';
 	const adminPassword = process.env.ADMIN_PASSWORD ?? 'password';
-	const targetPupilName = env === 'dev'
-		? 'Mcclure, Molly'
-		: env === 'test'
-			? 'Gill, Sherri'
-			: env === 'preprod'
-				? 'McTesterson, Testy'
-			: 'Mcclure, Molly';
+
+	// Use the pupil created by the accessibility setup, falling back to hardcoded names when running
+	// outside of the dedicated accessibility projects (e.g. ad-hoc runs against test-admin).
+	let targetPupilName: string;
+	if (testInfo.project.name.endsWith('-accessibility')) {
+		targetPupilName = await readAccessibilitySetupState(env);
+	} else {
+		targetPupilName = env === 'dev'
+			? 'Mcclure, Molly'
+			: env === 'test'
+				? 'Gill, Sherri'
+				: env === 'preprod'
+					? 'McTesterson, Testy'
+					: 'Mcclure, Molly';
+	}
 
 	test.setTimeout(8 * 60 * 1000);
 

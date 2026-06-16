@@ -48,6 +48,11 @@ export default defineConfig({
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     {
+      name: 'dev-accessibility-setup',
+      testMatch: 'ensure-accessibility-pupil.setup.playwright.ts',
+      use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
+    },
+    {
       name: 'dev-admin',
       testIgnore: [
         'mtc-signin-and-check.playwright.spec.ts',
@@ -61,15 +66,25 @@ export default defineConfig({
       testMatch: [
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
-        'mtc-accessibility-check.playwright.spec.ts',
       ],
       dependencies: ['dev-setup'],
+      use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
+    },
+    {
+      name: 'dev-accessibility',
+      testMatch: 'mtc-accessibility-check.playwright.spec.ts',
+      dependencies: ['dev-accessibility-setup'],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     //test
     {
       name: 'test-setup',
       testMatch: 'ensure-pupil.setup.playwright.ts',
+      use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
+    },
+    {
+      name: 'test-accessibility-setup',
+      testMatch: 'ensure-accessibility-pupil.setup.playwright.ts',
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -86,9 +101,14 @@ export default defineConfig({
       testMatch: [
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
-        'mtc-accessibility-check.playwright.spec.ts',
       ],
       dependencies: ['test-setup'],
+      use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
+    },
+    {
+      name: 'test-accessibility',
+      testMatch: 'mtc-accessibility-check.playwright.spec.ts',
+      dependencies: ['test-accessibility-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     //preprod (with auth)
