@@ -124,7 +124,6 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
 
   // This test uses username/password login and admin-only navigation.
   test.skip(env === 'preprod', 'Preprod uses DfE Sign-in (OAuth) — username/password auth is not available.');
-  test.skip(testInfo.project.name.endsWith('-pupil'), 'This flow is admin-only; skip pupil-browser projects for reliability.');
 
   const fixedCheckWindowDate = getFixedCheckWindowDate();
 

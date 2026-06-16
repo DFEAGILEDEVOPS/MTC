@@ -41,14 +41,19 @@ export default defineConfig({
   },
 
   projects: [
+    //dev
     {
       name: 'dev-setup',
       testMatch: 'ensure-pupil.setup.playwright.ts',
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
-    //dev
     {
       name: 'dev-admin',
+      testIgnore: [
+        'mtc-signin-and-check.playwright.spec.ts',
+        'mtc-signin-and-try-it-out.playwright.spec.ts',
+        'mtc-accessibility-check.playwright.spec.ts',
+      ],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -61,10 +66,6 @@ export default defineConfig({
       dependencies: ['dev-setup'],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
-    {
-      name: 'dev-pupil',
-      use: { baseURL: 'https://devpupil-as-mtc.azurewebsites.net' },
-    },
     //test
     {
       name: 'test-setup',
@@ -73,6 +74,11 @@ export default defineConfig({
     },
     {
       name: 'test-admin',
+      testIgnore: [
+        'mtc-signin-and-check.playwright.spec.ts',
+        'mtc-signin-and-try-it-out.playwright.spec.ts',
+        'mtc-accessibility-check.playwright.spec.ts',
+      ],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -85,10 +91,6 @@ export default defineConfig({
       dependencies: ['test-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
-    {
-      name: 'test-pupil',
-      use: { baseURL: 'https://testpupil-as-mtc.azurewebsites.net' },
-    },
     //preprod (with auth)
     {
         name: 'preprod-admin',
@@ -96,10 +98,5 @@ export default defineConfig({
             baseURL: 'https://pp-admin.multiplication-tables-check.service.gov.uk' ,
         storageState: '../../auth.json', }
     },
-    {
-        name: 'preprod-pupil',
-        use: { 
-            baseURL: 'https://pp-pupil.multiplication-tables-check.service.gov.uk' },
-    }
   ],
 });

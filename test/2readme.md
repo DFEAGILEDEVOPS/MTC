@@ -6,7 +6,7 @@ This document explains the Playwright-based tests in `test/pupil-hpa`, including
 
 - End-to-end journey across admin and pupil apps (official check, try-it-out check, and accessibility colour-contrast routing)
 - Accessibility checks for admin and pupil accessibility statement pages
-- API checks for auth and question endpoints
+- API checks for auth and ping endpoints
 - Setup flow that creates a new pupil before dev/test pupil-flow runs
 
 ## Test locations
@@ -22,7 +22,7 @@ This document explains the Playwright-based tests in `test/pupil-hpa`, including
   - `test/pupil-hpa/sign-hdf.playwright.spec.ts`
   - `test/pupil-hpa/view-pupil-results.playwright.spec.ts`
 - Accessibility statement test: `test/pupil-hpa/accessibility.playwright.spec.ts`
-- API tests: `test/pupil-hpa/api-request-context.playwright.spec.ts`, `test/pupil-hpa/api-request-context.remote.playwright.spec.ts`, `test/pupil-hpa/get-ping-guideline.playwright.spec.ts`
+- API tests: `test/pupil-hpa/api-request-context.remote.playwright.spec.ts`, `test/pupil-hpa/get-ping-guideline.playwright.spec.ts`
 
 ## Prerequisites
 
@@ -75,7 +75,6 @@ If these are not set, the tests fall back to `teacher2` and `password` for envir
 ### API test target URL
 
 - `PUPIL_API_BASE_URL`
-- `BASE_URL` (used by local API test file as fallback)
 
 ## How projects and skipping work
 
