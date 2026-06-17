@@ -94,7 +94,6 @@ export default defineConfig({
     {
       name: 'test-accessibility-setup',
       testMatch: 'ensure-accessibility-pupil.setup.playwright.ts',
-      dependencies: ['test-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -102,6 +101,7 @@ export default defineConfig({
       testIgnore: [
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
+        'mtc-accessibility-check.playwright.spec.ts',
       ],
       dependencies: ['test-accessibility-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
