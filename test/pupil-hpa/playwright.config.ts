@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, type ReporterDescription } from '@playwright/test';
 
 const isCI = process.env.CI === '1' || process.env.CI === 'true';
 
@@ -28,9 +28,18 @@ export default defineConfig({
   expect: {
     timeout: 10_000
   },
-  reporter: isCI
-    ? [['line'], ['html', { open: 'never' }]]
-    : [['list'], ['html', { open: 'never' }]],
+  reporter: (() => {
+    const reporters: ReporterDescription[] = [
+      isCI ? ['line'] : ['list'],
+      ['html', { open: 'never' }],
+    ];
+
+    if (process.env.TEAMS_WEBHOOK_URL && process.env.TEAMS_DISABLE_NOTIFICATIONS !== 'true') {
+      reporters.push(['./teams-reporter.js']);
+    }
+
+    return reporters;
+  })(),
   outputDir: 'test-results',
   use: {
     trace: 'on-first-retry',
@@ -93,7 +102,6 @@ export default defineConfig({
       testIgnore: [
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
-        'mtc-accessibility-check.playwright.spec.ts',
       ],
       dependencies: ['test-accessibility-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },

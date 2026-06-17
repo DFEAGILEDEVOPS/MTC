@@ -285,7 +285,7 @@ async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<voi
 }
 
 test('admin generates creds and validates colour contrast routing after pupil sign in', async ({ page }, testInfo) => {
-	test.skip(!testInfo.project.name.endsWith('-accessibility') && !testInfo.project.name.endsWith('-admin') && !testInfo.project.name.endsWith('-check'), `Runs on accessibility, admin, or check projects. Current project: ${testInfo.project.name}`);
+	test.skip(!testInfo.project.name.endsWith('-accessibility'), `Runs only on *-accessibility projects so accessibility setup always executes first. Current project: ${testInfo.project.name}`);
 
 	const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
 	const adminUsername = process.env.ADMIN_USERNAME ?? 'teacher2';

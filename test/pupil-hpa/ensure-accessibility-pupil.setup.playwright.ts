@@ -20,6 +20,11 @@ const TEACHER_CREDENTIALS = {
   password: process.env.ADMIN_PASSWORD ?? 'password',
 };
 
+const ACCESSIBILITY_SETUP_PUPIL = {
+  firstName: 'AA',
+  lastName: 'AAAASetupPupil',
+};
+
 const UPN_REMAINDER_LOOKUP: Record<number, string> = {
   0: 'A',
   1: 'B',
@@ -115,8 +120,8 @@ async function addPupil(page: Page, adminBaseUrl: string, upn: string): Promise<
 
   await expect(page.getByRole('heading', { name: 'Add pupil' })).toBeVisible();
 
-  await page.locator('#foreName').fill('AA');
-  await page.locator('#lastName').fill('SetupPupil');
+  await page.locator('#foreName').fill(ACCESSIBILITY_SETUP_PUPIL.firstName);
+  await page.locator('#lastName').fill(ACCESSIBILITY_SETUP_PUPIL.lastName);
   await page.locator('#upn').fill(upn);
   await page.locator('#dob-day').fill(dob.day);
   await page.locator('#dob-month').fill(dob.month);
@@ -128,7 +133,9 @@ async function addPupil(page: Page, adminBaseUrl: string, upn: string): Promise<
   await expect(page).toHaveURL(/\/pupil-register\/pupils-list/);
   await expect(page.getByText(/new pupil has been added/i)).toBeVisible();
   await expect(page.locator('body')).toContainText(upn);
-  const createdPupilLinks = page.getByRole('link', { name: /SetupPupil, AA/i });
+  const createdPupilLinks = page.getByRole('link', {
+    name: new RegExp(`${ACCESSIBILITY_SETUP_PUPIL.lastName},\\s*${ACCESSIBILITY_SETUP_PUPIL.firstName}`, 'i'),
+  });
   expect(await createdPupilLinks.count()).toBeGreaterThan(0);
 }
 
@@ -216,15 +223,20 @@ test('create pupil with colour contrast access arrangement for accessibility che
   await addPupil(page, adminBaseUrl, generatedUpn);
 
   // 3) Assign colour contrast access arrangement to the new pupil
-  await assignColourContrastAccessArrangement(page, adminBaseUrl, 'AA', 'SetupPupil');
+  await assignColourContrastAccessArrangement(
+    page,
+    adminBaseUrl,
+    ACCESSIBILITY_SETUP_PUPIL.firstName,
+    ACCESSIBILITY_SETUP_PUPIL.lastName,
+  );
 
   // 4) Write state for the accessibility test to consume
   await writeAccessibilitySetupState({
     env,
     upn: generatedUpn,
-    firstName: 'AA',
-    lastName: 'SetupPupil',
-    fullName: 'SetupPupil, AA',
+    firstName: ACCESSIBILITY_SETUP_PUPIL.firstName,
+    lastName: ACCESSIBILITY_SETUP_PUPIL.lastName,
+    fullName: `${ACCESSIBILITY_SETUP_PUPIL.lastName}, ${ACCESSIBILITY_SETUP_PUPIL.firstName}`,
     createdAtUtcIso: new Date().toISOString(),
   });
 });

@@ -248,7 +248,42 @@ async function assertCheckWindowRestored(page: Page, snapshot: CheckWindowSnapsh
   }
 }
 
-test('teacher can access HDF and reach the confirm step when all prerequisites are satisfied', async ({ page }, testInfo) => {
+async function deleteSubmittedHdf(page: Page, adminBaseUrl: string): Promise<void> {
+  await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
+
+  // Navigate to Manage organisations
+  await page.getByRole('link', { name: 'Manage organisations' }).click();
+  await expect(page.getByRole('heading', { name: 'Manage organisations' })).toBeVisible();
+
+  // Click on 'Search for an existing organisation'
+  await page.getByRole('link', { name: 'Search for an existing organisation' }).click();
+  await expect(page.getByRole('heading', { name: 'Search organisations' })).toBeVisible();
+
+  // Enter 89001 into the searchbar
+  await page.locator('#q').fill('89001');
+
+  // Click 'Search'
+  await page.getByRole('button', { name: 'Search' }).click();
+
+  // Click 'Manage HDF Submission' on the right-hand side navbar
+  await expect(page.getByRole('link', { name: 'Manage HDF Submission' })).toBeVisible();
+  await page.getByRole('link', { name: 'Manage HDF Submission' }).click();
+  await expect(page).toHaveURL(/\/service-manager\/organisations\/.*\/hdfstatus/);
+  await expect(page.getByRole('button', { name: 'Delete Submission' })).toBeVisible();
+
+  // Click 'Delete Submission'
+  await page.getByRole('button', { name: 'Delete Submission' }).click();
+
+  // Handle confirmation dialog if present
+  const confirmDelete = page.getByRole('button', { name: /confirm|yes|delete/i }).first();
+  if (await confirmDelete.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await confirmDelete.click();
+  }
+
+  await logoutFromAdmin(page);
+}
+
+test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo) => {
   const { env, adminBaseUrl } = getEnvironmentUrls(testInfo);
 
   test.skip(env === 'preprod', 'Preprod uses DfE Sign-in (OAuth) and this setup flow depends on username/password roles.');
@@ -267,7 +302,7 @@ test('teacher can access HDF and reach the confirm step when all prerequisites a
     await configureCheckWindowForHdfSigning(page);
     await logoutFromAdmin(page);
 
-    // 2) Teacher can access HDF and reach the final confirmation step in a preconditioned environment.
+    // 2) Teacher submits HDF and lands on the submitted confirmation page.
     await loginAsAdmin(page, adminBaseUrl, TEACHER_CREDENTIALS.username, TEACHER_CREDENTIALS.password);
     await page.goto('/attendance/declaration-form');
     await dismissCookieBanner(page);
@@ -276,16 +311,29 @@ test('teacher can access HDF and reach the confirm step when all prerequisites a
     await expect(page.getByText('Currently unavailable')).toHaveCount(0);
 
     await page.getByLabel("Submitter's first name").fill('Test');
-    await page.getByLabel("Submitter's last name").fill('Automation');
+    await page.getByLabel("Submitter's last name").fill('Automation Full Submit');
     await page.getByRole('button', { name: 'Continue' }).click();
 
     await expect(page.getByRole('heading', { name: 'Review pupil details' })).toBeVisible();
     await page.getByRole('link', { name: 'Continue' }).click();
 
     await expect(page.getByRole('heading', { name: 'Confirm and submit' })).toBeVisible();
-    await expect(page.locator('#confirmAll')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Submit' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Submit' })).toBeEnabled();
+    await page.locator('#confirmAll').check();
+
+    await Promise.all([
+      page.waitForURL(/\/attendance\/submitted/),
+      page.getByRole('button', { name: 'Submit' }).click(),
+    ]);
+
+    await expect(page.getByRole('heading', { name: /Headteacher.?s declaration form submitted/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /View the submitted form/i })).toBeVisible();
+
+    // Verify state change: declaration endpoint now redirects to submitted page.
+    await page.goto('/attendance/declaration-form');
+    await expect(page).toHaveURL(/\/attendance\/submitted/);
+
+    // 3) Service-manager deletes the submitted HDF to leave a clean slate for the next test run.
+    await deleteSubmittedHdf(page, adminBaseUrl);
   } finally {
     if (originalCheckWindow) {
       await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
