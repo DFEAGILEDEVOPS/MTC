@@ -12,44 +12,192 @@ variables:
   - name: NODE_VERSION
     value: '20'
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '$(NODE_VERSION)'
-    displayName: 'Install Node.js'
+jobs:
+  - job: PlaywrightDev
+    displayName: 'Playwright - Dev'
+    variables:
+      TEST_WORKDIR: 'test/pupil-hpa'
+      E2E_SCRIPT: 'test:e2e:dev'
+      ADMIN_BASE_URL: 'https://devadmin-as-mtc.azurewebsites.net'
+      PUPIL_BASE_URL: 'https://devpupil-as-mtc.azurewebsites.net'
+      PUPIL_API_BASE_URL: 'https://devauth-as-mtc.azurewebsites.net'
+      JUNIT_PREFIX: 'dev'
+    steps:
+      - checkout: self
 
-  - checkout: self
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '$(NODE_VERSION)'
+        displayName: 'Install Node.js'
 
-  - task: Cache@2
-    inputs:
-      key: 'npm | "$(Agent.OS)" | test/pupil-hpa/package-lock.json'
-      restoreKeys: |
-        npm | "$(Agent.OS)"
-      path: $(HOME)/.npm
-    displayName: 'Cache npm dependencies'
+      - task: Cache@2
+        inputs:
+          key: 'npm | "$(Agent.OS)" | $(TEST_WORKDIR)/package-lock.json'
+          restoreKeys: |
+            npm | "$(Agent.OS)"
+          path: $(HOME)/.npm
+        displayName: 'Cache npm dependencies'
 
-  - script: |
-      cd test/pupil-hpa
-      npm ci
-    displayName: 'Install dependencies for Playwright tests'
+      - script: npm ci
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Install test dependencies'
 
-  - script: npx playwright install --with-deps
-    workingDirectory: test/pupil-hpa
-    displayName: 'Install Playwright browsers'
+      - script: npx playwright install --with-deps
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Install Playwright browsers'
 
-  - script: |
-      cd test/pupil-hpa
-      npm run test:accessibility
-    displayName: 'Run Accessibility tests'
-    env:
-      PLAYWRIGHT_HTML_REPORT_OPEN: never
-      PUPIL_BASE_URL: 'https://testpupil-as-mtc.azurewebsites.net'
+      - script: |
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-additional-results.xml" npx playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --reporter=line,junit
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Run Playwright tests'
+        env:
+          CI: '1'
+          PLAYWRIGHT_HTML_REPORT_OPEN: never
+          ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
+          PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
+          PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '$(TEST_WORKDIR)/test-results/*.xml'
+          mergeTestResults: true
+          failTaskOnFailedTests: true
+          testRunTitle: 'MTC Playwright Tests - Dev'
+        displayName: 'Publish Playwright test results'
+
+      - task: PublishBuildArtifacts@1
+        condition: always()
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/$(TEST_WORKDIR)/test-results'
+          ArtifactName: 'MTC-Playwright-Test-Results-Dev'
+          publishLocation: 'Container'
+        displayName: 'Upload Playwright test results'
+
+  - job: PlaywrightTest
+    displayName: 'Playwright - Test'
+    variables:
+      TEST_WORKDIR: 'test/pupil-hpa'
+      E2E_SCRIPT: 'test:e2e:test'
       ADMIN_BASE_URL: 'https://testadmin-as-mtc.azurewebsites.net'
+      PUPIL_BASE_URL: 'https://testpupil-as-mtc.azurewebsites.net'
+      PUPIL_API_BASE_URL: 'https://testauth-as-mtc.azurewebsites.net'
+      JUNIT_PREFIX: 'test'
+    steps:
+      - checkout: self
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    inputs:
-      PathtoPublish: 'test/pupil-hpa/playwright-report'
-      ArtifactName: 'MTC-Accessibility-Test-Report'
-      publishLocation: 'Container'
-    displayName: 'Upload Accessibility test report'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '$(NODE_VERSION)'
+        displayName: 'Install Node.js'
+
+      - task: Cache@2
+        inputs:
+          key: 'npm | "$(Agent.OS)" | $(TEST_WORKDIR)/package-lock.json'
+          restoreKeys: |
+            npm | "$(Agent.OS)"
+          path: $(HOME)/.npm
+        displayName: 'Cache npm dependencies'
+
+      - script: npm ci
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Install test dependencies'
+
+      - script: npx playwright install --with-deps
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Install Playwright browsers'
+
+      - script: |
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-additional-results.xml" npx playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --reporter=line,junit
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Run Playwright tests'
+        env:
+          CI: '1'
+          PLAYWRIGHT_HTML_REPORT_OPEN: never
+          ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
+          PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
+          PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '$(TEST_WORKDIR)/test-results/*.xml'
+          mergeTestResults: true
+          failTaskOnFailedTests: true
+          testRunTitle: 'MTC Playwright Tests - Test'
+        displayName: 'Publish Playwright test results'
+
+      - task: PublishBuildArtifacts@1
+        condition: always()
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/$(TEST_WORKDIR)/test-results'
+          ArtifactName: 'MTC-Playwright-Test-Results-Test'
+          publishLocation: 'Container'
+        displayName: 'Upload Playwright test results'
+
+  - job: PlaywrightPreprod
+    displayName: 'Playwright - Preprod'
+    variables:
+      TEST_WORKDIR: 'test/pupil-hpa'
+      E2E_SCRIPT: 'test:e2e:preprod'
+      ADMIN_BASE_URL: 'https://pp-admin.multiplication-tables-check.service.gov.uk'
+      PUPIL_BASE_URL: 'https://pp-pupil.multiplication-tables-check.service.gov.uk'
+      PUPIL_API_BASE_URL: 'https://pp-auth.multiplication-tables-check.service.gov.uk'
+      JUNIT_PREFIX: 'preprod'
+    steps:
+      - checkout: self
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '$(NODE_VERSION)'
+        displayName: 'Install Node.js'
+
+      - task: Cache@2
+        inputs:
+          key: 'npm | "$(Agent.OS)" | $(TEST_WORKDIR)/package-lock.json'
+          restoreKeys: |
+            npm | "$(Agent.OS)"
+          path: $(HOME)/.npm
+        displayName: 'Cache npm dependencies'
+
+      - script: npm ci
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Install test dependencies'
+
+      - script: npx playwright install --with-deps
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Install Playwright browsers'
+
+      - script: |
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-additional-results.xml" npx playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --reporter=line,junit
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Run Playwright tests'
+        env:
+          CI: '1'
+          PLAYWRIGHT_HTML_REPORT_OPEN: never
+          ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
+          PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
+          PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '$(TEST_WORKDIR)/test-results/*.xml'
+          mergeTestResults: true
+          failTaskOnFailedTests: true
+          testRunTitle: 'MTC Playwright Tests - Preprod'
+        displayName: 'Publish Playwright test results'
+
+      - task: PublishBuildArtifacts@1
+        condition: always()
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/$(TEST_WORKDIR)/test-results'
+          ArtifactName: 'MTC-Playwright-Test-Results-Preprod'
+          publishLocation: 'Container'
+        displayName: 'Upload Playwright test results'

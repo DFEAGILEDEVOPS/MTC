@@ -20,10 +20,10 @@ export const environmentUrls = {
 export default defineConfig({
   testDir: '.',
   testMatch: '*.playwright.spec.ts',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  workers: isCI ? 2 : undefined,
+  workers: 1,
   timeout: 90_000,
   expect: {
     timeout: 10_000

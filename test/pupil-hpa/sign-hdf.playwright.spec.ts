@@ -203,6 +203,25 @@ async function configureCheckWindowForHdfSigning(page: Page): Promise<void> {
   await saveCheckWindowForm(page, 'save check-window setup for HDF signing');
 }
 
+/**
+ * Restores the check window to a known-good open state where both the familiarisation
+ * and live check periods are currently active. This ensures subsequent tests (e.g. generate
+ * live pins, accessibility check) are not blocked by a closed check window, regardless of
+ * what state the window was in before this test ran.
+ */
+async function restoreToOpenCheckWindow(page: Page): Promise<void> {
+  const now = new Date();
+
+  await fillDateFieldIfVisible(page, 'adminStart', toDateParts(addDays(now, -60)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckStart', toDateParts(addDays(now, -45)));
+  await fillDateFieldIfVisible(page, 'liveCheckStart', toDateParts(addDays(now, -30)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'liveCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'adminEnd', toDateParts(addDays(now, 60)));
+
+  await saveCheckWindowForm(page, 'restore check-window to open state');
+}
+
 async function restoreCheckWindowFromSnapshot(page: Page, snapshot: CheckWindowSnapshot): Promise<void> {
   for (const prefix of CHECK_WINDOW_FIELD_PREFIXES) {
     const originalDate = snapshot[prefix];
@@ -280,6 +299,16 @@ async function deleteSubmittedHdf(page: Page, adminBaseUrl: string): Promise<voi
     await confirmDelete.click();
   }
 
+  // Assert deletion succeeded — the page must not be a generic error page.
+  const errorHeading = page.getByText(/an error occurred/i);
+  if (await errorHeading.isVisible({ timeout: 5000 }).catch(() => false)) {
+    throw new Error('HDF deletion failed: "An error occurred" page shown after clicking Delete Submission. The HDF submission may still be intact.');
+  }
+
+  // Confirm we are back on the HDF status page and the submission is gone.
+  await expect(page).toHaveURL(/\/service-manager\/organisations\/.*\/hdfstatus/, { timeout: 10000 });
+  await expect(page.getByRole('button', { name: 'Delete Submission' })).not.toBeVisible({ timeout: 5000 });
+
   await logoutFromAdmin(page);
 }
 
@@ -335,13 +364,16 @@ test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo
     // 3) Service-manager deletes the submitted HDF to leave a clean slate for the next test run.
     await deleteSubmittedHdf(page, adminBaseUrl);
   } finally {
-    if (originalCheckWindow) {
-      await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
-      await page.goto('/check-window/manage-check-windows');
-      await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
-      await openCheckWindow(page, env);
-      await restoreCheckWindowFromSnapshot(page, originalCheckWindow);
-      await assertCheckWindowRestored(page, originalCheckWindow);
+    // Always restore the check window to a known-good open state so subsequent tests
+    // (generate live pins, accessibility check) are not left with a closed check window.
+    // Restoring the original snapshot is avoided because the pre-test state may already
+    // have had a closed live check period, which would propagate that problem forward.
+    await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password).catch(() => undefined);
+    await page.goto('/check-window/manage-check-windows').catch(() => undefined);
+    const manageHeading = page.getByRole('heading', { name: 'Manage check windows' });
+    if (await manageHeading.isVisible({ timeout: 10000 }).catch(() => false)) {
+      await openCheckWindow(page, env).catch(() => undefined);
+      await restoreToOpenCheckWindow(page).catch(() => undefined);
     }
 
     await logoutFromAdmin(page).catch(() => undefined);
