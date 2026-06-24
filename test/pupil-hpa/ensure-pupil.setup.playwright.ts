@@ -25,6 +25,11 @@ const TEACHER_CREDENTIALS = {
   password: process.env.ADMIN_PASSWORD ?? 'password',
 };
 
+const SERVICE_MANAGER_CREDENTIALS = {
+  username: 'service-manager',
+  password: 'password',
+};
+
 const UPN_REMAINDER_LOOKUP: Record<number, string> = {
   0: 'A',
   1: 'B',
@@ -119,6 +124,82 @@ function getValidDob(): { day: string; month: string; year: string } {
   return { day: '15', month: '06', year: dobYear };
 }
 
+function toDateParts(date: Date): { day: string; month: string; year: string } {
+  return {
+    day: String(date.getDate()).padStart(2, '0'),
+    month: String(date.getMonth() + 1).padStart(2, '0'),
+    year: String(date.getFullYear()),
+  };
+}
+
+function addDays(base: Date, days: number): Date {
+  const next = new Date(base);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+async function openCheckWindow(page: Page): Promise<void> {
+  const checkWindowLink = page.getByRole('link', { name: 'Development Phase', exact: true });
+  await expect(checkWindowLink).toBeVisible({ timeout: 10000 });
+  await checkWindowLink.click();
+}
+
+async function fillDateFieldIfVisible(
+  page: Page,
+  fieldPrefix: string,
+  date: { day: string; month: string; year: string }
+): Promise<void> {
+  const dayField = page.locator(`#${fieldPrefix}Day`);
+  const monthField = page.locator(`#${fieldPrefix}Month`);
+  const yearField = page.locator(`#${fieldPrefix}Year`);
+
+  if (!await dayField.isVisible().catch(() => false)) {
+    return;
+  }
+
+  await dayField.fill(date.day);
+  await monthField.fill(date.month);
+  await yearField.fill(date.year);
+}
+
+async function saveCheckWindowForm(page: Page, actionName: string): Promise<void> {
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  const overrideWarnings = page.getByRole('checkbox', { name: /Override the warnings on this screen\.?/i });
+  if (await overrideWarnings.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await overrideWarnings.check();
+    await page.getByRole('button', { name: 'Save' }).click();
+  }
+
+  const errorSummary = page.locator('.govuk-error-summary');
+  if (await errorSummary.isVisible({ timeout: 1000 }).catch(() => false)) {
+    const summaryText = await errorSummary.innerText().catch(() => `Unknown validation error while trying to ${actionName}`);
+    throw new Error(`Unable to ${actionName}: ${summaryText}`);
+  }
+}
+
+async function restoreToOpenCheckWindow(page: Page): Promise<void> {
+  const now = new Date();
+
+  await fillDateFieldIfVisible(page, 'adminStart', toDateParts(addDays(now, -60)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckStart', toDateParts(addDays(now, -45)));
+  await fillDateFieldIfVisible(page, 'liveCheckStart', toDateParts(addDays(now, -30)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'liveCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'adminEnd', toDateParts(addDays(now, 60)));
+
+  await saveCheckWindowForm(page, 'restore check-window to open state for setup');
+}
+
+async function ensureCheckWindowOpenForSetup(page: Page, adminBaseUrl: string): Promise<void> {
+  await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
+  await page.goto(`${adminBaseUrl}/check-window/manage-check-windows`);
+  await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible({ timeout: 10000 });
+  await openCheckWindow(page);
+  await restoreToOpenCheckWindow(page);
+  await logoutFromAdmin(page, adminBaseUrl);
+}
+
 async function assertCanAddPupil(page: Page, adminBaseUrl: string): Promise<void> {
   await page.goto(`${adminBaseUrl}/pupil-register/pupils-list`);
   const addPupilButton = page
@@ -170,6 +251,9 @@ test('ensure at least one newly added pupil exists before e2e run', async ({ pag
   test.skip(!testInfo.project.name.endsWith('-setup'), 'Setup runs only in *-setup projects.');
 
   const { env, adminBaseUrl } = getEnvironmentUrls(testInfo);
+
+  // 0) Normalise shared state so setup does not depend on ambient check-window settings.
+  await ensureCheckWindowOpenForSetup(page, adminBaseUrl);
 
   // 1) Login as test-developer to generate a unique UPN seed in the admin app context.
   await loginAsAdmin(page, adminBaseUrl, TEST_DEVELOPER_CREDENTIALS.username, TEST_DEVELOPER_CREDENTIALS.password);

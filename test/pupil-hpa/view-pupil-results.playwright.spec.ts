@@ -76,27 +76,57 @@ async function fillAndVerifyDateInputs(
   date: { day: string; month: string; year: string },
   clearBeforeFill = false
 ): Promise<void> {
-  const dayInputs = page.locator('input:not([type="hidden"]):visible[name*="day" i], input:not([type="hidden"]):visible[id*="day" i], input:not([type="hidden"]):visible[placeholder*="day" i], input:not([type="hidden"]):visible[aria-label*="day" i]');
-  const monthInputs = page.locator('input:not([type="hidden"]):visible[name*="month" i], input:not([type="hidden"]):visible[id*="month" i], input:not([type="hidden"]):visible[placeholder*="month" i], input:not([type="hidden"]):visible[aria-label*="month" i]');
-  const yearInputs = page.locator('input:not([type="hidden"]):visible[name*="year" i], input:not([type="hidden"]):visible[id*="year" i], input:not([type="hidden"]):visible[placeholder*="year" i], input:not([type="hidden"]):visible[aria-label*="year" i]');
+  const knownFieldPrefixes = [
+    'adminStart',
+    'familiarisationCheckStart',
+    'liveCheckStart',
+    'familiarisationCheckEnd',
+    'liveCheckEnd',
+    'adminEnd',
+  ];
+  const visibleFieldGroups: Array<{ dayInput: ReturnType<Page['locator']>; monthInput: ReturnType<Page['locator']>; yearInput: ReturnType<Page['locator']> }> = [];
 
-  const dayCount = await dayInputs.count();
-  const monthCount = await monthInputs.count();
-  const yearCount = await yearInputs.count();
+  for (const prefix of knownFieldPrefixes) {
+    const dayInput = page.locator(`#${prefix}Day`);
+    const monthInput = page.locator(`#${prefix}Month`);
+    const yearInput = page.locator(`#${prefix}Year`);
+    const isVisible = await dayInput.isVisible().catch(() => false);
 
-  expect(dayCount, 'Expected at least one day input').toBeGreaterThan(0);
-  expect(monthCount, 'Expected at least one month input').toBeGreaterThan(0);
-  expect(yearCount, 'Expected at least one year input').toBeGreaterThan(0);
-  expect(monthCount, 'Day/month input count mismatch').toBe(dayCount);
-  expect(yearCount, 'Day/year input count mismatch').toBe(dayCount);
+    if (isVisible) {
+      visibleFieldGroups.push({ dayInput, monthInput, yearInput });
+    }
+  }
+
+  if (visibleFieldGroups.length === 0) {
+    const dayInputs = page.locator('input:not([type="hidden"]):visible[name*="day" i], input:not([type="hidden"]):visible[id*="day" i], input:not([type="hidden"]):visible[placeholder*="day" i], input:not([type="hidden"]):visible[aria-label*="day" i]');
+    const monthInputs = page.locator('input:not([type="hidden"]):visible[name*="month" i], input:not([type="hidden"]):visible[id*="month" i], input:not([type="hidden"]):visible[placeholder*="month" i], input:not([type="hidden"]):visible[aria-label*="month" i]');
+    const yearInputs = page.locator('input:not([type="hidden"]):visible[name*="year" i], input:not([type="hidden"]):visible[id*="year" i], input:not([type="hidden"]):visible[placeholder*="year" i], input:not([type="hidden"]):visible[aria-label*="year" i]');
+
+    const dayCount = await dayInputs.count();
+    const monthCount = await monthInputs.count();
+    const yearCount = await yearInputs.count();
+
+    expect(dayCount, 'Expected at least one day input').toBeGreaterThan(0);
+    expect(monthCount, 'Expected at least one month input').toBeGreaterThan(0);
+    expect(yearCount, 'Expected at least one year input').toBeGreaterThan(0);
+    expect(monthCount, 'Day/month input count mismatch').toBe(dayCount);
+    expect(yearCount, 'Day/year input count mismatch').toBe(dayCount);
+
+    for (let i = 0; i < dayCount; i += 1) {
+      visibleFieldGroups.push({
+        dayInput: dayInputs.nth(i),
+        monthInput: monthInputs.nth(i),
+        yearInput: yearInputs.nth(i),
+      });
+    }
+  }
+
+  expect(visibleFieldGroups.length, 'Expected at least one visible check-window date input set').toBeGreaterThan(0);
 
   const normalizedDay = String(Number(date.day));
   const normalizedMonth = String(Number(date.month));
 
-  for (let i = 0; i < dayCount; i += 1) {
-    const dayInput = dayInputs.nth(i);
-    const monthInput = monthInputs.nth(i);
-    const yearInput = yearInputs.nth(i);
+  for (const { dayInput, monthInput, yearInput } of visibleFieldGroups) {
 
     if (clearBeforeFill) {
       await dayInput.clear();

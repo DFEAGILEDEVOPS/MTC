@@ -20,6 +20,11 @@ const TEACHER_CREDENTIALS = {
   password: process.env.ADMIN_PASSWORD ?? 'password',
 };
 
+const SERVICE_MANAGER_CREDENTIALS = {
+  username: 'service-manager',
+  password: 'password',
+};
+
 const ACCESSIBILITY_SETUP_PUPIL = {
   firstName: 'AA',
   lastName: 'AAAASetupPupil',
@@ -84,6 +89,21 @@ async function loginAsTeacher(page: Page, adminBaseUrl: string): Promise<void> {
   await dismissCookieBanner(page);
 }
 
+async function loginAsAdmin(page: Page, adminBaseUrl: string, username: string, password: string): Promise<void> {
+  await page.goto(`${adminBaseUrl}/sign-in`);
+  await dismissCookieBanner(page);
+
+  const userNameField = page.getByRole('textbox', { name: 'Enter your user name.' });
+  if (await userNameField.isVisible({ timeout: 2500 }).catch(() => false)) {
+    await userNameField.fill(username);
+    await page.getByRole('textbox', { name: 'Enter your password.' }).fill(password);
+    await page.getByRole('button', { name: 'Sign in' }).click();
+  }
+
+  await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
+  await dismissCookieBanner(page);
+}
+
 function calculateCheckLetter(tail12Chars: string): string {
   const chars = [...tail12Chars];
   const multiplied = chars.map((char, index) => {
@@ -112,6 +132,103 @@ function getValidDob(): { day: string; month: string; year: string } {
   const academicYear = month >= 1 && month <= 8 ? year - 1 : year;
   const dobYear = String(academicYear - 9);
   return { day: '15', month: '06', year: dobYear };
+}
+
+function toDateParts(date: Date): { day: string; month: string; year: string } {
+  return {
+    day: String(date.getDate()).padStart(2, '0'),
+    month: String(date.getMonth() + 1).padStart(2, '0'),
+    year: String(date.getFullYear()),
+  };
+}
+
+function addDays(base: Date, days: number): Date {
+  const next = new Date(base);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+async function openCheckWindow(page: Page): Promise<void> {
+  const checkWindowLink = page.getByRole('link', { name: 'Development Phase', exact: true });
+  await expect(checkWindowLink).toBeVisible({ timeout: 10000 });
+  await checkWindowLink.click();
+}
+
+async function fillDateFieldIfVisible(
+  page: Page,
+  fieldPrefix: string,
+  date: { day: string; month: string; year: string }
+): Promise<void> {
+  const dayField = page.locator(`#${fieldPrefix}Day`);
+  const monthField = page.locator(`#${fieldPrefix}Month`);
+  const yearField = page.locator(`#${fieldPrefix}Year`);
+
+  if (!await dayField.isVisible().catch(() => false)) {
+    return;
+  }
+
+  await dayField.fill(date.day);
+  await monthField.fill(date.month);
+  await yearField.fill(date.year);
+}
+
+async function saveCheckWindowForm(page: Page, actionName: string): Promise<void> {
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  const overrideWarnings = page.getByRole('checkbox', { name: /Override the warnings on this screen\.?/i });
+  if (await overrideWarnings.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await overrideWarnings.check();
+    await page.getByRole('button', { name: 'Save' }).click();
+  }
+
+  const errorSummary = page.locator('.govuk-error-summary');
+  if (await errorSummary.isVisible({ timeout: 1000 }).catch(() => false)) {
+    const summaryText = await errorSummary.innerText().catch(() => `Unknown validation error while trying to ${actionName}`);
+    throw new Error(`Unable to ${actionName}: ${summaryText}`);
+  }
+}
+
+async function restoreToOpenCheckWindow(page: Page): Promise<void> {
+  const now = new Date();
+
+  await fillDateFieldIfVisible(page, 'adminStart', toDateParts(addDays(now, -60)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckStart', toDateParts(addDays(now, -45)));
+  await fillDateFieldIfVisible(page, 'liveCheckStart', toDateParts(addDays(now, -30)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'liveCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'adminEnd', toDateParts(addDays(now, 60)));
+
+  await saveCheckWindowForm(page, 'restore check-window to open state for accessibility setup');
+}
+
+async function logoutFromAdmin(page: Page, adminBaseUrl: string): Promise<void> {
+  await page.goto(`${adminBaseUrl}/sign-out`).catch(() => undefined);
+}
+
+async function ensureCheckWindowOpenForSetup(page: Page, adminBaseUrl: string): Promise<void> {
+  await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
+
+  await page.goto(`${adminBaseUrl}/check-window/manage-check-windows`);
+  await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible({ timeout: 10000 });
+  await openCheckWindow(page);
+  await restoreToOpenCheckWindow(page);
+  await logoutFromAdmin(page, adminBaseUrl);
+}
+
+async function assertCanAddPupil(page: Page, adminBaseUrl: string): Promise<void> {
+  await page.goto(`${adminBaseUrl}/pupil-register/pupils-list`);
+  const addPupilButton = page
+    .getByRole('button', { name: 'Add pupil', exact: true })
+    .or(page.getByRole('link', { name: 'Add pupil', exact: true }))
+    .first();
+  await expect(addPupilButton).toBeVisible();
+
+  const href = await addPupilButton.getAttribute('href');
+  const isDisabled = await addPupilButton.getAttribute('aria-disabled');
+
+  if (!href || href === '#' || isDisabled === 'true') {
+    throw new Error('Add pupil is disabled for the current role or check-window phase. Accessibility setup cannot create the prerequisite pupil.');
+  }
 }
 
 async function addPupil(page: Page, adminBaseUrl: string, upn: string): Promise<void> {
@@ -155,6 +272,7 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
 
   // Check the 'Colour contrast' checkbox
   const accessArrangementsList = page.locator('ul#accessArrangementsList li');
+  await expect(accessArrangementsList.first()).toBeVisible({ timeout: 10000 });
   const listItemCount = await accessArrangementsList.count();
 
   let foundColourContrast = false;
@@ -189,7 +307,21 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
     throw new Error(`Could not find pupil option matching '${lastName}, ${firstName}' in access arrangements dropdown`);
   }
 
-  await pupilSelect.selectOption(optionValue);
+  const selectVisible = await pupilSelect.isVisible().catch(() => false);
+  if (selectVisible) {
+    await pupilSelect.selectOption(optionValue);
+  } else {
+    await page.evaluate(({ value }) => {
+      const select = document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container');
+      if (!select) {
+        throw new Error('Pupil select control was not found in the DOM.');
+      }
+
+      select.value = value;
+      select.dispatchEvent(new Event('input', { bubbles: true }));
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    }, { value: optionValue });
+  }
 
   // Save
   await page.locator('button#save-access-arrangement').click();
@@ -214,10 +346,14 @@ test('create pupil with colour contrast access arrangement for accessibility che
 
   test.setTimeout(5 * 60 * 1000);
 
+  // 0) Normalise shared state so setup does not depend on ambient check-window settings.
+  await ensureCheckWindowOpenForSetup(page, adminBaseUrl);
+
   // 1) Sign in as teacher
   await loginAsTeacher(page, adminBaseUrl);
 
   // 2) Add a new pupil to the pupil register
+  await assertCanAddPupil(page, adminBaseUrl);
   const seed = `${Date.now()}${Math.floor(Math.random() * 100000)}`;
   const generatedUpn = generateUniqueUpn(seed);
   await addPupil(page, adminBaseUrl, generatedUpn);

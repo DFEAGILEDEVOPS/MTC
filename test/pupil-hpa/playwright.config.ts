@@ -2,6 +2,9 @@ import { defineConfig, type ReporterDescription } from '@playwright/test';
 
 const isCI = process.env.CI === '1' || process.env.CI === 'true';
 
+// Use single auth file for all tests
+const authStorageState = '../../auth.json';
+
 export const environmentUrls = {
   dev: {
     adminBaseUrl: 'https://devadmin-as-mtc.azurewebsites.net',
@@ -52,13 +55,20 @@ export default defineConfig({
   projects: [
     //dev
     {
+      name: 'dev-preflight',
+      testMatch: 'ensure-environment-preflight.setup.playwright.ts',
+      use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
+    },
+    {
       name: 'dev-setup',
       testMatch: 'ensure-pupil.setup.playwright.ts',
+      dependencies: ['dev-preflight'],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     {
       name: 'dev-accessibility-setup',
       testMatch: 'ensure-accessibility-pupil.setup.playwright.ts',
+      dependencies: ['dev-preflight'],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -68,6 +78,7 @@ export default defineConfig({
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',
       ],
+      dependencies: ['dev-preflight'],
       use: { baseURL: 'https://devadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -87,13 +98,20 @@ export default defineConfig({
     },
     //test
     {
+      name: 'test-preflight',
+      testMatch: 'ensure-environment-preflight.setup.playwright.ts',
+      use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
+    },
+    {
       name: 'test-setup',
       testMatch: 'ensure-pupil.setup.playwright.ts',
+      dependencies: ['test-preflight'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {
       name: 'test-accessibility-setup',
       testMatch: 'ensure-accessibility-pupil.setup.playwright.ts',
+      dependencies: ['test-preflight'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -103,7 +121,7 @@ export default defineConfig({
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',
       ],
-      dependencies: ['test-accessibility-setup'],
+      dependencies: ['test-preflight', 'test-accessibility-setup'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {
@@ -125,8 +143,9 @@ export default defineConfig({
     {
         name: 'preprod-admin',
         use: { 
-            baseURL: 'https://pp-admin.multiplication-tables-check.service.gov.uk' ,
-        storageState: '../../auth.json', }
+            baseURL: 'https://pp-admin.multiplication-tables-check.service.gov.uk',
+            storageState: authStorageState,
+        }
     },
   ],
 });

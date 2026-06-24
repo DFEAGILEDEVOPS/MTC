@@ -220,6 +220,38 @@ async function selectPupilByName(page: Page, pupilName: string): Promise<void> {
 		}
 	}
 
+	const clickedByContainer = await page.evaluate((targetName) => {
+		const escapedName = targetName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		const nameRegex = new RegExp(escapedName, 'i');
+		const containers = Array.from(document.querySelectorAll('tr, li, div, section'));
+
+		for (const container of containers) {
+			const text = container.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+			if (!nameRegex.test(text) || !/tick pupil|select/i.test(text)) {
+				continue;
+			}
+
+			const checkbox = container.querySelector<HTMLInputElement>('input[type="checkbox"]');
+			if (!checkbox) {
+				continue;
+			}
+
+			checkbox.click();
+			if (checkbox.checked) {
+				return true;
+			}
+		}
+
+		return false;
+	}, pupilName);
+
+	if (clickedByContainer) {
+		const finalCheckedAfterContainer = await checkedCount();
+		if (finalCheckedAfterContainer > 0) {
+			return;
+		}
+	}
+
 	const availableRows = await page
 		.getByRole('row', { name: /Tick pupil/i })
 		.allInnerTexts()
