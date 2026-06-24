@@ -56,7 +56,7 @@ Generate or refresh it from repo root:
 npm run save:auth
 ```
 
-This launches a browser, asks you to complete login manually, then saves session data to `auth.json`.
+This launches a browser, asks you to complete login (PP teacher login) manually, then saves session data to `auth.json`.
 
 ## Environment variables
 
@@ -132,6 +132,14 @@ From `test/pupil-hpa`:
 ```bash
 npm test
 ```
+
+### Run test e2e sequence with one merged HTML report
+
+```bash
+npm run test:e2e:test
+```
+
+This runs the same 3-step test sequence in the existing order (accessibility setup/check -> setup -> main 4 specs), writes each step to a separate blob report file, merges them, and opens one combined HTML report.
 
 ### Run pupil-flow tests (with setup)
 
@@ -221,6 +229,12 @@ npx playwright test view-pupil-results.playwright.spec.ts --project=test-admin
 ```
 
 ## Reports and artifacts
+
+- Combined test-environment sequence + merged HTML report:
+
+```bash
+npm run test:e2e:test
+```
 
 - HTML report command:
 

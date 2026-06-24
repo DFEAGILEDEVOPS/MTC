@@ -121,7 +121,7 @@ async function logoutFromAdmin(page: Page): Promise<void> {
 }
 
 async function openCheckWindow(page: Page, env: EnvironmentName): Promise<void> {
-  const checkWindowName = env === 'dev' ? 'testing 2026' : 'Development Phase';
+  const checkWindowName = 'Development Phase';
   const checkWindowLink = page.getByRole('link', { name: checkWindowName, exact: true });
   await expect(checkWindowLink).toBeVisible();
   await checkWindowLink.click();
@@ -368,13 +368,13 @@ test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo
     // (generate live pins, accessibility check) are not left with a closed check window.
     // Restoring the original snapshot is avoided because the pre-test state may already
     // have had a closed live check period, which would propagate that problem forward.
-    await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password).catch(() => undefined);
-    await page.goto('/check-window/manage-check-windows').catch(() => undefined);
+    await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
+    await page.goto('/check-window/manage-check-windows');
     const manageHeading = page.getByRole('heading', { name: 'Manage check windows' });
-    if (await manageHeading.isVisible({ timeout: 10000 }).catch(() => false)) {
-      await openCheckWindow(page, env).catch(() => undefined);
-      await restoreToOpenCheckWindow(page).catch(() => undefined);
-    }
+    await expect(manageHeading).toBeVisible({ timeout: 10000 });
+
+    await openCheckWindow(page, env);
+    await restoreToOpenCheckWindow(page);
 
     await logoutFromAdmin(page).catch(() => undefined);
   }

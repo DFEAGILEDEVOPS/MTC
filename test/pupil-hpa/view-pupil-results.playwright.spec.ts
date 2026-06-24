@@ -62,7 +62,7 @@ async function logoutFromAdmin(page: Page): Promise<void> {
  * Open the desired check window with strict environment-specific naming.
  */
 async function openCheckWindow(page: Page, env: EnvironmentName): Promise<void> {
-  const checkWindowName = env === 'dev' ? 'testing 2026' : 'Development Phase';
+  const checkWindowName = 'Development Phase';
   const checkWindowLink = page.getByRole('link', { name: checkWindowName, exact: true });
   await expect(checkWindowLink).toBeVisible();
   await checkWindowLink.click();
@@ -114,6 +114,68 @@ async function fillAndVerifyDateInputs(
   }
 }
 
+function toDateParts(date: Date): { day: string; month: string; year: string } {
+  return {
+    day: String(date.getDate()).padStart(2, '0'),
+    month: String(date.getMonth() + 1).padStart(2, '0'),
+    year: String(date.getFullYear()),
+  };
+}
+
+function addDays(base: Date, days: number): Date {
+  const next = new Date(base);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+async function fillDateFieldIfVisible(
+  page: Page,
+  fieldPrefix: string,
+  date: { day: string; month: string; year: string }
+): Promise<void> {
+  const dayField = page.locator(`#${fieldPrefix}Day`);
+  const monthField = page.locator(`#${fieldPrefix}Month`);
+  const yearField = page.locator(`#${fieldPrefix}Year`);
+
+  const isVisible = await dayField.isVisible().catch(() => false);
+  if (!isVisible) {
+    return;
+  }
+
+  await dayField.fill(date.day);
+  await monthField.fill(date.month);
+  await yearField.fill(date.year);
+}
+
+async function saveCheckWindowForm(page: Page, actionName: string): Promise<void> {
+  await page.getByRole('button', { name: 'Save' }).click();
+
+  const overrideWarnings = page.getByRole('checkbox', { name: /Override the warnings on this screen\.?/i });
+  if (await overrideWarnings.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await overrideWarnings.check();
+    await page.getByRole('button', { name: 'Save' }).click();
+  }
+
+  const errorSummary = page.locator('.govuk-error-summary');
+  if (await errorSummary.isVisible({ timeout: 1000 }).catch(() => false)) {
+    const summaryText = await errorSummary.innerText().catch(() => `Unknown validation error while trying to ${actionName}`);
+    throw new Error(`Unable to ${actionName}: ${summaryText}`);
+  }
+}
+
+async function restoreToOpenCheckWindow(page: Page): Promise<void> {
+  const now = new Date();
+
+  await fillDateFieldIfVisible(page, 'adminStart', toDateParts(addDays(now, -60)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckStart', toDateParts(addDays(now, -45)));
+  await fillDateFieldIfVisible(page, 'liveCheckStart', toDateParts(addDays(now, -30)));
+  await fillDateFieldIfVisible(page, 'familiarisationCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'liveCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible(page, 'adminEnd', toDateParts(addDays(now, 60)));
+
+  await saveCheckWindowForm(page, 'restore check-window to open state');
+}
+
 /**
  * Test: Manage check windows and verify pupil results visibility
  * This test verifies that when a service manager sets the check window to 04/04/2026,
@@ -127,85 +189,75 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
 
   const fixedCheckWindowDate = getFixedCheckWindowDate();
 
-  // ========== STEP 1-10: Service Manager sets check window to 04/04/2026 ==========
+  try {
+    // ========== STEP 1-10: Service Manager sets check window to 04/04/2026 ==========
 
-  // 1) Navigate to Admin site
-  await page.goto(`${adminBaseUrl}/sign-in`);
+    // 1) Navigate to Admin site
+    await page.goto(`${adminBaseUrl}/sign-in`);
 
-  // 2) Log in as service-manager
-  await loginAsAdmin(page, 'service-manager', 'password');
+    // 2) Log in as service-manager
+    await loginAsAdmin(page, 'service-manager', 'password');
 
-  // 3) Click on: Manage check windows
-  await page.getByRole('link', { name: 'Manage check windows' }).click();
-  await dismissCookieBanner(page);
+    // 3) Click on: Manage check windows
+    await page.getByRole('link', { name: 'Manage check windows' }).click();
+    await dismissCookieBanner(page);
 
-  // 4) Click on the check window
-  await openCheckWindow(page, env);
-  await dismissCookieBanner(page);
+    // 4) Click on the check window
+    await openCheckWindow(page, env);
+    await dismissCookieBanner(page);
 
-  // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - Enter 04/04/2026 into all 3 sets
-  await fillAndVerifyDateInputs(page, fixedCheckWindowDate);
+    // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - Enter 04/04/2026 into all 3 sets
+    await fillAndVerifyDateInputs(page, fixedCheckWindowDate);
 
-  // 7) Click Save
-  await page.getByRole('button', { name: 'Save' }).click();
+    // 7) Click Save
+    await page.getByRole('button', { name: 'Save' }).click();
 
-  // 8) Tick "Override the warnings on this screen." checkbox
-  const overrideWarnings = page
-    .getByRole('checkbox', { name: /Override the warnings on this screen\.?/i })
-    .or(page.locator('input[type="checkbox"][name*="override" i]'))
-    .or(page.locator('input[type="checkbox"][id*="override" i]'))
-    .first();
-  await expect(overrideWarnings).toBeVisible();
-  await overrideWarnings.check();
-  await expect(overrideWarnings).toBeChecked();
+    // 8) Tick "Override the warnings on this screen." checkbox
+    const overrideWarnings = page
+      .getByRole('checkbox', { name: /Override the warnings on this screen\.?/i })
+      .or(page.locator('input[type="checkbox"][name*="override" i]'))
+      .or(page.locator('input[type="checkbox"][id*="override" i]'))
+      .first();
+    await expect(overrideWarnings).toBeVisible();
+    await overrideWarnings.check();
+    await expect(overrideWarnings).toBeChecked();
 
-  // 9) Click Save again
-  await page.getByRole('button', { name: 'Save' }).click();
+    // 9) Click Save again
+    await page.getByRole('button', { name: 'Save' }).click();
 
-  // 10) Click Sign out
-  await logoutFromAdmin(page);
+    // 10) Click Sign out
+    await logoutFromAdmin(page);
 
-  // ========== STEP 11-14: Teacher logs in and views pupil results ==========
+    // ========== STEP 11-14: Teacher logs in and views pupil results ==========
 
-  // 11) Navigate to admin site
-  await page.goto(`${adminBaseUrl}/sign-in`);
+    // 11) Navigate to admin site
+    await page.goto(`${adminBaseUrl}/sign-in`);
 
-  // 12) Sign in as teacher1
-  await loginAsAdmin(page, 'teacher1', 'password');
+    // 12) Sign in as teacher1
+    await loginAsAdmin(page, 'teacher1', 'password');
 
-  // 13) Click View pupil results
-  await page.getByRole('link', { name: /View pupil results/i }).click();
-  await dismissCookieBanner(page);
+    // 13) Click View pupil results
+    await page.getByRole('link', { name: /View pupil results/i }).click();
+    await dismissCookieBanner(page);
 
-  // 14) Verify that pupil results page is loaded
-  await expect(page).toHaveURL(/\/results\/view-results/i);
+    // 14) Verify that pupil results page is loaded
+    await expect(page).toHaveURL(/\/results\/view-results/i);
 
-  // 15) Sign out
-  await logoutFromAdmin(page);
+    // 15) Sign out
+    await logoutFromAdmin(page);
+  } finally {
+    // Always restore check-window dates to an open state, even if the test fails mid-flow.
+    await page.goto(`${adminBaseUrl}/sign-in`).catch(() => undefined);
+    await loginAsAdmin(page, 'service-manager', 'password').catch(() => undefined);
+    await page.getByRole('link', { name: 'Manage check windows' }).click().catch(() => undefined);
 
-  // ========== STEP 16-23: Service Manager resets check window to future date ==========
+    const manageHeading = page.getByRole('heading', { name: 'Manage check windows' });
+    if (await manageHeading.isVisible({ timeout: 10000 }).catch(() => false)) {
+      await openCheckWindow(page, env).catch(() => undefined);
+      await restoreToOpenCheckWindow(page).catch(() => undefined);
+    }
 
-  // 16) Navigate to admin site
-  await page.goto(`${adminBaseUrl}/sign-in`);
-
-  // 17) Log in as service-manager
-  await loginAsAdmin(page, 'service-manager', 'password');
-
-  // 18) Click on: Manage check windows
-  await page.getByRole('link', { name: 'Manage check windows' }).click();
-  await dismissCookieBanner(page);
-
-  // 19) Click on the check window
-  await openCheckWindow(page, env);
-  await dismissCookieBanner(page);
-
-  // 20-21) Enter the date 02/10/2027 (Day/Month/Year) into all 3 sets of input boxes
-  await fillAndVerifyDateInputs(page, { day: '02', month: '10', year: '2027' }, true);
-
-  // 22) Click Save
-  await page.getByRole('button', { name: 'Save' }).click();
-
-  // 23) Click Sign out
-  await logoutFromAdmin(page);
+    await logoutFromAdmin(page).catch(() => undefined);
+  }
 });
 

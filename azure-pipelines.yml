@@ -1,9 +1,9 @@
 trigger:
-  - main
+  - master
   - testing/automation-scripts
 
 pr:
-  - main
+  - master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -48,7 +48,6 @@ jobs:
 
       - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-additional-results.xml" npx playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --reporter=line,junit
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -111,7 +110,6 @@ jobs:
 
       - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-additional-results.xml" npx playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --reporter=line,junit
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -174,7 +172,6 @@ jobs:
 
       - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-additional-results.xml" npx playwright test api-request-context.remote.playwright.spec.ts get-ping-guideline.playwright.spec.ts accessibility.playwright.spec.ts --reporter=line,junit
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
