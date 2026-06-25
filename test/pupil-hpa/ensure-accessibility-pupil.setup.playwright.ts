@@ -26,8 +26,8 @@ const SERVICE_MANAGER_CREDENTIALS = {
 };
 
 const ACCESSIBILITY_SETUP_PUPIL = {
-  firstName: 'AA',
-  lastName: 'AAAASetupPupil',
+  firstNamePrefix: 'AA',
+  lastNamePrefix: 'AAAASetupPupil',
 };
 
 const UPN_REMAINDER_LOOKUP: Record<number, string> = {
@@ -123,6 +123,14 @@ function generateUniqueUpn(seed: string): string {
   const tail = `${localAuthorityCode}${serialDigits}${suffixChar}`;
   const checkLetter = calculateCheckLetter(tail);
   return `${checkLetter}${tail}`;
+}
+
+function buildAccessibilitySetupPupil(seed: string): { firstName: string; lastName: string } {
+  const suffix = seed.slice(-4);
+  return {
+    firstName: ACCESSIBILITY_SETUP_PUPIL.firstNamePrefix,
+    lastName: `${ACCESSIBILITY_SETUP_PUPIL.lastNamePrefix}${suffix}`,
+  };
 }
 
 function getValidDob(): { day: string; month: string; year: string } {
@@ -231,14 +239,14 @@ async function assertCanAddPupil(page: Page, adminBaseUrl: string): Promise<void
   }
 }
 
-async function addPupil(page: Page, adminBaseUrl: string, upn: string): Promise<void> {
+async function addPupil(page: Page, adminBaseUrl: string, upn: string, firstName: string, lastName: string): Promise<void> {
   const dob = getValidDob();
   await page.goto(`${adminBaseUrl}/pupil-register/pupil/add`);
 
   await expect(page.getByRole('heading', { name: 'Add pupil' })).toBeVisible();
 
-  await page.locator('#foreName').fill(ACCESSIBILITY_SETUP_PUPIL.firstName);
-  await page.locator('#lastName').fill(ACCESSIBILITY_SETUP_PUPIL.lastName);
+  await page.locator('#foreName').fill(firstName);
+  await page.locator('#lastName').fill(lastName);
   await page.locator('#upn').fill(upn);
   await page.locator('#dob-day').fill(dob.day);
   await page.locator('#dob-month').fill(dob.month);
@@ -251,7 +259,7 @@ async function addPupil(page: Page, adminBaseUrl: string, upn: string): Promise<
   await expect(page.getByText(/new pupil has been added/i)).toBeVisible();
   await expect(page.locator('body')).toContainText(upn);
   const createdPupilLinks = page.getByRole('link', {
-    name: new RegExp(`${ACCESSIBILITY_SETUP_PUPIL.lastName},\\s*${ACCESSIBILITY_SETUP_PUPIL.firstName}`, 'i'),
+    name: new RegExp(`${lastName},\\s*${firstName}`, 'i'),
   });
   expect(await createdPupilLinks.count()).toBeGreaterThan(0);
 }
@@ -298,13 +306,21 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
   const pupilSelect = page.locator('select#pupil-autocomplete-container');
   await expect(pupilSelect).toBeVisible({ timeout: 5000 });
 
-  const matchingOption = pupilSelect.locator('option').filter({
+  const matchingOptions = pupilSelect.locator('option').filter({
     hasText: new RegExp(`${lastName}.*${firstName}|${firstName}.*${lastName}`, 'i'),
-  }).first();
+  });
+
+  const matchingOptionCount = await matchingOptions.count();
+  if (matchingOptionCount === 0) {
+    throw new Error(`Could not find pupil option matching '${lastName}, ${firstName}' in access arrangements dropdown`);
+  }
+
+  // Prefer the newest matching option when historical setup pupils with similar names exist.
+  const matchingOption = matchingOptions.nth(matchingOptionCount - 1);
 
   const optionValue = await matchingOption.getAttribute('value').catch(() => null);
-  if (!optionValue) {
-    throw new Error(`Could not find pupil option matching '${lastName}, ${firstName}' in access arrangements dropdown`);
+  if (!optionValue || optionValue === 'null') {
+    throw new Error(`Found '${lastName}, ${firstName}' option but value was empty in access arrangements dropdown`);
   }
 
   const selectVisible = await pupilSelect.isVisible().catch(() => false);
@@ -355,24 +371,25 @@ test('create pupil with colour contrast access arrangement for accessibility che
   // 2) Add a new pupil to the pupil register
   await assertCanAddPupil(page, adminBaseUrl);
   const seed = `${Date.now()}${Math.floor(Math.random() * 100000)}`;
+  const accessibilitySetupPupil = buildAccessibilitySetupPupil(seed);
   const generatedUpn = generateUniqueUpn(seed);
-  await addPupil(page, adminBaseUrl, generatedUpn);
+  await addPupil(page, adminBaseUrl, generatedUpn, accessibilitySetupPupil.firstName, accessibilitySetupPupil.lastName);
 
   // 3) Assign colour contrast access arrangement to the new pupil
   await assignColourContrastAccessArrangement(
     page,
     adminBaseUrl,
-    ACCESSIBILITY_SETUP_PUPIL.firstName,
-    ACCESSIBILITY_SETUP_PUPIL.lastName,
+    accessibilitySetupPupil.firstName,
+    accessibilitySetupPupil.lastName,
   );
 
   // 4) Write state for the accessibility test to consume
   await writeAccessibilitySetupState({
     env,
     upn: generatedUpn,
-    firstName: ACCESSIBILITY_SETUP_PUPIL.firstName,
-    lastName: ACCESSIBILITY_SETUP_PUPIL.lastName,
-    fullName: `${ACCESSIBILITY_SETUP_PUPIL.lastName}, ${ACCESSIBILITY_SETUP_PUPIL.firstName}`,
+    firstName: accessibilitySetupPupil.firstName,
+    lastName: accessibilitySetupPupil.lastName,
+    fullName: `${accessibilitySetupPupil.lastName}, ${accessibilitySetupPupil.firstName}`,
     createdAtUtcIso: new Date().toISOString(),
   });
 });
