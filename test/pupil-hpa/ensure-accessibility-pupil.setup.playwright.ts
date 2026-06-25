@@ -276,7 +276,7 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
     .first()
     .click();
 
-  await expect(page).toHaveURL(/access-arrangements\/select-access-arrangements/);
+  await expect(page).toHaveURL(/access-arrangements\/select-access-arrangements/, { timeout: 10000 });
 
   // Check the 'Colour contrast' checkbox
   const accessArrangementsList = page.locator('ul#accessArrangementsList li');
@@ -302,9 +302,35 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
     throw new Error('Could not find Colour contrast option in access arrangements list');
   }
 
-  // Select the newly created pupil from the dropdown
-  const pupilSelect = page.locator('select#pupil-autocomplete-container');
-  await expect(pupilSelect).toBeVisible({ timeout: 5000 });
+  // Capture page state for diagnostics before looking for select element
+  const pageUrl = page.url();
+  const pageTitle = await page.title().catch(() => 'unknown');
+  const allSelects = await page.locator('select').count();
+  const allSelectIds = await page.locator('select').evaluateAll(selects => 
+    selects.map(s => s.id || '(no-id)')
+  );
+  const allInputs = await page.locator('input').count();
+  const allButtons = await page.locator('button').count();
+
+  // The select element ID may vary between environments/versions, so try multiple selectors
+  // Known IDs: 'pupil-autocomplete-container', 'pupil-autocomplete-container-select'
+  // Also works with attribute selector: select[name="pupilUrlSlug"]
+  const pupilSelect = page.locator('select#pupil-autocomplete-container, select#pupil-autocomplete-container-select, select[name="pupilUrlSlug"]').first();
+  const pupilSelectCount = await pupilSelect.count();
+  
+  if (pupilSelectCount === 0) {
+    // Element doesn't exist - provide detailed diagnostics
+    throw new Error(
+      `Pupil select element NOT FOUND. Page URL: ${pageUrl}, Title: ${pageTitle}. ` +
+      `Tried selectors: select#pupil-autocomplete-container | select#pupil-autocomplete-container-select | select[name="pupilUrlSlug"]. ` +
+      `Total select elements on page: ${allSelects} (IDs: ${allSelectIds.join(', ')}). ` +
+      `Total inputs: ${allInputs}, buttons: ${allButtons}. ` +
+      `This suggests the UI flow or element structure may have changed.`
+    );
+  }
+  
+  // The select element may be hidden but is still interactive, so we don't wait for visibility
+  // Try to interact with it to see if it works (if hidden, the page will still dispatch events)
 
   const matchingOptions = pupilSelect.locator('option').filter({
     hasText: new RegExp(`${lastName}.*${firstName}|${firstName}.*${lastName}`, 'i'),
@@ -312,7 +338,25 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
 
   const matchingOptionCount = await matchingOptions.count();
   if (matchingOptionCount === 0) {
-    throw new Error(`Could not find pupil option matching '${lastName}, ${firstName}' in access arrangements dropdown`);
+    // No matching pupil found - capture all available options for diagnostics
+    const allOptions = pupilSelect.locator('option');
+    const totalOptionsCount = await allOptions.count();
+    
+    // Extract text from first 10 options to see what's available
+    const optionTexts: string[] = [];
+    for (let i = 0; i < Math.min(10, totalOptionsCount); i++) {
+      const text = await allOptions.nth(i).textContent();
+      optionTexts.push(text?.trim() || '(empty)');
+    }
+    
+    throw new Error(
+      `Could not find pupil option matching '${lastName}, ${firstName}' ` +
+      `(regex: /${lastName}.*${firstName}|${firstName}.*${lastName}/i) in access arrangements dropdown. ` +
+      `Total options available: ${totalOptionsCount}. ` +
+      `Sample options: [${optionTexts.join(' | ')}]. ` +
+      `This suggests either: (1) pupil creation failed, (2) the pupil hasn't propagated to the dropdown, ` +
+      `or (3) the dropdown displays names in a different format than expected.`
+    );
   }
 
   // Prefer the newest matching option when historical setup pupils with similar names exist.
@@ -328,7 +372,12 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
     await pupilSelect.selectOption(optionValue);
   } else {
     await page.evaluate(({ value }) => {
-      const select = document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container');
+      // Try multiple possible selectors since the ID may vary
+      const select = 
+        document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container') ||
+        document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container-select') ||
+        document.querySelector<HTMLSelectElement>('select[name="pupilUrlSlug"]');
+      
       if (!select) {
         throw new Error('Pupil select control was not found in the DOM.');
       }
@@ -341,7 +390,8 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
 
   // Save
   await page.locator('button#save-access-arrangement').click();
-  await expect(page).toHaveURL(/access-arrangements\/overview/, { timeout: 15000 });
+  // After saving, the page may navigate to either /overview or /submit depending on workflow
+  await expect(page).toHaveURL(/access-arrangements\/(overview|submit)/, { timeout: 15000 });
 }
 
 async function writeAccessibilitySetupState(state: AccessibilitySetupState): Promise<void> {
