@@ -11,6 +11,8 @@ pool:
 variables:
   - name: NODE_VERSION
     value: '20'
+  - name: AUTH_JSON_SECRET
+    value: '$(AUTH_JSON_CONTENT)'
 
 jobs:
   - job: PlaywrightDev
@@ -45,6 +47,11 @@ jobs:
       - script: npx playwright install --with-deps
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Install Playwright browsers'
+
+      - script: |
+          echo '$(AUTH_JSON_SECRET)' > auth.json
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Restore auth.json from secret'
 
       - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
@@ -109,6 +116,11 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
+          echo '$(AUTH_JSON_SECRET)' > auth.json
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Restore auth.json from secret'
+
+      - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
@@ -169,6 +181,11 @@ jobs:
       - script: npx playwright install --with-deps
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Install Playwright browsers'
+
+      - script: |
+          echo '$(AUTH_JSON_SECRET)' > auth.json
+        workingDirectory: '$(TEST_WORKDIR)'
+        displayName: 'Restore auth.json from secret'
 
       - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit

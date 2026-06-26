@@ -88,6 +88,8 @@ test/pupil-hpa/*.html
 test/pupil-hpa/features/support/dev_env.rb
 test/pupil-hpa/rerun.txt
 
+# Authentication state - keep credentials out of git
+auth.json
 
 #admin
 test/se_manager/.cache/selenium/chrome/*
@@ -149,5 +151,3 @@ test/pupil-hpa/data/*.csv
 test/admin-hpa/out
 test/pupil-hpa/out
 
-# Auth session state
-auth.json
