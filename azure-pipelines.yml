@@ -57,7 +57,7 @@ jobs:
           fi
         displayName: 'Restore auth.json from secret'
 
-        - script: |
+      - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
@@ -136,7 +136,7 @@ jobs:
           fi
         displayName: 'Restore auth.json from secret'
 
-        - script: |
+      - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
@@ -215,7 +215,7 @@ jobs:
           fi
         displayName: 'Restore auth.json from secret'
 
-        - script: |
+      - script: |
           PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
