@@ -49,12 +49,16 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          echo '$(AUTH_JSON_SECRET)' > auth.json
-        workingDirectory: '$(TEST_WORKDIR)'
+          if printf '%s' '$(AUTH_JSON_SECRET)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+            echo 'Restored base64-encoded auth.json'
+          else
+            printf '%s' '$(AUTH_JSON_SECRET)' > '$(Build.SourcesDirectory)/auth.json'
+            echo 'Restored raw auth.json'
+          fi
         displayName: 'Restore auth.json from secret'
 
       - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit,html
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -81,6 +85,14 @@ jobs:
           ArtifactName: 'MTC-Playwright-Test-Results-Dev'
           publishLocation: 'Container'
         displayName: 'Upload Playwright test results'
+
+      - task: PublishBuildArtifacts@1
+        condition: always()
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/$(TEST_WORKDIR)/playwright-report'
+          ArtifactName: 'MTC-Playwright-HTML-Report-Dev'
+          publishLocation: 'Container'
+        displayName: 'Upload Playwright HTML report'
 
   - job: PlaywrightTest
     displayName: 'Playwright - Test'
@@ -116,12 +128,16 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          echo '$(AUTH_JSON_SECRET)' > auth.json
-        workingDirectory: '$(TEST_WORKDIR)'
+          if printf '%s' '$(AUTH_JSON_SECRET)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+            echo 'Restored base64-encoded auth.json'
+          else
+            printf '%s' '$(AUTH_JSON_SECRET)' > '$(Build.SourcesDirectory)/auth.json'
+            echo 'Restored raw auth.json'
+          fi
         displayName: 'Restore auth.json from secret'
 
       - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit,html
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -148,6 +164,14 @@ jobs:
           ArtifactName: 'MTC-Playwright-Test-Results-Test'
           publishLocation: 'Container'
         displayName: 'Upload Playwright test results'
+
+      - task: PublishBuildArtifacts@1
+        condition: always()
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/$(TEST_WORKDIR)/playwright-report'
+          ArtifactName: 'MTC-Playwright-HTML-Report-Test'
+          publishLocation: 'Container'
+        displayName: 'Upload Playwright HTML report'
 
   - job: PlaywrightPreprod
     displayName: 'Playwright - Preprod'
@@ -183,12 +207,16 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          echo '$(AUTH_JSON_SECRET)' > auth.json
-        workingDirectory: '$(TEST_WORKDIR)'
+          if printf '%s' '$(AUTH_JSON_SECRET)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+            echo 'Restored base64-encoded auth.json'
+          else
+            printf '%s' '$(AUTH_JSON_SECRET)' > '$(Build.SourcesDirectory)/auth.json'
+            echo 'Restored raw auth.json'
+          fi
         displayName: 'Restore auth.json from secret'
 
       - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit,html
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -215,3 +243,11 @@ jobs:
           ArtifactName: 'MTC-Playwright-Test-Results-Preprod'
           publishLocation: 'Container'
         displayName: 'Upload Playwright test results'
+
+      - task: PublishBuildArtifacts@1
+        condition: always()
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/$(TEST_WORKDIR)/playwright-report'
+          ArtifactName: 'MTC-Playwright-HTML-Report-Preprod'
+          publishLocation: 'Container'
+        displayName: 'Upload Playwright HTML report'
