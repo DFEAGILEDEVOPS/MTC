@@ -10,7 +10,7 @@ pool:
 
 variables:
   - name: NODE_VERSION
-    value: '20'
+    value: '20.x'
   - name: AUTH_JSON_SECRET
     value: '$(AUTH_JSON_CONTENT)'
 
@@ -27,9 +27,9 @@ jobs:
     steps:
       - checkout: self
 
-      - task: NodeTool@0
+      - task: UseNode@1
         inputs:
-          versionSpec: '$(NODE_VERSION)'
+          version: '$(NODE_VERSION)'
         displayName: 'Install Node.js'
 
       - task: Cache@2
@@ -57,8 +57,8 @@ jobs:
           fi
         displayName: 'Restore auth.json from secret'
 
-      - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit,html
+        - script: |
+          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -106,9 +106,9 @@ jobs:
     steps:
       - checkout: self
 
-      - task: NodeTool@0
+      - task: UseNode@1
         inputs:
-          versionSpec: '$(NODE_VERSION)'
+          version: '$(NODE_VERSION)'
         displayName: 'Install Node.js'
 
       - task: Cache@2
@@ -136,8 +136,8 @@ jobs:
           fi
         displayName: 'Restore auth.json from secret'
 
-      - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit,html
+        - script: |
+          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -185,9 +185,9 @@ jobs:
     steps:
       - checkout: self
 
-      - task: NodeTool@0
+      - task: UseNode@1
         inputs:
-          versionSpec: '$(NODE_VERSION)'
+          version: '$(NODE_VERSION)'
         displayName: 'Install Node.js'
 
       - task: Cache@2
@@ -215,8 +215,8 @@ jobs:
           fi
         displayName: 'Restore auth.json from secret'
 
-      - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" npm run $(E2E_SCRIPT) -- --reporter=line,junit,html
+        - script: |
+          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
