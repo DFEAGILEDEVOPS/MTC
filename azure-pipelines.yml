@@ -56,7 +56,7 @@ jobs:
         displayName: 'Restore auth.json from secret'
 
       - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line,./teams-reporter.js' npm run $(E2E_SCRIPT)
+          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -65,9 +65,6 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
-          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
-          TEAMS_ENVIRONMENT: 'dev'
-          TEAMS_NOTIFY_FAILURES_ONLY: 'false'
 
       - task: PublishTestResults@2
         condition: always()
@@ -94,6 +91,11 @@ jobs:
           ArtifactName: 'MTC-Playwright-HTML-Report-Dev'
           publishLocation: 'Container'
         displayName: 'Upload Playwright HTML report'
+
+      - script: echo "##vso[task.setvariable variable=JOB_STATUS;isOutput=true]$(Agent.JobStatus)"
+        name: CaptureDevStatus
+        condition: always()
+        displayName: 'Capture Dev job status'
 
   - job: PlaywrightTest
     displayName: 'Playwright - Test'
@@ -138,7 +140,7 @@ jobs:
         displayName: 'Restore auth.json from secret'
 
       - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line,./teams-reporter.js' npm run $(E2E_SCRIPT)
+          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -147,9 +149,6 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
-          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
-          TEAMS_ENVIRONMENT: 'test'
-          TEAMS_NOTIFY_FAILURES_ONLY: 'false'
 
       - task: PublishTestResults@2
         condition: always()
@@ -176,6 +175,11 @@ jobs:
           ArtifactName: 'MTC-Playwright-HTML-Report-Test'
           publishLocation: 'Container'
         displayName: 'Upload Playwright HTML report'
+
+      - script: echo "##vso[task.setvariable variable=JOB_STATUS;isOutput=true]$(Agent.JobStatus)"
+        name: CaptureTestStatus
+        condition: always()
+        displayName: 'Capture Test job status'
 
   - job: PlaywrightPreprod
     displayName: 'Playwright - Preprod'
@@ -220,7 +224,7 @@ jobs:
         displayName: 'Restore auth.json from secret'
 
       - script: |
-          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line,./teams-reporter.js' npm run $(E2E_SCRIPT)
+          PLAYWRIGHT_JUNIT_OUTPUT_DIR='test-results' PLAYWRIGHT_JUNIT_OUTPUT_NAME="$(JUNIT_PREFIX)-e2e-results.xml" PW_E2E_ARGS='--reporter=blob,junit,line' npm run $(E2E_SCRIPT)
         workingDirectory: '$(TEST_WORKDIR)'
         displayName: 'Run Playwright tests'
         env:
@@ -229,9 +233,6 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
-          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
-          TEAMS_ENVIRONMENT: 'preprod'
-          TEAMS_NOTIFY_FAILURES_ONLY: 'false'
 
       - task: PublishTestResults@2
         condition: always()
@@ -258,3 +259,143 @@ jobs:
           ArtifactName: 'MTC-Playwright-HTML-Report-Preprod'
           publishLocation: 'Container'
         displayName: 'Upload Playwright HTML report'
+
+      - script: echo "##vso[task.setvariable variable=JOB_STATUS;isOutput=true]$(Agent.JobStatus)"
+        name: CapturePreprodStatus
+        condition: always()
+        displayName: 'Capture Preprod job status'
+
+  - job: NotifyTeamsSummary
+    displayName: 'Notify Teams - Pipeline Summary'
+    dependsOn:
+      - PlaywrightDev
+      - PlaywrightTest
+      - PlaywrightPreprod
+    condition: always()
+    variables:
+      DEV_JOB_STATUS: $[ dependencies.PlaywrightDev.outputs['CaptureDevStatus.JOB_STATUS'] ]
+      TEST_JOB_STATUS: $[ dependencies.PlaywrightTest.outputs['CaptureTestStatus.JOB_STATUS'] ]
+      PREPROD_JOB_STATUS: $[ dependencies.PlaywrightPreprod.outputs['CapturePreprodStatus.JOB_STATUS'] ]
+    steps:
+      - task: UseNode@1
+        inputs:
+          version: '$(NODE_VERSION)'
+        displayName: 'Install Node.js'
+
+      - script: |
+          node <<'EOF'
+          const webhookUrl = process.env.TEAMS_WEBHOOK_URL;
+
+          if (!webhookUrl) {
+            console.warn('[TeamsSummary] TEAMS_WEBHOOK_URL not set. Skipping Teams notification.');
+            process.exit(0);
+          }
+
+          const statuses = [
+            { env: 'dev', status: process.env.DEV_JOB_STATUS || 'Unknown' },
+            { env: 'test', status: process.env.TEST_JOB_STATUS || 'Unknown' },
+            { env: 'preprod', status: process.env.PREPROD_JOB_STATUS || 'Unknown' },
+          ];
+
+          const isSuccess = (status) => status === 'Succeeded';
+          const failedCount = statuses.filter((item) => !isSuccess(item.status)).length;
+          const passedCount = statuses.length - failedCount;
+          const overallPassed = failedCount === 0;
+
+          const buildId = process.env.BUILD_BUILDID;
+          const project = process.env.SYSTEM_TEAMPROJECT;
+          const collectionUri = process.env.SYSTEM_COLLECTIONURI;
+          const buildUrl = `${collectionUri}${project}/_build/results?buildId=${buildId}`;
+
+          const statusRows = statuses.map((item) => ({
+            type: 'ColumnSet',
+            columns: [
+              {
+                width: 'stretch',
+                items: [
+                  {
+                    type: 'TextBlock',
+                    text: item.env,
+                    weight: 'bolder',
+                    size: 'small',
+                  },
+                ],
+              },
+              {
+                width: 'stretch',
+                items: [
+                  {
+                    type: 'TextBlock',
+                    text: `${isSuccess(item.status) ? '✅ Passed' : '❌ Failed'} (${item.status})`,
+                    color: isSuccess(item.status) ? 'good' : 'attention',
+                    size: 'small',
+                  },
+                ],
+              },
+            ],
+          }));
+
+          const card = {
+            type: 'AdaptiveCard',
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            version: '1.4',
+            body: [
+              {
+                type: 'TextBlock',
+                text: overallPassed ? 'Playwright Pipeline Summary ✅ PASSED' : 'Playwright Pipeline Summary ❌ FAILED',
+                weight: 'bolder',
+                size: 'large',
+                color: overallPassed ? 'good' : 'attention',
+              },
+              {
+                type: 'TextBlock',
+                text: `Passed environments: ${passedCount} | Failed environments: ${failedCount}`,
+                wrap: true,
+                spacing: 'small',
+              },
+              {
+                type: 'Container',
+                style: 'emphasis',
+                items: statusRows,
+              },
+              {
+                type: 'TextBlock',
+                text: `Build: ${buildUrl}`,
+                wrap: true,
+                size: 'small',
+                spacing: 'medium',
+              },
+            ],
+          };
+
+          async function run() {
+            try {
+              const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(card),
+              });
+
+              if (!response.ok) {
+                console.error(`[TeamsSummary] Failed to send Teams summary: ${response.status} ${response.statusText}`);
+                process.exit(0);
+              }
+
+              console.log('[TeamsSummary] Sent single pipeline summary notification.');
+            } catch (error) {
+              console.error('[TeamsSummary] Error sending Teams summary:', error);
+              process.exit(0);
+            }
+          }
+
+          run();
+          EOF
+        displayName: 'Send Teams pipeline summary card'
+        env:
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
+          DEV_JOB_STATUS: '$(DEV_JOB_STATUS)'
+          TEST_JOB_STATUS: '$(TEST_JOB_STATUS)'
+          PREPROD_JOB_STATUS: '$(PREPROD_JOB_STATUS)'
+          BUILD_BUILDID: '$(Build.BuildId)'
+          SYSTEM_TEAMPROJECT: '$(System.TeamProject)'
+          SYSTEM_COLLECTIONURI: '$(System.CollectionUri)'
