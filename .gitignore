@@ -83,6 +83,8 @@ test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/screenshots/*/*.png
 test/pupil-hpa/reports/*
 test/pupil-hpa/test-results/
+test/pupil-hpa/blob-report/
+test/pupil-hpa/playwright-report/
 test/pupil-hpa/*.png
 test/pupil-hpa/*.html
 test/pupil-hpa/features/support/dev_env.rb
