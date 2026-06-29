@@ -59,23 +59,98 @@ class TeamsReporter {
     const isPassed = result.status === 'passed';
     const statusEmoji = isPassed ? '✅' : '❌';
     const statusText = isPassed ? 'PASSED' : 'FAILED';
-    const themeColor = isPassed ? '00FF00' : 'FF0000';
 
     return {
-      '@type': 'MessageCard',
-      '@context': 'https://schema.org/extensions',
-      themeColor,
-      summary: `Playwright Test Run ${statusText}`,
-      title: `Playwright Tests ${statusEmoji} ${statusText}`,
-      sections: [
+      type: 'AdaptiveCard',
+      $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+      version: '1.4',
+      body: [
         {
-          facts: [
-            { name: 'Environment', value: this.environment },
-            { name: 'Status', value: result.status },
-            { name: 'Total Tests', value: `${this.stats.total}` },
-            { name: 'Duration', value: `${Math.round(this.stats.duration / 1000)}s` },
+          type: 'TextBlock',
+          text: `Playwright Tests ${statusEmoji} ${statusText}`,
+          weight: 'bolder',
+          size: 'large',
+          color: isPassed ? 'good' : 'attention',
+        },
+        {
+          type: 'Container',
+          style: 'emphasis',
+          items: [
+            {
+              type: 'ColumnSet',
+              columns: [
+                {
+                  width: 'stretch',
+                  items: [
+                    {
+                      type: 'TextBlock',
+                      text: 'Environment',
+                      weight: 'bolder',
+                      size: 'small',
+                    },
+                    {
+                      type: 'TextBlock',
+                      text: this.environment,
+                      spacing: 'none',
+                    },
+                  ],
+                },
+                {
+                  width: 'stretch',
+                  items: [
+                    {
+                      type: 'TextBlock',
+                      text: 'Status',
+                      weight: 'bolder',
+                      size: 'small',
+                    },
+                    {
+                      type: 'TextBlock',
+                      text: result.status,
+                      spacing: 'none',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'ColumnSet',
+              columns: [
+                {
+                  width: 'stretch',
+                  items: [
+                    {
+                      type: 'TextBlock',
+                      text: 'Total Tests',
+                      weight: 'bolder',
+                      size: 'small',
+                    },
+                    {
+                      type: 'TextBlock',
+                      text: `${this.stats.total}`,
+                      spacing: 'none',
+                    },
+                  ],
+                },
+                {
+                  width: 'stretch',
+                  items: [
+                    {
+                      type: 'TextBlock',
+                      text: 'Duration',
+                      weight: 'bolder',
+                      size: 'small',
+                    },
+                    {
+                      type: 'TextBlock',
+                      text: `${Math.round(this.stats.duration / 1000)}s`,
+                      spacing: 'none',
+                    },
+                  ],
+                },
+              ],
+            },
           ],
-          markdown: true,
         },
       ],
     };

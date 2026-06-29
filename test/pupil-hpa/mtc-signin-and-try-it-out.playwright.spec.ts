@@ -365,7 +365,13 @@ test('admin generates credentials, pupil completes try it out check flow', async
 
   if (await userNameField.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (env === 'preprod') {
-      throw new Error('Preprod project is expected to use auth.json storageState, but login page is still shown. Refresh auth.json via npm run save:auth.');
+      throw new Error(
+        'PREPROD AUTH EXPIRED: The login page was shown despite auth.json storageState being set. ' +
+        'Session cookies have likely expired. To fix:\n' +
+        '  1. Run `npm run save:auth` from the repo root and complete the DfE Sign-in flow\n' +
+        '  2. Base64-encode the new auth.json: `base64 -i auth.json | tr -d \'\\n\'`\n' +
+        '  3. Update the AUTH_JSON_CONTENT secret variable in Azure DevOps and re-run the pipeline'
+      );
     }
 
     await userNameField.fill(process.env.ADMIN_USERNAME ?? 'teacher2');

@@ -434,7 +434,13 @@ test('admin generates creds and validates colour contrast routing after pupil si
 	const userNameField = page.getByRole('textbox', { name: 'Enter your user name.' });
 	if (await userNameField.isVisible({ timeout: 2000 }).catch(() => false)) {
 		if (env === 'preprod' && (adminUsername === 'teacher2' || adminPassword === 'password')) {
-			throw new Error('Preprod login page is shown and default credentials are not valid. Provide ADMIN_USERNAME and ADMIN_PASSWORD or refresh auth.json.');
+			throw new Error(
+				'PREPROD AUTH EXPIRED: The login page was shown despite auth.json storageState being set. ' +
+				'Session cookies have likely expired. To fix:\n' +
+				'  1. Run `npm run save:auth` from the repo root and complete the DfE Sign-in flow\n' +
+				'  2. Base64-encode the new auth.json: `base64 -i auth.json | tr -d \'\\n\'`\n' +
+				'  3. Update the AUTH_JSON_CONTENT secret variable in Azure DevOps and re-run the pipeline'
+			);
 		}
 
 		await userNameField.fill(adminUsername);
