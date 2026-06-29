@@ -11,8 +11,6 @@ pool:
 variables:
   - name: NODE_VERSION
     value: '20.x'
-  - name: AUTH_JSON_SECRET
-    value: '$(AUTH_JSON_CONTENT)'
 
 jobs:
   - job: PlaywrightDev
@@ -49,10 +47,10 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_SECRET)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
-            printf '%s' '$(AUTH_JSON_SECRET)' > '$(Build.SourcesDirectory)/auth.json'
+            printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
             echo 'Restored raw auth.json'
           fi
         displayName: 'Restore auth.json from secret'
@@ -128,10 +126,10 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_SECRET)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
-            printf '%s' '$(AUTH_JSON_SECRET)' > '$(Build.SourcesDirectory)/auth.json'
+            printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
             echo 'Restored raw auth.json'
           fi
         displayName: 'Restore auth.json from secret'
@@ -207,10 +205,10 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_SECRET)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 --decode > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
-            printf '%s' '$(AUTH_JSON_SECRET)' > '$(Build.SourcesDirectory)/auth.json'
+            printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
             echo 'Restored raw auth.json'
           fi
         displayName: 'Restore auth.json from secret'
