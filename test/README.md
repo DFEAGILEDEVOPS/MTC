@@ -11,12 +11,8 @@ For active end-to-end automation and Azure pipeline operations, start with these
 	- Framework overview, environments, setup, run commands, troubleshooting, onboarding runbook
 - [Azure pipeline verification checklist](../AZURE_PIPELINE_VERIFICATION_CHECKLIST.md)
 	- Validate pipeline wiring, test publication, and branch rollout safety
-- [Production gate setup](../AZURE_DEVOPS_E2E_PRODUCTION_GATE_SETUP.md)
-	- Configure release gating so production deploy is blocked unless Playwright e2e passes
 - [Teams notifications integration](./pupil-hpa/TEAMS_INTEGRATION.md)
 	- Optional alerting setup for test pass/fail notifications in Teams
-- [Accessibility fix summary](../ACCESSIBILITY_TEST_FIXES_SUMMARY.md)
-	- Historical fixes and known patterns for recent accessibility pipeline issues
 
 > Note: The sections below remain useful for legacy Ruby/Cucumber workflows in `test/admin-hpa`.
 

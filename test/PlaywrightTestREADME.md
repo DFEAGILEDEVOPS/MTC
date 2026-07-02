@@ -86,7 +86,6 @@ The CI run now explicitly emits JUnit XML, so Azure test result publishing can i
 Use these companion documents for Azure-specific operation steps:
 
 - `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` (pipeline wiring verification, validation and common publish issues)
-- `AZURE_DEVOPS_E2E_PRODUCTION_GATE_SETUP.md` (release gating so production deploys only after successful e2e)
 - `test/pupil-hpa/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
 
 ## Environments, dependencies and access policy
