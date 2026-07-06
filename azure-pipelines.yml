@@ -9,8 +9,7 @@ schedules:
 trigger:
   - master
 
-pr:
-  - master
+pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
