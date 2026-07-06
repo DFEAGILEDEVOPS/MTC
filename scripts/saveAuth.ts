@@ -15,14 +15,15 @@ import * as readline from "readline";
 
   // Wait for user to press ENTER
   await new Promise<void>((resolve) => {
-    readline
-      .createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      })
-      .question("Press ENTER when login is complete...", () => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question("Press ENTER when login is complete...", () => {
+      rl.close();
         resolve();
-      });
+    });
   });
 
   await context.storageState({ path: "auth.json" });
