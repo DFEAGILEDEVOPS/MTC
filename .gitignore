@@ -94,6 +94,7 @@ test/pupil-hpa/rerun.txt
 auth.json
 
 #admin
+test/se_manager/.cache/selenium/
 test/se_manager/.cache/selenium/chrome/*
 test/se_manager/.cache/selenium/chromedriver/*
 test/admin-hpa/reports/
