@@ -363,7 +363,6 @@ npm run test:api
 
 ```bash
 npm run test:api:remote
-npm run test:api:remote:current
 ```
 
 ### Run ping and auth smoke checks

@@ -1,6 +1,6 @@
 schedules:
-- cron: "0 8 * * *"
-  displayName: Daily Playwright tests at 9 AM BST
+- cron: "0 8 * * 1-5"
+  displayName: Weekday Playwright tests at 9 AM BST
   branches:
     include:
     - master
