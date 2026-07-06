@@ -8,7 +8,6 @@ schedules:
 
 trigger:
   - master
-  - testing/automation-scripts
 
 pr:
   - master
