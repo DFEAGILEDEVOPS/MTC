@@ -1,0 +1,36 @@
+{
+  "name": "pupil-hpa",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test api-request-context.remote.playwright.spec.ts",
+    "test:api:remote": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts",
+    "test:api:ping": "playwright test api-request-context.remote.playwright.spec.ts --grep 'GET /ping returns 200 and JSON|POST /auth with invalid credentials returns 401' --reporter=line",
+    "test:accessibility": "playwright test accessibility.playwright.spec.ts --reporter=line",
+    "test:e2e:dev:run": "bash -c 'EXIT_CODE=0; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/01-dev-accessibility.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=dev-e2e-results-accessibility.xml playwright test ensure-accessibility-pupil.setup.playwright.ts mtc-accessibility-check.playwright.spec.ts --project=dev-accessibility-setup --project=dev-accessibility --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/02-dev-setup.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=dev-e2e-results-setup.xml playwright test ensure-pupil.setup.playwright.ts --project=dev-setup --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/03-dev-main.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=dev-e2e-results-main.xml playwright test --project=dev-check --project=dev-admin --no-deps --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; exit $EXIT_CODE'",
+    "test:e2e:dev": "bash -c 'EXIT_CODE=0; npm run report:clean || EXIT_CODE=$?; npm run test:e2e:dev:run || EXIT_CODE=$?; npm run report:merge:html || EXIT_CODE=$?; if [ -z \"${CI:-}\" ]; then npx playwright show-report || true; fi; exit $EXIT_CODE'",
+    "test:e2e:test:run": "bash -c 'EXIT_CODE=0; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/04-test-accessibility.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=test-e2e-results-accessibility.xml playwright test ensure-accessibility-pupil.setup.playwright.ts mtc-accessibility-check.playwright.spec.ts --project=test-accessibility-setup --project=test-accessibility --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/05-test-setup.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=test-e2e-results-setup.xml playwright test ensure-pupil.setup.playwright.ts --project=test-setup --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/06-test-main.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=test-e2e-results-main.xml playwright test --project=test-check --project=test-admin --no-deps --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; exit $EXIT_CODE'",
+    "test:e2e:test": "bash -c 'EXIT_CODE=0; npm run report:clean || EXIT_CODE=$?; npm run test:e2e:test:run || EXIT_CODE=$?; npm run report:merge:html || EXIT_CODE=$?; if [ -z \"${CI:-}\" ]; then npx playwright show-report || true; fi; exit $EXIT_CODE'",
+    "test:e2e:no-notify": "TEAMS_DISABLE_NOTIFICATIONS=true npm run test:e2e",
+    "test:e2e:preprod:run": "bash -c 'EXIT_CODE=0; PLAYWRIGHT_BLOB_OUTPUT_FILE=blob-report/07-preprod-main.zip PLAYWRIGHT_JUNIT_OUTPUT_NAME=preprod-e2e-results-main.xml playwright test mtc-signin-and-check.playwright.spec.ts mtc-signin-and-try-it-out.playwright.spec.ts --project=preprod-admin --workers=1 ${PW_E2E_ARGS:---reporter=blob} || EXIT_CODE=$?; exit $EXIT_CODE'",
+    "test:e2e:preprod": "bash -c 'EXIT_CODE=0; npm run report:clean || EXIT_CODE=$?; npm run test:e2e:preprod:run || EXIT_CODE=$?; npm run report:merge:html || EXIT_CODE=$?; if [ -z \"${CI:-}\" ]; then npx playwright show-report || true; fi; exit $EXIT_CODE'",
+    "test:e2e": "bash -c 'EXIT_CODE=0; npm run report:clean || EXIT_CODE=$?; npm run test:e2e:dev:run || EXIT_CODE=$?; npm run test:e2e:test:run || EXIT_CODE=$?; npm run test:e2e:preprod:run || EXIT_CODE=$?; npm run report:merge:html || EXIT_CODE=$?; if [ -z \"${CI:-}\" ]; then npx playwright show-report || true; fi; exit $EXIT_CODE'",
+    "report:clean": "rm -rf blob-report playwright-report",
+    "report:merge:html": "npx playwright merge-reports --reporter=html blob-report",
+    "test:e2e:dev:html": "npm run report:clean && PW_E2E_ARGS='--reporter=blob' npm run test:e2e:dev && npm run report:merge:html",
+    "test:e2e:test:html": "npm run test:e2e:test",
+    "test:e2e:preprod:html": "npm run report:clean && PW_E2E_ARGS='--reporter=blob' npm run test:e2e:preprod && npm run report:merge:html",
+    "test:e2e:html": "npm run report:clean && PW_E2E_ARGS='--reporter=blob' npm run test:e2e && npm run report:merge:html",
+    "test:all:remote": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test --project=test-check --reporter=line && PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts accessibility.playwright.spec.ts --project=test-admin --reporter=line"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.9.0"
+  }
+}
