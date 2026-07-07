@@ -272,9 +272,9 @@ This guarantees there is always at least one fresh pupil available before the pu
 
 ### Skip guards
 
-The pupil-flow specs skip themselves unless the running project name ends in `-admin` or `-check`. This means:
+The pupil-flow PIN-generation specs (`mtc-signin-and-check` and `mtc-signin-and-try-it-out`) skip themselves unless the running project name ends in `-check`. This means:
 - Running via `*-check` → test runs (setup has already fired as a dependency)
-- Running via `*-admin` → test also runs (for ad-hoc targeted runs), but without guaranteed setup
+- Running via `*-admin` → test skips, keeping admin-only runs independent of pupil setup
 - Running via other project types (for example `*-accessibility`) → test skips
 
 ### Why preprod has no setup dependency
@@ -312,7 +312,7 @@ npm test
 npm run test:e2e:test
 ```
 
-This runs the same 3-step test sequence in the existing order (accessibility setup/check -> setup -> main 4 specs), writes each step to a separate blob report file, merges them, and opens one combined HTML report.
+This runs a 2-step test sequence (accessibility setup/check -> main shard). The main shard includes `test-check`, so Playwright runs its `test-setup` dependency automatically before the check-flow specs. Each step writes to a separate blob report file, then the reports are merged into one combined HTML report.
 
 ### Run pupil-flow tests (with setup)
 
