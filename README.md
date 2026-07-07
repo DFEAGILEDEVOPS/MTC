@@ -23,11 +23,9 @@ You can now start the admin, pupil-spa & pupil-api applications individually.
 
 ## E2E test accounts (sign-hdf)
 
-For the Playwright `sign-hdf` flow in `test/pupil-hpa`, the following teacher accounts are reserved for automated testing:
+For the Playwright `sign-hdf` flow in `test/pupil-hpa`, `teacher5` is reserved for automated testing in both dev and test.
 
-- `teacher5` (dev and test)
-
-These accounts must retain a state where all pupils have completed checks, otherwise the headteacher declaration form can remain unavailable and the `sign-hdf` test will fail.
+It belongs to Example School Five (`2011005`), and that school must remain in a state where all pupils have completed checks. If it does not, the headteacher declaration form can remain unavailable and the `sign-hdf` test will fail.
 
 ## Docker Compose
 

@@ -15,6 +15,8 @@ const TEACHER_CREDENTIALS = {
   password: 'password',
 } as const;
 
+const SIGN_HDF_TEST_SCHOOL_DFE_NUMBER = '2011005';
+
 const CHECK_WINDOW_FIELD_PREFIXES = [
   'adminStart',
   'adminEnd',
@@ -343,8 +345,9 @@ async function deleteSubmittedHdf(page: Page, adminBaseUrl: string): Promise<voi
   await page.getByRole('link', { name: 'Search for an existing organisation' }).click();
   await expect(page.getByRole('heading', { name: 'Search organisations' })).toBeVisible();
 
-  // Enter 89001 into the searchbar
-  await page.locator('#q').fill('89001');
+  // teacher5 is seeded against Example School Five (DfE number 2011005).
+  // Search that school so cleanup removes the HDF created by this run.
+  await page.locator('#q').fill(SIGN_HDF_TEST_SCHOOL_DFE_NUMBER);
 
   // Click 'Search'
   await page.getByRole('button', { name: 'Search' }).click();

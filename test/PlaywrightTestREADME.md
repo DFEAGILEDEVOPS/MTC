@@ -210,7 +210,7 @@ Notes:
 
 For `test/pupil-hpa/sign-hdf.playwright.spec.ts`, `teacher5` / `password` is reserved for both dev and test runs.
 
-This account should be kept in a state where all pupils have completed checks; otherwise the headteacher declaration form can show as unavailable and the sign-hdf flow will fail.
+It maps to Example School Five (`2011005`), so that school must be left in a state where all pupils have completed checks. Otherwise the headteacher declaration form can show as unavailable and the sign-hdf flow will fail.
 
 ### E2E admin login (dev/test fallback creds)
 
