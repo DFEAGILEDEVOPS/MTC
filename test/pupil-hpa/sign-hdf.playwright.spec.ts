@@ -203,6 +203,71 @@ async function configureCheckWindowForHdfSigning(page: Page): Promise<void> {
   await saveCheckWindowForm(page, 'save check-window setup for HDF signing');
 }
 
+function normalizeDatePart(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed === '') {
+    return '';
+  }
+  return String(Number(trimmed));
+}
+
+async function verifyDateFieldEquals(page: Page, fieldPrefix: string, expected: DateParts): Promise<boolean> {
+  const actual = await getDateFieldValueIfVisible(page, fieldPrefix);
+  if (!actual) {
+    return false;
+  }
+
+  return (
+    normalizeDatePart(actual.day) === normalizeDatePart(expected.day)
+    && normalizeDatePart(actual.month) === normalizeDatePart(expected.month)
+    && normalizeDatePart(actual.year) === normalizeDatePart(expected.year)
+  );
+}
+
+async function configureCheckWindowForHdfSigningWithVerification(page: Page, env: EnvironmentName): Promise<void> {
+  const now = new Date();
+  const expectedLiveCheckEnd = toDateParts(addDays(now, -1));
+  const expectedAdminEnd = toDateParts(addDays(now, 21));
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    await page.goto('/check-window/manage-check-windows');
+    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
+    await openCheckWindow(page, env);
+
+    await configureCheckWindowForHdfSigning(page);
+
+    await page.goto('/check-window/manage-check-windows');
+    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
+    await openCheckWindow(page, env);
+
+    const liveCheckEndMatches = await verifyDateFieldEquals(page, 'liveCheckEnd', expectedLiveCheckEnd);
+    const adminEndMatches = await verifyDateFieldEquals(page, 'adminEnd', expectedAdminEnd);
+
+    if (liveCheckEndMatches && adminEndMatches) {
+      return;
+    }
+  }
+
+  throw new Error('Unable to persist check-window dates for HDF signing after 3 attempts.');
+}
+
+async function waitForHdfToBecomeAvailable(page: Page): Promise<void> {
+  await expect(page.getByRole('heading', { name: /Headteacher.?s declaration form/i })).toBeVisible();
+
+  await expect.poll(
+    async () => {
+      await page.reload();
+      await dismissCookieBanner(page);
+      return page.getByText('Currently unavailable').count();
+    },
+    {
+      timeout: 45_000,
+      intervals: [1000, 2000, 3000],
+      message: 'HDF remained unavailable after check-window update.',
+    }
+  ).toBe(0);
+}
+
 /**
  * Restores the check window to a known-good open state where both the familiarisation
  * and live check periods are currently active. This ensures subsequent tests (e.g. generate
@@ -319,25 +384,17 @@ test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo
 
   test.setTimeout(8 * 60 * 1000);
 
-  let originalCheckWindow: CheckWindowSnapshot | null = null;
-
   try {
     // 1) Service-manager adjusts check window so the school is in the post-check admin period.
     await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
-    await page.goto('/check-window/manage-check-windows');
-    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
-    await openCheckWindow(page, env);
-    originalCheckWindow = await takeCheckWindowSnapshot(page);
-    await configureCheckWindowForHdfSigning(page);
+    await configureCheckWindowForHdfSigningWithVerification(page, env);
     await logoutFromAdmin(page);
 
     // 2) Teacher submits HDF and lands on the submitted confirmation page.
     await loginAsAdmin(page, adminBaseUrl, TEACHER_CREDENTIALS.username, TEACHER_CREDENTIALS.password);
     await page.goto('/attendance/declaration-form');
     await dismissCookieBanner(page);
-
-    await expect(page.getByRole('heading', { name: /Headteacher.?s declaration form/i })).toBeVisible();
-    await expect(page.getByText('Currently unavailable')).toHaveCount(0);
+    await waitForHdfToBecomeAvailable(page);
 
     await page.getByLabel("Submitter's first name").fill('Test');
     await page.getByLabel("Submitter's last name").fill('Automation Full Submit');
