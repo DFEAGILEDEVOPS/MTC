@@ -143,7 +143,7 @@ export default defineConfig({
     },
     //preprod (with auth)
     {
-        name: 'preprod-admin',
+        name: 'preprod-check',
         use: { 
             baseURL: 'https://pp-admin.multiplication-tables-check.service.gov.uk',
             storageState: authStorageState,
