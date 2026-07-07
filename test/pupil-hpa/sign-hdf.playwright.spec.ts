@@ -11,7 +11,7 @@ const SERVICE_MANAGER_CREDENTIALS = {
 } as const;
 
 const TEACHER_CREDENTIALS = {
-  username: 'teacher1',
+  username: 'teacher5',
   password: 'password',
 } as const;
 
@@ -379,6 +379,7 @@ async function deleteSubmittedHdf(page: Page, adminBaseUrl: string): Promise<voi
 
 test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo) => {
   const { env, adminBaseUrl } = getEnvironmentUrls(testInfo);
+  const teacherCredentials = TEACHER_CREDENTIALS;
 
   test.skip(env === 'preprod', 'Preprod uses DfE Sign-in (OAuth) and this setup flow depends on username/password roles.');
 
@@ -391,7 +392,7 @@ test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo
     await logoutFromAdmin(page);
 
     // 2) Teacher submits HDF and lands on the submitted confirmation page.
-    await loginAsAdmin(page, adminBaseUrl, TEACHER_CREDENTIALS.username, TEACHER_CREDENTIALS.password);
+    await loginAsAdmin(page, adminBaseUrl, teacherCredentials.username, teacherCredentials.password);
     await page.goto('/attendance/declaration-form');
     await dismissCookieBanner(page);
     await waitForHdfToBecomeAvailable(page);

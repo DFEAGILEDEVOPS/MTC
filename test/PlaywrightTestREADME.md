@@ -206,6 +206,12 @@ Notes:
 
 ## Environment variables
 
+### Reserved sign-hdf teacher account (dev/test)
+
+For `test/pupil-hpa/sign-hdf.playwright.spec.ts`, `teacher5` / `password` is reserved for both dev and test runs.
+
+This account should be kept in a state where all pupils have completed checks; otherwise the headteacher declaration form can show as unavailable and the sign-hdf flow will fail.
+
 ### E2E admin login (dev/test fallback creds)
 
 - `ADMIN_USERNAME`
