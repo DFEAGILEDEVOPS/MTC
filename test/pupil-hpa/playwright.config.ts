@@ -1,7 +1,6 @@
 import { defineConfig, type ReporterDescription } from '@playwright/test';
 
 const isCI = process.env.CI === '1' || process.env.CI === 'true';
-const teamsNotificationsEnabled = process.env.TEAMS_ENABLE_NOTIFICATIONS === 'true';
 
 // Use single auth file for all tests
 const authStorageState = '../../auth.json';
@@ -38,8 +37,7 @@ export default defineConfig({
       ['html', { open: 'never' }],
     ];
 
-    // Teams reporting is opt-in to avoid accidental notifications from CI or branch runs.
-    if (teamsNotificationsEnabled && process.env.TEAMS_WEBHOOK_URL && process.env.TEAMS_DISABLE_NOTIFICATIONS !== 'true') {
+    if (process.env.TEAMS_WEBHOOK_URL && process.env.TEAMS_DISABLE_NOTIFICATIONS !== 'true') {
       reporters.push(['./teams-reporter.js']);
     }
 

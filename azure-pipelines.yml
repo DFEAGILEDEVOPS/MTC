@@ -67,12 +67,11 @@ jobs:
         displayName: 'Run Playwright tests'
         env:
           CI: '1'
-          # Temporary branch-testing override: disable Teams notifications; remove after pipeline validation.
-          TEAMS_DISABLE_NOTIFICATIONS: 'true'
           PLAYWRIGHT_HTML_REPORT_OPEN: never
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
         condition: always()
@@ -153,12 +152,11 @@ jobs:
         displayName: 'Run Playwright tests'
         env:
           CI: '1'
-          # Temporary branch-testing override: disable Teams notifications; remove after pipeline validation.
-          TEAMS_DISABLE_NOTIFICATIONS: 'true'
           PLAYWRIGHT_HTML_REPORT_OPEN: never
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
         condition: always()
@@ -239,12 +237,11 @@ jobs:
         displayName: 'Run Playwright tests'
         env:
           CI: '1'
-          # Temporary branch-testing override: disable Teams notifications; remove after pipeline validation.
-          TEAMS_DISABLE_NOTIFICATIONS: 'true'
           PLAYWRIGHT_HTML_REPORT_OPEN: never
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
         condition: always()
