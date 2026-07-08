@@ -205,14 +205,6 @@ async function configureCheckWindowForHdfSigning(page: Page): Promise<void> {
   await saveCheckWindowForm(page, 'save check-window setup for HDF signing');
 }
 
-function normalizeDatePart(value: string): string {
-  const trimmed = value.trim();
-  if (trimmed === '') {
-    return '';
-  }
-  return String(Number(trimmed));
-}
-
 async function verifyDateFieldEquals(page: Page, fieldPrefix: string, expected: DateParts): Promise<boolean> {
   const actual = await getDateFieldValueIfVisible(page, fieldPrefix);
   if (!actual) {
@@ -220,9 +212,9 @@ async function verifyDateFieldEquals(page: Page, fieldPrefix: string, expected: 
   }
 
   return (
-    normalizeDatePart(actual.day) === normalizeDatePart(expected.day)
-    && normalizeDatePart(actual.month) === normalizeDatePart(expected.month)
-    && normalizeDatePart(actual.year) === normalizeDatePart(expected.year)
+    normaliseDatePart(actual.day) === normaliseDatePart(expected.day)
+    && normaliseDatePart(actual.month) === normaliseDatePart(expected.month)
+    && normaliseDatePart(actual.year) === normaliseDatePart(expected.year)
   );
 }
 
