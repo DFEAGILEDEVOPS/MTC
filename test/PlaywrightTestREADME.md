@@ -243,7 +243,7 @@ The Playwright config currently defines 13 projects:
 | `test-preflight` | — | `ensure-environment-preflight.setup.playwright.ts` |
 | `test-setup` | `test-preflight` | `ensure-pupil.setup.playwright.ts` |
 | `test-accessibility-setup` | `test-preflight` | `ensure-accessibility-pupil.setup.playwright.ts` |
-| `test-admin` | `test-preflight`, `test-accessibility-setup` | admin-focused specs (excludes check-flow + accessibility check specs) |
+| `test-admin` | `test-preflight` | admin-focused specs (excludes check-flow + accessibility check specs) |
 | `test-check` | `test-setup` | `mtc-signin-and-check`, `mtc-signin-and-try-it-out` |
 | `test-accessibility` | `test-accessibility-setup` | `mtc-accessibility-check` |
 | `preprod-admin` | none | preprod specs using `auth.json` storage state |
@@ -318,7 +318,7 @@ npm test
 npm run test:e2e:test
 ```
 
-This runs a 2-step test sequence (accessibility setup/check -> main shard). The main shard includes `test-check`, so Playwright runs its `test-setup` dependency automatically before the check-flow specs. Each step writes to a separate blob report file, then the reports are merged into one combined HTML report.
+This runs a 2-step test sequence (accessibility -> main shard). The accessibility step runs `test-accessibility`, which triggers `test-accessibility-setup` exactly once via project dependency. The main shard includes `test-check`, so Playwright runs its `test-setup` dependency automatically before the check-flow specs. Each step writes to a separate blob report file, then the reports are merged into one combined HTML report.
 
 ### Run pupil-flow tests (with setup)
 

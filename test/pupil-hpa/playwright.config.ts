@@ -121,7 +121,7 @@ export default defineConfig({
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',
       ],
-      dependencies: ['test-preflight', 'test-accessibility-setup'],
+      dependencies: ['test-preflight'],
       use: { baseURL: 'https://testadmin-as-mtc.azurewebsites.net' },
     },
     {

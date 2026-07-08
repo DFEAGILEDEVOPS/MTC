@@ -185,14 +185,12 @@ async function saveCheckWindowForm(page: Page, actionName: string): Promise<void
   }
 }
 
-async function configureCheckWindowForHdfSigning(page: Page): Promise<void> {
-  const now = new Date();
-
-  const adminStartDate = toDateParts(addDays(now, -35));
-  const familiarisationStartDate = toDateParts(addDays(now, -21));
-  const liveStartDate = toDateParts(addDays(now, -14));
-  const checkEndDate = toDateParts(addDays(now, -1));
-  const adminEndDate = toDateParts(addDays(now, 21));
+async function configureCheckWindowForHdfSigning(page: Page, baseDate: Date): Promise<void> {
+  const adminStartDate = toDateParts(addDays(baseDate, -35));
+  const familiarisationStartDate = toDateParts(addDays(baseDate, -21));
+  const liveStartDate = toDateParts(addDays(baseDate, -14));
+  const checkEndDate = toDateParts(addDays(baseDate, -1));
+  const adminEndDate = toDateParts(addDays(baseDate, 21));
 
   // Target state: check window is over, but still in admin period so reasons can be set and HDF can be signed.
   await fillDateFieldIfVisible(page, 'adminStart', adminStartDate);
@@ -219,16 +217,16 @@ async function verifyDateFieldEquals(page: Page, fieldPrefix: string, expected: 
 }
 
 async function configureCheckWindowForHdfSigningWithVerification(page: Page, env: EnvironmentName): Promise<void> {
-  const now = new Date();
-  const expectedLiveCheckEnd = toDateParts(addDays(now, -1));
-  const expectedAdminEnd = toDateParts(addDays(now, 21));
-
   for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const baseDate = new Date();
+    const expectedLiveCheckEnd = toDateParts(addDays(baseDate, -1));
+    const expectedAdminEnd = toDateParts(addDays(baseDate, 21));
+
     await page.goto('/check-window/manage-check-windows');
     await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
     await openCheckWindow(page, env);
 
-    await configureCheckWindowForHdfSigning(page);
+    await configureCheckWindowForHdfSigning(page, baseDate);
 
     await page.goto('/check-window/manage-check-windows');
     await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
