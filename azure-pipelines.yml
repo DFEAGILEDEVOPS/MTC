@@ -191,6 +191,7 @@ jobs:
 
   - job: PlaywrightPreprod
     displayName: 'Playwright - Preprod'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'Schedule'))
     variables:
       TEST_WORKDIR: 'test/pupil-hpa'
       E2E_SCRIPT: 'test:e2e:preprod'
@@ -307,7 +308,8 @@ jobs:
           ];
 
           const isSuccess = (status) => status === 'Succeeded';
-          const failedCount = statuses.filter((item) => !isSuccess(item.status)).length;
+          const isNeutral = (status) => status === 'Skipped';
+          const failedCount = statuses.filter((item) => !isSuccess(item.status) && !isNeutral(item.status)).length;
           const passedCount = statuses.length - failedCount;
           const overallPassed = failedCount === 0;
 
@@ -335,8 +337,8 @@ jobs:
                 items: [
                   {
                     type: 'TextBlock',
-                    text: `${isSuccess(item.status) ? '✅ Passed' : '❌ Failed'} (${item.status})`,
-                    color: isSuccess(item.status) ? 'good' : 'attention',
+                    text: `${isSuccess(item.status) ? '✅ Passed' : isNeutral(item.status) ? '⏭ Skipped' : '❌ Failed'} (${item.status})`,
+                    color: isSuccess(item.status) ? 'good' : isNeutral(item.status) ? 'default' : 'attention',
                     size: 'small',
                   },
                 ],

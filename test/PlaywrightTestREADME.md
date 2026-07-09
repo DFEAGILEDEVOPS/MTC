@@ -88,6 +88,34 @@ Use these companion documents for Azure-specific operation steps:
 - `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` (pipeline wiring verification, validation and common publish issues)
 - `test/pupil-hpa/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
 
+### Scheduled run policy (why preprod is excluded)
+
+The Playwright pipeline is intentionally configured so weekday scheduled runs execute only Dev and Test, while Preprod runs on non-scheduled `master` CI runs (for example after PR merge).
+
+This is done to reduce avoidable Preprod failures caused by expiring DfE Sign-in OAuth/session state in `auth.json` (often refreshed daily or near-daily in practice). Running Preprod only when needed keeps scheduled signal stable while still validating Preprod on integration to `master`.
+
+### If you need Preprod on a scheduled day
+
+Use this runbook when you want a scheduled-day Preprod check without changing pipeline policy:
+
+1. Refresh auth locally from repo root:
+
+```bash
+npm run save:auth
+```
+
+2. Base64-encode the updated root `auth.json`:
+
+```bash
+base64 -i auth.json | tr -d '\n'
+```
+
+3. Update Azure secret variable `AUTH_JSON_CONTENT` with the new value.
+4. Manually queue the Playwright pipeline on `master` (manual run is non-scheduled, so Preprod job is included).
+5. Verify `Playwright - Preprod` completes and publishes artifacts/results.
+
+If true scheduled Preprod is temporarily required, create a short-lived YAML change to relax the Preprod schedule condition, run/validate, then revert to this default policy.
+
 ## Environments, dependencies and access policy
 
 | Environment | Pipeline job | Core dependencies | Access policy |
