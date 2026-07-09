@@ -90,9 +90,9 @@ Use these companion documents for Azure-specific operation steps:
 
 ### Scheduled run policy (why preprod is excluded)
 
-The Playwright pipeline is intentionally configured so weekday scheduled runs execute only Dev and Test, while Preprod runs on non-scheduled `master` CI runs (for example after PR merge).
+The Playwright pipeline is intentionally configured so weekday scheduled runs execute only Dev and Test, while Preprod runs on all non-scheduled runs (for example manual runs and CI runs).
 
-This is done to reduce avoidable Preprod failures caused by expiring DfE Sign-in OAuth/session state in `auth.json` (often refreshed daily or near-daily in practice). Running Preprod only when needed keeps scheduled signal stable while still validating Preprod on integration to `master`.
+This is done to reduce avoidable Preprod failures caused by expiring DfE Sign-in OAuth/session state in `auth.json` (often refreshed daily or near-daily in practice). Running Preprod only when needed keeps scheduled signal stable while still validating Preprod on non-scheduled executions.
 
 ### If you need Preprod on a scheduled day
 
@@ -111,7 +111,7 @@ base64 -i auth.json | tr -d '\n'
 ```
 
 3. Update Azure secret variable `AUTH_JSON_CONTENT` with the new value.
-4. Manually queue the Playwright pipeline on `master` (manual run is non-scheduled, so Preprod job is included).
+4. Manually queue the Playwright pipeline (manual run is non-scheduled, so Preprod job is included).
 5. Verify `Playwright - Preprod` completes and publishes artifacts/results.
 
 If true scheduled Preprod is temporarily required, create a short-lived YAML change to relax the Preprod schedule condition, run/validate, then revert to this default policy.

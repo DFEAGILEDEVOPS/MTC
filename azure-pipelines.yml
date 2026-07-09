@@ -191,7 +191,7 @@ jobs:
 
   - job: PlaywrightPreprod
     displayName: 'Playwright - Preprod'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'Schedule'))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
     variables:
       TEST_WORKDIR: 'test/pupil-hpa'
       E2E_SCRIPT: 'test:e2e:preprod'
@@ -286,6 +286,7 @@ jobs:
       DEV_JOB_STATUS: $[ dependencies.PlaywrightDev.outputs['CaptureDevStatus.JOB_STATUS'] ]
       TEST_JOB_STATUS: $[ dependencies.PlaywrightTest.outputs['CaptureTestStatus.JOB_STATUS'] ]
       PREPROD_JOB_STATUS: $[ dependencies.PlaywrightPreprod.outputs['CapturePreprodStatus.JOB_STATUS'] ]
+      PREPROD_JOB_RESULT: $[ dependencies.PlaywrightPreprod.result ]
     steps:
       - task: UseNode@1
         inputs:
@@ -301,10 +302,37 @@ jobs:
             process.exit(0);
           }
 
+          const buildReason = process.env.BUILD_REASON || '';
+          const preprodJobResult = process.env.PREPROD_JOB_RESULT || '';
+
+          function normalizeStatus(env, rawStatus, jobResult) {
+            if (rawStatus && rawStatus.trim()) {
+              return rawStatus.trim();
+            }
+
+            if (jobResult === 'Skipped') {
+              return 'Skipped';
+            }
+
+            // Scheduled runs intentionally skip preprod.
+            if (env === 'preprod' && buildReason === 'Schedule') {
+              return 'Skipped';
+            }
+
+            if (jobResult && jobResult.trim()) {
+              return jobResult.trim();
+            }
+
+            return 'Unknown';
+          }
+
           const statuses = [
-            { env: 'dev', status: process.env.DEV_JOB_STATUS || 'Unknown' },
-            { env: 'test', status: process.env.TEST_JOB_STATUS || 'Unknown' },
-            { env: 'preprod', status: process.env.PREPROD_JOB_STATUS || 'Unknown' },
+            { env: 'dev', status: normalizeStatus('dev', process.env.DEV_JOB_STATUS, '') },
+            { env: 'test', status: normalizeStatus('test', process.env.TEST_JOB_STATUS, '') },
+            {
+              env: 'preprod',
+              status: normalizeStatus('preprod', process.env.PREPROD_JOB_STATUS, preprodJobResult),
+            },
           ];
 
           const isSuccess = (status) => status === 'Succeeded';
@@ -407,6 +435,8 @@ jobs:
           DEV_JOB_STATUS: '$(DEV_JOB_STATUS)'
           TEST_JOB_STATUS: '$(TEST_JOB_STATUS)'
           PREPROD_JOB_STATUS: '$(PREPROD_JOB_STATUS)'
+          PREPROD_JOB_RESULT: '$(PREPROD_JOB_RESULT)'
+          BUILD_REASON: '$(Build.Reason)'
           BUILD_BUILDID: '$(Build.BuildId)'
           SYSTEM_TEAMPROJECT: '$(System.TeamProject)'
           SYSTEM_COLLECTIONURI: '$(System.CollectionUri)'
