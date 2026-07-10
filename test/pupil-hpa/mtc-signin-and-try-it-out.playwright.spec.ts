@@ -422,7 +422,6 @@ test('admin generates credentials, pupil completes try it out check flow', async
 
   // Step 14: Answer official questions until the finish screen appears.
   const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);
-  console.log(`Try it out questions answered before finish: ${officialQuestionsAnswered}`);
 
   // Step 16: Sign out.
   const signOutButton = page.getByRole('button', { name: 'Sign out' });

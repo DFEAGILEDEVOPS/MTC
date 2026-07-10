@@ -68,6 +68,7 @@ jobs:
         env:
           CI: '1'
           PLAYWRIGHT_HTML_REPORT_OPEN: never
+          PLAYWRIGHT_JUNIT_INCLUDE_PROJECT_IN_TEST_NAME: '1'
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
@@ -153,6 +154,7 @@ jobs:
         env:
           CI: '1'
           PLAYWRIGHT_HTML_REPORT_OPEN: never
+          PLAYWRIGHT_JUNIT_INCLUDE_PROJECT_IN_TEST_NAME: '1'
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
@@ -239,6 +241,7 @@ jobs:
         env:
           CI: '1'
           PLAYWRIGHT_HTML_REPORT_OPEN: never
+          PLAYWRIGHT_JUNIT_INCLUDE_PROJECT_IN_TEST_NAME: '1'
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'

@@ -301,7 +301,6 @@ test('admin generates credentials, pupil completes official check flow and admin
   // Step 3: Check current completion count before generating pins.
   await page.getByRole('link', { name: 'See how many of your pupils have completed the official check' }).click();
   const numberOfPupilsCompleted = await getPupilsCompletedCount(page);
-  console.log(`Pupils completed before check: ${numberOfPupilsCompleted}`);
   await page.goBack();
 
   // Step 4-5: Open official check PIN generation flow.
@@ -346,7 +345,6 @@ test('admin generates credentials, pupil completes official check flow and admin
 
   // Step 14: Answer official questions until the finish screen appears.
   const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);
-  console.log(`Official questions answered before finish: ${officialQuestionsAnswered}`);
 
   // Step 16: Sign out.
   const signOutButton = page.getByRole('button', { name: 'Sign out' });
@@ -382,6 +380,5 @@ test('admin generates credentials, pupil completes official check flow and admin
       },
     )
     .toBe(expectedCompletedCount);
-  const numberOfPupilsCompletedAfter = await getPupilsCompletedCount(page);
-  console.log(`Pupils completed after check: ${numberOfPupilsCompletedAfter}`);
+  await getPupilsCompletedCount(page);
 });

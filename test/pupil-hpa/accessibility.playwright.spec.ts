@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { debugLog } from './debug-log';
 
 const pupilBaseUrl = process.env.PUPIL_BASE_URL ?? 'https://testpupil-as-mtc.azurewebsites.net';
 const adminBaseUrl = process.env.ADMIN_BASE_URL ?? 'https://testadmin-as-mtc.azurewebsites.net';
@@ -26,9 +27,9 @@ test.describe('Accessibility pages', () => {
       .analyze();
 
     if (results.violations.length > 0) {
-      console.log('🔍 Pupil Accessibility Statement - WCAG Violations (Report Only):\n', violationSummary(results.violations));
+      debugLog('Pupil Accessibility Statement - WCAG Violations (Report Only):\n', violationSummary(results.violations));
     } else {
-      console.log('✓ Pupil Accessibility Statement - No WCAG violations detected.');
+      debugLog('Pupil Accessibility Statement - No WCAG violations detected.');
     }
   });
 
@@ -43,9 +44,9 @@ test.describe('Accessibility pages', () => {
       .analyze();
 
     if (results.violations.length > 0) {
-      console.log('🔍 Admin Accessibility Statement - WCAG Violations (Report Only):\n', violationSummary(results.violations));
+      debugLog('Admin Accessibility Statement - WCAG Violations (Report Only):\n', violationSummary(results.violations));
     } else {
-      console.log('✓ Admin Accessibility Statement - No WCAG violations detected.');
+      debugLog('Admin Accessibility Statement - No WCAG violations detected.');
     }
   });
 });

@@ -1,6 +1,7 @@
 import { test, expect, type Locator, type Page, type TestInfo } from '@playwright/test';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { debugLog } from './debug-log';
 import { environmentUrls } from './playwright.config';
 
 type EnvironmentName = keyof typeof environmentUrls;
@@ -323,7 +324,7 @@ async function findMatchingPupilName(page: Page, targetName: string): Promise<st
 			const match = prefixMatch.match(/^([^,]+),\s*([^\s]+)/);
 			if (match) {
 				const foundName = `${match[1]}, ${match[2]}`;
-				console.log(`Found pupil by prefix matching. Expected: "${targetName}", Found: "${foundName}"`);
+				debugLog(`Found pupil by prefix matching. Expected: "${targetName}", Found: "${foundName}"`);
 				return foundName;
 			}
 		}
@@ -340,7 +341,7 @@ async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<voi
 	const startTime = Date.now();
 	
 	let currentUrl = page.url();
-	console.log(`Initial post-signin URL: ${currentUrl}`);
+	debugLog(`Initial post-signin URL: ${currentUrl}`);
 	
 	// Wait for any meaningful navigation away from pure sign-in pages
 	while (Date.now() - startTime < maxWaitTime) {
@@ -355,7 +356,7 @@ async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<voi
 		if (currentUrl.includes('/sign-in-success')) {
 			const nextButton = page.getByRole('button', { name: /Next|Continue/i }).first();
 			if (await nextButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-				console.log('Clicking Next button on /sign-in-success');
+				debugLog('Clicking Next button on /sign-in-success');
 				await nextButton.click();
 				await page.waitForTimeout(2000);
 			}
@@ -371,7 +372,7 @@ async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<voi
 	}
 	
 	const finalUrl = page.url();
-	console.log(`Final post-signin URL: ${finalUrl}`);
+	debugLog(`Final post-signin URL: ${finalUrl}`);
 	
 	// Accept any of these valid end states for a colour contrast pupil
 	if (finalUrl.includes('/official-check')) {
@@ -396,7 +397,7 @@ async function validateColourContrastRoutingAfterSignIn(page: Page): Promise<voi
 	
 	// If we got anywhere meaningful, consider it a pass (the main goal is to verify routing works)
 	if (!finalUrl.includes('sign-in') && !finalUrl.includes('login')) {
-		console.log(`Post-signin routing accepted: ${finalUrl}`);
+		debugLog(`Post-signin routing accepted: ${finalUrl}`);
 		return;
 	}
 	
