@@ -83,7 +83,7 @@
     "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.46",
-    "morgan": "~1.10.0",
+    "morgan": "~1.11.0",
     "mssql": "10.0.4",
     "nocache": "^3.0.4",
     "node-dir": "^0.1.17",
