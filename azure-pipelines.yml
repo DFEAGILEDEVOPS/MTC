@@ -71,6 +71,7 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
         condition: always()
@@ -155,6 +156,7 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
         condition: always()
@@ -189,6 +191,7 @@ jobs:
 
   - job: PlaywrightPreprod
     displayName: 'Playwright - Preprod'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'Schedule'))
     variables:
       TEST_WORKDIR: 'test/pupil-hpa'
       E2E_SCRIPT: 'test:e2e:preprod'
@@ -239,6 +242,7 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
         condition: always()
@@ -282,6 +286,7 @@ jobs:
       DEV_JOB_STATUS: $[ dependencies.PlaywrightDev.outputs['CaptureDevStatus.JOB_STATUS'] ]
       TEST_JOB_STATUS: $[ dependencies.PlaywrightTest.outputs['CaptureTestStatus.JOB_STATUS'] ]
       PREPROD_JOB_STATUS: $[ dependencies.PlaywrightPreprod.outputs['CapturePreprodStatus.JOB_STATUS'] ]
+      PREPROD_JOB_RESULT: $[ dependencies.PlaywrightPreprod.result ]
     steps:
       - task: UseNode@1
         inputs:
@@ -297,14 +302,42 @@ jobs:
             process.exit(0);
           }
 
+          const buildReason = process.env.BUILD_REASON || '';
+          const preprodJobResult = process.env.PREPROD_JOB_RESULT || '';
+
+          function normalizeStatus(env, rawStatus, jobResult) {
+            if (rawStatus && rawStatus.trim()) {
+              return rawStatus.trim();
+            }
+
+            if (jobResult === 'Skipped') {
+              return 'Skipped';
+            }
+
+            // Scheduled runs intentionally skip preprod.
+            if (env === 'preprod' && buildReason === 'Schedule') {
+              return 'Skipped';
+            }
+
+            if (jobResult && jobResult.trim()) {
+              return jobResult.trim();
+            }
+
+            return 'Unknown';
+          }
+
           const statuses = [
-            { env: 'dev', status: process.env.DEV_JOB_STATUS || 'Unknown' },
-            { env: 'test', status: process.env.TEST_JOB_STATUS || 'Unknown' },
-            { env: 'preprod', status: process.env.PREPROD_JOB_STATUS || 'Unknown' },
+            { env: 'dev', status: normalizeStatus('dev', process.env.DEV_JOB_STATUS, '') },
+            { env: 'test', status: normalizeStatus('test', process.env.TEST_JOB_STATUS, '') },
+            {
+              env: 'preprod',
+              status: normalizeStatus('preprod', process.env.PREPROD_JOB_STATUS, preprodJobResult),
+            },
           ];
 
           const isSuccess = (status) => status === 'Succeeded';
-          const failedCount = statuses.filter((item) => !isSuccess(item.status)).length;
+          const isNeutral = (status) => status === 'Skipped';
+          const failedCount = statuses.filter((item) => !isSuccess(item.status) && !isNeutral(item.status)).length;
           const passedCount = statuses.length - failedCount;
           const overallPassed = failedCount === 0;
 
@@ -332,8 +365,8 @@ jobs:
                 items: [
                   {
                     type: 'TextBlock',
-                    text: `${isSuccess(item.status) ? '✅ Passed' : '❌ Failed'} (${item.status})`,
-                    color: isSuccess(item.status) ? 'good' : 'attention',
+                    text: `${isSuccess(item.status) ? '✅ Passed' : isNeutral(item.status) ? '⏭ Skipped' : '❌ Failed'} (${item.status})`,
+                    color: isSuccess(item.status) ? 'good' : isNeutral(item.status) ? 'default' : 'attention',
                     size: 'small',
                   },
                 ],
@@ -402,6 +435,8 @@ jobs:
           DEV_JOB_STATUS: '$(DEV_JOB_STATUS)'
           TEST_JOB_STATUS: '$(TEST_JOB_STATUS)'
           PREPROD_JOB_STATUS: '$(PREPROD_JOB_STATUS)'
+          PREPROD_JOB_RESULT: '$(PREPROD_JOB_RESULT)'
+          BUILD_REASON: '$(Build.Reason)'
           BUILD_BUILDID: '$(Build.BuildId)'
           SYSTEM_TEAMPROJECT: '$(System.TeamProject)'
           SYSTEM_COLLECTIONURI: '$(System.CollectionUri)'

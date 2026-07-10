@@ -88,6 +88,34 @@ Use these companion documents for Azure-specific operation steps:
 - `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` (pipeline wiring verification, validation and common publish issues)
 - `test/pupil-hpa/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
 
+### Scheduled run policy (why preprod is excluded)
+
+The Playwright pipeline is intentionally configured so weekday scheduled runs execute only Dev and Test, while Preprod runs on all non-scheduled runs (for example manual runs and CI runs).
+
+This is done to reduce avoidable Preprod failures caused by expiring DfE Sign-in OAuth/session state in `auth.json` (often refreshed daily or near-daily in practice). Running Preprod only when needed keeps scheduled signal stable while still validating Preprod on non-scheduled executions.
+
+### If you need Preprod on a scheduled day
+
+Use this runbook when you want a scheduled-day Preprod check without changing pipeline policy:
+
+1. Refresh auth locally from repo root:
+
+```bash
+npm run save:auth
+```
+
+2. Base64-encode the updated root `auth.json`:
+
+```bash
+base64 -i auth.json | tr -d '\n'
+```
+
+3. Update Azure secret variable `AUTH_JSON_CONTENT` with the new value.
+4. Manually queue the Playwright pipeline (manual run is non-scheduled, so Preprod job is included).
+5. Verify `Playwright - Preprod` completes and publishes artifacts/results.
+
+If true scheduled Preprod is temporarily required, create a short-lived YAML change to relax the Preprod schedule condition, run/validate, then revert to this default policy.
+
 ## Environments, dependencies and access policy
 
 | Environment | Pipeline job | Core dependencies | Access policy |
@@ -206,6 +234,12 @@ Notes:
 
 ## Environment variables
 
+### Reserved sign-hdf teacher account (dev/test)
+
+For `test/pupil-hpa/sign-hdf.playwright.spec.ts`, `teacher5` / `password` is reserved for both dev and test runs.
+
+It maps to Example School Five (`2011005`), so that school must be left in a state where all pupils have completed checks. Otherwise the headteacher declaration form can show as unavailable and the sign-hdf flow will fail.
+
 ### E2E admin login (dev/test fallback creds)
 
 - `ADMIN_USERNAME`
@@ -237,7 +271,7 @@ The Playwright config currently defines 13 projects:
 | `test-preflight` | — | `ensure-environment-preflight.setup.playwright.ts` |
 | `test-setup` | `test-preflight` | `ensure-pupil.setup.playwright.ts` |
 | `test-accessibility-setup` | `test-preflight` | `ensure-accessibility-pupil.setup.playwright.ts` |
-| `test-admin` | `test-preflight`, `test-accessibility-setup` | admin-focused specs (excludes check-flow + accessibility check specs) |
+| `test-admin` | `test-preflight` | admin-focused specs (excludes check-flow + accessibility check specs) |
 | `test-check` | `test-setup` | `mtc-signin-and-check`, `mtc-signin-and-try-it-out` |
 | `test-accessibility` | `test-accessibility-setup` | `mtc-accessibility-check` |
 | `preprod-admin` | none | preprod specs using `auth.json` storage state |
@@ -272,9 +306,9 @@ This guarantees there is always at least one fresh pupil available before the pu
 
 ### Skip guards
 
-The pupil-flow specs skip themselves unless the running project name ends in `-admin` or `-check`. This means:
+The pupil-flow PIN-generation specs (`mtc-signin-and-check` and `mtc-signin-and-try-it-out`) skip themselves unless the running project name ends in `-check`. This means:
 - Running via `*-check` → test runs (setup has already fired as a dependency)
-- Running via `*-admin` → test also runs (for ad-hoc targeted runs), but without guaranteed setup
+- Running via `*-admin` → test skips, keeping admin-only runs independent of pupil setup
 - Running via other project types (for example `*-accessibility`) → test skips
 
 ### Why preprod has no setup dependency
@@ -312,7 +346,7 @@ npm test
 npm run test:e2e:test
 ```
 
-This runs the same 3-step test sequence in the existing order (accessibility setup/check -> setup -> main 4 specs), writes each step to a separate blob report file, merges them, and opens one combined HTML report.
+This runs a 2-step test sequence (accessibility -> main shard). The accessibility step runs `test-accessibility`, which triggers `test-accessibility-setup` exactly once via project dependency. The main shard includes `test-check`, so Playwright runs its `test-setup` dependency automatically before the check-flow specs. Each step writes to a separate blob report file, then the reports are merged into one combined HTML report.
 
 ### Run pupil-flow tests (with setup)
 
