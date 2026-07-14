@@ -234,6 +234,16 @@ Notes:
 
 ## Environment variables
 
+### Azure deployment reset note
+
+Each Azure deployment resets the shared test environments. After a deployment, the relevant schools return to a state where `0` pupils have completed the check.
+
+This means the admin-only Playwright flows must be prepared again before they will pass:
+
+- `test/pupil-hpa/sign-hdf.playwright.spec.ts` expects its reserved sign-off school to have all pupils completed so the declaration form is available.
+
+If either environment has just been deployed, re-set up the schools used by these flows so that all pupils have completed checks before running the tests again.
+
 ### Reserved sign-hdf teacher account (dev/test)
 
 For `test/pupil-hpa/sign-hdf.playwright.spec.ts`, `teacher5` / `password` is reserved for both dev and test runs.
