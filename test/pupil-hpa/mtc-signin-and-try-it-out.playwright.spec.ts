@@ -421,7 +421,7 @@ test('admin generates credentials, pupil completes try it out check flow', async
   await clickThroughNextUntilStartNow(page);
 
   // Step 14: Answer official questions until the finish screen appears.
-  const officialQuestionsAnswered = await answerQuestionsUntilFinished(page);
+  await answerQuestionsUntilFinished(page);
 
   // Step 16: Sign out.
   const signOutButton = page.getByRole('button', { name: 'Sign out' });
