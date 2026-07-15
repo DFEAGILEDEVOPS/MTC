@@ -53,7 +53,7 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 --d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
             printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
@@ -138,7 +138,7 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 --d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
             printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
@@ -224,7 +224,7 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 --d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
             printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
