@@ -2,7 +2,7 @@
 
 This document explains the Playwright-based tests in `test/pupil-hpa`, including prerequisites, setup, and run commands.
 
-For framework architecture, pipeline flow, and onboarding context, see `test/pupil-hpa/DEVELOPER_GUIDE.md`.
+For framework architecture, pipeline flow, and onboarding context, see `test/docs/DEVELOPER_GUIDE.md`.
 
 ## What is covered
 
@@ -88,7 +88,7 @@ The CI run now explicitly emits JUnit XML, so Azure test result publishing can i
 Use these companion documents for Azure-specific operation steps:
 
 - `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` (pipeline wiring verification, validation and common publish issues)
-- `test/pupil-hpa/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
+- `test/docs/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
 
 ### Scheduled run policy (why preprod is excluded)
 
@@ -98,7 +98,7 @@ This is done to reduce avoidable Preprod failures caused by expiring DfE Sign-in
 
 ### If you need Preprod on a scheduled day
 
-See the troubleshooting runbook in `test/pupil-hpa/TROUBLESHOOTING.md` for step-by-step instructions to refresh auth and force a non-scheduled Preprod validation run.
+See the troubleshooting runbook in `test/docs/TROUBLESHOOTING.md` for step-by-step instructions to refresh auth and force a non-scheduled Preprod validation run.
 
 ## Environments, dependencies and access policy
 
@@ -146,7 +146,7 @@ See the troubleshooting runbook in `test/pupil-hpa/TROUBLESHOOTING.md` for step-
 
 - Mandatory PR review for `azure-pipelines.yml` and `test/pupil-hpa/*` pipeline-impacting files.
 - Record pipeline run link and test evidence in PR before approval.
-- Use `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` as the minimum quality gate before merge.
+- Use `test/docs/AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` as the minimum quality gate before merge.
 
 ## Testing plan, reports and dashboards
 
@@ -167,7 +167,7 @@ See the troubleshooting runbook in `test/pupil-hpa/TROUBLESHOOTING.md` for step-
 
 ## Troubleshooting and operational runbooks
 
-For common failures, root-cause hints, and step-by-step fixes, use `test/pupil-hpa/TROUBLESHOOTING.md`.
+For common failures, root-cause hints, and step-by-step fixes, use `test/docs/TROUBLESHOOTING.md`.
 
 ## Environment variables
 
@@ -246,7 +246,7 @@ The pupil-flow PIN-generation specs (`mtc-signin-and-check` and `mtc-signin-and-
 
 Preprod admin uses DfE Sign-in with `auth.json` storage state. The setup flow uses fixed username/password credentials (`test-developer` then teacher), so it is wired only for dev/test.
 
-For known preprod failure modes (including pupil exhaustion and auth expiry), see `test/pupil-hpa/TROUBLESHOOTING.md`.
+For known preprod failure modes (including pupil exhaustion and auth expiry), see `test/docs/TROUBLESHOOTING.md`.
 
 ## Run commands
 
@@ -374,7 +374,7 @@ npx playwright show-report
 
 ## Common troubleshooting
 
-See `test/pupil-hpa/TROUBLESHOOTING.md` for failure symptoms, likely causes, and fix steps.
+See `test/docs/TROUBLESHOOTING.md` for failure symptoms, likely causes, and fix steps.
 
 ## Developer onboarding guide (trigger and interpret pipeline)
 
@@ -389,7 +389,7 @@ Use this quick-start for newly onboarded engineers.
 
 ### Interpret pipeline outcomes
 
-See `test/pupil-hpa/TROUBLESHOOTING.md` for failure interpretation and triage paths.
+See `test/docs/TROUBLESHOOTING.md` for failure interpretation and triage paths.
 
 ### Escalation path
 

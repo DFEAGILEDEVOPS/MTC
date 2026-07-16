@@ -2,7 +2,7 @@
 
 Use this guide for common Playwright E2E failures in `test/pupil-hpa`, likely causes, and fix steps.
 
-For setup and run commands, see `test/PlaywrightTestREADME.md`.
+For setup and run commands, see `test/docs/PlaywrightTestREADME.md`.
 
 ## Quick triage
 

@@ -7,11 +7,11 @@ This is a short guide to installing and running the MTC tests.
 
 For active end-to-end automation and Azure pipeline operations, start with these documents:
 
-- [Playwright E2E test suite guide](./PlaywrightTestREADME.md)
+- [Playwright E2E test suite guide](./docs/PlaywrightTestREADME.md)
 	- Framework overview, environments, setup, run commands, troubleshooting, onboarding runbook
-- [Azure pipeline verification checklist](../AZURE_PIPELINE_VERIFICATION_CHECKLIST.md)
+- [Azure pipeline verification checklist](./docs/AZURE_PIPELINE_VERIFICATION_CHECKLIST.md)
 	- Validate pipeline wiring, test publication, and branch rollout safety
-- [Teams notifications integration](./pupil-hpa/TEAMS_INTEGRATION.md)
+- [Teams notifications integration](./docs/TEAMS_INTEGRATION.md)
 	- Optional alerting setup for test pass/fail notifications in Teams
 
 > Note: The sections below remain useful for legacy Ruby/Cucumber workflows in `test/admin-hpa`.

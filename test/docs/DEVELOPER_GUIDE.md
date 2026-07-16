@@ -4,18 +4,18 @@ This guide explains how the Playwright framework in this repo is structured, how
 
 Companion docs:
 
-- Quick start and command catalog: `test/PlaywrightTestREADME.md`
-- Failures and fixes: `test/pupil-hpa/TROUBLESHOOTING.md`
-- Teams notification details: `test/pupil-hpa/TEAMS_INTEGRATION.md`
+- Quick start and command catalog: `test/docs/PlaywrightTestREADME.md`
+- Failures and fixes: `test/docs/TROUBLESHOOTING.md`
+- Teams notification details: `test/docs/TEAMS_INTEGRATION.md`
 
 ## Documentation index (important testing framework docs)
 
-- `test/PlaywrightTestREADME.md`: Main reference for setup, run commands, environments, pipeline usage, release/change process, and reporting.
-- `test/pupil-hpa/DEVELOPER_GUIDE.md`: Framework architecture, project dependency model, CI flow, and onboarding checklist.
+- `test/docs/PlaywrightTestREADME.md`: Main reference for setup, run commands, environments, pipeline usage, release/change process, and reporting.
+- `test/docs/DEVELOPER_GUIDE.md`: Framework architecture, project dependency model, CI flow, and onboarding checklist.
 - `azure-pipelines.yml`: Source of truth for pipeline jobs, schedules, environment variables, test execution, result publishing, and Teams summary notification.
-- `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md`: Practical runbook to verify pipeline wiring, validate test execution in Azure DevOps, and check production readiness.
-- `test/pupil-hpa/TROUBLESHOOTING.md`: Common Playwright and pipeline failures with likely causes and step-by-step fixes (including preprod auth refresh).
-- `test/pupil-hpa/TEAMS_INTEGRATION.md`: Configuration and operation of Teams notifications, including webhook setup and troubleshooting.
+- `test/docs/AZURE_PIPELINE_VERIFICATION_CHECKLIST.md`: Practical runbook to verify pipeline wiring, validate test execution in Azure DevOps, and check production readiness.
+- `test/docs/TROUBLESHOOTING.md`: Common Playwright and pipeline failures with likely causes and step-by-step fixes (including preprod auth refresh).
+- `test/docs/TEAMS_INTEGRATION.md`: Configuration and operation of Teams notifications, including webhook setup and troubleshooting.
 - `test/pupil-hpa/playwright.config.ts`: Test project definitions, environment mappings, setup dependencies, retries, reporters, and evidence capture settings.
 
 
@@ -203,7 +203,7 @@ When changing pipeline behavior:
 
 ## 9. Debugging and operational tips
 
-- For failures, start with `test/pupil-hpa/TROUBLESHOOTING.md`.
+- For failures, start with `test/docs/TROUBLESHOOTING.md`.
 - Prefer single-project reruns with `--headed` for UI diagnosis.
 - Check artifacts in this order:
   1. line logs in job output
