@@ -26,7 +26,10 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
 async function proceedAfterPupilSelection(page: Page, targetPupilName: string): Promise<void> {
 	const confirmButton = page.getByRole('button', { name: 'Confirm' }).or(page.locator('button:has-text("Confirm")')).first();
 	const preConfirmUrl = page.url();
-	const selectedCount = await page.locator('input[type="checkbox"]:checked, [role="checkbox"][aria-checked="true"]').count().catch(() => 0);
+	const selectedCount = await page
+		.getByRole('checkbox', { checked: true })
+		.count()
+		.catch(() => 0);
 	const escapedTarget = targetPupilName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	const [targetLastNameRaw, targetFirstNameRaw] = targetPupilName.split(',').map((part) => part.trim());
 	const targetFirstName = targetFirstNameRaw ?? '';
@@ -41,7 +44,14 @@ async function proceedAfterPupilSelection(page: Page, targetPupilName: string): 
 	);
 	const targetCheckbox = page.getByRole('checkbox', { name: targetTickRegex }).first();
 	const targetChecked = (await targetCheckbox.isChecked().catch(() => false))
-		|| (await targetCheckbox.getAttribute('aria-checked').catch(() => null)) === 'true';
+		|| (await targetCheckbox.getAttribute('aria-checked').catch(() => null)) === 'true'
+		|| (await targetCheckbox.evaluate((el) => {
+			const input = el as HTMLInputElement;
+			if (typeof input.checked === 'boolean') {
+				return input.checked;
+			}
+			return el.getAttribute('aria-checked') === 'true';
+		}).catch(() => false));
 
 	if (selectedCount === 0) {
 		throw new Error('No pupil checkbox is selected, so Confirm cannot proceed.');
@@ -142,14 +152,26 @@ async function selectPupilByName(page: Page, pupilName: string): Promise<void> {
 		'i',
 	);
 
-	const checkedCount = async (): Promise<number> => page.locator('input[type="checkbox"]:checked, [role="checkbox"][aria-checked="true"]').count().catch(() => 0);
+	const checkedCount = async (): Promise<number> => page
+		.getByRole('checkbox', { checked: true })
+		.count()
+		.catch(() => 0);
 	const isLocatorChecked = async (locator: Locator): Promise<boolean> => {
 		const nativeChecked = await locator.isChecked().catch(() => false);
 		if (nativeChecked) {
 			return true;
 		}
 		const ariaChecked = await locator.getAttribute('aria-checked').catch(() => null);
-		return ariaChecked === 'true';
+		if (ariaChecked === 'true') {
+			return true;
+		}
+		return locator.evaluate((el) => {
+			const input = el as HTMLInputElement;
+			if (typeof input.checked === 'boolean') {
+				return input.checked;
+			}
+			return el.getAttribute('aria-checked') === 'true';
+		}).catch(() => false);
 	};
 
 	const checkboxByAriaLabel = firstName && lastName
@@ -301,35 +323,53 @@ async function readAccessibilitySetupState(env: EnvironmentName): Promise<string
  */
 async function findMatchingPupilName(page: Page, targetName: string): Promise<string> {
 	const [targetLastName, targetFirstName] = targetName.split(',').map(p => p.trim());
-	
-	// First, try to find a row that exactly matches the target name
-	const rows = await page.getByRole('row', { name: /Tick pupil/i }).allInnerTexts().catch(() => [] as string[]);
-	
-	for (const row of rows) {
-		if (row.includes(targetName)) {
+
+	// Wait briefly for the exact setup pupil name to appear before any fallback.
+	const deadline = Date.now() + 20_000;
+	let rows: string[] = [];
+	while (Date.now() < deadline) {
+		rows = await page.getByRole('row', { name: /Tick pupil/i }).allInnerTexts().catch(() => [] as string[]);
+		if (rows.some((row) => row.includes(targetName))) {
 			return targetName;
 		}
+		await page.waitForTimeout(1000);
 	}
-	
-	// If exact match not found, try to match by last name prefix
-	// This handles the case where a pupil like "AAAASetupPupil7934" was created but shows as "AAAASetupPupil" in the list
+
+	// If exact match is still unavailable, pick a deterministic suffixed setup pupil name.
 	if (targetLastName.includes('AAAASetupPupil')) {
-		// Look for any row that starts with AAAASetupPupil and has the first name
-		const prefixMatch = rows.find(row => 
-			row.includes('AAAASetupPupil') && row.includes(targetFirstName)
-		);
-		if (prefixMatch) {
-			// Extract the actual name from the row (format: "LastName, FirstName ...")
-			const match = prefixMatch.match(/^([^,]+),\s*([^\s]+)/);
-			if (match) {
-				const foundName = `${match[1]}, ${match[2]}`;
-				console.log(`Found pupil by prefix matching. Expected: "${targetName}", Found: "${foundName}"`);
-				return foundName;
-			}
+		const candidates = rows
+			.map((row) => {
+				const match = row.match(/^([^,]+),\s*([^\s]+)/);
+				if (!match) {
+					return null;
+				}
+
+				const [, lastName, firstName] = match;
+				const suffixMatch = lastName.match(/^AAAASetupPupil(\d+)$/i);
+				if (!suffixMatch) {
+					return null;
+				}
+
+				if (targetFirstName && firstName.toLowerCase() !== targetFirstName.toLowerCase()) {
+					return null;
+				}
+
+				return {
+					fullName: `${lastName}, ${firstName}`,
+					suffix: Number.parseInt(suffixMatch[1], 10),
+				};
+			})
+			.filter((item): item is { fullName: string; suffix: number } => item !== null)
+			.sort((a, b) => b.suffix - a.suffix);
+
+		if (candidates.length > 0) {
+			const foundName = candidates[0].fullName;
+			console.log(`Found pupil by deterministic suffix matching. Expected: "${targetName}", Found: "${foundName}"`);
+			return foundName;
 		}
 	}
-	
-	// If still not found, return the original name and let selectPupilByName handle the error with diagnostics
+
+	// If still not found, return the original name and let selectPupilByName handle diagnostics.
 	return targetName;
 }
 
