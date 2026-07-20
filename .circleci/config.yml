@@ -9,7 +9,7 @@ jobs:
   unit_tests:
     working_directory: ~/repo/
     docker:
-      - image: stamtc/mtc_circleci:latest
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
@@ -17,6 +17,9 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - checkout
+      - run:
+          name: Install nvm and repo Node version
+          command: export NVM_DIR=${HOME}/.nvm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ${NVM_DIR}/nvm.sh && nvm install $(cat .nvmrc)
       - restore_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
       - restore_cache:
@@ -114,11 +117,14 @@ jobs:
   docker_build_pupil_api:
     working_directory: ~/repo/
     docker:
-      - image: stamtc/mtc_circleci:latest
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
       - checkout
+      - run:
+          name: Install nvm and repo Node version
+          command: export NVM_DIR=${HOME}/.nvm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ${NVM_DIR}/nvm.sh && nvm install $(cat .nvmrc)
       - setup_remote_docker
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./pupil-api; nvm use; yarn install; yarn build; BUILDKIT=1 docker build .
       - run: docker images
@@ -126,11 +132,14 @@ jobs:
   docker_build_admin_assets:
     working_directory: ~/repo/
     docker:
-      - image: stamtc/mtc_circleci:latest
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
       - checkout
+      - run:
+          name: Install nvm and repo Node version
+          command: export NVM_DIR=${HOME}/.nvm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ${NVM_DIR}/nvm.sh && nvm install $(cat .nvmrc)
       - setup_remote_docker
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd ../admin-assets; ./copy-assets.sh
       - run: cd admin-assets && BUILDKIT=1 docker build .
