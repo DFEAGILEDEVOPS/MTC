@@ -198,9 +198,7 @@
       "<rootDir>/services/data-access",
       "<rootDir>/dist"
     ],
-    "setupFiles": [
-      "<rootDir>/jest.setup.js"
-    ],
+    "testEnvironment": "node",
     "verbose": false,
     "testRunner": "jest-circus",
     "moduleNameMapper": {
