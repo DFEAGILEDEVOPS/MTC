@@ -198,10 +198,14 @@
       "<rootDir>/services/data-access",
       "<rootDir>/dist"
     ],
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
     "verbose": false,
     "testRunner": "jest-circus",
     "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
+      "axios": "axios/dist/node/axios.cjs",
+      "^@typespec/ts-http-runtime/internal/(.*)$": "<rootDir>/node_modules/@typespec/ts-http-runtime/dist/commonjs/$1/internal.js"
     }
   }
 }
