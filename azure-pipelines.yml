@@ -53,16 +53,12 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-<<<<<<< HEAD
           # Store secret in temp file to avoid bash injection from special characters
           cat > /tmp/auth_content.txt << 'EOF'
           $(AUTH_JSON_CONTENT)
           EOF
           
           if base64 -d < /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
-=======
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
->>>>>>> origin/master
             echo 'Restored base64-encoded auth.json'
           else
             cat /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json'
@@ -148,16 +144,12 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-<<<<<<< HEAD
           # Store secret in temp file to avoid bash injection from special characters
           cat > /tmp/auth_content.txt << 'EOF'
           $(AUTH_JSON_CONTENT)
           EOF
           
           if base64 -d < /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
-=======
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
->>>>>>> origin/master
             echo 'Restored base64-encoded auth.json'
           else
             cat /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json'
@@ -244,16 +236,12 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-<<<<<<< HEAD
           # Store secret in temp file to avoid bash injection from special characters
           cat > /tmp/auth_content.txt << 'EOF'
           $(AUTH_JSON_CONTENT)
           EOF
           
           if base64 -d < /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
-=======
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
->>>>>>> origin/master
             echo 'Restored base64-encoded auth.json'
           else
             cat /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json'
