@@ -2,6 +2,8 @@
 
 This document explains the Playwright-based tests in `test/pupil-hpa`, including prerequisites, setup, and run commands.
 
+For framework architecture, pipeline flow, and onboarding context, see `test/docs/DEVELOPER_GUIDE.md`.
+
 ## What is covered
 
 - End-to-end journey across admin and pupil apps (official check, try-it-out check, and accessibility colour-contrast routing)
@@ -86,7 +88,17 @@ The CI run now explicitly emits JUnit XML, so Azure test result publishing can i
 Use these companion documents for Azure-specific operation steps:
 
 - `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` (pipeline wiring verification, validation and common publish issues)
-- `test/pupil-hpa/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
+- `test/docs/TEAMS_INTEGRATION.md` (optional Teams notifications for test results)
+
+### Scheduled run policy (why preprod is excluded)
+
+The Playwright pipeline is intentionally configured so weekday scheduled runs execute only Dev and Test, while Preprod runs on all non-scheduled runs (for example manual runs and CI runs).
+
+This is done to reduce avoidable Preprod failures caused by expiring DfE Sign-in OAuth/session state in `auth.json` (often refreshed daily or near-daily in practice). Running Preprod only when needed keeps scheduled signal stable while still validating Preprod on non-scheduled executions.
+
+### If you need Preprod on a scheduled day
+
+See the troubleshooting runbook in `test/docs/TROUBLESHOOTING.md` for step-by-step instructions to refresh auth and force a non-scheduled Preprod validation run.
 
 ### Scheduled run policy (why preprod is excluded)
 
@@ -162,7 +174,7 @@ If true scheduled Preprod is temporarily required, create a short-lived YAML cha
 
 - Mandatory PR review for `azure-pipelines.yml` and `test/pupil-hpa/*` pipeline-impacting files.
 - Record pipeline run link and test evidence in PR before approval.
-- Use `AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` as the minimum quality gate before merge.
+- Use `test/docs/AZURE_PIPELINE_VERIFICATION_CHECKLIST.md` as the minimum quality gate before merge.
 
 ## Testing plan, reports and dashboards
 
@@ -181,56 +193,9 @@ If true scheduled Preprod is temporarily required, create a short-lived YAML cha
 - Azure DevOps **Artifacts** tab for `test-results` and HTML report output.
 - Optional Microsoft Teams dashboard-style notifications via webhook reporter.
 
-## Monitoring, logging and alerting for automated pipeline
+## Troubleshooting and operational runbooks
 
-### Monitoring process
-
-- Monitor each Playwright job status (`Playwright - Dev`, `Playwright - Test`, `Playwright - Preprod`) in Azure Pipelines.
-- Track publish step health (`PublishTestResults@2`) to detect reporting regressions separately from test failures.
-- Monitor artifact publication (`test-results`, `playwright-report`) to ensure diagnosable evidence is always available.
-
-### Logging process
-
-- Primary logs: Azure pipeline step output, Playwright line reporter output, and published JUnit XML.
-- Diagnostic artifacts: Playwright HTML report, traces/video/screenshots on failure.
-- Keep failure analysis attached to PR or incident ticket for auditability.
-
-### Alerting process
-
-- Default alerting: Azure DevOps failed-run notifications to pipeline subscribers.
-- Optional channel alerting: enable Teams webhook notifications (`TEAMS_WEBHOOK_URL`) to push pass/fail summaries to engineering channels.
-- For noisy periods, use `TEAMS_NOTIFY_FAILURES_ONLY=true` to reduce alert fatigue.
-
-## Refresh preprod auth.json and Azure secret (runbook)
-
-Use this whenever preprod admin tests redirect back to sign-in or fail due to expired session state.
-
-1. Generate a fresh auth file locally from repo root:
-
-```bash
-npm run save:auth
-```
-
-2. Complete preprod sign-in in the launched browser and press ENTER in terminal.
-
-3. Verify root `auth.json` was updated and looks valid JSON.
-
-4. Base64 encode the file (single-line output):
-
-```bash
-base64 -i auth.json | tr -d '\n'
-```
-
-5. In Azure DevOps, open the pipeline/library variable where `AUTH_JSON_CONTENT` is defined.
-
-6. Replace `AUTH_JSON_CONTENT` value with the new base64 string and save.
-
-7. Re-run `Playwright - Preprod` job.
-
-Notes:
-
-- The pipeline restore step accepts either base64-encoded content or raw JSON, but base64 is recommended for safety in secret storage.
-- `AUTH_JSON_CONTENT` is consumed by all three Playwright jobs, so updating it refreshes the stored session used during pipeline runs.
+For common failures, root-cause hints, and step-by-step fixes, use `test/docs/TROUBLESHOOTING.md`.
 
 ## Environment variables
 
@@ -274,7 +239,7 @@ The Playwright config currently defines 13 projects:
 | `test-admin` | `test-preflight` | admin-focused specs (excludes check-flow + accessibility check specs) |
 | `test-check` | `test-setup` | `mtc-signin-and-check`, `mtc-signin-and-try-it-out` |
 | `test-accessibility` | `test-accessibility-setup` | `mtc-accessibility-check` |
-| `preprod-admin` | none | preprod specs using `auth.json` storage state |
+| `preprod-check` | none | `mtc-signin-and-check`, `mtc-signin-and-try-it-out` using `auth.json` storage state |
 
 ### Why preflight and setup exist
 
@@ -315,29 +280,43 @@ The pupil-flow PIN-generation specs (`mtc-signin-and-check` and `mtc-signin-and-
 
 Preprod admin uses DfE Sign-in with `auth.json` storage state. The setup flow uses fixed username/password credentials (`test-developer` then teacher), so it is wired only for dev/test.
 
-**Important: Preprod pupil limitation**
-
-Unlike dev and test, preprod cannot run the setup flow to add new pupils for each test run. This is because:
-- Dev/test use simple username/password login which allows the setup to sequentially sign in as test-developer → teacher → service-manager
-- Preprod uses DfE Sign-in (OAuth), which only permits a single pre-authenticated session in `auth.json`
-
-As a result, preprod can gradually exhaust its available test pupils. When the official check test runs, it consumes pupils. If you run tests multiple times or if the test data is not replenished, subsequent test runs may fail with **"No pupils found"** errors.
-
-**To prevent preprod test failures:**
-- Regularly check that test pupils are available on the preprod environment
-- Manually add new test pupils via the preprod admin UI when pupil numbers run low, or
-- Restart/reset the pupil population in preprod when necessary
-
-If preprod E2E tests fail with pupil-related errors (particularly in the try-it-out or official check flows), this is likely the cause. Check the preprod admin UI to verify that test pupils still exist before investigating other potential issues.
+For known preprod failure modes (including pupil exhaustion and auth expiry), see `test/docs/TROUBLESHOOTING.md`.
 
 ## Run commands
 
 From `test/pupil-hpa`:
 
+### Local vs pipeline commands (important)
+
+`npm test` is intentionally local-optimised and is not the same command path used by Azure pipeline jobs.
+
+- Local `npm test` runs three separate invocations to reduce cross-suite flakiness:
+  - `npm run test:core`
+  - `npm run test:accessibility:dev`
+  - `npm run test:accessibility:test`
+- Pipeline jobs in `azure-pipelines.yml` run `test:e2e:*` scripts (`test:e2e:dev`, `test:e2e:test`, `test:e2e:preprod`) because those scripts manage blob/JUnit output and report merge/publish steps used by Azure DevOps.
+
+Use `npm test` for day-to-day local confidence. Use `npm run test:e2e:dev` / `npm run test:e2e:test` / `npm run test:e2e:preprod` when you want behaviour closer to pipeline execution.
+
 ### Run all Playwright tests in this package
 
 ```bash
 npm test
+```
+
+This local command runs `test:core`, then `test:accessibility:dev`, then `test:accessibility:test` in separate Playwright processes.
+
+### Run core suite only (no accessibility projects)
+
+```bash
+npm run test:core
+```
+
+### Run isolated accessibility suites
+
+```bash
+npm run test:accessibility:dev
+npm run test:accessibility:test
 ```
 
 ### Run test e2e sequence with one merged HTML report
@@ -456,51 +435,7 @@ npx playwright show-report
 
 ## Common troubleshooting
 
-### Setup fails with "Add pupil is disabled"
-
-- Cause: check-window phase or HDF state makes pupil add unavailable for teacher role
-- Fix: run against an environment with add-pupil availability, or use a role/check-window state that permits adding pupils
-
-### Setup fails due to login prompt loops
-
-- Confirm credentials are valid:
-	- test-developer/password
-  - teacher credentials (`ADMIN_USERNAME`/`ADMIN_PASSWORD`, or fallback teacher2/password)
-- Run setup alone in headed mode to inspect redirects
-
-### E2E fails selecting a pupil checkbox
-
-- Cause is usually environment data timing or session interruptions in admin
-- Retry against a single project in headed mode for diagnosis
-
-### Preprod admin redirects back to sign-in
-
-- Refresh auth state with `npm run save:auth`
-- Confirm `auth.json` exists at repo root
-
-### Accessibility/API running against wrong environment
-
-- Set `PUPIL_BASE_URL`, `ADMIN_BASE_URL`, and `PUPIL_API_BASE_URL` explicitly before running
-
-### Browser binaries missing
-
-- Re-run `npx playwright install --with-deps`
-
-### PublishTestResults shows no XML files
-
-- Ensure CI run includes JUnit reporter via `PW_E2E_ARGS='--reporter=blob,junit,line'`
-- Confirm output path matches Azure task pattern: `test/pupil-hpa/test-results/*.xml`
-
-### Pipeline fails only in Preprod with auth redirects
-
-- Refresh `auth.json` and `AUTH_JSON_CONTENT` using the runbook above
-- Confirm the decoded secret restores a valid JSON file at repo root during pipeline run
-
-### Production release blocked by gate
-
-- Verify latest Playwright pipeline run succeeded for the expected branch
-- Verify gate endpoint/pipeline ID in release configuration is correct
-- If manual approval is configured, ensure an approver has explicitly approved
+See `test/docs/TROUBLESHOOTING.md` for failure symptoms, likely causes, and fix steps.
 
 ## Developer onboarding guide (trigger and interpret pipeline)
 
@@ -515,10 +450,7 @@ Use this quick-start for newly onboarded engineers.
 
 ### Interpret pipeline outcomes
 
-- Failed in setup jobs: investigate test-data/environment readiness first.
-- Failed in main specs: inspect Playwright traces/screenshots and failing assertions.
-- Failed publish step with passing tests: treat as reporting pipeline defect (JUnit path/reporter issue).
-- Preprod-only failures: validate `auth.json` freshness and available pupil data before code-level debugging.
+See `test/docs/TROUBLESHOOTING.md` for failure interpretation and triage paths.
 
 ### Escalation path
 
