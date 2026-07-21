@@ -351,6 +351,22 @@ async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<v
   await continueAdminSessionIfPrompted(page);
 }
 
+async function clickLinkOrFailUnavailable(page: Page, linkName: string): Promise<void> {
+  const targetLink = page.getByRole('link', { name: linkName });
+  if (await targetLink.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await targetLink.click();
+    return;
+  }
+
+  const heading = page.getByRole('heading', { name: linkName }).first();
+  const context = await heading
+    .locator('xpath=ancestor::li[1]')
+    .innerText()
+    .catch(() => 'No availability context found.');
+
+  throw new Error(`'${linkName}' is unavailable on this page. Context: ${context.replace(/\s+/g, ' ').trim()}`);
+}
+
 test('admin generates credentials, pupil completes try it out check flow', async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.endsWith('-check'), `Runs only on *-check projects. Current project: ${testInfo.project.name}`);
 
@@ -382,7 +398,7 @@ test('admin generates credentials, pupil completes try it out check flow', async
   await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
 
   // Step 3: Open official check PIN generation flow.
-  await page.getByRole('link', { name: 'Generate and view password and PINs for the try it out and official check' }).click();
+  await clickLinkOrFailUnavailable(page, 'Generate and view password and PINs for the try it out and official check');
   await page.getByRole('button', { name: 'Try it out check' }).click();
   const generatePinsTrigger = page
     .getByRole('link', { name: 'Generate password and PINs for the try it out check' })

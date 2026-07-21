@@ -235,6 +235,22 @@ async function getPupilsCompletedCount(page: Page): Promise<number> {
   throw new Error(`Unable to parse pupils completed count. Debug text: ${debugSnippet}`);
 }
 
+async function clickLinkOrFailUnavailable(page: Page, linkName: string): Promise<void> {
+  const targetLink = page.getByRole('link', { name: linkName });
+  if (await targetLink.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await targetLink.click();
+    return;
+  }
+
+  const heading = page.getByRole('heading', { name: linkName }).first();
+  const context = await heading
+    .locator('xpath=ancestor::li[1]')
+    .innerText()
+    .catch(() => 'No availability context found.');
+
+  throw new Error(`'${linkName}' is unavailable on this page. Context: ${context.replace(/\s+/g, ' ').trim()}`);
+}
+
 async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<void> {
   // Ensure we actually have at least one generated row with School Password + PIN.
   await continueAdminSessionIfPrompted(page);
@@ -299,12 +315,12 @@ test('admin generates credentials, pupil completes official check flow and admin
   await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
 
   // Step 3: Check current completion count before generating pins.
-  await page.getByRole('link', { name: 'See how many of your pupils have completed the official check' }).click();
+  await clickLinkOrFailUnavailable(page, 'See how many of your pupils have completed the official check');
   const numberOfPupilsCompleted = await getPupilsCompletedCount(page);
   await page.goBack();
 
   // Step 4-5: Open official check PIN generation flow.
-  await page.getByRole('link', { name: 'Generate and view password and PINs for the try it out and official check' }).click();
+  await clickLinkOrFailUnavailable(page, 'Generate and view password and PINs for the try it out and official check');
   await page.getByRole('button', { name: 'Official check' }).click();
   const generatePinsTrigger = page
     .getByRole('link', { name: 'Generate password and PINs for the official check' })
