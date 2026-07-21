@@ -16,7 +16,7 @@ pool:
 
 variables:
   - name: NODE_VERSION
-    value: '20.x'
+    value: '24.x'
 
 jobs:
   - job: PlaywrightDev
