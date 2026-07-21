@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -162,7 +163,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
                protected answerService: AnswerService,
                protected registerInputService: RegisterInputService,
                protected renderer: Renderer2,
-               protected auditEntryFactory: AuditEntryFactory) {
+               protected auditEntryFactory: AuditEntryFactory,
+               protected cdr: ChangeDetectorRef) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
     const accessArrangementsData = storageService.getAccessArrangements();
@@ -323,6 +325,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     if (!value) return
 
     this.addChar(value)
+    this.cdr.detectChanges()
 
     if (!this.isWarmUpQuestion) {
       this.registerInputService.storeEntry(
