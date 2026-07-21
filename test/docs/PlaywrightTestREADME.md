@@ -239,7 +239,7 @@ The Playwright config currently defines 13 projects:
 | `test-admin` | `test-preflight` | admin-focused specs (excludes check-flow + accessibility check specs) |
 | `test-check` | `test-setup` | `mtc-signin-and-check`, `mtc-signin-and-try-it-out` |
 | `test-accessibility` | `test-accessibility-setup` | `mtc-accessibility-check` |
-| `preprod-admin` | none | preprod specs using `auth.json` storage state |
+| `preprod-check` | none | `mtc-signin-and-check`, `mtc-signin-and-try-it-out` using `auth.json` storage state |
 
 ### Why preflight and setup exist
 
@@ -286,10 +286,37 @@ For known preprod failure modes (including pupil exhaustion and auth expiry), se
 
 From `test/pupil-hpa`:
 
+### Local vs pipeline commands (important)
+
+`npm test` is intentionally local-optimised and is not the same command path used by Azure pipeline jobs.
+
+- Local `npm test` runs three separate invocations to reduce cross-suite flakiness:
+  - `npm run test:core`
+  - `npm run test:accessibility:dev`
+  - `npm run test:accessibility:test`
+- Pipeline jobs in `azure-pipelines.yml` run `test:e2e:*` scripts (`test:e2e:dev`, `test:e2e:test`, `test:e2e:preprod`) because those scripts manage blob/JUnit output and report merge/publish steps used by Azure DevOps.
+
+Use `npm test` for day-to-day local confidence. Use `npm run test:e2e:dev` / `npm run test:e2e:test` / `npm run test:e2e:preprod` when you want behaviour closer to pipeline execution.
+
 ### Run all Playwright tests in this package
 
 ```bash
 npm test
+```
+
+This local command runs `test:core`, then `test:accessibility:dev`, then `test:accessibility:test` in separate Playwright processes.
+
+### Run core suite only (no accessibility projects)
+
+```bash
+npm run test:core
+```
+
+### Run isolated accessibility suites
+
+```bash
+npm run test:accessibility:dev
+npm run test:accessibility:test
 ```
 
 ### Run test e2e sequence with one merged HTML report
