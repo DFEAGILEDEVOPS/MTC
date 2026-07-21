@@ -1,5 +1,5 @@
 const moment = require('moment')
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('../../../lib/uuid')
 
 const checkWindowPresenter = require('../../../helpers/check-window-presenter')
 

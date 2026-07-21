@@ -1,5 +1,5 @@
 import { PupilFrozenService } from '../pupil-frozen/pupil-frozen.service'
-import * as uuid from 'uuid'
+import * as uuid from '../../lib/uuid'
 import { DiscretionaryRestartDataService } from './data-access/discretionary-restart.data.service'
 import { isNumber } from 'ramda-adjunct'
 

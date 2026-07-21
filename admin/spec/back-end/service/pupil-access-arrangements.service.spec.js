@@ -5,7 +5,7 @@ const pupilAccessArrangementsService = require('../../../services/pupil-access-a
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
 const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
-const uuid = require('uuid')
+const uuid = require('../../../lib/uuid')
 const moment = require('moment')
 
 const pupilAccessArrangementsMock = [

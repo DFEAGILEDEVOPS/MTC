@@ -19,7 +19,7 @@ const R = require('ramda')
 const logger = require('../services/log.service').getLogger()
 const sql = require('../services/data-access/sql.service')
 const TYPES = sql.TYPES
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('../lib/uuid')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 
 describe('sql.service:integration', () => {
