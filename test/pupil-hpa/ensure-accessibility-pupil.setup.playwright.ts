@@ -8,6 +8,7 @@ type EnvironmentName = keyof typeof environmentUrls;
 type AccessibilitySetupState = {
   env: EnvironmentName;
   upn: string;
+  pupilUrlSlug: string;
   firstName: string;
   lastName: string;
   /** "Lastname, Firstname" format as used by the admin pupil name displays */
@@ -264,7 +265,7 @@ async function addPupil(page: Page, adminBaseUrl: string, upn: string, firstName
   expect(await createdPupilLinks.count()).toBeGreaterThan(0);
 }
 
-async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: string, firstName: string, lastName: string): Promise<void> {
+async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: string, firstName: string, lastName: string): Promise<string> {
   // Navigate via the 'Enable access arrangements' overview page, matching the manual flow
   await page.goto(`${adminBaseUrl}/access-arrangements/overview`);
   await expect(page.getByRole('heading', { name: /Enable access arrangements for pupils who need them/i })).toBeVisible();
@@ -278,28 +279,72 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
 
   await expect(page).toHaveURL(/access-arrangements\/select-access-arrangements/, { timeout: 10000 });
 
-  // Check the 'Colour contrast' checkbox
-  const accessArrangementsList = page.locator('ul#accessArrangementsList li');
-  await expect(accessArrangementsList.first()).toBeVisible({ timeout: 10000 });
-  const listItemCount = await accessArrangementsList.count();
+  // The list can render progressively in dev; wait for Colour contrast row before scanning/checking.
+  await expect(page.locator('ul#accessArrangementsList')).toBeVisible({ timeout: 10000 });
+  await expect(
+    page.locator('ul#accessArrangementsList li label').filter({ hasText: /^\s*Colour contrast\s*$/i }).first(),
+  ).toBeVisible({ timeout: 10000 });
 
+  // Check the 'Colour contrast' checkbox. Prefer a direct label-based selector and
+  // fall back to list traversal for legacy layouts.
+  const colourContrastCheckbox = page.getByRole('checkbox', { name: /colour contrast/i }).first();
   let foundColourContrast = false;
-  for (let i = 0; i < listItemCount; i++) {
-    const item = accessArrangementsList.nth(i);
-    const itemText = await item.textContent({ timeout: 2000 }).catch(() => '');
 
-    if (itemText && /colour contrast/i.test(itemText)) {
-      const checkbox = item.locator('input[type="checkbox"]').first();
-      if (!(await checkbox.isChecked().catch(() => false))) {
-        await checkbox.check();
+  if (await colourContrastCheckbox.isVisible({ timeout: 5000 }).catch(() => false)) {
+    if (!(await colourContrastCheckbox.isChecked().catch(() => false))) {
+      await colourContrastCheckbox.check();
+    }
+    foundColourContrast = true;
+  } else {
+    const accessArrangementsList = page.locator('ul#accessArrangementsList li');
+    if (await accessArrangementsList.first().isVisible({ timeout: 5000 }).catch(() => false)) {
+      const listItemCount = await accessArrangementsList.count();
+
+      for (let i = 0; i < listItemCount; i++) {
+        const item = accessArrangementsList.nth(i);
+        const itemText = await item.textContent({ timeout: 2000 }).catch(() => '');
+
+        if (itemText && /colour contrast/i.test(itemText)) {
+          const checkbox = item.locator('input[type="checkbox"]').first();
+          if (!(await checkbox.isChecked().catch(() => false))) {
+            await checkbox.check();
+          }
+          foundColourContrast = true;
+          break;
+        }
       }
-      foundColourContrast = true;
-      break;
+    }
+
+    if (!foundColourContrast) {
+      const colourContrastLabel = page.locator('label').filter({ hasText: /^\s*Colour contrast\s*$/i }).first();
+      if (await colourContrastLabel.isVisible({ timeout: 3000 }).catch(() => false)) {
+        const forId = await colourContrastLabel.getAttribute('for');
+        let linkedCheckbox = forId
+          ? page.locator(`#${forId}`)
+          : page.locator('input[type="checkbox"]').filter({ has: colourContrastLabel }).first();
+
+        if ((await linkedCheckbox.count()) === 0) {
+          linkedCheckbox = colourContrastLabel.locator('xpath=preceding-sibling::input[@type="checkbox"][1]').first();
+        }
+
+        if ((await linkedCheckbox.count()) > 0) {
+          if (!(await linkedCheckbox.first().isChecked().catch(() => false))) {
+            await colourContrastLabel.click();
+          }
+          foundColourContrast = await linkedCheckbox.first().isChecked().catch(() => false);
+        }
+      }
     }
   }
 
   if (!foundColourContrast) {
-    throw new Error('Could not find Colour contrast option in access arrangements list');
+    const diagnostics = await page.locator('label, li').allInnerTexts().catch(() => [] as string[]);
+    const sample = diagnostics
+      .map((text) => text.replace(/\s+/g, ' ').trim())
+      .filter((text) => text.length > 0)
+      .slice(0, 20)
+      .join(' | ');
+    throw new Error(`Could not find Colour contrast option in access arrangements list. Visible options snapshot: ${sample || 'none'}`);
   }
 
   // Capture page state for diagnostics before looking for select element
@@ -367,31 +412,28 @@ async function assignColourContrastAccessArrangement(page: Page, adminBaseUrl: s
     throw new Error(`Found '${lastName}, ${firstName}' option but value was empty in access arrangements dropdown`);
   }
 
-  const selectVisible = await pupilSelect.isVisible().catch(() => false);
-  if (selectVisible) {
-    await pupilSelect.selectOption(optionValue);
-  } else {
-    await page.evaluate(({ value }) => {
-      // Try multiple possible selectors since the ID may vary
-      const select = 
-        document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container') ||
-        document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container-select') ||
-        document.querySelector<HTMLSelectElement>('select[name="pupilUrlSlug"]');
-      
-      if (!select) {
-        throw new Error('Pupil select control was not found in the DOM.');
-      }
+  await page.evaluate(({ value }) => {
+    // Use DOM assignment for this control because it may be hidden while still interactive.
+    const select = 
+      document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container') ||
+      document.querySelector<HTMLSelectElement>('select#pupil-autocomplete-container-select') ||
+      document.querySelector<HTMLSelectElement>('select[name="pupilUrlSlug"]');
+    
+    if (!select) {
+      throw new Error('Pupil select control was not found in the DOM.');
+    }
 
-      select.value = value;
-      select.dispatchEvent(new Event('input', { bubbles: true }));
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-    }, { value: optionValue });
-  }
+    select.value = value;
+    select.dispatchEvent(new Event('input', { bubbles: true }));
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  }, { value: optionValue });
 
   // Save
   await page.locator('button#save-access-arrangement').click();
   // After saving, the page may navigate to either /overview or /submit depending on workflow
   await expect(page).toHaveURL(/access-arrangements\/(overview|submit)/, { timeout: 15000 });
+
+  return optionValue;
 }
 
 async function writeAccessibilitySetupState(state: AccessibilitySetupState): Promise<void> {
@@ -426,7 +468,7 @@ test('create pupil with colour contrast access arrangement for accessibility che
   await addPupil(page, adminBaseUrl, generatedUpn, accessibilitySetupPupil.firstName, accessibilitySetupPupil.lastName);
 
   // 3) Assign colour contrast access arrangement to the new pupil
-  await assignColourContrastAccessArrangement(
+  const pupilUrlSlug = await assignColourContrastAccessArrangement(
     page,
     adminBaseUrl,
     accessibilitySetupPupil.firstName,
@@ -437,6 +479,7 @@ test('create pupil with colour contrast access arrangement for accessibility che
   await writeAccessibilitySetupState({
     env,
     upn: generatedUpn,
+    pupilUrlSlug,
     firstName: accessibilitySetupPupil.firstName,
     lastName: accessibilitySetupPupil.lastName,
     fullName: `${accessibilitySetupPupil.lastName}, ${accessibilitySetupPupil.firstName}`,
