@@ -1,8 +1,8 @@
-import { PsReportService } from './ps-report.service'
-import { type ILogger, MockLogger } from '../../common/logger'
-import { type IPsReportDataService } from './ps-report.data.service'
-import { type IOutputBinding } from '.'
-import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
+import { PsReportService } from './ps-report.service.js'
+import { type ILogger, MockLogger } from '../../common/logger.js'
+import { type IPsReportDataService } from './ps-report.data.service.js'
+import { type IOutputBinding } from './index.js'
+import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages.js'
 
 describe('PsReportService', () => {
   let sut: PsReportService

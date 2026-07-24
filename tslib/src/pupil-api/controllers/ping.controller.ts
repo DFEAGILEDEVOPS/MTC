@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import moment from 'moment'
-import { DefaultSecurityHeaders } from '../routes/default-security-headers'
-import { PingService } from '../services/ping.service'
+import { DefaultSecurityHeaders } from '../routes/default-security-headers.js'
+import { PingService } from '../services/ping.service.js'
 
 export class PingController {
   private readonly pingService: PingService

@@ -1,9 +1,9 @@
-import Redis, { type RedisOptions } from 'ioredis'
-import config from '../config'
-import * as Logger from '../common/logger'
-import { type RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
+import { Redis, type RedisOptions } from 'ioredis'
+import config from '../config.js'
+import * as Logger from '../common/logger.js'
+import { type RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata.js'
 import { isNil } from 'ramda'
-import { type ILogger } from '../common/logger'
+import { type ILogger } from '../common/logger.js'
 
 export interface IRedisService {
   /**

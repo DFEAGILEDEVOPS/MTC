@@ -13,8 +13,8 @@ class PupilReasonPage < SitePrism::Page
   section :sticky_banner, StickyBannerSection, '.govuk-sticky-banner-wrapper'
   section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
 
-  element :select_all_pupils, '#selectAll'
-  element :unselect_all_pupils, '#selectAll'
+  element :select_all_pupils, '#tickAllCheckboxes'
+  element :unselect_all_pupils, '#tickAllCheckboxes'
   section :pupil_list, 'tbody' do
     sections :rows, 'tr' do
       element :checkbox, 'input[type="checkbox"]'

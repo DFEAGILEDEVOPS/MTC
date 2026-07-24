@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { type Answer } from '../pupil-data.models'
+import { type Answer } from '../pupil-data.models.js'
 
 export const answers: readonly Answer[] = [
   {

@@ -1,7 +1,7 @@
 import moment from 'moment'
-import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
-import { type IDateTimeService } from '../../common/datetime.service'
-import { type IPinConfigProvider } from './pin-config-provider'
+import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator.js'
+import { type IDateTimeService } from '../../common/datetime.service.js'
+import { type IPinConfigProvider } from './pin-config-provider.js'
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   utcNow: jest.fn(),

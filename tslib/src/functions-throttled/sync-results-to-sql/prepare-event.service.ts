@@ -1,8 +1,8 @@
-import { type ITransactionRequest } from '../../sql/sql.service'
-import { type Audit, type DBQuestion } from './models'
+import { type ITransactionRequest } from '../../sql/sql.service.js'
+import { type Audit, type DBQuestion } from './models.js'
 import { TYPES } from 'mssql'
-import { EventService, type IEventService } from './event.service'
-import { type IQuestionService, QuestionService } from './question.service'
+import { EventService, type IEventService } from './event.service.js'
+import { type IQuestionService, QuestionService } from './question.service.js'
 
 export interface IPrepareEventService {
   prepareEvent (audit: Audit, checkCode: string, index: number): Promise<ITransactionRequest>

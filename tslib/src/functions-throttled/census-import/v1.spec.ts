@@ -1,13 +1,13 @@
 import { ConnectionPool } from 'mssql'
-import { CensusImportV1 } from './v1'
-import config from '../../config'
-import { type ICensusImportDataService } from './census-import.data.service'
-import { type IBlobService } from '../../azure/blob-service'
-import { type ILogger } from '../../common/logger'
-import { RedisServiceMock } from '../../caching/redis-service.mock'
-import { type IRedisService } from '../../caching/redis-service'
-import { type IJobDataService } from '../../services/data/job.data.service'
-import { JobStatusCode } from '../../common/job-status-code'
+import { CensusImportV1 } from './v1.js'
+import config from '../../config.js'
+import { type ICensusImportDataService } from './census-import.data.service.js'
+import { type IBlobService } from '../../azure/blob-service.js'
+import { type ILogger } from '../../common/logger.js'
+import { RedisServiceMock } from '../../caching/redis-service.mock.js'
+import { type IRedisService } from '../../caching/redis-service.js'
+import { type IJobDataService } from '../../services/data/job.data.service.js'
+import { JobStatusCode } from '../../common/job-status-code.js'
 
 const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() => ({
   deleteStagingTable: jest.fn(),

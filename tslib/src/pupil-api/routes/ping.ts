@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Request, Response } from 'express'
-import { PingController } from '../controllers/ping.controller'
+import { PingController } from '../controllers/ping.controller.js'
 
 export class PingRouter {
   router: Router

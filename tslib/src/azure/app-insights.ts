@@ -1,4 +1,4 @@
-import config from '../config'
+import config from '../config.js'
 import { isNil } from 'ramda'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const appInsights = require('applicationinsights')

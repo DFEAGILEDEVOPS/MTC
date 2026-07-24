@@ -1,9 +1,9 @@
-import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check'
-import { type CheckQuestion, type CompleteCheckAnswer, type CompleteCheckAuditEntry, type CompleteCheckInputEntry, type ValidCheck, InputEventType, AuditEntryType } from '../../schemas/check-schemas/validated-check'
+import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check.js'
+import { type CheckQuestion, type CompleteCheckAnswer, type CompleteCheckAuditEntry, type CompleteCheckInputEntry, type ValidCheck, InputEventType, AuditEntryType } from '../../schemas/check-schemas/validated-check.js'
 import { faker } from '@faker-js/faker'
 import moment from 'moment'
-import { type IUtilSubmitCheckConfig } from '.'
-import { type Answer } from '../../functions/check-marker/models'
+import { type IUtilSubmitCheckConfig } from './index.js'
+import { type Answer } from '../../functions/check-marker/models.js'
 
 export interface ICompletedCheckGeneratorService {
   create (preparedCheck: PreparedCheck, funcConfig?: IUtilSubmitCheckConfig): ValidCheck

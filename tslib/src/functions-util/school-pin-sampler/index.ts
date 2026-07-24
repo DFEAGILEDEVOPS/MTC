@@ -1,8 +1,8 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import moment from 'moment'
-import { SchoolPinSampler } from './school-pin-sampler'
+import { SchoolPinSampler } from './school-pin-sampler.js'
 import { performance } from 'perf_hooks'
-import config from '../../config'
+import config from '../../config.js'
 
 const functionName = 'util-school-pin-sampler'
 

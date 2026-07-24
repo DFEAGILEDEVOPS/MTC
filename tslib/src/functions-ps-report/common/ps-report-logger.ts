@@ -1,8 +1,8 @@
 import moment from 'moment'
-import { type IContextLike } from '../../common/ContextLike'
-import { type ILogger } from '../../common/logger'
-import { PsLogEntryFormatter } from './log-entry-formatter'
-import { type IPsReportLogEntry, type PsReportLogLevel, type PsReportSource } from './ps-report-log-entry'
+import { type IContextLike } from '../../common/ContextLike.js'
+import { type ILogger } from '../../common/logger.js'
+import { PsLogEntryFormatter } from './log-entry-formatter.js'
+import { type IPsReportLogEntry, type PsReportLogLevel, type PsReportSource } from './ps-report-log-entry.js'
 
 const formatter = new PsLogEntryFormatter()
 

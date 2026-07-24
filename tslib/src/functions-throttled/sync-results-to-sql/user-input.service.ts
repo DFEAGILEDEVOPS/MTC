@@ -1,5 +1,5 @@
-import { type ISqlService, SqlService } from '../../sql/sql.service'
-import { type UserInputTypeLookup } from './prepare-answers-and-inputs.data.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service.js'
+import { type UserInputTypeLookup } from './prepare-answers-and-inputs.data.service.js'
 
 export interface IUserInputService {
   getUserInputLookupTypeId (eventType: string): Promise<number | undefined>

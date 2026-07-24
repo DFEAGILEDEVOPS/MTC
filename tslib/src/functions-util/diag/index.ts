@@ -24,7 +24,7 @@ async function getBuildNumber (): Promise<string> {
   }
   try {
     // expects build.txt to be at the root of the dist folder
-    const targetFile = join(__dirname, '..', '..', 'build.txt')
+    const targetFile = join(process.cwd(), 'dist', 'build.txt')
     const result = await readFileAsync(targetFile)
     buildNumber = result.toString()
   } catch {

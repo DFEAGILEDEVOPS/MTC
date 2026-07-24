@@ -1,7 +1,7 @@
-import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service'
-import { type ITransactionRequest } from '../../sql/sql.service'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message.js'
+import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service.js'
+import { type ITransactionRequest } from '../../sql/sql.service.js'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
 
 export class BatchCheckNotifier {
   private readonly dataService: IBatchCheckNotifierDataService

@@ -2,9 +2,9 @@
 
 import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { CensusImportV1 } from './v1'
+import { CensusImportV1 } from './v1.js'
 import * as mssql from 'mssql'
-import config from '../../config'
+import config from '../../config.js'
 
 app.storageBlob('census-import', {
   handler: censusImportFunction,
