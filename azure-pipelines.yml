@@ -53,12 +53,18 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          # Store secret in temp file to avoid bash injection from special characters
+          cat > /tmp/auth_content.txt << 'EOF'
+          $(AUTH_JSON_CONTENT)
+          EOF
+          
+          if base64 -d < /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
-            printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
+            cat /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json'
             echo 'Restored raw auth.json'
           fi
+          rm -f /tmp/auth_content.txt
         displayName: 'Restore auth.json from secret'
 
       - script: |
@@ -138,12 +144,18 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          # Store secret in temp file to avoid bash injection from special characters
+          cat > /tmp/auth_content.txt << 'EOF'
+          $(AUTH_JSON_CONTENT)
+          EOF
+          
+          if base64 -d < /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
-            printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
+            cat /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json'
             echo 'Restored raw auth.json'
           fi
+          rm -f /tmp/auth_content.txt
         displayName: 'Restore auth.json from secret'
 
       - script: |
@@ -224,12 +236,18 @@ jobs:
         displayName: 'Install Playwright browsers'
 
       - script: |
-          if printf '%s' '$(AUTH_JSON_CONTENT)' | base64 -d > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
+          # Store secret in temp file to avoid bash injection from special characters
+          cat > /tmp/auth_content.txt << 'EOF'
+          $(AUTH_JSON_CONTENT)
+          EOF
+          
+          if base64 -d < /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json' 2>/dev/null; then
             echo 'Restored base64-encoded auth.json'
           else
-            printf '%s' '$(AUTH_JSON_CONTENT)' > '$(Build.SourcesDirectory)/auth.json'
+            cat /tmp/auth_content.txt > '$(Build.SourcesDirectory)/auth.json'
             echo 'Restored raw auth.json'
           fi
+          rm -f /tmp/auth_content.txt
         displayName: 'Restore auth.json from secret'
 
       - script: |
