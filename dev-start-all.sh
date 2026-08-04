@@ -72,13 +72,23 @@ escape_for_applescript() {
   printf '%s' "$input"
 }
 
+build_service_command() {
+  local title="$1"
+  local workdir="$2"
+  local start_cmd="$3"
+
+  cat <<EOF
+cd "$workdir" && export NVM_DIR="\$HOME/.nvm" && [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh" --no-use && node_version=\$(cat .nvmrc 2>/dev/null || cat "$script_dir/.nvmrc" 2>/dev/null || true) && if [[ -z "\$node_version" ]]; then echo 'ERROR: No .nvmrc found in service or repo root.' >&2; exit 1; fi && nvm install "\$node_version" >/dev/null && nvm use "\$node_version" && clear && printf '\033]1;%s\007\033]2;%s\007' "$title" "$title" && echo "Starting $title in \$(pwd) with Node \$node_version" && node -p "require('./package.json').name" && $start_cmd
+EOF
+}
+
 open_terminal_window() {
   local title="$1"
   local workdir="$2"
   local start_cmd="$3"
 
   local cmd
-  cmd="cd \"$workdir\" && export NVM_DIR=\"\$HOME/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" --no-use && nvm use && clear && printf '\033]1;%s\007\033]2;%s\007' '$title' '$title' && echo 'Starting $title in $workdir' && $start_cmd"
+  cmd="$(build_service_command "$title" "$workdir" "$start_cmd")"
 
   local escaped
   escaped="$(escape_for_applescript "$cmd")"
@@ -97,7 +107,7 @@ open_iterm_tab() {
   local start_cmd="$3"
 
   local cmd
-  cmd="cd \"$workdir\" && export NVM_DIR=\"\$HOME/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" --no-use && nvm use && clear && printf '\033]1;%s\007\033]2;%s\007' '$title' '$title' && echo 'Starting $title in $workdir' && $start_cmd"
+  cmd="$(build_service_command "$title" "$workdir" "$start_cmd")"
 
   local escaped
   escaped="$(escape_for_applescript "$cmd")"
