@@ -1,11 +1,11 @@
 import { TYPES } from 'mssql'
-import { SyncResultsService } from './sync-results.service'
-import { mockCompletionCheckMessage } from './mocks/completed-check.message'
-import { ConsoleLogger } from '../../common/logger'
-import { SyncResultsDataService } from './sync-results.data.service'
-import { type ISqlService, type ITransactionRequest } from '../../sql/sql.service'
-import { RedisServiceMock } from '../../caching/redis-service.mock'
-import { type IRedisService } from '../../caching/redis-service'
+import { SyncResultsService } from './sync-results.service.js'
+import { mockCompletionCheckMessage } from './mocks/completed-check.message.js'
+import { ConsoleLogger } from '../../common/logger.js'
+import { SyncResultsDataService } from './sync-results.data.service.js'
+import { type ISqlService, type ITransactionRequest } from '../../sql/sql.service.js'
+import { RedisServiceMock } from '../../caching/redis-service.mock.js'
+import { type IRedisService } from '../../caching/redis-service.js'
 jest.mock('./sync-results.data.service')
 
 const mockQuestionData = new Map()

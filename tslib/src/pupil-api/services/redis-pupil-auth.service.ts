@@ -1,12 +1,12 @@
 import * as R from 'ramda'
-import * as moment from 'moment'
-import type { IRedisService } from './redis.service'
-import { RedisService } from './redis.service'
-import config from '../config'
-import { ServiceBusQueueService } from '../../azure/service-bus.queue.service'
-import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
-import { PingService } from './ping.service'
-import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names'
+import moment from 'moment'
+import type { IRedisService } from './redis.service.js'
+import { RedisService } from './redis.service.js'
+import config from '../config.js'
+import { ServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
+import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
+import { PingService } from './ping.service.js'
+import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names.js'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>

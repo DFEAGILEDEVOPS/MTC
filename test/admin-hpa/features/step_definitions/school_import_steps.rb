@@ -1,3 +1,11 @@
+def school_import_download_dir
+  File.expand_path('../../data/download', __dir__)
+end
+
+def school_import_download_file (name)
+  File.join(school_import_download_dir, name)
+end
+
 Given(/^I have imported a csv with schools$/) do
   @school_import = File.expand_path("#{File.dirname(__FILE__)}/../../data/school-data.csv")
   step 'I have signed in with service-manager'
@@ -24,8 +32,8 @@ And(/^closed schools should not be imported$/) do
     expect(SqlDbHelper.find_school_by_urn(urn)).to be_nil
   end
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   closed_urns_array.each do |urn|
@@ -57,8 +65,8 @@ Then(/^I should see that unique schools are added$/) do
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
   wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed with errors')}
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   @output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   expect(SqlDbHelper.find_school_by_urn(CSV.parse(File.read(@school_import))[2][0])).to_not be_nil
@@ -86,8 +94,8 @@ Then(/^I should get an error saying the csv is incorrect$/) do
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
   wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Failed')}
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   expect(output_hash[:error].map {|x| x.split('Z ').last}).to include "Headers \"URN\", \"LA (code)\", \"EstablishmentNumber\", \"EstablishmentName\", \"TypeOfEstablishment (code)\", \"TypeOfEstablishment (name)\", \"StatutoryLowAge\", \"StatutoryHighAge\", \"EstablishmentStatus (code)\", \"EstablishmentTypeGroup (code)\" not found"
@@ -107,8 +115,8 @@ Then(/^I should get an error stating that leaCode can not be null$/) do
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
   wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed')}
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   urns = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
@@ -132,8 +140,8 @@ Then(/^I should get an error stating that estabCode can not be null$/) do
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
   wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed')}
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   urns = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
@@ -157,8 +165,8 @@ Then(/^I should get an error stating that URN can not be null$/) do
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
   wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed')}
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   expect(output_hash[:output].map {|x| x.split('Z ').last}).to include "school-import: Excluding school : urn is required"
@@ -180,8 +188,8 @@ Then(/^I should get an error stating that school name can not be null$/) do
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
   wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed')}
   view_jobs_page.job_history.rows.first.outputs.click
-  zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
-  destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
+  zip_path = school_import_download_file('job-output.zip')
+  destination = school_import_download_dir
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
   urns = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact

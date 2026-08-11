@@ -1,5 +1,5 @@
-import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider'
-import { type IRandomGenerator, RandomGenerator } from './random-generator'
+import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider.js'
+import { type IRandomGenerator, RandomGenerator } from './random-generator.js'
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
   private readonly configProvider: IPinConfigProvider

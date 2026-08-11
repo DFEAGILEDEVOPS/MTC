@@ -1,20 +1,20 @@
 import * as R from 'ramda'
 import { parallelLimit } from 'async'
-import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import { ServiceBusClient, type ServiceBusMessage, type ServiceBusSender } from '@azure/service-bus'
 
-import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
 import {
   type MarkedCheck,
   type ValidatedCheck
-} from '../sync-results-to-sql/models'
-import { type UnsynchronisedCheck } from './models'
-import { type MarkedCheckTableEntity } from '../../schemas/models'
-import { CompressionService, type ICompressionService } from '../../common/compression-service'
-import config from '../../config'
-import { SyncResultsInitDataService, type ISyncResultsInitDataService } from './sync-results-init-data.service'
-import { type AzureTableEntity, type ITableService, TableService } from '../../azure/table-service'
+} from '../sync-results-to-sql/models.js'
+import { type UnsynchronisedCheck } from './models.js'
+import { type MarkedCheckTableEntity } from '../../schemas/models.js'
+import { CompressionService, type ICompressionService } from '../../common/compression-service.js'
+import { createUuid } from '../../common/uuid.js'
+import config from '../../config.js'
+import { SyncResultsInitDataService, type ISyncResultsInitDataService } from './sync-results-init-data.service.js'
+import { type AzureTableEntity, type ITableService, TableService } from '../../azure/table-service.js'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -133,7 +133,7 @@ export class SyncResultsInitService {
     if (process.env.NODE_ENV === 'production') {
       return check.checkCode
     }
-    return uuidv4()
+    return createUuid()
   }
 
   private logProgress (meta: MetaResult): void {

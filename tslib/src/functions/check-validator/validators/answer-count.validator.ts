@@ -1,5 +1,5 @@
-import config from '../../../config'
-import { type ISubmittedCheckValidator, type CheckValidationResult } from './validator-types'
+import config from '../../../config.js'
+import { type ISubmittedCheckValidator, type CheckValidationResult } from './validator-types.js'
 
 export class AnswerCountValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {

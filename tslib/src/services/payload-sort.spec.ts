@@ -1,4 +1,4 @@
-import { payloadSort as sut } from './payload-sort'
+import { payloadSort as sut } from './payload-sort.js'
 
 describe('payloadSort', () => {
   test('it sorts on clientTimestamp', () => {

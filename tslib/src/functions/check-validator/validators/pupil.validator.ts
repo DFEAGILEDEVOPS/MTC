@@ -1,5 +1,5 @@
-import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types'
-const { isObj } = require('ramda-adjunct')
+import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types.js'
+import * as RA from 'ramda-adjunct'
 
 export class PupilValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {
@@ -8,7 +8,7 @@ export class PupilValidator implements ISubmittedCheckValidator {
         message: 'pupil property missing'
       }
     }
-    if (isObj(check.pupil) === false) {
+    if (RA.isObj(check.pupil) === false) {
       return {
         message: 'pupil property is not an object'
       }

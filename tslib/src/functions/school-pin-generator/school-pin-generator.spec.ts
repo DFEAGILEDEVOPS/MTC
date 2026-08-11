@@ -1,6 +1,6 @@
-import { SchoolPinGenerator } from './school-pin-generator'
-import { type IPinConfigProvider } from './pin-config-provider'
-import { type IRandomGenerator } from './random-generator'
+import { SchoolPinGenerator } from './school-pin-generator.js'
+import { type IPinConfigProvider } from './pin-config-provider.js'
+import { type IRandomGenerator } from './random-generator.js'
 
 let sut: SchoolPinGenerator
 const allowedWords = new Set(['foo', 'bar', 'baz', 'qix', 'mix'])

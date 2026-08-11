@@ -1,5 +1,5 @@
-import { ServiceBusQueueService, type IServiceBusQueueService } from '../../azure/service-bus.queue.service'
-import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names'
+import { ServiceBusQueueService, type IServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
+import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names.js'
 
 export interface IPupilFeedbackService {
   putFeedbackOnQueue(payload: any): Promise<void>

@@ -1,7 +1,6 @@
 import moment from 'moment'
-import { type IPsReportLogEntry, PsReportSource } from './ps-report-log-entry'
-import { PsLogEntryFormatter } from './log-entry-formatter'
-import { v4 as uuidv4 } from 'uuid'
+import { type IPsReportLogEntry, PsReportSource } from './ps-report-log-entry.js'
+import { PsLogEntryFormatter } from './log-entry-formatter.js'
 
 let sut: PsLogEntryFormatter
 
@@ -11,7 +10,7 @@ describe('log entry formatter', () => {
   })
 
   test('returns formatted string', () => {
-    const invocationId = uuidv4()
+    const invocationId = '11111111-2222-3333-4444-555555555555'
     const message: IPsReportLogEntry = {
       generatedAt: moment('2022-03-18 14:43:02'),
       message: 'foo-bar',

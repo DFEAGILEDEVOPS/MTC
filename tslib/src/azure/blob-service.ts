@@ -1,5 +1,5 @@
 import { BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters, BlobSASPermissions, type ContainerClient } from '@azure/storage-blob'
-import config from '../config'
+import config from '../config.js'
 import moment from 'moment'
 
 export interface IBlobService {

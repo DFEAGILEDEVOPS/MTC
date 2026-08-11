@@ -1,5 +1,5 @@
-import { CheckConfigValidator } from './check-config.validator'
-import { type ICheckValidationError } from './validator-types'
+import { CheckConfigValidator } from './check-config.validator.js'
+import { type ICheckValidationError } from './validator-types.js'
 
 let sut: CheckConfigValidator
 

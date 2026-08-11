@@ -1,6 +1,6 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
-import { CompressionService } from '../../common/compression-service'
-import config from '../../config'
+import { CompressionService } from '../../common/compression-service.js'
+import config from '../../config.js'
 
 const svc = new CompressionService()
 

@@ -1,7 +1,7 @@
 import { app, output, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import config from '../../config'
-import { type INewSchoolModel, SchoolApi } from '../create-school/school-api'
+import config from '../../config.js'
+import { type INewSchoolModel, SchoolApi } from '../create-school/school-api.js'
 
 const functionName = 'util-create-school'
 

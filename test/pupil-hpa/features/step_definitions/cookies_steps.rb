@@ -14,18 +14,38 @@ When(/^the data sync function has run$/) do
   (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_check(@check_code)['complete'] == true}) unless @check_code.nil?
   response = FunctionsHelper.sync_check_code(@check_code)
   expect(response.code).to eql 202
-  sleep 60
+  check_id = SqlDbHelper.get_check_id(@check_code)
+  wait_until(ENV['WAIT_TIME'].to_i, 2) { !SqlDbHelper.get_check_result(check_id).nil? }
 end
 
 When(/^the data sync function has run for a check$/) do
   (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_check(@check_code)['complete'] == true}) unless @check_code.nil?
+  SqlDbHelper.wait_for_received_check(@check_code)
+  check_id = SqlDbHelper.get_check_id(@check_code)
+  expect(check_id).to_not be_nil
+
+  # Sync can run before dependent entities are available; retry trigger until checkResult is present.
   response = FunctionsHelper.sync_check_code(@check_code)
   expect(response.code).to eql 202
+  wait_until(ENV['WAIT_TIME'].to_i, 2) do
+    check_result = SqlDbHelper.get_check_result(check_id)
+    next true unless check_result.nil?
+
+    retry_response = FunctionsHelper.sync_check_code(@check_code)
+    retry_response.code == 202
+    false
+  end
 end
 
 Then(/^the device cookie is stored$/) do
   mtc_device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until SqlDbHelper.get_device_information(mtc_device_cookie[:value]) != nil }
+  expect(mtc_device_cookie).to_not be_nil
+
+  # Wait until sync has persisted this check into results before checking userDevice.
+  check_id = SqlDbHelper.get_check_id(@check_code)
+  wait_until(ENV['WAIT_TIME'].to_i, 2) { !SqlDbHelper.get_check_result(check_id).nil? }
+
+  wait_until(ENV['WAIT_TIME'].to_i, 2) { !SqlDbHelper.get_device_information(mtc_device_cookie[:value]).nil? }
   db_device_info = SqlDbHelper.get_device_information(mtc_device_cookie[:value])
   expect(db_device_info).to_not be_nil
 end

@@ -1,12 +1,12 @@
-import { type SubmittedCheckMessage } from '../../schemas/models'
-import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check'
-import { type ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
-import { CompressionService, type ICompressionService } from '../../common/compression-service'
-import { type IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
-import { type IUtilSubmitCheckConfig } from './index'
-import { type ILogger } from '../../common/logger'
-import { type ValidCheck } from '../../schemas/check-schemas/validated-check'
-import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
+import { type SubmittedCheckMessage } from '../../schemas/models.js'
+import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check.js'
+import { type ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service.js'
+import { CompressionService, type ICompressionService } from '../../common/compression-service.js'
+import { type IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service.js'
+import { type IUtilSubmitCheckConfig } from './index.js'
+import { type ILogger } from '../../common/logger.js'
+import { type ValidCheck } from '../../schemas/check-schemas/validated-check.js'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion.js'
 
 export class FakeCompletedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService

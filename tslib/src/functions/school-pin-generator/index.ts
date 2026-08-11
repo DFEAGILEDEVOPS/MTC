@@ -1,6 +1,6 @@
 import { app, type Timer, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { SchoolPinReplenishmnentService } from './school-pin-replenishment.service'
+import { SchoolPinReplenishmnentService } from './school-pin-replenishment.service.js'
 
 const functionName = 'school-pin-generator'
 
