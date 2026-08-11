@@ -1,4 +1,4 @@
-const uuid = require('uuid')
+const uuid = require('../../../lib/uuid')
 const sut = require('../../../services/organisation-bulk-upload.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')

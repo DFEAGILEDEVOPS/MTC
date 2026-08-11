@@ -145,19 +145,35 @@ export class SyncResultsInitService {
     this.logger.info(`${functionName} ${meta.messagesSent} checks done ${progressPercent}% complete in ${elapsedTimeMinutes} mins, rate is ${ratePerMinute} / minute, estimated completion at ${estFinishTime.toISOString()}`)
   }
 
-  private async processCheck (check: UnsynchronisedCheck, sbSender: ServiceBusSender, meta: MetaResult): Promise<void> {
-    const receivedCheckPromise = this.getReceivedCheck(check)
-    const markedCheckPromise = this.getMarkedCheck(check)
-    const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
-    const validatedCheck = this.transformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
-    const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
-
-    const messageBody = {
-      validatedCheck,
-      markedCheck
+  private isResourceNotFoundError (error: unknown): boolean {
+    if (typeof error !== 'object' || error === null) {
+      return false
     }
 
+    const err = error as { statusCode?: number, code?: string }
+    return err.statusCode === 404 || err.code === 'ResourceNotFound'
+  }
+
+  private extractErrorMessage (error: unknown): string {
+    if (error instanceof Error) {
+      return error.message
+    }
+    return 'unknown error'
+  }
+
+  private async processCheck (check: UnsynchronisedCheck, sbSender: ServiceBusSender, meta: MetaResult): Promise<void> {
     try {
+      const receivedCheckPromise = this.getReceivedCheck(check)
+      const markedCheckPromise = this.getMarkedCheck(check)
+      const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
+      const validatedCheck = this.transformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
+      const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
+
+      const messageBody = {
+        validatedCheck,
+        markedCheck
+      }
+
       const msgId = this.generateMessageId(check)
       const message: ServiceBusMessage = {
         body: messageBody,
@@ -170,11 +186,14 @@ export class SyncResultsInitService {
         this.logProgress(meta)
       }
     } catch (error) {
-      let errorMessage = 'unknown error'
-      if (error instanceof Error) {
-        errorMessage = error.message
+      const errorMessage = this.extractErrorMessage(error)
+      if (this.isResourceNotFoundError(error)) {
+        const partitionKey = check.schoolUUID?.toLowerCase()
+        const rowKey = check.checkCode?.toLowerCase()
+        this.logger.error(`${functionName} missing table entity for checkCode ${check.checkCode} schoolUUID ${check.schoolUUID} partitionKey ${partitionKey} rowKey ${rowKey} ERROR: ${errorMessage}`)
+      } else {
+        this.logger.error(`${functionName} failed to process checkCode ${check.checkCode} ERROR: ${errorMessage}`)
       }
-      this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${errorMessage}`)
       meta.messagesErrored += 1
     }
   }

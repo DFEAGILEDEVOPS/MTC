@@ -1,4 +1,4 @@
-const uuid = require('uuid')
+const uuid = require('../../../lib/uuid')
 const httpMocks = require('node-mocks-http')
 
 const controller = require('../../../controllers/service-manager')

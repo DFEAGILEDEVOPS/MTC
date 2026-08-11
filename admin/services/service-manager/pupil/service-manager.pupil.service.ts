@@ -1,6 +1,6 @@
 import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
-import { validate } from 'uuid'
+import { validate } from '../../../lib/uuid'
 import moment from 'moment'
 import { type ServiceManagerSchoolResult } from '../school/school.data.service'
 import { AnnulmentType } from '../pupil-annulment/pupil-annulment.service'

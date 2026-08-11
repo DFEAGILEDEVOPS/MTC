@@ -5,7 +5,7 @@ const chalk = require('chalk')
 const commandLineArgs = require('command-line-args')
 const csv = require('fast-csv')
 const fs = require('fs-extra')
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('../lib/uuid')
 const winston = require('winston')
 
 const insertStatements = []

@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('../lib/uuid')
 const moment = require('moment')
 const csv = require('fast-csv')
 const azureBlobDataService = require('./data-access/azure-blob.data.service')
