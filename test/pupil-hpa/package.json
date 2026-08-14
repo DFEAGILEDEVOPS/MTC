@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "bash -c 'EXIT_CODE=0; npm run test:core || EXIT_CODE=$?; npm run test:accessibility:dev || EXIT_CODE=$?; npm run test:accessibility:test || EXIT_CODE=$?; exit $EXIT_CODE'",
+    "test:core": "playwright test --project=dev-preflight --project=dev-setup --project=dev-admin --project=dev-check --project=test-preflight --project=test-setup --project=test-admin --project=test-check --project=preprod-check",
+    "test:accessibility:dev": "playwright test --project=dev-accessibility --workers=1",
+    "test:accessibility:test": "playwright test --project=test-accessibility --workers=1",
     "test:api": "playwright test api-request-context.remote.playwright.spec.ts",
     "test:api:remote": "PUPIL_API_BASE_URL=https://testauth-as-mtc.azurewebsites.net playwright test api-request-context.remote.playwright.spec.ts",
     "test:api:ping": "playwright test api-request-context.remote.playwright.spec.ts --grep 'GET /ping returns 200 and JSON|POST /auth with invalid credentials returns 401' --reporter=line",

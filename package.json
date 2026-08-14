@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "save:auth": "ts-node scripts/saveAuth.ts"
+    "save:auth": "ts-node scripts/saveAuth.ts",
+    "dev:start-all": "./dev-start-all.sh",
+    "dev:start-all:no-setup": "./dev-start-all.sh --no-setup"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

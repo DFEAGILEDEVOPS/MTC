@@ -142,6 +142,10 @@ export default defineConfig({
     //preprod (with auth)
     {
         name: 'preprod-check',
+      testMatch: [
+        'mtc-signin-and-check.playwright.spec.ts',
+        'mtc-signin-and-try-it-out.playwright.spec.ts',
+      ],
         use: { 
             baseURL: 'https://pp-admin.multiplication-tables-check.service.gov.uk',
             storageState: authStorageState,
