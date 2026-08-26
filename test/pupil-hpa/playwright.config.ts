@@ -145,6 +145,7 @@ export default defineConfig({
       testMatch: [
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
+        'api-request-context.remote.playwright.spec.ts',
       ],
         use: { 
             baseURL: 'https://pp-admin.multiplication-tables-check.service.gov.uk',

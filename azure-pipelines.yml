@@ -77,6 +77,8 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          BUILD_BUILDNUMBER: '$(Build.BuildNumber)'
+          BUILD_SOURCEVERSION: '$(Build.SourceVersion)'
           TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
@@ -168,6 +170,8 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          BUILD_BUILDNUMBER: '$(Build.BuildNumber)'
+          BUILD_SOURCEVERSION: '$(Build.SourceVersion)'
           TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
@@ -260,6 +264,8 @@ jobs:
           ADMIN_BASE_URL: '$(ADMIN_BASE_URL)'
           PUPIL_BASE_URL: '$(PUPIL_BASE_URL)'
           PUPIL_API_BASE_URL: '$(PUPIL_API_BASE_URL)'
+          BUILD_BUILDNUMBER: '$(Build.BuildNumber)'
+          BUILD_SOURCEVERSION: '$(Build.SourceVersion)'
           TEAMS_WEBHOOK_URL: '$(TEAMS_WEBHOOK_URL)'
 
       - task: PublishTestResults@2
