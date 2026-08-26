@@ -1,4 +1,4 @@
-import { test, expect, type Page, type TestInfo } from '@playwright/test';
+import { test, expect, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { environmentUrls } from './playwright.config';
 
 type EnvironmentName = keyof typeof environmentUrls;
@@ -158,18 +158,40 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
   }
 }
 
+async function clickIntroButton(button: Locator): Promise<void> {
+  // The pupil SPA swaps intro screens via *ngSwitch, so a button that was visible a moment ago
+  // can be detached before or during the click. Treat "gone from the DOM" as success.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await button.click({ timeout: 3000 });
+      break;
+    } catch (error) {
+      if ((await button.count()) === 0) {
+        return;
+      }
+      if (attempt === 2) {
+        throw error;
+      }
+    }
+  }
+
+  // Do not look for the next screen until this one has actually gone, otherwise the
+  // still-rendered button gets clicked a second time and detaches mid-click.
+  await button.waitFor({ state: 'detached', timeout: 5000 }).catch(() => undefined);
+}
+
 async function clickThroughNextUntilStartNow(page: Page, maxNextClicks = 10): Promise<void> {
   const startNowButton = page.getByRole('button', { name: 'Start now', exact: true });
 
   for (let i = 0; i <= maxNextClicks; i += 1) {
     if (await startNowButton.isVisible({ timeout: 400 }).catch(() => false)) {
-      await startNowButton.click();
+      await clickIntroButton(startNowButton);
       return;
     }
 
     const nextButton = page.getByRole('button', { name: 'Next', exact: true });
     if (await nextButton.isVisible({ timeout: 400 }).catch(() => false)) {
-      await nextButton.click();
+      await clickIntroButton(nextButton);
       continue;
     }
 
