@@ -257,6 +257,25 @@ async function getPupilsCompletedCount(page: Page): Promise<number> {
   throw new Error(`Unable to parse pupils completed count. Debug text: ${debugSnippet}`);
 }
 
+async function getPupilStatusSummary(page: Page): Promise<string> {
+  const bodyText = await page.locator('body').innerText().catch(() => '');
+  const normalized = bodyText.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  const cards = normalized.match(/Pupils (?:not started|in progress|completed)\s+[\d,]+\s+of\s+[\d,]+\s+pupils/gi) ?? [];
+
+  // Status tables live inside collapsed <details>, so read textContent rather than innerText.
+  const statuses = await page
+    .locator('table#pupil-status tbody tr td:last-child')
+    .allTextContents()
+    .catch(() => [] as string[]);
+
+  const statusList = statuses
+    .map((status) => status.replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .join(', ');
+
+  return `${cards.join(' | ') || 'no status cards found'} :: statuses: ${statusList || 'none listed'}`;
+}
+
 async function clickLinkOrFailUnavailable(page: Page, linkName: string): Promise<void> {
   const targetLink = page.getByRole('link', { name: linkName });
   if (await targetLink.isVisible({ timeout: 5000 }).catch(() => false)) {
@@ -311,8 +330,8 @@ test('admin generates credentials, pupil completes official check flow and admin
 
   const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
 
-  // Full flow can take a few minutes due to timed question pages.
-  test.setTimeout(8 * 60 * 1000);
+  // Full flow can take a few minutes due to timed question pages, plus async check processing at the end.
+  test.setTimeout(11 * 60 * 1000);
 
   // Step 1-2: Open admin and sign in only if we are not already authenticated.
   await page.goto(`${adminBaseUrl}/sign-in`);
@@ -405,18 +424,30 @@ test('admin generates credentials, pupil completes official check flow and admin
   // Step 18: Verify the completion count has increased by 1.
   await page.getByRole('link', { name: 'See how many of your pupils have completed the official check' }).click();
   const expectedCompletedCount = numberOfPupilsCompleted + 1;
-  await expect
-    .poll(
-      async () => {
-        await page.reload();
-        return getPupilsCompletedCount(page);
-      },
-      {
-        timeout: 45000,
-        intervals: [1000, 2000, 3000],
-        message: `Expected pupils completed count to reach ${expectedCompletedCount}`,
-      },
-    )
-    .toBe(expectedCompletedCount);
-  await getPupilsCompletedCount(page);
+
+  // Marking a check 'Complete' happens asynchronously (service bus + check processing functions),
+  // so allow well beyond the request/response time of the admin page.
+  try {
+    await expect
+      .poll(
+        async () => {
+          await page.reload();
+          return getPupilsCompletedCount(page);
+        },
+        {
+          timeout: 180000,
+          intervals: [2000, 5000, 10000],
+          message: `Expected pupils completed count to reach ${expectedCompletedCount}`,
+        },
+      )
+      .toBe(expectedCompletedCount);
+  } catch (error) {
+    const summary = await getPupilStatusSummary(page);
+    throw new Error(
+      `Expected pupils completed count to reach ${expectedCompletedCount}, but the submitted check was never marked 'Complete'. ` +
+      `This usually means the check processing pipeline (service bus / check-marker function) is not running in this environment. ` +
+      `Pupil status page shows: ${summary}`,
+      { cause: error },
+    );
+  }
 });
