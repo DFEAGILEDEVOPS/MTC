@@ -175,6 +175,7 @@ describe('PractiseQuestionComponent', () => {
         const event = createPointerEvent('mouse');
         component.buttonBackspace.nativeElement.dispatchEvent(event);
         expect(component.answer).toBe('11');
+        expect(fixture.nativeElement.querySelector('#js-answer').innerText).toBe('11');
       });
       it ('submits the answer when Enter is clicked', () => {
         const onSubmitSpy = spyOn(component, 'onSubmit');

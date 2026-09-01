@@ -344,6 +344,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   onClickBackspace (event: Event) { // eslint-disable-line @typescript-eslint/no-unused-vars
     this.deleteChar()
+    this.cdr.detectChanges()
   }
 
   /**

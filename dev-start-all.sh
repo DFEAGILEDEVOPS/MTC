@@ -160,11 +160,11 @@ else
   echo "iTerm AppleScript unavailable. Opening Terminal sessions for services..."
 fi
 
-open_service "Pupil SPA" "$script_dir/pupil-spa" "yarn start"
-open_service "Pupil API" "$script_dir/pupil-api" "yarn start"
-open_service "Admin" "$script_dir/admin" "yarn start"
-open_service "Func Consumption" "$script_dir/func-consumption" "yarn start"
-open_service "Func PS Report" "$script_dir/func-ps-report" "yarn start"
-open_service "Func Throttled" "$script_dir/func-throttled" "yarn start"
+open_service "Pupil SPA" "$script_dir/pupil-spa" "yarn build && yarn start"
+open_service "Pupil API" "$script_dir/pupil-api" "yarn build && yarn start"
+open_service "Admin" "$script_dir/admin" "yarn build && yarn start"
+open_service "Func Consumption" "$script_dir/func-consumption" "yarn build && yarn start"
+open_service "Func PS Report" "$script_dir/func-ps-report" "yarn build && yarn start"
+open_service "Func Throttled" "$script_dir/func-throttled" "yarn build && yarn start"
 
 echo "All start commands have been launched."

@@ -55,6 +55,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
       event.timeStamp
     );
     this.deleteChar();
+    this.cdr.detectChanges();
   }
 
   /**
