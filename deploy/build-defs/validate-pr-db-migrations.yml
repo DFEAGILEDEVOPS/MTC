@@ -26,6 +26,11 @@ jobs:
       version: '$(NODE_VERSION)'
     displayName: 'Install Node.js'
 
+  - bash: |
+      npm install --global yarn@1.22.22
+      yarn --version
+    displayName: 'Install Yarn'
+
   - task: AzureCLI@2
     displayName: 'Create Database'
     inputs:
