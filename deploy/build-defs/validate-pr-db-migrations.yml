@@ -40,12 +40,6 @@ jobs:
       inlineScript: |
         echo "attempting to create database $(Build.BuildNumber) on server $(TargetDbServer)..."
         az sql db create --name $(Build.BuildNumber) --resource-group $(TargetDbResourceGroup) --server $(TargetDbServer) --service-objective GP_S_Gen5_1
-  - bash: |
-      yarn install --frozen-lockfile --production
-
-    workingDirectory: admin
-    displayName: 'admin: yarn install'
-
   - task: Bash@3
     # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/bash-v3?view=azure-pipelines
     displayName: 'Migrate Database Up'
