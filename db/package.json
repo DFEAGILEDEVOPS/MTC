@@ -2,6 +2,7 @@
   "name": "db",
   "version": "1.0.0",
   "description": "sql server database migration tool",
+  "packageManager": "yarn@1.22.22",
   "main": "index.js",
   "repository": "https://github.com/DFEAGILEDEVOPS/MTC",
   "author": "Guy Harwood, Jon Shipley",
