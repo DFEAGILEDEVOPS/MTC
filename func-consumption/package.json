@@ -2,6 +2,7 @@
   "name": "func-consumption",
   "description": "runtime host for functions defined in tslib that are designed to run on a consumption plan in Azure",
   "version": "0.1.0",
+  "packageManager": "yarn@1.22.22",
   "license": "GPL-3.0",
   "main": "dist/{functions-util/**/*.js,functions/**/*.js}",
   "engines": {
