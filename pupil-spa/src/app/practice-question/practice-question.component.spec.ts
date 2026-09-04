@@ -82,6 +82,17 @@ describe('PractiseQuestionComponent', () => {
     expect(component['countdownInterval']).toBeTruthy();
   });
 
+  it('updates the rendered countdown as the timer ticks', fakeAsync(() => {
+    component['questionTimeoutSecs'] = 6;
+    component.startTimer();
+    tick(1100);
+    fixture.detectChanges();
+    const displayed = Number(fixture.nativeElement.querySelector('#js-page-timer').innerText);
+    expect(displayed).toBeLessThan(6);
+    clearInterval(component['countdownInterval']);
+    clearTimeout(component['timeout']);
+  }));
+
   describe('hasAnswer', () => {
     it('returns true for a proper answer', () => {
       component.answer = 'test';

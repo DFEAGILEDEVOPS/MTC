@@ -290,6 +290,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       }
       this.remainingTime = Math.ceil(timeLeft);
       this.countdownIntervalHook(this.remainingTime);
+      this.cdr.detectChanges();
     }, 100);
   }
 
