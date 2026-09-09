@@ -1,5 +1,16 @@
 'use strict'
 
+const nodeCrypto = require('crypto')
+if (globalThis.crypto === undefined && nodeCrypto.webcrypto !== undefined) {
+  globalThis.crypto = nodeCrypto.webcrypto
+}
+if (typeof globalThis.crypto?.randomUUID !== 'function' && typeof nodeCrypto.randomUUID === 'function') {
+  if (globalThis.crypto === undefined) {
+    globalThis.crypto = {}
+  }
+  globalThis.crypto.randomUUID = () => nodeCrypto.randomUUID()
+}
+
 const { TableServiceClient, TableClient } = require('@azure/data-tables')
 const config = require('../../config')
 

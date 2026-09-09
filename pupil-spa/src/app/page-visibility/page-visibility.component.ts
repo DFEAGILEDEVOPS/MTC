@@ -18,7 +18,7 @@ export class PageVisibilityComponent {
     private auditEntryFactory: AuditEntryFactory) {
   }
 
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   unloadNotification() {
     const checkState = this.storageService.getCheckState();
     // This audit report is excluded from check route
@@ -29,7 +29,7 @@ export class PageVisibilityComponent {
     }
   }
 
-  @HostListener('document:visibilitychange', ['$event'])
+  @HostListener('document:visibilitychange')
   visibilityChange() {
     const visibilityState = document.visibilityState;
     if (visibilityState === 'hidden') {
