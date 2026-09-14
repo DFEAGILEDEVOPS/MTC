@@ -31,7 +31,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "a481842dd344a9a735490f1542a68239"
+    "assets-version": "07d0d55bb5a1bf2f5518757ce8f00e44"
   },
   "engines": {
     "node": ">= 18"
@@ -198,10 +198,12 @@
       "<rootDir>/services/data-access",
       "<rootDir>/dist"
     ],
+    "testEnvironment": "node",
     "verbose": false,
     "testRunner": "jest-circus",
     "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
+      "axios": "axios/dist/node/axios.cjs",
+      "^@typespec/ts-http-runtime/internal/(.*)$": "<rootDir>/node_modules/@typespec/ts-http-runtime/dist/commonjs/$1/internal.js"
     }
   }
 }
