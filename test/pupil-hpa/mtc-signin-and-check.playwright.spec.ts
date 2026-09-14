@@ -159,8 +159,6 @@ async function continueAdminSessionIfPrompted(page: Page): Promise<void> {
 }
 
 async function clickIntroButton(button: Locator): Promise<void> {
-  // The pupil SPA swaps intro screens via *ngSwitch, so a button that was visible a moment ago
-  // can be detached before or during the click. Treat "gone from the DOM" as success.
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await button.click({ timeout: 3000 });
@@ -175,8 +173,6 @@ async function clickIntroButton(button: Locator): Promise<void> {
     }
   }
 
-  // Do not look for the next screen until this one has actually gone, otherwise the
-  // still-rendered button gets clicked a second time and detaches mid-click.
   await button.waitFor({ state: 'detached', timeout: 5000 }).catch(() => undefined);
 }
 
@@ -202,7 +198,7 @@ async function clickThroughNextUntilStartNow(page: Page, maxNextClicks = 10): Pr
 }
 
 async function proceedAfterPupilSelection(page: Page, adminBaseUrl: string): Promise<void> {
-  // Confirm selected pupils on the sticky footer. Fallback to direct navigation if hidden.
+  // Confirm selected pupils - fallback to direct navigation if hidden.
   const confirmButton = page.getByRole('button', { name: 'Confirm' }).or(page.locator('button:has-text("Confirm")')).first();
 
   try {
@@ -293,7 +289,7 @@ async function clickLinkOrFailUnavailable(page: Page, linkName: string): Promise
 }
 
 async function ensurePinsAreVisible(page: Page, adminBaseUrl: string): Promise<void> {
-  // Ensure we actually have at least one generated row with School Password + PIN.
+  // Ensure at least one generated row with School Password + PIN.
   await continueAdminSessionIfPrompted(page);
 
   const pupilRows = page.getByRole('row', { name: /School Password:/i });
@@ -330,7 +326,7 @@ test('admin generates credentials, pupil completes official check flow and admin
 
   const { env, adminBaseUrl, pupilBaseUrl } = getEnvironmentUrls(testInfo);
 
-  // Full flow can take a few minutes due to timed question pages, plus async check processing at the end.
+  // To avoid timeouts
   test.setTimeout(11 * 60 * 1000);
 
   // Step 1-2: Open admin and sign in only if we are not already authenticated.
@@ -425,8 +421,7 @@ test('admin generates credentials, pupil completes official check flow and admin
   await page.getByRole('link', { name: 'See how many of your pupils have completed the official check' }).click();
   const expectedCompletedCount = numberOfPupilsCompleted + 1;
 
-  // Marking a check 'Complete' happens asynchronously (service bus + check processing functions),
-  // so allow well beyond the request/response time of the admin page.
+  // Marking a check 'Complete' happens asynchronously so allow well beyond the request/response time of the admin page.
   try {
     await expect
       .poll(
