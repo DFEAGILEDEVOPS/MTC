@@ -272,11 +272,109 @@ async function getPupilStatusSummary(page: Page): Promise<string> {
   return `${cards.join(' | ') || 'no status cards found'} :: statuses: ${statusList || 'none listed'}`;
 }
 
-async function clickLinkOrFailUnavailable(page: Page, linkName: string): Promise<void> {
+/**
+ * A previous test run can leave the shared dev/test check window closed (e.g. a cleanup
+ * step silently failing). Reopen it as service-manager, then sign back in as the original
+ * user so the caller can retry. Not applicable to preprod, which uses DfE Sign-in (OAuth).
+ */
+async function reopenCheckWindowAndRelogin(
+  page: Page,
+  adminBaseUrl: string,
+  username: string,
+  password: string
+): Promise<void> {
+  await page.goto(`${adminBaseUrl}/sign-out`).catch(() => undefined);
+  await page.goto(`${adminBaseUrl}/sign-in`);
+  const smUserField = page.getByRole('textbox', { name: 'Enter your user name.' });
+  if (await smUserField.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await smUserField.fill('service-manager');
+    await page.getByRole('textbox', { name: 'Enter your password.' }).fill('password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
+  }
+  await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
+
+  await page.goto(`${adminBaseUrl}/check-window/manage-check-windows`);
+  await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible({ timeout: 10000 });
+
+  const checkWindowLink = page.getByRole('link', { name: 'Development Phase', exact: true });
+  await expect(checkWindowLink).toBeVisible({ timeout: 10000 });
+  await checkWindowLink.click();
+
+  const now = new Date();
+  const toDateParts = (date: Date) => ({
+    day: String(date.getDate()).padStart(2, '0'),
+    month: String(date.getMonth() + 1).padStart(2, '0'),
+    year: String(date.getFullYear()),
+  });
+  const addDays = (base: Date, days: number) => {
+    const next = new Date(base);
+    next.setDate(next.getDate() + days);
+    return next;
+  };
+  const fillDateFieldIfVisible = async (prefix: string, date: { day: string; month: string; year: string }) => {
+    const dayField = page.locator(`#${prefix}Day`);
+    if (!(await dayField.isVisible().catch(() => false))) {
+      return;
+    }
+    await dayField.fill(date.day);
+    await page.locator(`#${prefix}Month`).fill(date.month);
+    await page.locator(`#${prefix}Year`).fill(date.year);
+  };
+
+  await fillDateFieldIfVisible('adminStart', toDateParts(addDays(now, -60)));
+  await fillDateFieldIfVisible('familiarisationCheckStart', toDateParts(addDays(now, -45)));
+  await fillDateFieldIfVisible('liveCheckStart', toDateParts(addDays(now, -30)));
+  await fillDateFieldIfVisible('familiarisationCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible('liveCheckEnd', toDateParts(addDays(now, 30)));
+  await fillDateFieldIfVisible('adminEnd', toDateParts(addDays(now, 60)));
+
+  await page.getByRole('button', { name: 'Save' }).click();
+  const overrideWarnings = page.getByRole('checkbox', { name: /Override the warnings on this screen\.?/i });
+  if (await overrideWarnings.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await overrideWarnings.check();
+    await page.getByRole('button', { name: 'Save' }).click();
+  }
+
+  const errorSummary = page.locator('.govuk-error-summary');
+  if (await errorSummary.isVisible({ timeout: 1000 }).catch(() => false)) {
+    const summaryText = await errorSummary.innerText().catch(() => 'Unknown validation error while reopening check window');
+    throw new Error(`Self-heal failed to reopen check window: ${summaryText}`);
+  }
+
+  // Sign back in as the original user so the caller can resume the test flow.
+  await page.goto(`${adminBaseUrl}/sign-out`).catch(() => undefined);
+  await page.goto(`${adminBaseUrl}/sign-in`);
+  const userField = page.getByRole('textbox', { name: 'Enter your user name.' });
+  if (await userField.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await userField.fill(username);
+    await page.getByRole('textbox', { name: 'Enter your password.' }).fill(password);
+    await page.getByRole('button', { name: 'Sign in' }).click();
+  }
+  await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
+
+  // The sign-in redirect doesn't reliably land on the school home page, so navigate there
+  // explicitly before the caller retries its link check.
+  await page.goto(adminBaseUrl);
+}
+
+async function clickLinkOrFailUnavailable(
+  page: Page,
+  linkName: string,
+  selfHeal?: () => Promise<void>
+): Promise<void> {
   const targetLink = page.getByRole('link', { name: linkName });
   if (await targetLink.isVisible({ timeout: 5000 }).catch(() => false)) {
     await targetLink.click();
     return;
+  }
+
+  if (selfHeal) {
+    // Link may be gated on the check window being open; a previous test may have left it closed.
+    await selfHeal();
+    if (await targetLink.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await targetLink.click();
+      return;
+    }
   }
 
   const heading = page.getByRole('heading', { name: linkName }).first();
@@ -351,13 +449,20 @@ test('admin generates credentials, pupil completes official check flow and admin
 
   await expect(page).toHaveURL(/admin|multiplication-tables-check\.service\.gov\.uk/);
 
+  const adminUsername = process.env.ADMIN_USERNAME ?? 'teacher2';
+  const adminPassword = process.env.ADMIN_PASSWORD ?? 'password';
+  // Self-heal is unavailable on preprod, which authenticates via DfE Sign-in (OAuth) rather than username/password.
+  const selfHealClosedCheckWindow = env === 'preprod'
+    ? undefined
+    : () => reopenCheckWindowAndRelogin(page, adminBaseUrl, adminUsername, adminPassword);
+
   // Step 3: Check current completion count before generating pins.
-  await clickLinkOrFailUnavailable(page, 'See how many of your pupils have completed the official check');
+  await clickLinkOrFailUnavailable(page, 'See how many of your pupils have completed the official check', selfHealClosedCheckWindow);
   const numberOfPupilsCompleted = await getPupilsCompletedCount(page);
   await page.goBack();
 
   // Step 4-5: Open official check PIN generation flow.
-  await clickLinkOrFailUnavailable(page, 'Generate and view password and PINs for the try it out and official check');
+  await clickLinkOrFailUnavailable(page, 'Generate and view password and PINs for the try it out and official check', selfHealClosedCheckWindow);
   await page.getByRole('button', { name: 'Official check' }).click();
   const generatePinsTrigger = page
     .getByRole('link', { name: 'Generate password and PINs for the official check' })
