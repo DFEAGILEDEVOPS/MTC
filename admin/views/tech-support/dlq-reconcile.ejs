@@ -1,0 +1,43 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Reconcile Check DLQ</h1>
+
+      <p class="govuk-body">
+        This function checks the Service Bus dead-letter queue for completed check messages that were retried after an earlier failure.
+        It compares each message against the database and confirms whether the check has already been successfully written to SQL.
+      </p>
+      <p class="govuk-body">
+        Use this to identify stale messages that have already been resolved and avoid manually reviewing duplicate DLQ entries.
+      </p>
+
+      <form action="/tech-support/dlq-reconcile" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <button type="submit" class="govuk-button">Run DLQ reconciliation</button>
+      </form>
+
+      <% if (response && response.length > 0) { %>
+        <div class="govuk-inset-text">
+          <%= response %>
+        </div>
+      <% } %>
+
+      <% if (verifiedChecks && verifiedChecks.length > 0) { %>
+        <h2 class="govuk-heading-m">Verified and removed checks</h2>
+        <div class="govuk-form-group">
+          <ul class="govuk-list govuk-list--bullet">
+            <% verifiedChecks.forEach(checkCode => { %>
+              <li><%= checkCode %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } else if (totalCount > 0) { %>
+        <h2 class="govuk-heading-m">DLQ reconciliation results</h2>
+        <p class="govuk-body">Total checked: <%= totalCount %></p>
+        <p class="govuk-body">Verified and removed: <%= resolvedCount %></p>
+        <p class="govuk-body">Still unresolved: <%= unresolvedCount %></p>
+      <% } %>
+    </div>
+  </div>
+</main>

@@ -9,6 +9,7 @@ const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
+const dlqReconciliationService = require('../services/tech-support/dlq-reconciliation.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../services/tech-support/check-submit/check-submit.service')
 
@@ -541,6 +542,41 @@ const controller = {
           resyncAll
         },
         response: 'request sent to function API successfully'
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getDlqReconcile: async function getDlqReconcile (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Reconcile Check DLQ'
+      req.breadcrumbs('Reconcile Check DLQ')
+      res.render('tech-support/dlq-reconcile', {
+        breadcrumbs: req.breadcrumbs(),
+        response: '',
+        verifiedChecks: [],
+        resolvedCount: 0,
+        unresolvedCount: 0,
+        totalCount: 0
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postDlqReconcile: async function postDlqReconcile (req, res, next) {
+    res.locals.pageTitle = 'Reconcile Check DLQ'
+    try {
+      const result = await dlqReconciliationService.reconcileDlq()
+      req.breadcrumbs('Reconcile Check DLQ')
+      res.render('tech-support/dlq-reconcile', {
+        breadcrumbs: req.breadcrumbs(),
+        response: result.message || 'reconciliation complete',
+        verifiedChecks: result.verifiedChecks || [],
+        resolvedCount: result.resolvedCount || 0,
+        unresolvedCount: result.unresolvedCount || 0,
+        totalCount: result.totalCount || 0
       })
     } catch (error) {
       return next(error)
