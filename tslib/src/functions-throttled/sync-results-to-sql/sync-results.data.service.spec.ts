@@ -1,9 +1,9 @@
-import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
-import { type ISqlService } from '../../sql/sql.service'
-import { type IPrepareEventService } from './prepare-event.service'
-import { type IPrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
+import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service.js'
+import { type ISqlService } from '../../sql/sql.service.js'
+import { type IPrepareEventService } from './prepare-event.service.js'
+import { type IPrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service.js'
 import { TYPES } from 'mssql'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
 
 const mockQuestionData = new Map()
 mockQuestionData.set('1x1', { id: 1, factor1: 1, factor2: 2, isWarmup: false, code: 'Q001' })

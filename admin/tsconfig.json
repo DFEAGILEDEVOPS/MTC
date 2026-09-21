@@ -9,7 +9,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2022"],
+    "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2020.string"],
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -25,7 +25,7 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "target": "es2022"
+    "target": "es2019"
   },
   "exclude": [
     ".nyc_output",

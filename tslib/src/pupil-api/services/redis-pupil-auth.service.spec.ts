@@ -1,8 +1,8 @@
 import moment from 'moment'
-import type { IPupilLoginMessage } from './redis-pupil-auth.service'
-import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
-import type { IRedisService } from './redis.service'
-import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
+import type { IPupilLoginMessage } from './redis-pupil-auth.service.js'
+import { RedisPupilAuthenticationService } from './redis-pupil-auth.service.js'
+import type { IRedisService } from './redis.service.js'
+import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService

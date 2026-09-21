@@ -1,12 +1,12 @@
 import type moment from 'moment'
-import { SchoolPinReplenishmentDataService, type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
-import { SchoolPinGenerator, type ISchoolPinGenerator } from './school-pin-generator'
-import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
-import { type ILogger } from '../../common/logger'
-import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider'
-import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
-import { MaxAttemptsCalculator } from './max-attempts-calculator'
-import { AllowedWordsService, type IAllowedWordsService } from './allowed-words.service'
+import { SchoolPinReplenishmentDataService, type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service.js'
+import { SchoolPinGenerator, type ISchoolPinGenerator } from './school-pin-generator.js'
+import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator.js'
+import { type ILogger } from '../../common/logger.js'
+import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider.js'
+import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate.js'
+import { MaxAttemptsCalculator } from './max-attempts-calculator.js'
+import { AllowedWordsService, type IAllowedWordsService } from './allowed-words.service.js'
 export class SchoolPinReplenishmnentService {
   private readonly dataService: ISchoolPinReplenishmentDataService
   private readonly newPinRequiredPredicate: SchoolRequiresNewPinPredicate

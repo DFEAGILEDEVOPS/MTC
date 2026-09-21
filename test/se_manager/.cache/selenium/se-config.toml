@@ -1,0 +1,4 @@
+browser = "chrome"
+driver = "chromedriver"
+browser-version = "132"
+driver-version = "132"

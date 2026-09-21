@@ -1,4 +1,4 @@
-import * as parser from './parsing'
+import * as parser from './parsing.js'
 
 describe('primitiveToBoolean', () => {
   test('should be true if its 1 / "1" or "true"', () => {

@@ -1,6 +1,6 @@
 import { ConnectionPool } from 'mssql'
-import { ConsoleLogger, type ILogger } from '../common/logger'
-import config from '../config'
+import { ConsoleLogger, type ILogger } from '../common/logger.js'
+import config from '../config.js'
 
 let pool: ConnectionPool
 

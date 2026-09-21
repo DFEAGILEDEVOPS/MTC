@@ -1,5 +1,5 @@
 import * as winston from 'winston'
-import config from '../config'
+import config from '../config.js'
 export type LogLevel = 'emerg' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug'
 
 const loggingLevels = {

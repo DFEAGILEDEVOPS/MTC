@@ -95,9 +95,11 @@ describe('CheckComponent', () => {
   }))
 
   it('setting the viewState to question shows the question screen', fakeAsync(() => {
-    component['state'] = 23 // L1
-    component['changeState']() // -> Q1
-    expect(component.viewState).toBe('question')
+    component.viewState = 'question'
+    const compiled = fixture.debugElement.nativeElement
+    fixture.detectChanges()
+    tick()
+    expect(compiled.querySelector('app-question')).toBeTruthy()
   }))
 
   describe('manualSubmitHandler', () => {

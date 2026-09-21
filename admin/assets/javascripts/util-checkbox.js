@@ -53,7 +53,8 @@ const inputStatus = {
       }
       $(this).addClass('all-hide')
       $('#deselectAll').removeClass('all-hide')
-      $(sel + ' > input:checkbox').attr('data-checked', true)
+      $(sel + ' > input:checkbox').prop('checked', true).attr('data-checked', true)
+      $('#tickAllCheckboxes').prop('checked', true)
       const countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
       stickyBanner.toggle((validationStatus || true) && countCheckedCheckboxes > 0)
     })
@@ -73,7 +74,8 @@ const inputStatus = {
       $(this).addClass('all-hide')
       $('#selectAll').removeClass('all-hide')
       stickyBanner.toggle(validationStatus || false)
-      $(sel + ' > input:checkbox').attr('data-checked', null)
+      $(sel + ' > input:checkbox').prop('checked', false).attr('data-checked', null)
+      $('#tickAllCheckboxes').prop('checked', false)
     })
   },
 

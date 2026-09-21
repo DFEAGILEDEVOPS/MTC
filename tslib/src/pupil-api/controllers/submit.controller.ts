@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express'
-import logger from '../services/log.service'
-import apiResponse from '../helpers/api-response'
-import { type IJwtService, JwtService } from '../../services/jwt.service'
-import { CheckSubmitService, type ICheckSubmitService } from '../../services/check-submit.service'
+import logger from '../services/log.service.js'
+import apiResponse from '../helpers/api-response.js'
+import { type IJwtService, JwtService } from '../../services/jwt.service.js'
+import { CheckSubmitService, type ICheckSubmitService } from '../../services/check-submit.service.js'
 
 export const MaxPayloadSize = 1024 * 64 // 64 KB
 

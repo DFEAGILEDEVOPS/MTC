@@ -1,5 +1,5 @@
-import { TokensValidator } from './tokens.validator'
-import { type ICheckValidationError } from './validator-types'
+import { TokensValidator } from './tokens.validator.js'
+import { type ICheckValidationError } from './validator-types.js'
 
 let sut: TokensValidator
 

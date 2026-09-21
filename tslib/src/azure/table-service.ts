@@ -1,5 +1,5 @@
 import { TableClient, type TableEntity } from '@azure/data-tables'
-import config from '../config'
+import config from '../config.js'
 
 export interface ITableService {
   getEntity<T extends AzureTableEntity> (tableName: string, partitionKey: string, rowKey: string): Promise<TableEntity<T>>

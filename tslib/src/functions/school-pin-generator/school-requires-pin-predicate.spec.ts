@@ -1,5 +1,5 @@
-import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
-import { type School } from './school-pin-replenishment.service'
+import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate.js'
+import { type School } from './school-pin-replenishment.service.js'
 import moment from 'moment'
 
 describe('school-requires-new-pin-predicate', () => {

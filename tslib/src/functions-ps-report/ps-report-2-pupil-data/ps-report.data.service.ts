@@ -1,4 +1,4 @@
-import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service.js'
 import { TYPES } from 'mssql'
 import {
   type InputAssistantOrNull,
@@ -19,10 +19,10 @@ import {
   type Pupil,
   type PupilResult, type RestartReasonCode,
   type School
-} from './pupil-data.models'
+} from './pupil-data.models.js'
 import * as R from 'ramda'
 import type moment from 'moment'
-import { type ILogger } from '../../common/logger'
+import { type ILogger } from '../../common/logger.js'
 const RA = require('ramda-adjunct')
 
 const functionName = 'ps-report-2-pupil-data'

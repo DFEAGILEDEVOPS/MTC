@@ -1,9 +1,9 @@
 import * as httpMocks from 'node-mocks-http'
 import type { Request, Response } from 'express'
-import logger from '../services/log.service'
-import { type IJwtService } from '../../services/jwt.service'
-import { PupilFeedbackController } from './feedback.controller'
-import { type IPupilFeedbackService } from '../services/feedback.service'
+import logger from '../services/log.service.js'
+import { type IJwtService } from '../../services/jwt.service.js'
+import { PupilFeedbackController } from './feedback.controller.js'
+import { type IPupilFeedbackService } from '../services/feedback.service.js'
 
 let req: Request
 let res: Response

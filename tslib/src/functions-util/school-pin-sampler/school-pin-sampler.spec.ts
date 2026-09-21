@@ -1,5 +1,5 @@
-import { SchoolPinSampler } from './school-pin-sampler'
-import { TimezoneUtil } from '../../functions/school-pin-generator/timezone-util'
+import { SchoolPinSampler } from './school-pin-sampler.js'
+import { TimezoneUtil } from '../../functions/school-pin-generator/timezone-util.js'
 import moment from 'moment'
 
 let sut: SchoolPinSampler

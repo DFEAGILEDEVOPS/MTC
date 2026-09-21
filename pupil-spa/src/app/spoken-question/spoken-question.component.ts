@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, AfterViewInit, NgZone, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
@@ -34,9 +34,8 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected questionService: QuestionService,
               protected answerService: AnswerService,
               protected renderer: Renderer2,
-              protected auditEntryFactory: AuditEntryFactory,
-              protected cdr: ChangeDetectorRef) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory, cdr);
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory);
   }
 
   ngOnInit() {

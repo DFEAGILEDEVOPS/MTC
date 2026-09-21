@@ -1,5 +1,5 @@
-import logger from './log.service'
-import config from '../config'
+import logger from './log.service.js'
+import config from '../config.js'
 
 let initialised = false
 

@@ -1,8 +1,8 @@
-import { JwtService, type IJwtService } from '../../services/jwt.service'
+import { JwtService, type IJwtService } from '../../services/jwt.service.js'
 import type { Request, Response } from 'express'
-import logger from '../services/log.service'
-import apiResponse from '../helpers/api-response'
-import { type IPupilFeedbackService, PupilFeedbackService } from '../services/feedback.service'
+import logger from '../services/log.service.js'
+import apiResponse from '../helpers/api-response.js'
+import { type IPupilFeedbackService, PupilFeedbackService } from '../services/feedback.service.js'
 
 export class PupilFeedbackController {
   private readonly jwtService: IJwtService

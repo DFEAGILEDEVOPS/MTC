@@ -1,7 +1,7 @@
 import { app, input, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import * as V1 from './check-marker.v1'
-import type { ReceivedCheckFunctionBindingEntity, MarkCheckMessageV1 } from '../../schemas/models'
+import * as V1 from './check-marker.v1.js'
+import type { ReceivedCheckFunctionBindingEntity, MarkCheckMessageV1 } from '../../schemas/models.js'
 
 const functionName = 'check-marker'
 const marker = new V1.CheckMarkerV1()

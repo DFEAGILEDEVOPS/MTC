@@ -1,3 +1,5 @@
+/* eslint-env jasmine */
+
 describe('A stepnav module', function () {
   'use strict'
 

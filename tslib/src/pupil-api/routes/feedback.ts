@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Request, Response } from 'express'
-import { PupilFeedbackController } from '../controllers/feedback.controller'
+import { PupilFeedbackController } from '../controllers/feedback.controller.js'
 
 export class FeedbackRouter {
   router: Router
