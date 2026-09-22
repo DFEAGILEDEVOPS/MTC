@@ -2,6 +2,7 @@
   "name": "func-ps-report",
   "description": "runtime host for functions defined in tslib that are part of the ps report",
   "version": "0.1.0",
+  "packageManager": "yarn@1.22.22",
   "license": "GPL-3.0",
   "main": "dist/functions-ps-report/**/*.js",
   "engines": {
