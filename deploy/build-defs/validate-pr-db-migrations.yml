@@ -15,9 +15,22 @@ pr:
 pool:
   name: $(BuildAgentPool)
 
+variables:
+  NODE_VERSION: '24.x'
+
 jobs:
 - job: ValidateMigrations
   steps:
+  - task: UseNode@1
+    inputs:
+      version: '$(NODE_VERSION)'
+    displayName: 'Install Node.js'
+
+  - bash: |
+      npm install --global yarn@1.22.22
+      yarn --version
+    displayName: 'Install Yarn'
+
   - task: AzureCLI@2
     displayName: 'Create Database'
     inputs:
@@ -27,15 +40,6 @@ jobs:
       inlineScript: |
         echo "attempting to create database $(Build.BuildNumber) on server $(TargetDbServer)..."
         az sql db create --name $(Build.BuildNumber) --resource-group $(TargetDbResourceGroup) --server $(TargetDbServer) --service-objective GP_S_Gen5_1
-  - bash: |
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-      nvm use
-      yarn install --frozen-lockfile --production
-
-    workingDirectory: admin
-    displayName: 'admin: yarn install'
-
   - task: Bash@3
     # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/bash-v3?view=azure-pipelines
     displayName: 'Migrate Database Up'
@@ -47,9 +51,6 @@ jobs:
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
         cd $(Build.Repository.LocalPath)
         cd db
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-        nvm use
         yarn install --frozen-lockfile --production
         yarn migrate max
         echo "exit code:$?"
@@ -74,9 +75,6 @@ jobs:
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
         cd $(Build.Repository.LocalPath)
         cd db
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-        nvm use
         yarn install --frozen-lockfile --production
         yarn migrate 0
         echo "exit code:$?"
