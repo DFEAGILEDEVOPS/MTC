@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 describe('A pupil status', function () {
   'use strict'
   let cardElement
