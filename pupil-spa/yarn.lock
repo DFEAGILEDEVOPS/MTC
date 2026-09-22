@@ -3606,7 +3606,7 @@ autoprefixer@10.4.27:
     picocolors "^1.1.1"
     postcss-value-parser "^4.2.0"
 
-axios@^1.15.0:
+axios@^1.15.0, axios@^1.18.0:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.18.1.tgz#d63f9863bcd8938815c86f9e2abd380189d96dfe"
   integrity sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==
