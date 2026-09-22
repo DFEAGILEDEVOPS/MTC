@@ -1,6 +1,7 @@
 import {
   AfterViewChecked,
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -63,7 +64,8 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
               protected questionService: QuestionService,
               protected speechService: SpeechService,
               protected elRef: ElementRef,
-              protected auditEntryFactory: AuditEntryFactory) {
+              protected auditEntryFactory: AuditEntryFactory,
+              protected cdr: ChangeDetectorRef) {
     this.config = this.questionService.getConfig();
   }
 
@@ -170,6 +172,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     } else {
       const timeout3 = window.setTimeout(() => {
         this.nextButtonDelayFinished = true;
+        this.cdr.detectChanges();
       }, this.nextQuestionButtonDelay * 1000);
       this.timeouts.push(timeout3)
     }

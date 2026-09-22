@@ -173,7 +173,7 @@ describe('restart controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
-        pupil: [pupilMock._id]
+        pupil: [pupilMock.id]
       }
       jest.spyOn(restartService, 'restart').mockResolvedValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       jest.spyOn(res, 'redirect').mockImplementation()
@@ -189,7 +189,7 @@ describe('restart controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
-        pupil: [pupilMock._id]
+        pupil: [pupilMock.id]
       }
       jest.spyOn(restartService, 'restart').mockResolvedValue([{ ok: 1, n: 1 }])
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
@@ -197,6 +197,46 @@ describe('restart controller:', () => {
       const controller = require('../../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       expect(req.flash).toHaveBeenCalledWith('info', 'Restart made for 1 pupil')
+    })
+
+    test('accepts keyed-object pupil payloads without crashing', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.body = {
+        pupil: {
+          0: '123',
+          1: '456'
+        },
+        restartReason: 'LOI'
+      }
+      jest.spyOn(restartService, 'restart').mockResolvedValue([{ urlSlug: 'pupil-a' }, { urlSlug: 'pupil-b' }])
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineRestartsEligibility').mockImplementation()
+      const controller = require('../../../controllers/restart').postSubmitRestartList
+      await controller(req, res, next)
+      expect(restartService.restart).toHaveBeenCalledWith(['123', '456'], 'LOI', req.user.id, req.user.schoolId)
+      expect(res.redirect).toHaveBeenCalled()
+    })
+
+    test('accepts checkbox-style keyed pupil payloads', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.body = {
+        pupil: {
+          123: 'on',
+          456: 'on'
+        },
+        restartReason: 'LOI'
+      }
+      jest.spyOn(restartService, 'restart').mockResolvedValue([{ urlSlug: 'pupil-a' }, { urlSlug: 'pupil-b' }])
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineRestartsEligibility').mockImplementation()
+      const controller = require('../../../controllers/restart').postSubmitRestartList
+      await controller(req, res, next)
+      expect(restartService.restart).toHaveBeenCalledWith(['123', '456'], 'LOI', req.user.id, req.user.schoolId)
+      expect(res.redirect).toHaveBeenCalled()
     })
   })
 
