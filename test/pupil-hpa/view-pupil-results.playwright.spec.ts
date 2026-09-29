@@ -15,10 +15,13 @@ function getEnvironmentUrls(testInfo: TestInfo): { env: EnvironmentName; adminBa
 }
 
 /**
- * Helper function to get the fixed check window date in DD/MM/YYYY format
+ * Helper function to get a check-window date that is reliably in the past, so saving it
+ * triggers the admin app's 'Override the warnings' confirmation regardless of when the
+ * test runs. A fixed calendar date (e.g. 04/04/2026) eventually becomes stale once 'now'
+ * passes it, so this is derived relative to the current date instead.
  */
 function getFixedCheckWindowDate(): { day: string; month: string; year: string } {
-  return { day: '04', month: '04', year: '2026' };
+  return toDateParts(addDays(new Date(), -7));
 }
 
 /**
@@ -208,10 +211,10 @@ async function restoreToOpenCheckWindow(page: Page): Promise<void> {
 
 /**
  * Test: Manage check windows and verify pupil results visibility
- * This test verifies that when a service manager sets the check window to 04/04/2026,
+ * This test verifies that when a service manager sets the check window to a past date,
  * teachers can view pupil results. Then the service manager resets the check window to the future.
  */
-test('Service Manager sets check window to 04/04/2026, Teacher views pupil results, then Service Manager resets to future date', async ({ page }, testInfo) => {
+test('Service Manager sets check window to a past date, Teacher views pupil results, then Service Manager resets to future date', async ({ page }, testInfo) => {
   const { env, adminBaseUrl } = getEnvironmentUrls(testInfo);
 
   // This test uses username/password login and admin-only navigation.
@@ -220,7 +223,7 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
   const fixedCheckWindowDate = getFixedCheckWindowDate();
 
   try {
-    // ========== STEP 1-10: Service Manager sets check window to 04/04/2026 ==========
+    // ========== STEP 1-10: Service Manager sets check window to a past date ==========
 
     // 1) Navigate to Admin site
     await page.goto(`${adminBaseUrl}/sign-in`);
@@ -236,7 +239,7 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
     await openCheckWindow(page, env);
     await dismissCookieBanner(page);
 
-    // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - Enter 04/04/2026 into all 3 sets
+    // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - enter the fixed past date into all 3 sets
     await fillAndVerifyDateInputs(page, fixedCheckWindowDate);
 
     // 7) Click Save
@@ -277,15 +280,15 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
     await logoutFromAdmin(page);
   } finally {
     // Always restore check-window dates to an open state, even if the test fails mid-flow.
-    await page.goto(`${adminBaseUrl}/sign-in`).catch(() => undefined);
-    await loginAsAdmin(page, 'service-manager', 'password').catch(() => undefined);
-    await page.getByRole('link', { name: 'Manage check windows' }).click().catch(() => undefined);
+    // Errors here must not be swallowed: a silently failed restore leaves the shared
+    // check window closed for every subsequent test without any visible failure.
+    await page.goto(`${adminBaseUrl}/sign-in`);
+    await loginAsAdmin(page, 'service-manager', 'password');
+    await page.getByRole('link', { name: 'Manage check windows' }).click();
 
-    const manageHeading = page.getByRole('heading', { name: 'Manage check windows' });
-    if (await manageHeading.isVisible({ timeout: 10000 }).catch(() => false)) {
-      await openCheckWindow(page, env).catch(() => undefined);
-      await restoreToOpenCheckWindow(page).catch(() => undefined);
-    }
+    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible({ timeout: 10000 });
+    await openCheckWindow(page, env);
+    await restoreToOpenCheckWindow(page);
 
     await logoutFromAdmin(page).catch(() => undefined);
   }

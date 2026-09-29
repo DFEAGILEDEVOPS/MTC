@@ -407,7 +407,9 @@ const controller = {
       }
       let school
       try {
-        school = await schoolService.searchForSchool(parseInt(req.body.q?.trim(), 10))
+        const stripNonDigitsRegex = /[^0-9]/g
+        const sanitisedDfeNumber = parseInt(req.body.q?.trim().replace(stripNonDigitsRegex, ''), 10)
+        school = await schoolService.searchForSchool(sanitisedDfeNumber)
       } catch {
         return noSchoolFound(req, res, next)
       }

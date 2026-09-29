@@ -11,9 +11,11 @@ const SERVICE_MANAGER_CREDENTIALS = {
 } as const;
 
 const TEACHER_CREDENTIALS = {
-  username: 'teacher1',
+  username: 'teacher5',
   password: 'password',
 } as const;
+
+const SIGN_HDF_TEST_SCHOOL_DFE_NUMBER = '2011005';
 
 const CHECK_WINDOW_FIELD_PREFIXES = [
   'adminStart',
@@ -183,14 +185,12 @@ async function saveCheckWindowForm(page: Page, actionName: string): Promise<void
   }
 }
 
-async function configureCheckWindowForHdfSigning(page: Page): Promise<void> {
-  const now = new Date();
-
-  const adminStartDate = toDateParts(addDays(now, -35));
-  const familiarisationStartDate = toDateParts(addDays(now, -21));
-  const liveStartDate = toDateParts(addDays(now, -14));
-  const checkEndDate = toDateParts(addDays(now, -1));
-  const adminEndDate = toDateParts(addDays(now, 21));
+async function configureCheckWindowForHdfSigning(page: Page, baseDate: Date): Promise<void> {
+  const adminStartDate = toDateParts(addDays(baseDate, -35));
+  const familiarisationStartDate = toDateParts(addDays(baseDate, -21));
+  const liveStartDate = toDateParts(addDays(baseDate, -14));
+  const checkEndDate = toDateParts(addDays(baseDate, -1));
+  const adminEndDate = toDateParts(addDays(baseDate, 21));
 
   // Target state: check window is over, but still in admin period so reasons can be set and HDF can be signed.
   await fillDateFieldIfVisible(page, 'adminStart', adminStartDate);
@@ -201,6 +201,63 @@ async function configureCheckWindowForHdfSigning(page: Page): Promise<void> {
   await fillDateFieldIfVisible(page, 'adminEnd', adminEndDate);
 
   await saveCheckWindowForm(page, 'save check-window setup for HDF signing');
+}
+
+async function verifyDateFieldEquals(page: Page, fieldPrefix: string, expected: DateParts): Promise<boolean> {
+  const actual = await getDateFieldValueIfVisible(page, fieldPrefix);
+  if (!actual) {
+    return false;
+  }
+
+  return (
+    normaliseDatePart(actual.day) === normaliseDatePart(expected.day)
+    && normaliseDatePart(actual.month) === normaliseDatePart(expected.month)
+    && normaliseDatePart(actual.year) === normaliseDatePart(expected.year)
+  );
+}
+
+async function configureCheckWindowForHdfSigningWithVerification(page: Page, env: EnvironmentName): Promise<void> {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const baseDate = new Date();
+    const expectedLiveCheckEnd = toDateParts(addDays(baseDate, -1));
+    const expectedAdminEnd = toDateParts(addDays(baseDate, 21));
+
+    await page.goto('/check-window/manage-check-windows');
+    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
+    await openCheckWindow(page, env);
+
+    await configureCheckWindowForHdfSigning(page, baseDate);
+
+    await page.goto('/check-window/manage-check-windows');
+    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
+    await openCheckWindow(page, env);
+
+    const liveCheckEndMatches = await verifyDateFieldEquals(page, 'liveCheckEnd', expectedLiveCheckEnd);
+    const adminEndMatches = await verifyDateFieldEquals(page, 'adminEnd', expectedAdminEnd);
+
+    if (liveCheckEndMatches && adminEndMatches) {
+      return;
+    }
+  }
+
+  throw new Error('Unable to persist check-window dates for HDF signing after 3 attempts.');
+}
+
+async function waitForHdfToBecomeAvailable(page: Page): Promise<void> {
+  await expect(page.getByRole('heading', { name: /Headteacher.?s declaration form/i })).toBeVisible();
+
+  await expect.poll(
+    async () => {
+      await page.reload();
+      await dismissCookieBanner(page);
+      return page.getByText('Currently unavailable').count();
+    },
+    {
+      timeout: 45_000,
+      intervals: [1000, 2000, 3000],
+      message: 'HDF remained unavailable after check-window update.',
+    }
+  ).toBe(0);
 }
 
 /**
@@ -278,8 +335,9 @@ async function deleteSubmittedHdf(page: Page, adminBaseUrl: string): Promise<voi
   await page.getByRole('link', { name: 'Search for an existing organisation' }).click();
   await expect(page.getByRole('heading', { name: 'Search organisations' })).toBeVisible();
 
-  // Enter 89001 into the searchbar
-  await page.locator('#q').fill('89001');
+  // teacher5 is seeded against Example School Five (DfE number 2011005).
+  // Search that school so cleanup removes the HDF created by this run.
+  await page.locator('#q').fill(SIGN_HDF_TEST_SCHOOL_DFE_NUMBER);
 
   // Click 'Search'
   await page.getByRole('button', { name: 'Search' }).click();
@@ -314,30 +372,23 @@ async function deleteSubmittedHdf(page: Page, adminBaseUrl: string): Promise<voi
 
 test('teacher can submit HDF end-to-end with cleanup', async ({ page }, testInfo) => {
   const { env, adminBaseUrl } = getEnvironmentUrls(testInfo);
+  const teacherCredentials = TEACHER_CREDENTIALS;
 
   test.skip(env === 'preprod', 'Preprod uses DfE Sign-in (OAuth) and this setup flow depends on username/password roles.');
 
   test.setTimeout(8 * 60 * 1000);
 
-  let originalCheckWindow: CheckWindowSnapshot | null = null;
-
   try {
     // 1) Service-manager adjusts check window so the school is in the post-check admin period.
     await loginAsAdmin(page, adminBaseUrl, SERVICE_MANAGER_CREDENTIALS.username, SERVICE_MANAGER_CREDENTIALS.password);
-    await page.goto('/check-window/manage-check-windows');
-    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible();
-    await openCheckWindow(page, env);
-    originalCheckWindow = await takeCheckWindowSnapshot(page);
-    await configureCheckWindowForHdfSigning(page);
+    await configureCheckWindowForHdfSigningWithVerification(page, env);
     await logoutFromAdmin(page);
 
     // 2) Teacher submits HDF and lands on the submitted confirmation page.
-    await loginAsAdmin(page, adminBaseUrl, TEACHER_CREDENTIALS.username, TEACHER_CREDENTIALS.password);
+    await loginAsAdmin(page, adminBaseUrl, teacherCredentials.username, teacherCredentials.password);
     await page.goto('/attendance/declaration-form');
     await dismissCookieBanner(page);
-
-    await expect(page.getByRole('heading', { name: /Headteacher.?s declaration form/i })).toBeVisible();
-    await expect(page.getByText('Currently unavailable')).toHaveCount(0);
+    await waitForHdfToBecomeAvailable(page);
 
     await page.getByLabel("Submitter's first name").fill('Test');
     await page.getByLabel("Submitter's last name").fill('Automation Full Submit');
