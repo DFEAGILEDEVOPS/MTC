@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -121,7 +122,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   @Input() public soundComponent: any;
 
-  public shouldShowQuestion: boolean;
+  public shouldShowQuestion: boolean = true;
 
   @Input() public factor1 = 0;
 
@@ -162,13 +163,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
                protected answerService: AnswerService,
                protected registerInputService: RegisterInputService,
                protected renderer: Renderer2,
-               protected auditEntryFactory: AuditEntryFactory) {
+               protected auditEntryFactory: AuditEntryFactory,
+               protected cdr: ChangeDetectorRef) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
     const accessArrangementsData = storageService.getAccessArrangements();
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
-    this.shouldShowQuestion = true;
   }
 
   ngOnInit () {
@@ -289,6 +290,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       }
       this.remainingTime = Math.ceil(timeLeft);
       this.countdownIntervalHook(this.remainingTime);
+      this.cdr.detectChanges();
     }, 100);
   }
 
@@ -324,6 +326,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     if (!value) return
 
     this.addChar(value)
+    this.cdr.detectChanges()
 
     if (!this.isWarmUpQuestion) {
       this.registerInputService.storeEntry(
@@ -342,6 +345,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   onClickBackspace (event: Event) { // eslint-disable-line @typescript-eslint/no-unused-vars
     this.deleteChar()
+    this.cdr.detectChanges()
   }
 
   /**
