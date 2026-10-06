@@ -375,10 +375,10 @@
     yargs "18.0.0"
     zod "4.3.6"
 
-"@angular/common@^21.0.0":
-  version "21.2.18"
-  resolved "https://registry.yarnpkg.com/@angular/common/-/common-21.2.18.tgz#1eb24633707e0e0eac1cadea623b4b0a047dd62d"
-  integrity sha512-gZugZ8gX/KkACIZ3/ekoImLu5z8a0Iu9O5b84kh8e+++VUjmkmd19IygBsq/8/fF3vKf0UcIKcx3P6A/gb2DJw==
+"@angular/common@^21.2.20":
+  version "21.2.20"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-21.2.20.tgz#43183476d102b70f0bd5b726fa5aadbafce0a57a"
+  integrity sha512-TzUVfa4Asq/np3eStFX3Q6W+dPG7JDNtkj4XwTvRnSL0CN8pPe+wPHSo76awHFzYWcucxpZTmk2GUemeqxa4Yw==
   dependencies:
     tslib "^2.3.0"
 
@@ -403,10 +403,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^21.0.0":
-  version "21.2.18"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-21.2.18.tgz#c8986994ed9eb66d13c1e3875c613bc87581225a"
-  integrity sha512-AG4bb6GU0+qp+vVBjc/IhSPjgcRX8QsCb8jzN8dDyhnjsyuuG/LlIiU0l6n65BI9SGKE9m6TfsJ1ObkkAiE5KQ==
+"@angular/core@^21.2.0":
+  version "21.2.20"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-21.2.20.tgz#f17e2a2364af615ae008a09a4e3678efb855d38d"
+  integrity sha512-4yp6EKd1VJHUOiKmd3+s9UUXtBGsdO/IKewABuPXZ+UdrXPQSRMhgnMt49yqgz29XS7jSHyq6nZgt0CXOVEDZg==
   dependencies:
     tslib "^2.3.0"
 
