@@ -403,7 +403,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^21.2.0":
+"@angular/core@^21.2.20":
   version "21.2.20"
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-21.2.20.tgz#f17e2a2364af615ae008a09a4e3678efb855d38d"
   integrity sha512-4yp6EKd1VJHUOiKmd3+s9UUXtBGsdO/IKewABuPXZ+UdrXPQSRMhgnMt49yqgz29XS7jSHyq6nZgt0CXOVEDZg==
