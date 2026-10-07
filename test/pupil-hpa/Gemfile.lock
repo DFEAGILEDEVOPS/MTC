@@ -177,7 +177,7 @@ GEM
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
     ruby2_keywords (0.0.5)
-    rubyzip (3.0.2)
+    rubyzip (3.4.0)
     selenium-webdriver (4.35.0)
       base64 (~> 0.2)
       logger (~> 1.4)
