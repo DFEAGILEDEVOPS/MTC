@@ -2,6 +2,7 @@
   "name": "tslib",
   "version": "1.0.0",
   "private": false,
+  "packageManager": "yarn@1.22.22",
   "license": "GPL-3.0",
   "scripts": {
     "build:watch": "tsc -b --v -w",

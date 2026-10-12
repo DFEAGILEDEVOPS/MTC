@@ -31,7 +31,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "527477e2fc5eae7a7569f1b2bff7cb81"
+    "assets-version": "07d0d55bb5a1bf2f5518757ce8f00e44"
   },
   "engines": {
     "node": ">= 18"
@@ -121,8 +121,6 @@
     "@types/node": "^20.10.0",
     "@types/ramda": "^0.30.2",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.37.0",
-    "@typescript-eslint/parser": "^5.37.0",
     "babel-jest": "^27.4.2",
     "chalk": "^4.1.0",
     "command-line-args": "^5.0.2",
@@ -198,10 +196,12 @@
       "<rootDir>/services/data-access",
       "<rootDir>/dist"
     ],
+    "testEnvironment": "node",
     "verbose": false,
     "testRunner": "jest-circus",
     "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
+      "axios": "axios/dist/node/axios.cjs",
+      "^@typespec/ts-http-runtime/internal/(.*)$": "<rootDir>/node_modules/@typespec/ts-http-runtime/dist/commonjs/$1/internal.js"
     }
   }
 }

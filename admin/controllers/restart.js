@@ -11,6 +11,41 @@ const { DiscretionaryRestartService } = require('../services/discretionary-resta
 
 const controller = {}
 
+const isNumericPupilId = (value) => {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) && value > 0
+  }
+  if (typeof value === 'string') {
+    return /^\d+$/.test(value.trim())
+  }
+  return false
+}
+
+const normalisePupilIds = (value) => {
+  if (value === undefined || value === null || value === '') {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap(normalisePupilIds)
+  }
+
+  if (typeof value === 'object') {
+    const values = Object.values(value).flatMap(normalisePupilIds)
+    const numericValues = values.filter(isNumericPupilId)
+
+    // Some payload shapes submit selected checkboxes as { pupilId: 'on' }.
+    // In that case, values are non-numeric and IDs are in object keys.
+    if (numericValues.length > 0) {
+      return numericValues
+    }
+
+    return Object.keys(value).filter(isNumericPupilId)
+  }
+
+  return [value]
+}
+
 controller.getRestartOverview = async function getRestartOverview (req, res, next) {
   res.locals.pageTitle = 'Select pupils to restart the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -85,15 +120,19 @@ controller.getSelectRestartList = async function getSelectRestartList (req, res,
 
 controller.postSubmitRestartList = async function postSubmitRestartList (req, res, next) {
   const { pupil: pupilsList, restartReason } = req.body
-  if (!pupilsList || pupilsList.length === 0) {
+  if (!pupilsList) {
     return res.redirect('/restart/select-restart-list')
   }
 
-  // After exceeding 20 items the request payload received contains object key-value pairs
-  // Detecting and converting them to strings is necessary as part of the processing
-  // This only works if the HTML form element is called: `name[]` rather than `name[530]` as with
-  // the latter you will get an object when a single pupil is selected.
-  const processedPupilsIds = pupilsList.map(p => typeof p === 'object' ? Object.values(p)[0] : p)
+  // Pupil IDs can arrive as array, single value, or keyed object, depending on body-parser behaviour.
+  const processedPupilsIds = Array.from(new Set(normalisePupilIds(pupilsList)
+    .map(String)
+    .map(v => v.trim())
+    .filter(isNumericPupilId)))
+
+  if (processedPupilsIds.length === 0) {
+    return res.redirect('/restart/select-restart-list')
+  }
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
