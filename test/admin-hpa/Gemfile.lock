@@ -112,7 +112,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
-    jwt (2.8.2)
+    jwt (3.2.0)
       base64
     launchy (3.0.1)
       addressable (~> 2.8)
