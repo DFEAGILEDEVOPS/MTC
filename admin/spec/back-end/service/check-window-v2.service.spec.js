@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('../../../lib/uuid')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')
