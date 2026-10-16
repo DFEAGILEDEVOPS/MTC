@@ -22,38 +22,38 @@ install_admin () {
   mybanner "Installing admin"
   cd ${scriptDir}/admin
   nvm use
-  corepack yarn
-  corepack yarn build
+  yarn
+  yarn build
 }
 
 install_pupil_api () {
   mybanner "Installing pupil API"
   cd ${scriptDir}/pupil-api
   nvm use
-  corepack yarn install && corepack yarn clean && corepack yarn build
+  yarn install && yarn clean && yarn build
 }
 
 install_pupil_spa () {
   mybanner "Installing pupil SPA"
   cd ${scriptDir}/pupil-spa
   nvm use
-  corepack yarn install && corepack yarn clean && corepack yarn build
+  yarn install && yarn clean && yarn build
 }
 
 install_functions () {
   mybanner "Installing functions"
   cd ${scriptDir}/tslib
   nvm use
-  corepack yarn install && corepack yarn clean && corepack yarn build
+  yarn install && yarn clean && yarn build
 
   cd ${scriptDir}/func-consumption
-  corepack yarn install && corepack yarn clean && corepack yarn sync:settings && corepack yarn build
+  yarn install && yarn clean && yarn sync:settings && yarn build
 
   cd ${scriptDir}/func-throttled
-  corepack yarn install && corepack yarn clean && corepack yarn sync:settings && corepack yarn build
+  yarn install && yarn clean && yarn sync:settings && yarn build
 
   cd ${scriptDir}/func-ps-report
-  corepack yarn install && corepack yarn clean && corepack yarn sync:settings && corepack yarn build
+  yarn install && yarn clean && yarn sync:settings && yarn build
 
   mybanner "Synchronising local function settings with master values from .env"
   ${scriptDir}/bin/sync-local-settings.js
@@ -63,14 +63,14 @@ install_service_bus () {
   mybanner "Installing service bus"
   cd ${scriptDir}/deploy/service-bus
   nvm use
-  corepack yarn install
+  yarn install
 }
 
 install_db () {
   mybanner "Installing DB"
   cd ${scriptDir}/db
   nvm use
-  corepack yarn install
+  yarn install
 }
 
 check_func_version () {

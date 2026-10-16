@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
@@ -30,9 +30,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
               protected answerService: AnswerService,
               protected registerInputService: RegisterInputService,
               protected renderer: Renderer2,
-              protected auditEntryFactory: AuditEntryFactory,
-              protected cdr: ChangeDetectorRef) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory, cdr);
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory);
     this.window = windowRefService.nativeWindow;
   }
 
@@ -55,7 +54,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
       event.timeStamp
     );
     this.deleteChar();
-    this.cdr.detectChanges();
   }
 
   /**

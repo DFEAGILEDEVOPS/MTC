@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, AfterViewInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { AnswerService } from '../services/answer/answer.service';
@@ -35,9 +35,8 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected answerService: AnswerService,
               protected registerInputService: RegisterInputService,
               protected renderer: Renderer2,
-              protected auditEntryFactory: AuditEntryFactory,
-              protected cdr: ChangeDetectorRef) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory, cdr);
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory);
   }
 
   ngOnInit() {

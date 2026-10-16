@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { NgModule, ErrorHandler, APP_INITIALIZER, provideZoneChangeDetection } from '@angular/core';
+import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GlobalErrorHandler } from './error-handler';
 import { AppConfigService, loadConfigService } from './services/config/config.service';
@@ -164,7 +164,6 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes, { enableTracing: false }), // set enableTracing: true for debugging only
         FormsModule,
         ReactiveFormsModule], providers: [
-        provideZoneChangeDetection(),
         AppConfigService,
         { provide: APP_INITIALIZER, useFactory: loadConfigService, deps: [AppConfigService], multi: true },
         { provide: ErrorHandler, useClass: GlobalErrorHandler },

@@ -1,6 +1,6 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
-import { FakeCompletedCheckMessageGeneratorService } from '../util-submit-check/fake-submitted-check-generator.service'
-import config from '../../config'
+import { FakeCompletedCheckMessageGeneratorService } from '../util-submit-check/fake-submitted-check-generator.service.js'
+import config from '../../config.js'
 
 const checkGenerator = new FakeCompletedCheckMessageGeneratorService()
 

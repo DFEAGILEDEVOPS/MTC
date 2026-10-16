@@ -207,7 +207,7 @@ window.GOVUK.getCurrentLocation = function () {
       }
 
       function escapeSelector (s) {
-        const cssMatcher = /([\x00-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g
+        const cssMatcher = /([\x00-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g // eslint-disable-line no-control-regex
         return s.replace(cssMatcher, '\\$&')
       }
     }

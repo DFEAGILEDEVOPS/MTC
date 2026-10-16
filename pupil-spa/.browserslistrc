@@ -5,9 +5,10 @@
 # You can see what browsers were selected by your queries by running:
 #   npx browserslist
 
-last 2 versions
+> 0.5%
+last 4 versions
 Firefox ESR
-Safari >= 15
-iOS >= 15
+Safari >= 14
+iOS >= 14
 not OperaMini all
 not dead

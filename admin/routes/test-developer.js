@@ -28,11 +28,6 @@ router.get('/raw-pupil-payload',
   payloadController.rawPupilPayload
 )
 
-router.get('/upn-generator',
-  isAuthenticated(roles.testDeveloper),
-  testDeveloperController.getUpnGenerator
-)
-
 router.get('/view-forms',
   isAuthenticated(roles.testDeveloper),
   testDeveloper2Controller.getViewFormsPage
