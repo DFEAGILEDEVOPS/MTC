@@ -5,6 +5,7 @@ const checkDiagnosticService = require('../../../services/check-diagnostic.servi
 const payloadService = require('../../../services/payload.service')
 const queueMgmtService = require('../../../services/queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
+const dlqReconciliationService = require('../../../services/tech-support/dlq-reconciliation.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../../../services/tech-support/check-submit/check-submit.service')
 
@@ -42,6 +43,98 @@ describe('tech-support controller', () => {
 
   test('should be defined', () => {
     expect(sut).toBeDefined()
+  })
+
+  describe('/dlq-reconcile', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+      jest.spyOn(dlqReconciliationService, 'listRuns').mockResolvedValue([])
+    })
+
+    test('GET: renders the preview entry point without starting a job', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile'))
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getDlqReconcile(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('tech-support/dlq-reconcile', expect.objectContaining({ run: null, items: [], active: false }))
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('GET: loads paged audit results for a run', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile'))
+      req.query = { runId: checkCode, page: '2' }
+      const res = getResponse()
+      jest.spyOn(dlqReconciliationService, 'getRun').mockResolvedValue({ run: { runId: checkCode }, items: [], page: 2, totalPages: 5 })
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getDlqReconcile(req, res, next)
+      expect(dlqReconciliationService.getRun).toHaveBeenCalledWith(checkCode, 2)
+      expect(res.render).toHaveBeenCalledWith('tech-support/dlq-reconcile', expect.objectContaining({ page: 2, totalPages: 5 }))
+    })
+
+    test('GET: rejects an invalid run ID', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile'))
+      req.query.runId = 'bad'
+      const res = getResponse()
+      await sut.getDlqReconcile(req, res, next)
+      expect(res.statusCode).toBe(400)
+    })
+
+    test('GET: explains missing database migrations and disables execution', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile'))
+      const res = getResponse()
+      jest.spyOn(dlqReconciliationService, 'listRuns').mockRejectedValue({ response: { status: 503 } })
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getDlqReconcile(req, res, next)
+      expect(res.statusCode).toBe(503)
+      expect(res.render).toHaveBeenCalledWith('tech-support/dlq-reconcile', expect.objectContaining({
+        active: true,
+        errorMessage: expect.stringContaining('20261019120000')
+      }))
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: starts a preview with the authenticated operator and redirects', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile', 'POST'))
+      req.user.id = 42
+      req.body = { mode: 'preview' }
+      const res = getResponse()
+      jest.spyOn(dlqReconciliationService, 'startRun').mockResolvedValue({ runId: checkCode })
+      await sut.postDlqReconcile(req, res, next)
+      expect(dlqReconciliationService.startRun).toHaveBeenCalledWith('preview', '42', undefined)
+      expect(res._getRedirectUrl()).toBe(`/tech-support/dlq-reconcile?runId=${checkCode}`)
+    })
+
+    test('POST: requires confirmation before cleanup', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile', 'POST'))
+      req.body = { mode: 'cleanup', previewRunId: checkCode }
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(dlqReconciliationService, 'startRun').mockResolvedValue({ runId: checkCode })
+      await sut.postDlqReconcile(req, res, next)
+      expect(dlqReconciliationService.startRun).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('tech-support/dlq-reconcile', expect.objectContaining({ errorMessage: expect.stringContaining('Confirm') }))
+    })
+
+    test('POST: reports an already-active run without starting a second one', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile', 'POST'))
+      req.body = { mode: 'preview' }
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(dlqReconciliationService, 'startRun').mockRejectedValue({ response: { status: 409 } })
+      await sut.postDlqReconcile(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('tech-support/dlq-reconcile', expect.objectContaining({ errorMessage: expect.stringContaining('already active') }))
+    })
+
+    test('POST: renders migration guidance when manual execution is unavailable', async () => {
+      const req = getRequest(getReqParams('/tech-support/dlq-reconcile', 'POST'))
+      req.body = { mode: 'preview' }
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(dlqReconciliationService, 'startRun').mockRejectedValue({ response: { status: 503 } })
+      await sut.postDlqReconcile(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('tech-support/dlq-reconcile', expect.objectContaining({ errorMessage: expect.stringContaining('migrations') }))
+      expect(next).not.toHaveBeenCalled()
+    })
   })
 
   describe('/home', () => {

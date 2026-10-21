@@ -54,6 +54,7 @@ const jsAppBundleFiles = [
   './assets/javascripts/print-popup.js',
   './assets/javascripts/step-by-step-navigation.js',
   './assets/javascripts/session-expiry.js', // here be dragons
+  './assets/javascripts/dlq-reconciliation.js',
   './assets/javascripts/pupil-access-arrangements-selection.js',
   './assets/javascripts/pupil-retro-input-assistant.js',
   './assets/javascripts/pupil-form.js',
