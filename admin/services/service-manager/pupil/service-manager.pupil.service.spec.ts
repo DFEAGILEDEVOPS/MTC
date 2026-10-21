@@ -2,6 +2,7 @@ import { ServiceManagerPupilService, type ServiceManagerPupilDetails } from './s
 import { type PupilSearchResult, type PupilStatusData, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import moment from 'moment-timezone'
 import redisCacheService from '../../data-access/redis-cache.service'
+import sqlService from '../../data-access/sql.service'
 import { type ServiceManagerSchoolResult } from '../school/school.data.service'
 const settingService = require('../../setting.service')
 const dateService = require('../../date.service')
@@ -12,6 +13,22 @@ const sut = ServiceManagerPupilService
 describe('service manager pupil service', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
+  })
+
+  describe('getPupilAudits', () => {
+    test('returns every pupil audit row ordered newest first', async () => {
+      const audits = [
+        { id: 7, createdAt: moment('2026-10-20T09:00:00Z'), auditOperation: 'Update', user: 'First User' },
+        { id: 5, createdAt: moment('2026-10-19T09:00:00Z'), auditOperation: 'Insert', user: 'Second User' }
+      ]
+      const querySpy = jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue(audits)
+
+      await expect(ServiceManagerPupilDataService.getPupilAudits(3)).resolves.toEqual(audits)
+
+      expect(querySpy).toHaveBeenCalledWith(expect.stringContaining('ORDER BY pa.createdAt DESC, pa.id DESC'), [
+        { name: 'pupilId', value: 3, type: sqlService.TYPES.Int }
+      ])
+    })
   })
 
   describe('findPupilByUpn', () => {
