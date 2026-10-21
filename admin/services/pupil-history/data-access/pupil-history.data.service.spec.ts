@@ -43,4 +43,36 @@ describe('PupilHistoryDataService', () => {
       expect(checks[0].complete).toBe(false)
     })
   })
+
+  describe('#getRestarts', () => {
+    test('it returns restart details including the user who recorded them', async () => {
+      const createdAt = moment('2026-10-20T09:30:00Z')
+      jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([{
+        id: 8,
+        createdAt,
+        updatedAt: createdAt,
+        pupil_id: 43,
+        description: 'IT issue',
+        code: 'ITI',
+        recordedByUser: 'Example User',
+        checkId: 12,
+        originCheck_id: 11
+      }])
+
+      const restarts = await PupilHistoryDataService.getRestarts('d6d98b88-c866-4496-9bd4-de7ba48d0f52')
+
+      expect(restarts).toEqual([{
+        id: 8,
+        createdAt,
+        updatedAt: createdAt,
+        pupilId: 43,
+        restartReason: 'IT issue',
+        restartReasonCode: 'ITI',
+        recordedByUser: 'Example User',
+        checkId: 12,
+        originCheckId: 11
+      }])
+      expect(sqlService.readonlyQuery).toHaveBeenCalledWith(expect.stringContaining('ORDER BY'), expect.any(Array))
+    })
+  })
 })

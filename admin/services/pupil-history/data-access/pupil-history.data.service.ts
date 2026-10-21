@@ -53,6 +53,7 @@ export interface IPupilHistoryRestartData {
   pupilId: number
   restartReason: string
   restartReasonCode: string
+  recordedByUser: string
   checkId: number
   originCheckId: number
 }
@@ -180,15 +181,19 @@ export class PupilHistoryDataService {
       SELECT
         r.*,
         rrl.code,
-        rrl.description
+        rrl.description,
+        COALESCE(u.displayName, u.identifier, 'system') as recordedByUser
       FROM
         [mtc_admin].[pupilRestart] r JOIN
         [mtc_admin].[pupil] p ON (r.pupil_id = p.id) JOIN
-        [mtc_admin].[restartReasonLookup] rrl ON (r.restartReasonLookup_id = rrl.id)
+        [mtc_admin].[restartReasonLookup] rrl ON (r.restartReasonLookup_id = rrl.id) LEFT JOIN
+        [mtc_admin].[user] u ON (r.recordedByUser_id = u.id)
       WHERE
         p.urlSlug = @slug
       AND
         r.isDeleted = 0
+      ORDER BY
+        r.createdAt DESC, r.id DESC
     `
 
     const params = [
@@ -207,6 +212,7 @@ export class PupilHistoryDataService {
         pupilId: o.pupil_id,
         restartReason: o.description,
         restartReasonCode: o.code,
+        recordedByUser: o.recordedByUser,
         createdAt: o.createdAt,
         updatedAt: o.updatedAt,
         checkId: o.checkId,

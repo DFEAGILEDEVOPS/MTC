@@ -92,6 +92,32 @@
         </tbody>
     </table>
 
+    <h3>Restarts</h3>
+    <table class="govuk-spacious">
+        <thead>
+            <tr>
+                <th>Restarted at</th>
+                <th>Reason</th>
+                <th>Initiated by</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-body-s">
+            <% if (pupilHistory.restarts.length === 0) { %>
+                <tr>
+                    <td colspan="3">No restarts recorded</td>
+                </tr>
+            <% } else { %>
+                <% for (let i = 0; i < pupilHistory.restarts.length; i++) { %>
+                    <tr>
+                        <td><%= formatPupilHistoryDataAndTime(pupilHistory.restarts[i].createdAt) %></td>
+                        <td><%= pupilHistory.restarts[i].restartReason %></td>
+                        <td><%= pupilHistory.restarts[i].recordedByUser %></td>
+                    </tr>
+                <% } %>
+            <% } %>
+        </tbody>
+    </table>
+
     <div>
         <% if (pupilHistory.pupil.restartAvailable === false && pupilHistory.checks.length >= 3 && isStaAdmin) { %>
         <form action="/restart/allow-discretionary-restart" method="post" novalidate class="govuk-form-button">
