@@ -1256,12 +1256,14 @@ describe('service manager controller:', () => {
         dfeNumber: 65794
       }
       jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue(thePupilData)
+      const audits = [{ id: 1, createdAt: '20 October 2026 9:00am', auditOperation: 'Update', user: 'Example User' }]
+      jest.spyOn(ServiceManagerPupilService, 'getPupilAuditHistory').mockResolvedValue(audits)
       const res = getRes()
       jest.spyOn(res, 'render')
       await controller.getPupilSummary(req, res, next)
       expect(res.render).toHaveBeenCalledWith('service-manager/pupil-summary', {
         breadcrumbs: undefined,
-        pupil: thePupilData
+        pupil: { ...thePupilData, audits }
       })
     })
   })

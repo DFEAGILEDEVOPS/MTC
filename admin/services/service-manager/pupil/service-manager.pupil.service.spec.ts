@@ -4,6 +4,7 @@ import moment from 'moment-timezone'
 import redisCacheService from '../../data-access/redis-cache.service'
 import sqlService from '../../data-access/sql.service'
 import { type ServiceManagerSchoolResult } from '../school/school.data.service'
+import { jest } from 'globals'
 const settingService = require('../../setting.service')
 const dateService = require('../../date.service')
 
@@ -186,6 +187,22 @@ describe('service manager pupil service', () => {
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)
       expect(pupilDetails.status).toBe('Not started')
+    })
+  })
+
+  describe('getPupilAuditHistory', () => {
+    test('formats every audit row and preserves the newest-first ordering', async () => {
+      const newestCreatedAt = moment('2026-10-20T09:00:00Z')
+      const olderCreatedAt = moment('2026-10-19T09:00:00Z')
+      jest.spyOn(ServiceManagerPupilDataService, 'getPupilAudits').mockResolvedValue([
+        { id: 7, createdAt: newestCreatedAt, auditOperation: 'Update', user: 'First User' },
+        { id: 5, createdAt: olderCreatedAt, auditOperation: 'Insert', user: 'Second User' }
+      ])
+
+      await expect(ServiceManagerPupilService.getPupilAuditHistory(3)).resolves.toEqual([
+        { id: 7, createdAt: dateService.formatDateAndTime(newestCreatedAt), auditOperation: 'Update', user: 'First User' },
+        { id: 5, createdAt: dateService.formatDateAndTime(olderCreatedAt), auditOperation: 'Insert', user: 'Second User' }
+      ])
     })
   })
 

@@ -8,6 +8,29 @@
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
           <%- partial('partials/service-manager/pupil/_pupil-summary', { pupil }) %>
+          <h2 class="govuk-heading-m">Audit history</h2>
+          <% if (pupil.audits.length === 0) { %>
+            <p class="govuk-body">No audit history recorded</p>
+          <% } else { %>
+            <table class="govuk-table govuk-spacious">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Date and time</th>
+                  <th scope="col" class="govuk-table__header">Operation</th>
+                  <th scope="col" class="govuk-table__header">User</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <% pupil.audits.forEach((audit) => { %>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><%= audit.createdAt %></td>
+                    <td class="govuk-table__cell"><%= audit.auditOperation %></td>
+                    <td class="govuk-table__cell"><%= audit.user %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% } %>
       </div>
       <div class="govuk-grid-column-one-third" aria-label="sidebar">
         <aside class="app-related-items" role="complementary">
