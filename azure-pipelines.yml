@@ -12,7 +12,7 @@ trigger:
 pr: none
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-24.04'
 
 variables:
   - name: NODE_VERSION
