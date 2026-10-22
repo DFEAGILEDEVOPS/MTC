@@ -4,7 +4,11 @@ module.exports.generateSql = function () {
 
   if (process.env.ALLOWED_WORDS_SET !== undefined) {
     const sql = process.env.ALLOWED_WORDS_SET.split(',').map(word => {
-      return `INSERT INTO mtc_admin.[schoolPin] (val) VALUES ('${word.trim().toLowerCase()}')`
+      const sanitisedWord = word.trim().toLowerCase().replace(/'/g, "''")
+      if (!/^[a-z]+$/.test(sanitisedWord)) {
+        throw new Error(`Invalid word in ALLOWED_WORDS_SET: ${word}`)
+      }
+      return `INSERT INTO mtc_admin.[schoolPin] (val) VALUES ('${sanitisedWord}')`
     })
     return sql.join('\n')
   }
