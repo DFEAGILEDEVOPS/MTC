@@ -16,7 +16,7 @@ const accessArrangementsDescriptionsPresenter = require('../../../helpers/access
 const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
 const { AccessArrangementsNotEditableError } = require('../../../error-types/access-arrangements-not-editable-error')
 const moment = require('moment')
-const uuid = require('uuid')
+const uuid = require('../../../lib/uuid')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 
 describe('access arrangements controller:', () => {

@@ -189,4 +189,3 @@ And(/^stored as it was in the db$/) do
   window_in_db = SqlDbHelper.check_window_details(@old_check_window_name)
   expect(window_in_db).to_not be_empty
 end
-
