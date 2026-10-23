@@ -4,7 +4,6 @@ import moment from 'moment-timezone'
 import redisCacheService from '../../data-access/redis-cache.service'
 import sqlService from '../../data-access/sql.service'
 import { type ServiceManagerSchoolResult } from '../school/school.data.service'
-import { jest } from 'globals'
 const settingService = require('../../setting.service')
 const dateService = require('../../date.service')
 
