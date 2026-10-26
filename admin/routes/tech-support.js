@@ -181,6 +181,18 @@ router.post(
 )
 
 router.get(
+  '/dlq-reconcile',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getDlqReconcile
+)
+
+router.post(
+  '/dlq-reconcile',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postDlqReconcile
+)
+
+router.get(
   '/ps-report-run',
   isAuthenticated([roles.techSupport]),
   techSupportController.getPsReportRun
