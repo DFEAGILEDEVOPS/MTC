@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 
 import { LoadingComponent } from './loading.component';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
@@ -47,6 +47,18 @@ describe('LoadingComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('renders the next button once the delay elapses, without further user input', fakeAsync(() => {
+    component.config.nextBetweenQuestions = true;
+    component.shouldShowWarningModal = false;
+    component.nextQuestionButtonDelay = 2;
+    component.question = new Question(2, 3, 1);
+    component.ngAfterViewInit();
+    tick(2000);
+    expect(component.nextButtonDelayFinished).toBe(true);
+    expect(fixture.nativeElement.querySelector('#goButton')).toBeTruthy();
+    component.ngOnDestroy();
+  }));
 
   it('should add audit entry when loading rendered', () => {
     let auditEntryInserted: AuditEntry;
