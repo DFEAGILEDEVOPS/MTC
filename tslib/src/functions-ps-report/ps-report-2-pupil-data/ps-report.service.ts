@@ -1,10 +1,10 @@
-import { type IPsReportDataService, PsReportDataService } from './ps-report.data.service'
-import { type Pupil, type PupilResult, type School } from './pupil-data.models'
-import { type ILogger } from '../../common/logger'
-import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
-import config from '../../config'
-import { ReportLine } from './report-line.class'
-import { type IPsychometricReportLine } from './transformer-models'
+import { type IPsReportDataService, PsReportDataService } from './ps-report.data.service.js'
+import { type Pupil, type PupilResult, type School } from './pupil-data.models.js'
+import { type ILogger } from '../../common/logger.js'
+import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages.js'
+import config from '../../config.js'
+import { ReportLine } from './report-line.class.js'
+import { type IPsychometricReportLine } from './transformer-models.js'
 
 const logName = 'ps-report-2-pupil-data: PsReportService'
 

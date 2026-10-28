@@ -1,7 +1,7 @@
 'use strict'
 
 const { BlobServiceClient } = require('@azure/storage-blob')
-const uuid = require('../lib/uuid')
+const uuid = require('uuid')
 const sut = require('../services/data-access/azure-blob.data.service')
 const fs = require('fs')
 const path = require('path')

@@ -1,4 +1,4 @@
-const uuid = require('../lib/uuid')
+const uuid = require('uuid')
 const azureTableDataService = require('./data-access/azure-table.data.service')
 const markedCheckTable = 'checkResult'
 const checkReceivedTable = 'receivedCheck'

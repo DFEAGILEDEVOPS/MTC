@@ -1,4 +1,4 @@
-import { UserAgentParser } from './user-agent-parser'
+import { UserAgentParser } from './user-agent-parser.js'
 
 describe('UserAgentParser', () => {
   const ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Brave Chrome/86.0.4240.75 Safari/537.36'
