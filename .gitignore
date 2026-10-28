@@ -73,6 +73,7 @@ test/pupil/*.html
 /pupil-spa/src/public/styles/helpers/helpers.css
 
 # pupil-hpa
+test/pupil-hpa/.bundle/
 test/pupil-hpa/reports/
 test/pupil-hpa/screenshots/*.png
 test/pupil-hpa/data/school_testschool*
@@ -82,13 +83,20 @@ test/pupil-hpa/test/screenshots/*.html
 test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/screenshots/*/*.png
 test/pupil-hpa/reports/*
+test/pupil-hpa/test-results/
+test/pupil-hpa/blob-report/
+test/pupil-hpa/playwright-report/
 test/pupil-hpa/*.png
 test/pupil-hpa/*.html
 test/pupil-hpa/features/support/dev_env.rb
 test/pupil-hpa/rerun.txt
 
+# Authentication state - keep credentials out of git
+auth.json
 
 #admin
+test/admin-hpa/.bundle/
+test/se_manager/.cache/selenium/
 test/se_manager/.cache/selenium/chrome/*
 test/se_manager/.cache/selenium/chromedriver/*
 test/admin-hpa/reports/
@@ -147,3 +155,5 @@ test/pupil-hpa/data/*.csv
 # E2E Test output
 test/admin-hpa/out
 test/pupil-hpa/out
+/test-results/
+
