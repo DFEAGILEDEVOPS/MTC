@@ -1,15 +1,15 @@
-import { type ISqlService, SqlService } from '../../sql/sql.service'
-import { type ILogger } from '../../common/logger'
-import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service.js'
+import { type ILogger } from '../../common/logger.js'
+import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service.js'
 import {
   type IPrepareAnswersAndInputsDataService,
   PrepareAnswersAndInputsDataService
-} from './prepare-answers-and-inputs.data.service'
-import { type IPrepareEventService, PrepareEventService } from './prepare-event.service'
-import { type IUserInputService, UserInputService } from './user-input.service'
-import { type IQuestionService, QuestionService } from './question.service'
-import { EventService, type IEventService } from './event.service'
-import { SyncResultsService } from './sync-results.service'
+} from './prepare-answers-and-inputs.data.service.js'
+import { type IPrepareEventService, PrepareEventService } from './prepare-event.service.js'
+import { type IUserInputService, UserInputService } from './user-input.service.js'
+import { type IQuestionService, QuestionService } from './question.service.js'
+import { EventService, type IEventService } from './event.service.js'
+import { SyncResultsService } from './sync-results.service.js'
 
 export interface ISyncResultsServiceFactory {
   create: SyncResultsService

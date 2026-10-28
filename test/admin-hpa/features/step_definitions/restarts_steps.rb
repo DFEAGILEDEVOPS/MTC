@@ -303,7 +303,7 @@ And(/^I should not see the pupil on the select pupils for restarts list$/) do
 end
 
 Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_restarts|
-  @number_of_restarts = number_of_restarts + 1
+  @number_of_restarts = number_of_restarts.to_i + 1
   step 'I am logged in'
   step 'I am on the add multiple pupil page'
   @upns_for_school = add_multiple_pupil_page.upload_pupils(@number_of_restarts, @school_name)
@@ -332,14 +332,20 @@ Then(/^I can select all$/) do
   restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   pupil_names = @upns_for_school.map {|upn| SqlDbHelper.pupil_details(upn, @school_id)['foreName']}
-  Timeout.timeout(30) {visit current_url until restarts_page.pupil_list.rows.find {|pupil| pupil.text.include? pupil_names.first}}
-  @before_submission = SqlDbHelper.count_all_restarts
-  restarts_page.restarts_for_multiple_pupils_using_names(pupil_names)
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) do
+    visit current_url until pupil_names.all? { |name| restarts_page.pupil_list.rows.any? { |pupil| pupil.text.include? name } }
+  end
+  restarts_page.reason_1.click
+  restarts_page.select_all_pupils.click
+  expect(restarts_page.sticky_banner.selected_count.text.to_i).to eql @upns_for_school.length
+  restarts_page.sticky_banner.confirm.click
 end
 
 And(/^I should see the pupils have a restart$/) do
-  after_submission = SqlDbHelper.count_all_restarts
-  expect(@before_submission + @number_of_restarts).to eql after_submission
+  @upns_for_school.each do |upn|
+    pupil_id = SqlDbHelper.pupil_details_using_school(upn, @school_id)['id']
+    expect(SqlDbHelper.count_restarts_taken_for_pupil(pupil_id)).to eql 1
+  end
 end
 
 
