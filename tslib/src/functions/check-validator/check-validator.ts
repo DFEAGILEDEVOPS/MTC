@@ -2,17 +2,17 @@ import {
   type ValidateCheckMessageV1,
   type MarkCheckMessageV1,
   type ReceivedCheckFunctionBindingEntity
-} from '../../schemas/models'
-import { type ILogger } from '../../common/logger'
+} from '../../schemas/models.js'
+import { type ILogger } from '../../common/logger.js'
 import Moment from 'moment'
-import { type ICompressionService, CompressionService } from '../../common/compression-service'
-import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { type ICheckValidationError } from './validators/validator-types'
-import { ValidatorProvider, type IValidatorProvider } from './validators/validator.provider'
-import { type ITableService, TableService } from '../../azure/table-service'
-import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
-import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
-const RA = require('ramda-adjunct')
+import { type ICompressionService, CompressionService } from '../../common/compression-service.js'
+import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message.js'
+import { type ICheckValidationError } from './validators/validator-types.js'
+import { ValidatorProvider, type IValidatorProvider } from './validators/validator.provider.js'
+import { type ITableService, TableService } from '../../azure/table-service.js'
+import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer.js'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion.js'
+import * as RA from 'ramda-adjunct'
 
 const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'

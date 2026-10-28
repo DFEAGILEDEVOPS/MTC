@@ -1,12 +1,12 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { type ISchoolMessageSpecification, ListSchoolsService } from './list-schools-service'
-import { PsReportLogger } from '../common/ps-report-logger'
-import { PsReportSource } from '../common/ps-report-log-entry'
-import { JobDataService } from '../../services/data/job.data.service'
-import { JobStatusCode } from '../../common/job-status-code'
+import { type ISchoolMessageSpecification, ListSchoolsService } from './list-schools-service.js'
+import { PsReportLogger } from '../common/ps-report-logger.js'
+import { PsReportSource } from '../common/ps-report-log-entry.js'
+import { JobDataService } from '../../services/data/job.data.service.js'
+import { JobStatusCode } from '../../common/job-status-code.js'
 import moment from 'moment'
-import type { PsReportStagingStartMessage, PsReportListSchoolsIncomingMessage } from '../common/ps-report-service-bus-messages'
+import type { PsReportStagingStartMessage, PsReportListSchoolsIncomingMessage } from '../common/ps-report-service-bus-messages.js'
 
 const schoolMessagesQueue = output.serviceBusQueue({
   queueName: 'ps-report-schools',

@@ -1,4 +1,4 @@
-import retry, { type IRetryStrategy, socketErrorPredicate, sqlAzureRequestTimeoutRetryPredicate, sqlAzureResourceLimitReachedPredicate, sqlAzureTimeoutRetryPredicate } from './async-retry'
+import retry, { type IRetryStrategy, socketErrorPredicate, sqlAzureRequestTimeoutRetryPredicate, sqlAzureResourceLimitReachedPredicate, sqlAzureTimeoutRetryPredicate } from './async-retry.js'
 import { ConnectionError, RequestError, PreparedStatementError, TransactionError } from 'mssql'
 
 let retryPolicy: IRetryStrategy

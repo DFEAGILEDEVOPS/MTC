@@ -1,8 +1,4 @@
-When(/^I navigate to the settings? for (Ministry of Defence schools \\(MOD\\) schools page|MOD schools page)$/) do |page_name|
-  admin_page.mod_schools_settings.click
-end
-
-When(/^I navigate to the Settings for Ministry of Defence schools \(MOD\) schools page$/) do
+When(/^I navigate to the settings for MOD schools page$/) do
   admin_page.mod_schools_settings.click
 end
 
@@ -12,11 +8,6 @@ Then(/^i should see that the MOD schools page matches design$/) do
   expect(mod_schools_page).to have_update_to_mod_school_button
   expect(mod_schools_page).to have_save
   expect(mod_schools_page).to have_cancel
-end
-
-Given(/^I am on the Settings for Ministry of Defence schools \(MOD\) page$/) do
-  step 'I have signed in with service-manager'
-  step 'I navigate to the Settings for Ministry of Defence schools (MOD) schools page'
 end
 
 Given(/^I am on the MOD schools page$/) do
