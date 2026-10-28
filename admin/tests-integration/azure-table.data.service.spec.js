@@ -3,7 +3,7 @@
 const { TableClient, TableServiceClient } = require('@azure/data-tables')
 const config = require('../config')
 const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
-const uuid = require('uuid')
+const uuid = require('../lib/uuid')
 const sut = require('../services/data-access/azure-table.data.service')
 const RA = require('ramda-adjunct')
 

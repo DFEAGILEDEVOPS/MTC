@@ -1,5 +1,5 @@
 const sqlService = require('./sql.service')
-const uuid = require('uuid')
+const uuid = require('../../lib/uuid')
 const R = require('ramda')
 
 const organisationBulkUploadDataService = {

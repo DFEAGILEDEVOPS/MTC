@@ -19,7 +19,7 @@ const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const { JobService } = require('../services/job/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil/service-manager.pupil.service')
-const { validate } = require('uuid')
+const { validate } = require('../lib/uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
@@ -407,7 +407,9 @@ const controller = {
       }
       let school
       try {
-        school = await schoolService.searchForSchool(parseInt(req.body.q?.trim(), 10))
+        const stripNonDigitsRegex = /[^0-9]/g
+        const sanitisedDfeNumber = parseInt(req.body.q?.trim().replace(stripNonDigitsRegex, ''), 10)
+        school = await schoolService.searchForSchool(sanitisedDfeNumber)
       } catch {
         return noSchoolFound(req, res, next)
       }

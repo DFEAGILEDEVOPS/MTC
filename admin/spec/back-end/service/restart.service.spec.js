@@ -8,7 +8,7 @@ const restartService = require('../../../services/restart.service')
 const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 const moment = require('moment')
-const uuid = require('uuid')
+const uuid = require('../../../lib/uuid')
 const R = require('ramda')
 
 const pupilMock = require('../mocks/pupil')
