@@ -1,16 +1,20 @@
 class FunctionsHelper
   include HTTParty
 
+  def self.sync_results_init_url
+    ENV['FUNC_THROTTLED_BASE_URL'].sub('/admin/functions', '/api') + '/sync-results-init'
+  end
+
   def self.trigger_ps_function(function_name, input='test')
     HTTParty.post(ENV['FUNC_PS_REPORT_BASE_URL'] + "/#{function_name}", :body => {"input" => input.to_json}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_PS_REPORT_MASTER_KEY']})
   end
 
   def self.sync_check_code(check_code)
-    HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/sync-results-init", :body => {'checkCode' => check_code}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
+    HTTParty.post(sync_results_init_url, :body => {'checkCode' => check_code}.to_json, headers: {'Content-Type' => 'application/json'})
   end
 
   def self.sync_all
-    HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/sync-results-init", :body => {'resyncAll' => true}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
+    HTTParty.post(sync_results_init_url, :body => {'resyncAll' => true}.to_json, headers: {'Content-Type' => 'application/json'})
   end
 
   def self.create_school(lea_code, estab_code, name, urn)
