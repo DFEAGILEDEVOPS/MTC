@@ -35,9 +35,7 @@ export class JwtService {
   static instance: JwtService
 
   static getInstance (): JwtService {
-    if (this.instance === undefined) {
-      this.instance = new JwtService()
-    }
+    this.instance ??= new JwtService()
     return this.instance
   }
 }

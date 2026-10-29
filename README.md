@@ -21,6 +21,12 @@ From the repository root (this directory) run `./start.sh`.  This will create th
 
 You can now start the admin, pupil-spa & pupil-api applications individually.
 
+## E2E test accounts (sign-hdf)
+
+For the Playwright `sign-hdf` flow in `test/pupil-hpa`, `teacher5` is reserved for automated testing in both dev and test.
+
+It belongs to Example School Five (`2011005`), and that school must remain in a state where all pupils have completed checks. If it does not, the headteacher declaration form can remain unavailable and the `sign-hdf` test will fail.
+
 ## Docker Compose
 
 There are 2 docker-compose files...

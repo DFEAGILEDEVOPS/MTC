@@ -1,6 +1,6 @@
-import { AnswerCountCheckFormValidator } from './answer-count-check-form.validator'
-import { type ICheckValidationError } from './validator-types'
-import { type ICheckFormService } from '../../../services/check-form.service'
+import { AnswerCountCheckFormValidator } from './answer-count-check-form.validator.js'
+import { type ICheckValidationError } from './validator-types.js'
+import { type ICheckFormService } from '../../../services/check-form.service.js'
 
 let sut: AnswerCountCheckFormValidator
 
