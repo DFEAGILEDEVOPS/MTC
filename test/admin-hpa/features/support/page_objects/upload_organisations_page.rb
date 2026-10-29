@@ -15,20 +15,36 @@ class UploadOrganisationsPage < SitePrism::Page
   end
 
   def extract_zip(file, destination)
-    FileUtils.mkdir_p(destination)
+    resolved_destination = File.expand_path(destination.to_s)
+    if resolved_destination.scan('/home/').size > 1
+      resolved_destination = resolved_destination[resolved_destination.rindex('/home/')..]
+    end
+
+    FileUtils.mkdir_p(resolved_destination)
 
     Zip::File.open(file) do |zip_file|
       zip_file.each do |f|
-        fpath = File.join(destination, f.name)
-        zip_file.extract(f, fpath) unless File.exist?(fpath)
+        # Some archives may contain path-like entry names; keep only filename to avoid invalid nested absolute paths
+        entry_name = File.basename(f.name.to_s)
+        fpath = File.join(resolved_destination, entry_name)
+        next if File.exist?(fpath)
+
+        File.open(fpath, 'wb') do |file_handle|
+          file_handle.write(f.get_input_stream.read)
+        end
       end
     end
+
+    resolved_destination
   end
 
   def extract_job_output(file_path, destination)
-    extract_zip(file_path,
-                destination)
-    {output: File.read(destination+"/output.txt").split("\n"), error: File.read(destination+"/error.txt").split("\n") }
+    resolved_destination = extract_zip(file_path,
+                                       destination)
+    {
+      output: File.read(File.join(resolved_destination, 'output.txt')).split("\n"),
+      error: File.read(File.join(resolved_destination, 'error.txt')).split("\n")
+    }
   end
 
 end
