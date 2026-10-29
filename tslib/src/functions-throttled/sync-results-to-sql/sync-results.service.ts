@@ -1,8 +1,8 @@
-import { type ICheckCompletionMessage } from './models'
-import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
-import { type IRedisService, RedisService } from '../../caching/redis-service'
-import redisKeyService from '../../caching/redis-key.service'
+import { type ICheckCompletionMessage } from './models.js'
+import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service.js'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
+import { type IRedisService, RedisService } from '../../caching/redis-service.js'
+import redisKeyService from '../../caching/redis-key.service.js'
 
 const name = 'SyncResultsService (throttled)'
 
