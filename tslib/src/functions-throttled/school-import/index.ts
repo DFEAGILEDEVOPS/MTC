@@ -1,9 +1,9 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { SchoolImportService } from './school-import.service'
+import { SchoolImportService } from './school-import.service.js'
 import type * as mssql from 'mssql'
-import * as ConnectionPoolService from '../../sql/pool.service'
-import { SchoolImportJobOutput } from './SchoolImportJobOutput'
+import * as ConnectionPoolService from '../../sql/pool.service.js'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput.js'
 
 const functionName = 'school-import'
 

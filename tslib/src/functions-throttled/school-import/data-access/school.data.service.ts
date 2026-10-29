@@ -1,8 +1,8 @@
 import * as mssql from 'mssql'
 import * as R from 'ramda'
-import { type ILogger } from '../../../common/logger'
-import { type SchoolImportJobOutput } from '../SchoolImportJobOutput'
-import { type ISchoolRecord } from './ISchoolRecord'
+import { type ILogger } from '../../../common/logger.js'
+import { type SchoolImportJobOutput } from '../SchoolImportJobOutput.js'
+import { type ISchoolRecord } from './ISchoolRecord.js'
 
 export interface ISchoolDataService {
   bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput>

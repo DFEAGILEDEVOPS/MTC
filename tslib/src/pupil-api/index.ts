@@ -1,8 +1,8 @@
-import appInsightsHelper from './helpers/app-insights'
-import config from './config'
+import appInsightsHelper from './helpers/app-insights.js'
+import config from './config.js'
 import * as http from 'http'
-import logger from './services/log.service'
-import App from './App'
+import logger from './services/log.service.js'
+import App from './App.js'
 
 appInsightsHelper.startInsightsIfConfigured().catch(err => console.error('Failed to load appinsights: ', err))
 const port = normalizePort(config.PORT)
