@@ -77,9 +77,8 @@ class CheckPage < SitePrism::Page
       if (next_button.visible?)
         next_button.click
       end unless next_arrangement == nil
-      # wait_for_question(15)
-      wait_until(10,1) {p check_page.question.visible?}
-      @question = check_page.question.text
+      wait_until(20, 0.5) { has_question? }
+      @question = question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = values.first.to_i * values.last.to_i
       @array_of_answers << answer

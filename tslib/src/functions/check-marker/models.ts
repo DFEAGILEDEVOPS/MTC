@@ -1,4 +1,4 @@
-import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
+import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models.js'
 
 export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: ReceivedCheckFunctionBindingEntity[]

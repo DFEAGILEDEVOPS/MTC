@@ -1,7 +1,7 @@
 ### STAGE 1: Build ###
 
 # We label our stage as 'builder'
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 # `yarn install` needs to be able to find `git` for lz-string which uses a github.com URL for the version.
 RUN apk update && \
