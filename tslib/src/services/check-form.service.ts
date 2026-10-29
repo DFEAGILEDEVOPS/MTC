@@ -1,6 +1,6 @@
 import * as mssql from 'mssql'
-import { SqlService } from '../sql/sql.service'
-import config from '../config'
+import { SqlService } from '../sql/sql.service.js'
+import config from '../config.js'
 const RA = require('ramda-adjunct')
 
 interface CheckFormItem {

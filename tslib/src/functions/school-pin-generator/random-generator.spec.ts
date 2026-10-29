@@ -1,4 +1,4 @@
-import { RandomGenerator } from './random-generator'
+import { RandomGenerator } from './random-generator.js'
 
 let sut: RandomGenerator
 
