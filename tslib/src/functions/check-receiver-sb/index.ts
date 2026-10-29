@@ -1,8 +1,8 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { CheckReceiverServiceBus } from './check-receiver-sb'
-import { type SubmittedCheckMessage } from '../../schemas/models'
-import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
+import { CheckReceiverServiceBus } from './check-receiver-sb.js'
+import { type SubmittedCheckMessage } from '../../schemas/models.js'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion.js'
 
 const functionName = 'check-receiver-sb'
 const checkValidationQueueName = 'check-validation'
