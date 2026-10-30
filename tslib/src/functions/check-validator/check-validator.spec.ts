@@ -1,22 +1,22 @@
-import { CheckValidator } from './check-validator'
+import { CheckValidator } from './check-validator.js'
 import {
   type ReceivedCheckTableEntity,
   type MarkCheckMessageV1,
   type ValidateCheckMessageV1,
   type ReceivedCheckFunctionBindingEntity
-} from '../../schemas/models'
-import { type ILogger } from '../../common/logger'
-import { type ICompressionService } from '../../common/compression-service'
+} from '../../schemas/models.js'
+import { type ILogger } from '../../common/logger.js'
+import { type ICompressionService } from '../../common/compression-service.js'
 import * as uuid from 'uuid'
 import moment from 'moment'
-import { CheckNotificationType } from '../../schemas/check-notification-message'
-import { type ITableService } from '../../azure/table-service'
+import { CheckNotificationType } from '../../schemas/check-notification-message.js'
+import { type ITableService } from '../../azure/table-service.js'
 import { type TableEntity } from '@azure/data-tables'
-import { type ICheckFormService } from '../../services/check-form.service'
-import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
+import { type ICheckFormService } from '../../services/check-form.service.js'
+import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider.js'
 import * as mockSubmittedCheckV3 from '../../common/mocks/mock-valid-submitted-check.2023.json'
 import * as R from 'ramda'
-import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion.js'
 
 let sut: CheckValidator
 let loggerMock: ILogger
