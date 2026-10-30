@@ -197,6 +197,9 @@
       "<rootDir>/dist"
     ],
     "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/test-support/jest.setup.js"
+    ],
     "verbose": false,
     "testRunner": "jest-circus",
     "transformIgnorePatterns": [

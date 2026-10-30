@@ -126,6 +126,11 @@ allow `uuid` through `transformIgnorePatterns`; other `node_modules` remain excl
 The project-wide Babel configuration also applies to dependency files, unlike a
 package-scoped `.babelrc.js`.
 
+Both Jest configurations load [test-support/jest.setup.js](./test-support/jest.setup.js)
+to expose Node's Web Crypto implementation inside Jest 27's VM environment. This
+provides the real `crypto.randomUUID` and `crypto.getRandomValues` APIs used by UUID
+and Azure SDKs.
+
 To run a single unit test without linting:
 
 ```bash

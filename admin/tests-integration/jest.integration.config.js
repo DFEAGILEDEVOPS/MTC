@@ -2,7 +2,7 @@ module.exports = {
   verbose: true,
   testMatch: ['./**/(*.)+(spec|test).[jt]s?(x)'],
   testRunner: 'jest-circus', // As of jest 27 this is the legacy mode (slow)
-  setupFiles: ['./test-support/jest.setup.js'],
+  setupFiles: ['../test-support/jest.setup.js'],
   transform: {
     '^.+\\.[jt]sx?$': ['babel-jest', { configFile: require.resolve('../babel.config.js') }]
   },
