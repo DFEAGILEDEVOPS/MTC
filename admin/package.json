@@ -199,6 +199,9 @@
     "testEnvironment": "node",
     "verbose": false,
     "testRunner": "jest-circus",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!uuid/)"
+    ],
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs",
       "^@typespec/ts-http-runtime/internal/(.*)$": "<rootDir>/node_modules/@typespec/ts-http-runtime/dist/commonjs/$1/internal.js"

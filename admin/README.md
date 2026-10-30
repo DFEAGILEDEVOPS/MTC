@@ -120,6 +120,18 @@ We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server dat
 
 `yarn test`
 
+Jest transforms the ESM-only `uuid` dependency to CommonJS using
+[babel.config.js](./babel.config.js). Both the unit and integration Jest configurations
+allow `uuid` through `transformIgnorePatterns`; other `node_modules` remain excluded.
+The project-wide Babel configuration also applies to dependency files, unlike a
+package-scoped `.babelrc.js`.
+
+To run a single unit test without linting:
+
+```bash
+yarn jest --runInBand spec/back-end/controllers/service-manager.spec.js
+```
+
 ### Running SQL Server migrations
 
 We use postgrator to run database migrations under a dedicated app in the `db` folder.  See [the readme](../db) for full details.
