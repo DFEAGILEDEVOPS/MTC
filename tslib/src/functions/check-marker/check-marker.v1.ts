@@ -1,13 +1,13 @@
 import * as R from 'ramda'
-import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
+import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models.js'
 import moment from 'moment'
-import { type ICheckFormService, CheckFormService } from '../../services/check-form.service'
-import { type ILogger } from '../../common/logger'
-import type { MarkingData, CheckResult, MarkedAnswer, ICheckMarkerOutputs, IMarkingEntity } from './models'
-import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { type ITableService, TableService } from '../../azure/table-service'
-import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
-const RA = require('ramda-adjunct')
+import { type ICheckFormService, CheckFormService } from '../../services/check-form.service.js'
+import { type ILogger } from '../../common/logger.js'
+import type { MarkingData, CheckResult, MarkedAnswer, ICheckMarkerOutputs, IMarkingEntity } from './models.js'
+import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message.js'
+import { type ITableService, TableService } from '../../azure/table-service.js'
+import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer.js'
+import * as RA from 'ramda-adjunct'
 
 export class CheckMarkerV1 {
   private readonly tableService: ITableService
@@ -154,7 +154,7 @@ export class CheckMarkerV1 {
 
     let questionNumber = 1
     for (const question of markingData.formQuestions) {
-      const answerRecord = markingData.answers.find(o => o.sequenceNumber === questionNumber &&
+      const answerRecord = markingData.answers.find((o: MarkedAnswer) => o.sequenceNumber === questionNumber &&
         o.factor1 === question.f1 &&
         o.factor2 === question.f2)
 
@@ -195,7 +195,7 @@ export class CheckMarkerV1 {
       questionNumber += 1
     }
 
-    results.mark = results.markedAnswers.filter(o => o.isCorrect).length
+    results.mark = results.markedAnswers.filter((o: MarkedAnswer) => o.isCorrect).length
     return results
   }
 
