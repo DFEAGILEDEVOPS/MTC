@@ -1,5 +1,5 @@
 schedules:
-- cron: "0 8 * * 1-5"
+- cron: "0 9 * * 1-5"
   displayName: Weekday Playwright tests at 9 AM BST
   branches:
     include:
@@ -12,7 +12,7 @@ trigger:
 pr: none
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-24.04'
 
 variables:
   - name: NODE_VERSION
