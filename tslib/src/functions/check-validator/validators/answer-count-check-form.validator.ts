@@ -1,7 +1,7 @@
 import * as R from 'ramda'
-import { type Answer } from '../../check-marker/models' // pulling in from a different service
-import { type IAsyncSubmittedCheckValidator, type CheckValidationResult } from './validator-types'
-import { CheckFormService, type ICheckFormService } from '../../../services/check-form.service'
+import { type Answer } from '../../check-marker/models.js' // pulling in from a different service
+import { type IAsyncSubmittedCheckValidator, type CheckValidationResult } from './validator-types.js'
+import { CheckFormService, type ICheckFormService } from '../../../services/check-form.service.js'
 
 export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValidator {
   private readonly checkFormService: ICheckFormService

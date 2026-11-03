@@ -1,4 +1,4 @@
-import { SchoolImportJobOutput } from './SchoolImportJobOutput'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput.js'
 
 describe('SchoolImportJobResult', () => {
   let jobResult: SchoolImportJobOutput

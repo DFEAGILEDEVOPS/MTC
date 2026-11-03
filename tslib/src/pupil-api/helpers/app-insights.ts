@@ -1,7 +1,7 @@
-import { PingService } from '../services/ping.service'
-import config from '../config'
+import { PingService } from '../services/ping.service.js'
+import config from '../config.js'
 import { isNil } from 'ramda'
-import * as appInsights from 'applicationinsights'
+import appInsights from 'applicationinsights'
 
 const cloudRoleName = 'Pupil-API'
 let isAppInsightsSetup = false
@@ -27,6 +27,8 @@ if (isNil(connectionString)) {
     .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
     .enableWebInstrumentation(false)
 
+  appInsights.start()
+
   isAppInsightsSetup = true
   appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName
   appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
@@ -37,7 +39,6 @@ const appInsightsHelper = {
     if (!isAppInsightsSetup) {
       return
     }
-    appInsights.start()
     console.log('Application insights: started')
     const pingService = new PingService()
     let buildNumber

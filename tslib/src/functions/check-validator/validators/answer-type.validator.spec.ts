@@ -1,5 +1,5 @@
-import { AnswerTypeValidator } from './answer-type.validator'
-import { type ICheckValidationError } from './validator-types'
+import { AnswerTypeValidator } from './answer-type.validator.js'
+import { type ICheckValidationError } from './validator-types.js'
 
 let sut: AnswerTypeValidator
 

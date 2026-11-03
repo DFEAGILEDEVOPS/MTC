@@ -53,4 +53,4 @@ export interface PsReportBatchMessage {
 /**
  * Type import for the report line interface
  */
-import type { IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
+import type { IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models.js'
