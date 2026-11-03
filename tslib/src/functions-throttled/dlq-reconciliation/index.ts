@@ -2,10 +2,10 @@ import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } 
 import { ServiceBusClient, ServiceBusAdministrationClient } from '@azure/service-bus'
 import { randomUUID } from 'node:crypto'
 import { validate as isUuid } from 'uuid'
-import config from '../../config'
-import { DlqReconciliationService } from './dlq-reconciliation.service'
-import { DlqReconciliationDataService } from './dlq-reconciliation.data.service'
-import { queueName } from './models'
+import config from '../../config.js'
+import { DlqReconciliationService } from './dlq-reconciliation.service.js'
+import { DlqReconciliationDataService } from './dlq-reconciliation.data.service.js'
+import { queueName } from './models.js'
 
 const functionName = 'dlq-reconciliation'
 

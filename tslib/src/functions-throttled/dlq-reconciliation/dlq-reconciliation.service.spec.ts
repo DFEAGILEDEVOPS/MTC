@@ -1,8 +1,8 @@
 import { type ServiceBusReceiver, type ServiceBusReceivedMessage } from '@azure/service-bus'
-import { MockLogger } from '../../common/logger'
-import { DlqReconciliationService } from './dlq-reconciliation.service'
-import { DlqReconciliationDataService } from './dlq-reconciliation.data.service'
-import { type ReconciliationItem } from './models'
+import { MockLogger } from '../../common/logger.js'
+import { DlqReconciliationService } from './dlq-reconciliation.service.js'
+import { DlqReconciliationDataService } from './dlq-reconciliation.data.service.js'
+import { type ReconciliationItem } from './models.js'
 
 describe('DLQ reconciliation', () => {
   const checkCode = 'f3f36f0e-ec74-4ef3-a65f-a3fa9d80b376'

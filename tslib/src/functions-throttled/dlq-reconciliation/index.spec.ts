@@ -1,14 +1,14 @@
 import { app, type HttpRequest, type InvocationContext } from '@azure/functions'
 import { ServiceBusAdministrationClient, ServiceBusClient } from '@azure/service-bus'
-import { DlqReconciliationService } from './dlq-reconciliation.service'
-import { DlqReconciliationDataService } from './dlq-reconciliation.data.service'
-import { dlqReconciliationHttp, runDlqReconciliation } from './index'
+import { DlqReconciliationService } from './dlq-reconciliation.service.js'
+import { DlqReconciliationDataService } from './dlq-reconciliation.data.service.js'
+import { dlqReconciliationHttp, runDlqReconciliation } from './index.js'
 
 jest.mock('@azure/functions', () => ({ app: { http: jest.fn(), timer: jest.fn() } }))
 jest.mock('@azure/service-bus', () => ({ ServiceBusClient: jest.fn(), ServiceBusAdministrationClient: jest.fn() }))
-jest.mock('../../config', () => ({ __esModule: true, default: { ServiceBus: { ConnectionString: 'test-connection' } } }))
-jest.mock('./dlq-reconciliation.service', () => ({ DlqReconciliationService: jest.fn() }))
-jest.mock('./dlq-reconciliation.data.service', () => ({ DlqReconciliationDataService: jest.fn() }))
+jest.mock('../../config.js', () => ({ __esModule: true, default: { ServiceBus: { ConnectionString: 'test-connection' } } }))
+jest.mock('./dlq-reconciliation.service.js', () => ({ DlqReconciliationService: jest.fn() }))
+jest.mock('./dlq-reconciliation.data.service.js', () => ({ DlqReconciliationDataService: jest.fn() }))
 
 describe('DLQ reconciliation HTTP reporting', () => {
   let getQueueRuntimeProperties: jest.Mock

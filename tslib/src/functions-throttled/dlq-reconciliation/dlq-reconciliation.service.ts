@@ -1,8 +1,8 @@
 import { type ServiceBusReceiver, type ServiceBusReceivedMessage } from '@azure/service-bus'
 import { validate as isUuid } from 'uuid'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
-import { DlqReconciliationDataService } from './dlq-reconciliation.data.service'
-import { type ReconciliationItem } from './models'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
+import { DlqReconciliationDataService } from './dlq-reconciliation.data.service.js'
+import { type ReconciliationItem } from './models.js'
 
 type Receiver = Pick<ServiceBusReceiver, 'peekMessages' | 'receiveMessages' | 'completeMessage' | 'abandonMessage'>
 type Store = Pick<DlqReconciliationDataService, 'isSynchronised' | 'recordInventory' | 'recordOutcome' | 'heartbeat'>

@@ -1,6 +1,6 @@
 import { TYPES, MAX } from 'mssql'
-import { SqlService, type ISqlService } from '../../sql/sql.service'
-import { queueName, type ReconciliationItem, type ReconciliationMode, type ReconciliationRun } from './models'
+import { SqlService, type ISqlService } from '../../sql/sql.service.js'
+import { queueName, type ReconciliationItem, type ReconciliationMode, type ReconciliationRun } from './models.js'
 
 export interface IDlqReconciliationDataService {
   isSynchronised (checkCode: string, schoolUUID: string): Promise<boolean>
