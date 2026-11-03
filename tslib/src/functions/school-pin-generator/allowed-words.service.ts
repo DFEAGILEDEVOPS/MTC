@@ -1,5 +1,5 @@
-import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider'
-import { type ISchoolPinDataService, SchoolPinDataService } from './school-pin-data-service'
+import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider.js'
+import { type ISchoolPinDataService, SchoolPinDataService } from './school-pin-data-service.js'
 
 export interface IAllowedWordsService {
   getAllowedWords (): Promise<Set<string>>

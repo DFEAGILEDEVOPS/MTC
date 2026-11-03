@@ -1,4 +1,4 @@
-import type { Event } from '../pupil-data.models'
+import type { Event } from '../pupil-data.models.js'
 import moment from 'moment'
 
 export const events: Event[] = [

@@ -1,10 +1,10 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PsReportService } from './ps-report.service'
-import { PsReportLogger } from '../common/ps-report-logger'
-import { PsReportSource } from '../common/ps-report-log-entry'
-import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
-import config from '../../config'
+import { PsReportService } from './ps-report.service.js'
+import { PsReportLogger } from '../common/ps-report-logger.js'
+import { PsReportSource } from '../common/ps-report-log-entry.js'
+import type { PsReportSchoolFanOutMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages.js'
+import config from '../../config.js'
 
 const psReportExportOutputQueue = output.serviceBusQueue({
   queueName: 'ps-report-export',

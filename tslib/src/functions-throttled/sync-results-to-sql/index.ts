@@ -1,9 +1,9 @@
 import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 
-import config from '../../config'
-import { type ICheckCompletionMessage } from './models'
-import { SyncResultsServiceFactory } from './sync-results.service.factory'
+import config from '../../config.js'
+import { type ICheckCompletionMessage } from './models.js'
+import { SyncResultsServiceFactory } from './sync-results.service.factory.js'
 
 const functionName = 'sync-results-to-sql'
 

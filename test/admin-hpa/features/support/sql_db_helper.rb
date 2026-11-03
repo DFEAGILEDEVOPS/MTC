@@ -433,6 +433,14 @@ class SqlDbHelper
     count.values.first
   end
 
+  def self.count_active_restarts_for_school(school_id)
+    sql = "SELECT COUNT(*) FROM [mtc_admin].[pupilRestart] WHERE isDeleted=0 AND pupil_id IN (SELECT id FROM [mtc_admin].[pupil] WHERE school_id=#{school_id})"
+    result = SQL_CLIENT.execute(sql)
+    count = result.first
+    result.cancel
+    count.values.first
+  end
+
   def self.find_pupil_restart(pupil_id)
     sql = "SELECT * FROM [mtc_admin].[pupilRestart] where pupil_id=#{pupil_id}"
     result = SQL_CLIENT.execute(sql)

@@ -1,18 +1,18 @@
 import express from 'express'
-import * as bodyParser from 'body-parser'
+import bodyParser from 'body-parser'
 import cors from 'cors'
-import { v4 as uuidv4 } from 'uuid'
-import logger from './services/log.service'
-import authRoutes from './routes/auth'
-import submitRoutes from './routes/submit'
-import feedbackRoutes from './routes/feedback'
-import pingRoute from './routes/ping'
-import headRoute from './routes/head'
-import * as corsOptions from './helpers/cors-options'
-import { initLogger } from './helpers/logger'
-import { JwtSecretValidator } from '../services/jwt-secret.validator'
-import config from '../config'
-const helmet = require('helmet')
+import helmet from 'helmet'
+import logger from './services/log.service.js'
+import authRoutes from './routes/auth.js'
+import submitRoutes from './routes/submit.js'
+import feedbackRoutes from './routes/feedback.js'
+import pingRoute from './routes/ping.js'
+import headRoute from './routes/head.js'
+import corsOptions from './helpers/cors-options.js'
+import { initLogger } from './helpers/logger.js'
+import { createUuid } from '../common/uuid.js'
+import { JwtSecretValidator } from '../services/jwt-secret.validator.js'
+import config from '../config.js'
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -68,7 +68,7 @@ class App {
 
     // error handler
     this.express.use(function (err: any, req: any, res: any) {
-      const errorId = uuidv4()
+      const errorId = createUuid()
       // only providing error information in development
       // @TODO: change this to a real logger with an error string that contains
       // all pertinent information. Assume 2nd/3rd line support would pick this

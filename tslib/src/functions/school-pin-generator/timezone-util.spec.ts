@@ -1,4 +1,4 @@
-import { TimezoneUtil } from './timezone-util'
+import { TimezoneUtil } from './timezone-util.js'
 
 describe('utc-offset-resolver', () => {
   let sut: TimezoneUtil

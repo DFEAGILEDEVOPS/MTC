@@ -1,6 +1,6 @@
-import { AllowedWordsService } from './allowed-words.service'
-import { type IPinConfigProvider } from './pin-config-provider'
-import { type ISchoolPinDataService } from './school-pin-data-service'
+import { AllowedWordsService } from './allowed-words.service.js'
+import { type IPinConfigProvider } from './pin-config-provider.js'
+import { type ISchoolPinDataService } from './school-pin-data-service.js'
 
 let sut: AllowedWordsService
 const schoolPinDataServiceMock: ISchoolPinDataService = {

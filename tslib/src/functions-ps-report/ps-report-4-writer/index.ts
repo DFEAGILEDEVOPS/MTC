@@ -1,9 +1,9 @@
 import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PsReportWriterService } from './ps-report-writer.service'
-import { type PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
-import { JobDataService } from '../../services/data/job.data.service'
-import { JobStatusCode } from '../../common/job-status-code'
+import { PsReportWriterService } from './ps-report-writer.service.js'
+import { type PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages.js'
+import { JobDataService } from '../../services/data/job.data.service.js'
+import { JobStatusCode } from '../../common/job-status-code.js'
 let funcName = 'ps-report-4-writer'
 
 app.serviceBusQueue(funcName, {
