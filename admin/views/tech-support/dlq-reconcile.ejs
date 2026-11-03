@@ -1,0 +1,85 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Reconcile Check DLQ</h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <p class="govuk-body">Queue: <strong>check-submission</strong> dead-letter queue.</p>
+      <p class="govuk-body">Preview compares messages with successfully synchronised SQL results. Cleanup removes only eligible messages from a completed preview after checking them again. Other messages remain in the queue.</p>
+      <% if (errorMessage) { %>
+        <div class="govuk-error-summary" role="alert"><p class="govuk-body"><%= errorMessage %></p></div>
+      <% } %>
+      <form action="/tech-support/dlq-reconcile" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <button type="submit" name="mode" value="preview" class="govuk-button" <%= active ? 'disabled' : '' %>>Preview DLQ reconciliation</button>
+      </form>
+      <% if (run) { %>
+        <section id="dlq-reconciliation-run" data-active="<%= run.status === 'Queued' || run.status === 'Running' %>">
+          <h2 class="govuk-heading-m">Run results</h2>
+          <p class="govuk-body">Run ID: <%= run.runId %></p>
+          <p class="govuk-body">Mode: <%= run.mode %>. Status: <strong><%= run.status %></strong>.</p>
+          <% if (run.message) { %><div class="govuk-inset-text"><%= run.message %></div><% } %>
+          <p class="govuk-body">Dead letters before / after: <%= run.deadLetterCountBefore ?? 'Unavailable' %> / <%= run.deadLetterCountAfter ?? 'Unavailable' %></p>
+          <p class="govuk-body">Inventoried: <%= run.inventoryCount %>. Checked: <%= run.checkedCount %>.</p>
+          <p class="govuk-body">Eligible: <%= run.eligibleCount %>. Removed: <%= run.removedCount %>. Retained: <%= run.retainedCount %>. Failed or unconfirmed: <%= run.failedCount %>.</p>
+          <p class="govuk-body"><a class="govuk-link" href="/tech-support/dlq-reconcile?runId=<%= run.runId %>&amp;page=<%= page %>">Refresh results</a></p>
+          <% if (run.mode === 'preview' && run.status === 'Completed' && run.eligibleCount > 0 && !active) { %>
+            <form action="/tech-support/dlq-reconcile?runId=<%= run.runId %>" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+              <input type="hidden" name="previewRunId" value="<%= run.runId %>" />
+              <div class="govuk-form-group govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" type="checkbox" id="confirmCleanup" name="confirmCleanup" value="true" required>
+                  <label class="govuk-label govuk-checkboxes__label" for="confirmCleanup">Remove messages from this preview only if their results are still confirmed in SQL</label>
+                </div>
+              </div>
+              <button type="submit" name="mode" value="cleanup" class="govuk-button govuk-button--warning">Run verified cleanup</button>
+            </form>
+          <% } %>
+        <% if (items.length > 0) { %>
+          <table class="govuk-table" style="table-layout: fixed; width: 100%; overflow-wrap: anywhere;">
+            <caption class="govuk-table__caption govuk-heading-m">Message audit</caption>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Check Code</th>
+                <th scope="col" class="govuk-table__header">SchoolUUID</th>
+                <th scope="col" class="govuk-table__header">Submission Date</th>
+                <th scope="col" class="govuk-table__header">Outcome</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <% items.forEach(message => { %>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><%= message.checkCode || 'Unavailable' %></td>
+                  <td class="govuk-table__cell"><%= message.schoolUUID || 'Unavailable' %></td>
+                  <td class="govuk-table__cell"><%= message.submittedAt ? new Date(message.submittedAt).toLocaleString('en-GB', { timeZone: 'UTC' }) + ' UTC' : 'Unavailable' %></td>
+                  <td class="govuk-table__cell"><%= message.outcome %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          <nav aria-label="Message audit pages">
+            <p class="govuk-body">Page <%= page %> of <%= totalPages %></p>
+            <% if (page > 1) { %><a class="govuk-link govuk-!-margin-right-4" href="?runId=<%= run.runId %>&amp;page=<%= page - 1 %>">Previous</a><% } %>
+            <% if (page < totalPages) { %><a class="govuk-link" href="?runId=<%= run.runId %>&amp;page=<%= page + 1 %>">Next</a><% } %>
+          </nav>
+        <% } %>
+        </section>
+      <% } %>
+      <% if (runs.length > 0) { %>
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">Recent runs</h2>
+        <ul class="govuk-list" id="dlq-recent-runs">
+          <% runs.forEach((previous, index) => { %>
+            <li <%- index >= 2 ? 'data-older-run hidden' : '' %>><a class="govuk-link" href="/tech-support/dlq-reconcile?runId=<%= previous.runId %>"><%= previous.runId %></a>: <%= previous.mode %>, <%= previous.status %></li>
+          <% }) %>
+        </ul>
+        <% if (runs.length > 2) { %>
+          <a class="govuk-link" href="#dlq-recent-runs" id="dlq-runs-more" aria-controls="dlq-recent-runs" aria-expanded="false">View more</a>
+          <div id="dlq-runs-collapse" hidden>
+            <a  class="govuk-link" href="#dlq-recent-runs" id="dlq-runs-less" aria-controls="dlq-recent-runs" aria-expanded="true">View less</a>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+</main>

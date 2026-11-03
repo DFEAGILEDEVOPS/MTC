@@ -9,6 +9,7 @@ const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
+const dlqReconciliationService = require('../services/tech-support/dlq-reconciliation.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
 const { CheckSubmitService } = require('../services/tech-support/check-submit/check-submit.service')
 
@@ -543,6 +544,65 @@ const controller = {
         response: 'request sent to function API successfully'
       })
     } catch (error) {
+      return next(error)
+    }
+  },
+
+  getDlqReconcile: async function getDlqReconcile (req, res, next, errorMessage = '') {
+    try {
+      res.locals.pageTitle = 'Reconcile Check DLQ'
+      req.breadcrumbs('Reconcile Check DLQ')
+      const runId = req.query.runId
+      const page = Number(req.query.page ?? 1)
+      if ((runId !== undefined && (typeof runId !== 'string' || uuidValidator.validate(runId, 'runId').hasError())) ||
+        !Number.isSafeInteger(page) || page < 1 || page > 10000) {
+        return res.status(400).send('Invalid reconciliation run ID or page')
+      }
+      const runs = await dlqReconciliationService.listRuns()
+      const result = runId ? await dlqReconciliationService.getRun(runId, page) : { run: null, items: [], page: 1, totalPages: 1 }
+      res.render('tech-support/dlq-reconcile', {
+        breadcrumbs: req.breadcrumbs(),
+        ...result,
+        runs,
+        active: runs.some(run => run.status === 'Queued' || run.status === 'Running'),
+        errorMessage
+      })
+    } catch (error) {
+      if (error.response?.status === 503) {
+        return res.status(503).render('tech-support/dlq-reconcile', {
+          breadcrumbs: req.breadcrumbs(),
+          run: null,
+          items: [],
+          page: 1,
+          totalPages: 1,
+          runs: [],
+          active: true,
+          errorMessage: 'Database audit tables are missing. Apply reconciliation migrations 20261019120000 and 20261019120001 before running preview or cleanup.'
+        })
+      }
+      return next(error)
+    }
+  },
+
+  postDlqReconcile: async function postDlqReconcile (req, res, next) {
+    try {
+      const mode = req.body.mode
+      if (mode !== 'preview' && mode !== 'cleanup') return res.status(400).send('Invalid reconciliation mode')
+      if (mode === 'cleanup' && req.body.confirmCleanup !== 'true') {
+        return controller.getDlqReconcile(req, res, next, 'Confirm that verified messages may be removed before running cleanup.')
+      }
+      const result = await dlqReconciliationService.startRun(mode, String(req.user.id), req.body.previewRunId)
+      return res.redirect(`/tech-support/dlq-reconcile?runId=${encodeURIComponent(result.runId)}`)
+    } catch (error) {
+      if (error.response?.status === 409) {
+        return controller.getDlqReconcile(req, res, next, 'Another run is already active for check-submission. Wait for it to finish.')
+      }
+      if (error.response?.status === 400) {
+        return controller.getDlqReconcile(req, res, next, 'Cleanup requires a completed preview with eligible messages. Run a new preview first.')
+      }
+      if (error.response?.status === 503) {
+        return controller.getDlqReconcile(req, res, next, 'Database audit migrations must be applied before reconciliation can run.')
+      }
       return next(error)
     }
   },
