@@ -18,6 +18,19 @@
   }
 }
 
+.govuk-info-message.access-arrangements-confirmation {
+  border-color: govuk-colour("green");
+  color: govuk-colour("black");
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: govuk-colour("black");
+  }
+}
+
 .govuk-warning-message {
   border: 5px solid govuk-colour("red");
   padding: 1em;
