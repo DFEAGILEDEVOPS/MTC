@@ -4,6 +4,9 @@
   "type": "module",
   "private": false,
   "packageManager": "yarn@1.22.22",
+  "resolutions": {
+    "**/**/qs": "6.16.0"
+  },
   "license": "GPL-3.0",
   "scripts": {
     "build:watch": "tsc -b --v -w",
