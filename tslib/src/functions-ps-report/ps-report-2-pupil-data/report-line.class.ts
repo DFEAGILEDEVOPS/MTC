@@ -8,10 +8,10 @@ import {
   type Pupil,
   type School, type Answer, type NotTakingCheckCode, type RestartReasonCode,
   type InputAssistantOrNull
-} from './pupil-data.models'
-import { deepFreeze } from '../../common/deep-freeze'
-import { ReportLineAnswer } from './report-line-answer.class'
-import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './transformer-models'
+} from './pupil-data.models.js'
+import { deepFreeze } from '../../common/deep-freeze.js'
+import { ReportLineAnswer } from './report-line-answer.class.js'
+import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './transformer-models.js'
 const RA = require('ramda-adjunct')
 
 export class ReportLine {

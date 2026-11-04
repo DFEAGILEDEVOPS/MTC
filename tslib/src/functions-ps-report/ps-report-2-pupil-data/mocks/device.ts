@@ -1,4 +1,4 @@
-import { type Device } from '../pupil-data.models'
+import { type Device } from '../pupil-data.models.js'
 
 export const device: Device = {
   type: 'Tablet',

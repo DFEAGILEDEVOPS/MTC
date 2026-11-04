@@ -1,8 +1,8 @@
-import * as tzutil from '../../functions/school-pin-generator/timezone-util'
-import { SchoolPinGenerator } from '../../functions/school-pin-generator/school-pin-generator'
-import { SchoolPinExpiryGenerator } from '../../functions/school-pin-generator/school-pin-expiry-generator'
-import { type IDateTimeService } from '../../common/datetime.service'
-import { RandomGenerator } from '../../functions/school-pin-generator/random-generator'
+import * as tzutil from '../../functions/school-pin-generator/timezone-util.js'
+import { SchoolPinGenerator } from '../../functions/school-pin-generator/school-pin-generator.js'
+import { SchoolPinExpiryGenerator } from '../../functions/school-pin-generator/school-pin-expiry-generator.js'
+import { type IDateTimeService } from '../../common/datetime.service.js'
+import { RandomGenerator } from '../../functions/school-pin-generator/random-generator.js'
 import type moment from 'moment'
 
 export class SchoolPinSampler {

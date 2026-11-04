@@ -1,4 +1,4 @@
-import { type CheckConfig, type CheckQuestion, type QueueAuthToken } from './validated-check'
+import { type CheckConfig, type CheckQuestion, type QueueAuthToken } from './validated-check.js'
 
 /**
  * @description As of 25th June 2021 this is a full definition of the prepared check object that we store in Redis.

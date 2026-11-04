@@ -3,7 +3,7 @@ import {
   type IPupilPrefsDataService,
   type IPupilPreferenceDataUpdate,
   type IPupilPreferenceUpdate
-} from './pupil-prefs.service'
+} from './pupil-prefs.service.js'
 
 const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
   updatePupilPreferences: jest.fn(),
@@ -27,7 +27,8 @@ describe('pupil-prefs.service', () => {
 
   test('all updates should be sent in one call to data service', async () => {
     let dataUpdates: IPupilPreferenceDataUpdate[] = []
-    jest.spyOn(dataServiceMock, 'updatePupilPreferences').mockImplementation(async (updates) => {
+    jest.spyOn(dataServiceMock, 'updatePupilPreferences').mockImplementation(async (...args: unknown[]) => {
+      const [updates] = args as [IPupilPreferenceDataUpdate[]]
       dataUpdates = updates
       return Promise.resolve()
     })
@@ -46,7 +47,8 @@ describe('pupil-prefs.service', () => {
 
   test('colour contrast only update makes relevant data change', async () => {
     let dataUpdates: IPupilPreferenceDataUpdate[] = []
-    jest.spyOn(dataServiceMock, 'updatePupilPreferences').mockImplementation(async (updates) => {
+    jest.spyOn(dataServiceMock, 'updatePupilPreferences').mockImplementation(async (...args: unknown[]) => {
+      const [updates] = args as [IPupilPreferenceDataUpdate[]]
       dataUpdates = updates
       return Promise.resolve()
     })
@@ -66,7 +68,8 @@ describe('pupil-prefs.service', () => {
 
   test('font size only update makes relevant data change', async () => {
     let dataUpdates: IPupilPreferenceDataUpdate[] = []
-    jest.spyOn(dataServiceMock, 'updatePupilPreferences').mockImplementation(async (updates) => {
+    jest.spyOn(dataServiceMock, 'updatePupilPreferences').mockImplementation(async (...args: unknown[]) => {
+      const [updates] = args as [IPupilPreferenceDataUpdate[]]
       dataUpdates = updates
       return Promise.resolve()
     })

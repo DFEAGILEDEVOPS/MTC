@@ -119,16 +119,22 @@ controller.getSelectRestartList = async function getSelectRestartList (req, res,
 }
 
 controller.postSubmitRestartList = async function postSubmitRestartList (req, res, next) {
-  const { pupil: pupilsList, restartReason } = req.body
-  if (!pupilsList) {
-    return res.redirect('/restart/select-restart-list')
-  }
+  const { pupil: pupilsList, restartReason, allPupils } = req.body
 
   // Pupil IDs can arrive as array, single value, or keyed object, depending on body-parser behaviour.
-  const processedPupilsIds = Array.from(new Set(normalisePupilIds(pupilsList)
+  let processedPupilsIds = Array.from(new Set(normalisePupilIds(pupilsList)
     .map(String)
     .map(v => v.trim())
     .filter(isNumericPupilId)))
+
+  if (processedPupilsIds.length === 0 && allPupils) {
+    try {
+      const eligiblePupils = await restartService.getPupilsEligibleForRestart(req.user.schoolId)
+      processedPupilsIds = eligiblePupils.map(pupil => pupil.id)
+    } catch (error) {
+      return next(error)
+    }
+  }
 
   if (processedPupilsIds.length === 0) {
     return res.redirect('/restart/select-restart-list')

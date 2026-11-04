@@ -17,7 +17,7 @@ try {
 
 const sql = require('./sql.config')
 
-const threeMinutesInMilliseconds = 180000
+const sixMinutesInMilliseconds = 360000
 const thirtySecondsInMilliseconds = 30000
 
 const getEnvironment = () => {
@@ -75,7 +75,7 @@ module.exports = {
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || threeMinutesInMilliseconds
+      Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || sixMinutesInMilliseconds
     },
     Azure: {
       // https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-single-databases?view=azuresql
