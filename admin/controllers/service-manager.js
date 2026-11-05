@@ -439,7 +439,7 @@ const controller = {
       res.render('service-manager/organisation-detail', {
         breadcrumbs: req.breadcrumbs(),
         school,
-        canEditOrganisation: req.user.role === roles.serviceManager,
+        canEditOrganisation: req.user.role === roles.serviceManager || req.user.role === roles.superUser,
         canViewAuditHistory: req.user.role === roles.serviceManager
       })
     } catch (error) {
@@ -449,7 +449,8 @@ const controller = {
 
   getEditOrganisation: async function getEditOrganisation (req, res, next, validationError = new ValidationError()) {
     try {
-      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      const organisationsHome = req.user.role === roles.superUser ? '/superuser' : '/service-manager/organisations'
+      req.breadcrumbs('Manage organisations', organisationsHome)
       req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
       res.locals.pageTitle = 'Edit organisation'
       req.breadcrumbs(res.locals.pageTitle)

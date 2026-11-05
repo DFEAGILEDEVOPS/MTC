@@ -56,8 +56,13 @@ describe('service manager controller:', () => {
     jest.restoreAllMocks()
   })
 
-  describe('pupil administration route permissions', () => {
+  describe('pupil and organisation administration route permissions', () => {
     const routes = [
+      ['get', '/organisations/search'],
+      ['post', '/organisations/search'],
+      ['get', '/organisations/:slug'],
+      ['get', '/organisations/:slug/edit'],
+      ['post', '/organisations/:slug/edit'],
       ['get', '/pupil/freeze/:slug'],
       ['post', '/pupil/freeze/:slug'],
       ['get', '/pupil/thaw/:slug'],
@@ -631,9 +636,9 @@ describe('service manager controller:', () => {
       expect(schoolService.getSchoolAudits).toHaveBeenCalled()
     })
 
-    test('renders the organisation detail page', async () => {
+    test.each([roles.serviceManager, roles.superUser])('renders the organisation detail page with editing for %s', async (role) => {
       const res = getRes()
-      const req = getReq()
+      const req = getReq({ user: { role } })
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(mockSchool)
       jest.spyOn(schoolService, 'getSchoolAudits').mockResolvedValue(mockAudits)
       await controller.getViewOrganisation(req, res, next)
@@ -641,7 +646,7 @@ describe('service manager controller:', () => {
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisation-detail')
       expect(args[1].canEditOrganisation).toBe(true)
-      expect(args[1].canViewAuditHistory).toBe(true)
+      expect(args[1].canViewAuditHistory).toBe(role === roles.serviceManager)
     })
   })
 
@@ -664,11 +669,11 @@ describe('service manager controller:', () => {
       expect(next).toHaveBeenCalled()
     })
 
-    test('calls res.render', async () => {
+    test.each([roles.serviceManager, roles.superUser])('renders the organisation edit page for %s', async (role) => {
       const params = {
         slug: uuid.NIL
       }
-      const req = getReq(params)
+      const req = getReq({ ...params, user: { role } })
       const res = getRes()
       const school = {
         name: 'Test school',
@@ -679,7 +684,8 @@ describe('service manager controller:', () => {
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
       await controller.getEditOrganisation(req, res, next)
-      expect(res.render).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('service-manager/organisation-detail-edit', expect.any(Object))
+      expect(req.breadcrumbs).toHaveBeenCalledWith('Manage organisations', role === roles.superUser ? '/superuser' : '/service-manager/organisations')
     })
 
     test('by default it shows the same defaults as the school', async () => {
@@ -755,12 +761,13 @@ describe('service manager controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
     })
 
-    test('happy path: it converts the incoming strings to JS types suitable for the service, and calls the service to persist the data', async () => {
+    test.each([roles.serviceManager, roles.superUser])('converts and saves organisation edits for %s', async (role) => {
       const res = getRes()
       const req = getReq()
       const userId = 9999
       req.user = {
-        id: userId
+        id: userId,
+        role
       }
       req.body = {
         name: ' updated name ',
@@ -776,6 +783,7 @@ describe('service manager controller:', () => {
         leaCode: 999,
         estabCode: 1999,
         urn: 888900,
+        urlSlug: 'abc-slug',
         typeOfEstablishmentCode: 10
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
@@ -789,13 +797,16 @@ describe('service manager controller:', () => {
       expect(schoolUpdateArg.urn).toBe(8888)
       const userIdArg = schoolService.updateSchool.mock.calls[0][2]
       expect(userIdArg).toEqual(userId)
+      expect(req.flash).toHaveBeenCalledWith('info', 'School updated')
+      expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations/abc-slug')
     })
 
-    test('if there is a validation error then the user is redirected to the edit page to correct the errors', async () => {
+    test.each([roles.serviceManager, roles.superUser])('redisplays the edit page on validation errors for %s', async (role) => {
       const res = getRes()
       const req = getReq()
       req.user = {
-        id: 1
+        id: 1,
+        role
       }
       req.body = {
         name: ' updated name ',

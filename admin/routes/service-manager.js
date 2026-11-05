@@ -118,12 +118,12 @@ router.get(
 )
 
 router.get('/organisations/:slug/edit',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getEditOrganisation
 )
 
 router.post('/organisations/:slug/edit',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postEditOrganisation
 )
 
