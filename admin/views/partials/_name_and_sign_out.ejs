@@ -1,5 +1,5 @@
 <%
-if (user && (user.role === roles.helpdesk || user.role === roles.staAdmin) && !isSubmitImpersonationUrl) { %>
+if (user && typeof user.School === 'number' && (user.role === roles.helpdesk || user.role === roles.staAdmin || user.role === roles.superUser) && !isSubmitImpersonationUrl) { %>
     <form method="post" action="/helpdesk/remove-school-impersonation">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div id="sign-out">
@@ -16,9 +16,8 @@ if (user && (user.role === roles.helpdesk || user.role === roles.staAdmin) && !i
 <% if (user) { %>
     <div class="signed-in-as">
         Signed in as <%= user.displayName %>
-        <% if (user && (user.role === roles.helpdesk || user.role === roles.staAdmin) && !isSubmitImpersonationUrl) { %>
+        <% if (user && typeof user.School === 'number' && (user.role === roles.helpdesk || user.role === roles.staAdmin || user.role === roles.superUser) && !isSubmitImpersonationUrl) { %>
             <p class="text-align-right">for <strong><%= user.SchoolName %></strong> DfE# <strong><%= user.School %></strong></p>
         <% } %>
     </div>
 <% } %>
-

@@ -92,12 +92,12 @@ router.post('/organisations/add',
 )
 
 router.get('/organisations/search',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getSearch
 )
 
 router.post('/organisations/search',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postSearch
 )
 
@@ -113,7 +113,7 @@ router.post('/organisations/upload',
 
 router.get(
   '/organisations/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getViewOrganisation
 )
 
@@ -128,17 +128,17 @@ router.post('/organisations/:slug/edit',
 )
 
 router.get('/organisations/:slug/hdfstatus',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getHdfSummary
 )
 
 router.post('/organisations/:slug/delete-hdf',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postDeleteHdf
 )
 
 router.post('/organisations/:slug/delete-hdf-undo',
-  isAuthenticated(roles.serviceManager),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postDeleteHdfUndo
 )
 
@@ -170,88 +170,88 @@ router.get(
 // pupil routes
 
 router.get('/pupil/move/:pupilSlug/confirm/:schoolSlug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilMoveConfirm
 )
 
 router.post('/pupil/move/:pupilSlug/confirm/:schoolSlug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilMoveConfirmed
 )
 
 router.get('/pupil/move/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilMove
 )
 
 router.post('/pupil/move/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilMove
 )
 
 router.get('/pupil/freeze/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilFreeze
 )
 
 router.post('/pupil/freeze/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilFreeze
 )
 
 router.get('/pupil/thaw/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilThaw
 )
 
 router.post('/pupil/thaw/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilThaw
 )
 
 router.get('/pupil-search',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilSearch
 )
 
 router.post('/pupil-search',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilSearch
 )
 
 router.get(
   '/pupil/edit/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getEditPupilById
 )
 router.post(
   '/pupil/edit',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postEditPupil
 )
 
 router.get('/pupil-summary/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilSummary
 )
 
 router.get('/annul-pupil/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilAnnulment
 )
 
 router.post('/annul-pupil/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilAnnulment
 )
 
 router.get('/annul-pupil-undo/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.getPupilAnnulmentUndo
 )
 
 router.post('/annul-pupil-undo/:slug',
-  isAuthenticated([roles.serviceManager]),
+  isAuthenticated([roles.serviceManager, roles.superUser]),
   serviceManagerController.postPupilAnnulmentUndo
 )
 

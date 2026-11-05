@@ -21,6 +21,13 @@ const moment = require('moment-timezone')
 const { ServiceManagerSchoolService } = require('../../../services/service-manager/school/school.service')
 const { PupilFreezeService } = require('../../../services/service-manager/pupil-freeze/pupil-freeze.service')
 const { ServiceManagerAttendanceService } = require('../../../services/service-manager/attendance/service-manager.attendance.service')
+const roles = require('../../../lib/consts/roles')
+const serviceManagerRouter = require('../../../routes/service-manager')
+const ejs = require('ejs')
+const fs = require('fs')
+const path = require('path')
+const pupilService = require('../../../services/pupil.service')
+const pupilAddService = require('../../../services/pupil-add-service')
 
 describe('service manager controller:', () => {
   let next
@@ -35,6 +42,7 @@ describe('service manager controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
+    req.user = { role: roles.serviceManager, ...(req.user || {}) }
     req.breadcrumbs = jest.fn()
     req.flash = jest.fn()
     return req
@@ -46,6 +54,39 @@ describe('service manager controller:', () => {
 
   afterEach(() => {
     jest.restoreAllMocks()
+  })
+
+  describe('pupil administration route permissions', () => {
+    const routes = [
+      ['get', '/pupil/freeze/:slug'],
+      ['post', '/pupil/freeze/:slug'],
+      ['get', '/pupil/thaw/:slug'],
+      ['post', '/pupil/thaw/:slug'],
+      ['get', '/pupil/edit/:slug'],
+      ['post', '/pupil/edit'],
+      ['get', '/annul-pupil/:slug'],
+      ['post', '/annul-pupil/:slug'],
+      ['get', '/annul-pupil-undo/:slug'],
+      ['post', '/annul-pupil-undo/:slug']
+    ]
+
+    test.each(routes)('%s %s allows service-manager and superuser but rejects other roles', (method, routePath) => {
+      const layer = serviceManagerRouter.stack.find(({ route }) => route?.path === routePath && route.methods[method])
+      expect(layer).toBeDefined()
+      for (const role of Object.values(roles)) {
+        const req = getReq({ user: { id: 1, role }, isAuthenticated: () => true })
+        const res = getRes()
+        const routeNext = jest.fn()
+        layer.route.stack[0].handle(req, res, routeNext)
+        if (role === roles.serviceManager || role === roles.superUser) {
+          expect(routeNext).toHaveBeenCalledTimes(1)
+          expect(res.redirect).not.toHaveBeenCalled()
+        } else {
+          expect(routeNext).not.toHaveBeenCalled()
+          expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+        }
+      }
+    })
   })
 
   describe('getServiceManagerHome', () => {
@@ -475,6 +516,14 @@ describe('service manager controller:', () => {
       const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisations-search')
+      expect(args[1].cancelPath).toBe('/service-manager/organisations')
+    })
+
+    test('returns superuser to its home page from organisation search', async () => {
+      const res = getRes()
+      const req = getReq({ ...goodReq, user: { role: roles.superUser } })
+      await controller.getSearch(req, res, next)
+      expect(res.render.mock.calls[0][1].cancelPath).toBe('/superuser')
     })
   })
 
@@ -591,6 +640,8 @@ describe('service manager controller:', () => {
       const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisation-detail')
+      expect(args[1].canEditOrganisation).toBe(true)
+      expect(args[1].canViewAuditHistory).toBe(true)
     })
   })
 
@@ -1096,6 +1147,7 @@ describe('service manager controller:', () => {
       const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/pupil-search')
+      expect(args[1].cancelPath).toBe('/service-manager/home')
     })
   })
 
@@ -1239,9 +1291,9 @@ describe('service manager controller:', () => {
       expect(args[0].message).toEqual(`${invalidUuid} is not a valid uuid`)
     })
 
-    test('it renders pupil data when found by uuid', async () => {
+    test.each([roles.serviceManager, roles.superUser])('it renders pupil administration controls for %s', async (role) => {
       const validUuid = '4dc3212a-92ca-46da-b4bc-2cb7881ec593'
-      const req = getReq(baseReq)
+      const req = getReq({ ...baseReq, user: { role } })
       req.params = {
         slug: validUuid
       }
@@ -1261,8 +1313,32 @@ describe('service manager controller:', () => {
       await controller.getPupilSummary(req, res, next)
       expect(res.render).toHaveBeenCalledWith('service-manager/pupil-summary', {
         breadcrumbs: undefined,
-        pupil: thePupilData
+        pupil: thePupilData,
+        isServiceManager: true
       })
+    })
+
+    test.each([
+      [false, false, '/annul-pupil/', '/pupil/freeze/'],
+      [false, true, '/annul-pupil/', '/pupil/thaw/'],
+      [true, false, '/annul-pupil-undo/', undefined]
+    ])('renders matching pupil actions when annulled=%s and frozen=%s', (isAnnulled, isFrozen, annulPath, freezePath) => {
+      const template = fs.readFileSync(path.join(__dirname, '../../../views/service-manager/pupil-summary.ejs'), 'utf8')
+      const html = ejs.render(template, {
+        breadcrumbs: [],
+        pupil: { firstName: 'Test', lastName: 'Pupil', urlSlug: uuid.NIL, isAnnulled, isFrozen },
+        isServiceManager: true,
+        guidancePdf: '/guidance.pdf',
+        partial: () => ''
+      })
+      expect(html).toContain(`href="/service-manager${annulPath}${uuid.NIL}"`)
+      expect(html).toContain(`href="/service-manager/pupil/edit/${uuid.NIL}"`)
+      if (freezePath) {
+        expect(html).toContain(`href="/service-manager${freezePath}${uuid.NIL}"`)
+      } else {
+        expect(html).not.toContain('href="/service-manager/pupil/freeze/')
+        expect(html).not.toContain('href="/service-manager/pupil/thaw/')
+      }
     })
   })
 
@@ -1739,6 +1815,23 @@ describe('service manager controller:', () => {
       expect(controller.getPupilThaw).toHaveBeenCalled()
       const validationErrorArg = controller.getPupilThaw.mock.calls[0][3]
       expect(validationErrorArg.errors.upn).toBe('mock error')
+    })
+  })
+
+  describe('getEditPupilById', () => {
+    test.each([roles.serviceManager, roles.superUser])('allows %s to use the pupil edit page', async (role) => {
+      const pupil = { urlSlug: uuid.NIL, schoolId: 1 }
+      const req = getReq({ params: { slug: uuid.NIL }, user: { role } })
+      const res = getRes()
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue(pupil)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupil)
+      jest.spyOn(pupilAddService, 'formatPupilData').mockReturnValue(pupil)
+      await controller.getEditPupilById(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('service-manager/pupil/edit', expect.objectContaining({
+        isServiceManager: true,
+        formData: pupil
+      }))
+      expect(next).not.toHaveBeenCalled()
     })
   })
 

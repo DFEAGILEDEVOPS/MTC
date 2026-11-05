@@ -6,6 +6,7 @@ const ValidationError = require('../../../lib/validation-error')
 const { ServiceMessageCodesService } = require('../../../services/service-message/service-message.service')
 const logger = require('../../../services/log.service').getLogger()
 const R = require('ramda')
+const roles = require('../../../lib/consts/roles')
 
 describe('service message controller:', () => {
   let next
@@ -20,6 +21,7 @@ describe('service message controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
+    req.user = { role: roles.serviceManager, ...(req.user || {}) }
     req.breadcrumbs = jest.fn()
     req.flash = jest.fn()
     return req
@@ -137,6 +139,18 @@ describe('service message controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
     })
 
+    test('allows a superuser to update an existing service message', async () => {
+      const res = getRes()
+      const req = getReq({
+        ...goodReqParams,
+        user: { id: 1, role: roles.superUser },
+        body: { urlSlug: 'existing-service-message' }
+      })
+      await controller.postSubmitServiceMessage(req, res, next)
+      expect(administrationMessageService.setMessage).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/service-message')
+    })
+
     test('should call req.flash', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -164,6 +178,17 @@ describe('service message controller:', () => {
     test('should call administrationMessageService.dropMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
+      jest.spyOn(administrationMessageService, 'dropMessage').mockImplementation()
+      await controller.postRemoveServiceMessage(req, res, next)
+      expect(administrationMessageService.dropMessage).toHaveBeenCalled()
+    })
+
+    test('allows a superuser to remove a service message', async () => {
+      const res = getRes()
+      const req = getReq({
+        ...goodReqParams,
+        user: { id: 1, role: roles.superUser }
+      })
       jest.spyOn(administrationMessageService, 'dropMessage').mockImplementation()
       await controller.postRemoveServiceMessage(req, res, next)
       expect(administrationMessageService.dropMessage).toHaveBeenCalled()

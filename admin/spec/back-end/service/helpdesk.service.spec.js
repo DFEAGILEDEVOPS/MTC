@@ -1,6 +1,7 @@
 'use strict'
 
 const helpdeskService = require('../../../services/helpdesk.service')
+const roles = require('../../../lib/consts/roles')
 
 describe('helpdeskService', () => {
   describe('isHelpdeskRole', () => {
@@ -30,6 +31,14 @@ describe('helpdeskService', () => {
         timezone: ''
       }
       expect(helpdeskService.isImpersonating(user)).toBeTruthy()
+    })
+    describe('isStaAdmin', () => {
+      test('should return true for STA-ADMIN users', () => {
+        expect(helpdeskService.isStaAdmin({ role: roles.staAdmin })).toBeTruthy()
+      })
+      test('should return true for SUPERUSER users', () => {
+        expect(helpdeskService.isStaAdmin({ role: roles.superUser })).toBeTruthy()
+      })
     })
   })
 })
