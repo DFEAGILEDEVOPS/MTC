@@ -19,6 +19,7 @@ const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const { JobService } = require('../services/job/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil/service-manager.pupil.service')
+const { PupilHistoryService } = require('../services/pupil-history/pupil-history-service')
 const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment/type-of-establishment-service')
@@ -745,13 +746,14 @@ const controller = {
       return next(new Error(`${pupilUrlSlug} is not a valid uuid`))
     }
     const pupilData = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug)
-    const audits = await ServiceManagerPupilService.getPupilAuditHistory(pupilData.id)
+    const pupilHistory = await PupilHistoryService.getTimeline(pupilUrlSlug)
     res.locals.pageTitle = 'Pupil Summary'
     req.breadcrumbs('Pupil Search', '/service-manager/pupil-search')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('service-manager/pupil-summary', {
       breadcrumbs: req.breadcrumbs(),
-      pupil: { ...pupilData, audits }
+      pupil: pupilData,
+      pupilHistory
     })
   },
 

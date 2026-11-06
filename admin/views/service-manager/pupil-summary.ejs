@@ -8,29 +8,6 @@
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
           <%- partial('partials/service-manager/pupil/_pupil-summary', { pupil }) %>
-          <h2 class="govuk-heading-m">Audit history</h2>
-          <% if (pupil.audits.length === 0) { %>
-            <p class="govuk-body">No audit history recorded</p>
-          <% } else { %>
-            <table class="govuk-table govuk-spacious">
-              <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                  <th scope="col" class="govuk-table__header">Date and time</th>
-                  <th scope="col" class="govuk-table__header">Operation</th>
-                  <th scope="col" class="govuk-table__header">User</th>
-                </tr>
-              </thead>
-              <tbody class="govuk-table__body">
-                <% pupil.audits.forEach((audit) => { %>
-                  <tr class="govuk-table__row">
-                    <td class="govuk-table__cell"><%= audit.createdAt %></td>
-                    <td class="govuk-table__cell"><%= audit.auditOperation %></td>
-                    <td class="govuk-table__cell"><%= audit.user %></td>
-                  </tr>
-                <% }) %>
-              </tbody>
-            </table>
-          <% } %>
       </div>
       <div class="govuk-grid-column-one-third" aria-label="sidebar">
         <aside class="app-related-items" role="complementary">
@@ -66,6 +43,43 @@
             </ul>
           </nav>
         </aside>
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+          <h2 class="govuk-heading-m">Pupil history</h2>
+          <% if (pupilHistory.length === 0) { %>
+            <p class="govuk-body">No pupil history recorded</p>
+          <% } else { %>
+            <p class="govuk-body">Newest actions are shown first. Check status and active check reflect the current state.</p>
+            <table class="govuk-table govuk-spacious" id="pupil-history">
+              <caption class="govuk-visually-hidden">Pupil history, newest first</caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Date and time</th>
+                  <th scope="col" class="govuk-table__header">Action</th>
+                  <th scope="col" class="govuk-table__header">Type</th>
+                  <th scope="col" class="govuk-table__header" title="A mark indicates the official check currently used for this pupil">Active</th>
+                  <th scope="col" class="govuk-table__header">Check status</th>
+                  <th scope="col" class="govuk-table__header">Restart reason</th>
+                  <th scope="col" class="govuk-table__header">Initiated by</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <% pupilHistory.forEach((event) => { %>
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"><time datetime="<%= event.occurredAt.toISOString() %>"><%= formatPupilHistoryDataAndTime(event.occurredAt) %></time></td>
+                    <td class="govuk-table__cell" title="<%= event.check?.checkCode %>"><%= event.action %></td>
+                    <td class="govuk-table__cell"><%= event.check ? (event.check.isLiveCheck ? 'Official' : 'Try it out') : '' %></td>
+                    <td class="govuk-table__cell"><%= event.check?.active ? '*' : '' %></td>
+                    <td class="govuk-table__cell"><%= event.check?.checkStatus %></td>
+                    <td class="govuk-table__cell"><%= event.restart?.restartReason %></td>
+                    <td class="govuk-table__cell"><%= event.restart?.recordedByUser %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          <% } %>
       </div>
     </div>
   </main>

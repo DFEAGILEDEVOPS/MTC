@@ -7,7 +7,10 @@ const R = require('ramda')
 export interface IPupilHistoryCheckData {
   id: number
   checkCode: string
+  createdAt: moment.Moment
+  completedAt: moment.Moment | null
   pupilLoginDate: null | moment.Moment
+  receivedByServerAt: moment.Moment | null
   isLiveCheck: boolean
   received: boolean
   complete: boolean
@@ -136,7 +139,7 @@ export class PupilHistoryDataService {
         checkFormId: o.checkForm_id,
         checkWindowId: o.checkWindow_id,
         complete: o.complete,
-        completedAt: moment.tz(o.completedAt, config.DEFAULT_TIMEZONE),
+        completedAt: o.completedAt !== null ? moment.tz(o.completedAt, config.DEFAULT_TIMEZONE) : null,
         createdAt: moment.tz(o.createdAt, config.DEFAULT_TIMEZONE),
         createdByUserId: o.createdBy_userId,
         id: o.id,
