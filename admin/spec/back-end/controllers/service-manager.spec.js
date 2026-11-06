@@ -1655,6 +1655,25 @@ describe('service manager controller:', () => {
     })
   })
 
+  describe.each([
+    ['getPupilAnnulment', 'service-manager/annul-pupil'],
+    ['getPupilAnnulmentUndo', 'service-manager/annul-pupil-undo']
+  ])('%s Cancel navigation', (handler, template) => {
+    test.each([roles.serviceManager, roles.superUser])('preserves the correct Cancel destination for %s including validation rerenders', async (role) => {
+      const slug = 'DAEB9D73-8B55-4B06-8AE2-6C0DBEE03BD0'
+      const req = getReq({ params: { slug }, user: { role } })
+      const res = getRes()
+      const error = new ValidationError()
+      error.addError('upn', 'UPN does not match pupil')
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+      await controller[handler](req, res, next, error)
+      expect(res.render).toHaveBeenCalledWith(template, expect.objectContaining({
+        error,
+        cancelPath: role === roles.superUser ? `/service-manager/pupil-summary/${slug.toLowerCase()}` : '/service-manager/home'
+      }))
+    })
+  })
+
   describe('getPupilFreeze', () => {
     let baseReq
     beforeEach(() => {
@@ -1668,13 +1687,14 @@ describe('service manager controller:', () => {
       jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
     })
 
-    test('it renders the confirmation page', async () => {
-      const req = getReq(baseReq)
+    test.each([roles.serviceManager, roles.superUser])('renders the freeze confirmation with the correct Cancel destination for %s', async (role) => {
+      const req = getReq({ ...baseReq, user: { role } })
       const res = getRes()
       await controller.getPupilFreeze(req, res, next)
       expect(res.render).toHaveBeenCalled()
       const args = res.render.mock.calls[0]
       expect(args[0]).toBe('service-manager/pupil/freeze')
+      expect(args[1].cancelPath).toBe(role === roles.superUser ? `/service-manager/pupil-summary/${baseReq.params.slug}` : '/service-manager/home')
     })
   })
 
@@ -1755,13 +1775,14 @@ describe('service manager controller:', () => {
       jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
     })
 
-    test('it renders the confirmation page', async () => {
-      const req = getReq(baseReq)
+    test.each([roles.serviceManager, roles.superUser])('renders the thaw confirmation with the correct Cancel destination for %s', async (role) => {
+      const req = getReq({ ...baseReq, user: { role } })
       const res = getRes()
       await controller.getPupilThaw(req, res, next)
       expect(res.render).toHaveBeenCalled()
       const args = res.render.mock.calls[0]
       expect(args[0]).toBe('service-manager/pupil/thaw')
+      expect(args[1].cancelPath).toBe(role === roles.superUser ? `/service-manager/pupil-summary/${baseReq.params.slug}` : '/service-manager/home')
     })
   })
 

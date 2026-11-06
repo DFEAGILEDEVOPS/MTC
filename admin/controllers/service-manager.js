@@ -773,7 +773,8 @@ const controller = {
     res.render('service-manager/annul-pupil', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -808,7 +809,8 @@ const controller = {
     res.render('service-manager/annul-pupil-undo', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -928,7 +930,8 @@ const controller = {
     res.render('service-manager/pupil/freeze', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -962,7 +965,8 @@ const controller = {
     res.render('service-manager/pupil/thaw', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
