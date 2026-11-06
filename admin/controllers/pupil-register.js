@@ -7,7 +7,7 @@ const roles = require('../lib/consts/roles')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 const checkShowAddPupilButton = function checkShowAddPupilButton (checkWindowPhase, availabilityData, userRole) {
-  if (userRole === roles.staAdmin && !availabilityData.hdfSubmitted) {
+  if ((userRole === roles.staAdmin || userRole === roles.superUser) && !availabilityData.hdfSubmitted) {
     return true
   }
   const unavailablePhases = [checkWindowPhaseConsts.readOnlyAdmin, checkWindowPhaseConsts.unavailable, checkWindowPhaseConsts.postCheckAdmin]
@@ -63,13 +63,13 @@ const listPupils = async function listPupils (req, res, next) {
    */
   const showAddPupilButton = checkShowAddPupilButton(global.checkWindowPhase, availabilityData, req.user.role)
   const showAddMultiplePupilButton = checkShowAddMultiplePupilButton(global.checkWindowPhase, availabilityData)
-  const isStaAdmin = (req.user.role === roles.staAdmin)
+  const isStaAdmin = req.user.role === roles.staAdmin || req.user.role === roles.superUser
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
-    showPupilAdminLink: req.user.role === roles.staAdmin || req.user.role === roles.helpdesk,
+    showPupilAdminLink: req.user.role === roles.staAdmin || req.user.role === roles.helpdesk || req.user.role === roles.superUser,
     showAddPupilButton,
     showAddMultiplePupilButton,
     isStaAdmin

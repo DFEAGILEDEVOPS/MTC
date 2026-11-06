@@ -14,49 +14,49 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
   router.get(
     '/overview',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     accessArrangementsController.getOverview
   )
   router.get(
     '/select-access-arrangements',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     accessArrangementsController.getSelectAccessArrangements
   )
   router.get(
     '/select-access-arrangements/:pupilUrlSlug',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     accessArrangementsController.getEditAccessArrangements
   )
   router.post(
     '/submit',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     accessArrangementsController.postSubmitAccessArrangements
   )
   router.get(
     '/delete-access-arrangements/:pupilUrlSlug',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     accessArrangementsController.getDeleteAccessArrangements
   )
   router.get(
     '/retro-add-input-assistant',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     (req, res, next) => retroInputAssistantController.getAddRetroInputAssistant(req, res, next)
   )
   router.post(
     '/retro-add-input-assistant-submit',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     (req, res, next) => retroInputAssistantController.postSubmitRetroInputAssistant(req, res, next)
   )
   router.get(
     '/delete-retro-input-assistant/:pupilUrlSlug',
     isAdminWindowAvailable,
-    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
     (req, res, next) => retroInputAssistantController.getDeleteRetroInputAssistant(req, res, next)
   )
 }

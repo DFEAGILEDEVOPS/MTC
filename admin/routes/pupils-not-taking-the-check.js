@@ -8,44 +8,44 @@ const pupilsNotTakingTheCheck = require('../controllers/pupils-not-taking-the-ch
 router.get(
   '/select-pupils/:groupIds?',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck
 )
 router.get(
   '/save-pupils',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck
 )
 router.post(
   '/save-pupils',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilsNotTakingTheCheck.savePupilNotTakingCheck
 )
 router.get(
   '/remove/:pupilId',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   refuseIfHdfSigned,
   (req, res, next) => pupilsNotTakingTheCheck.removePupilNotTakingCheck(req, res, next)
 )
 router.get(
   '/view',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilsNotTakingTheCheck.viewPupilsNotTakingTheCheck
 )
 router.get(
   ['/', '/pupils-list'],
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilsNotTakingTheCheck.getPupilNotTakingCheck
 )
 router.get(
   '/:removed',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilsNotTakingTheCheck.getPupilNotTakingCheck
 )
 

@@ -11,60 +11,60 @@ const pupilController = require('../controllers/pupil')
 
 router.get(
   ['/', '/pupils-list'],
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilRegister.listPupils
 )
 router.get(
   '/pupil/add',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  ifNotRole(roles.staAdmin, isPostLiveOrLaterCheckPhase),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
+  ifNotRole([roles.staAdmin, roles.superUser], isPostLiveOrLaterCheckPhase),
   pupilController.getAddPupil
 )
 router.post(
   '/pupil/add',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  ifNotRole(roles.staAdmin, isPostLiveOrLaterCheckPhase),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
+  ifNotRole([roles.staAdmin, roles.superUser], isPostLiveOrLaterCheckPhase),
   pupilController.postAddPupil
 )
 router.get(
   '/pupil/add-batch-pupils',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   isPostLiveOrLaterCheckPhase,
   pupilController.getAddMultiplePupils
 )
 router.post(
   '/pupil/add-batch-pupils',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   isPostLiveOrLaterCheckPhase,
   pupilController.postAddMultiplePupils
 )
 router.get(
   '/pupil/download-error-csv',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   isPostLiveOrLaterCheckPhase,
   pupilController.getErrorCSVFile
 )
 router.get(
   '/pupil/edit/:id',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilController.getEditPupilById
 )
 router.post(
   '/pupil/edit',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilController.postEditPupil
 )
 router.get(
   '/history/:urlSlug',
   isAdminWindowAvailable,
-  isAuthenticated([roles.staAdmin, roles.helpdesk]),
+  isAuthenticated([roles.staAdmin, roles.helpdesk, roles.superUser]),
   isAdminWindowAvailable,
   pupilController.getViewPupilHistory
 )

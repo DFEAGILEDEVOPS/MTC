@@ -6,6 +6,7 @@ const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
 const url = require('url')
 const roles = require('../lib/consts/roles')
+const helpdeskService = require('../services/helpdesk.service')
 
 const dfeSignInRedirect = '/oidc-sign-in'
 
@@ -16,6 +17,8 @@ const home = (req, res) => {
       case roles.helpdesk:
       case roles.staAdmin:
         return res.redirect(homeRoutes.schoolHomeRoute)
+      case roles.superUser:
+        return res.redirect(helpdeskService.isImpersonating(req.user) ? homeRoutes.schoolHomeRoute : homeRoutes.superUserHomeRoute)
       case roles.testDeveloper:
         return res.redirect(homeRoutes.testDeveloperHomeRoute)
       case roles.serviceManager:

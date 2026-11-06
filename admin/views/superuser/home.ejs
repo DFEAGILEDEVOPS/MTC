@@ -1,0 +1,28 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_service_message', { serviceMessages }) %>
+            <h1 class="govuk-heading-xl">MTC Superuser</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <ol class="govuk-list">
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/helpdesk/school-impersonation">Impersonate a school</a></h2>
+                    <p>Access school administration features for a selected school.</p>
+                </li>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/service-message">Service message</a></h2>
+                    <p>Add or delete a global service message for the school homepage</p>
+                </li>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/service-manager/organisations/search">Search organisations</a></h2>
+                    <p>Find an organisation and manage its HDF submission.</p>
+                </li>
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link" href="/service-manager/pupil-search">Pupil search</a></h2>
+                    <p>Administer Pupils</p>
+                </li>
+            </ol>
+        </div>
+    </div>
+</main>

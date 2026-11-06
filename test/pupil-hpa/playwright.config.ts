@@ -53,6 +53,11 @@ export default defineConfig({
   },
 
   projects: [
+    {
+      name: 'local-admin',
+      testMatch: ['superuser-home.playwright.spec.ts', 'superuser-organisations.playwright.spec.ts', 'superuser-service-messages.playwright.spec.ts', 'superuser-hdf.playwright.spec.ts', 'superuser-pupils.playwright.spec.ts', 'superuser-pupil-move.playwright.spec.ts', 'superuser-pupil-freeze.playwright.spec.ts', 'superuser-pupil-annulment.playwright.spec.ts', 'superuser-permissions.playwright.spec.ts'],
+      use: { baseURL: process.env.ADMIN_BASE_URL || 'http://localhost:3001' },
+    },
     //dev
     {
       name: 'dev-preflight',

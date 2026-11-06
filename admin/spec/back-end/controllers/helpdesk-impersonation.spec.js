@@ -3,6 +3,7 @@
 const controller = require('../../../controllers/helpdesk-impersonation')
 const schoolImpersonationService = require('../../../services/school-impersonation.service')
 const ValidationError = require('../../../lib/validation-error')
+const roles = require('../../../lib/consts/roles')
 
 const httpMocks = require('node-mocks-http')
 
@@ -44,6 +45,30 @@ describe('helpdesk impersonation controller', () => {
       await controller.getSchoolImpersonation(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
+
+    test('adds only the page title breadcrumb for superuser', async () => {
+      const req = getReq({ ...reqParams, user: { role: roles.superUser } })
+      const res = getRes()
+      const breadcrumbs = [{ name: 'Home', url: '/' }, { name: 'MTC Helpdesk School Impersonation' }]
+      req.breadcrumbs.mockReturnValue(breadcrumbs)
+      jest.spyOn(res, 'render').mockImplementation()
+      await controller.getSchoolImpersonation(req, res, next)
+      expect(req.breadcrumbs).not.toHaveBeenCalledWith('Superuser', '/superuser')
+      expect(req.breadcrumbs).toHaveBeenCalledWith(res.locals.pageTitle)
+      expect(req.breadcrumbs).toHaveBeenCalledTimes(2)
+      expect(res.render).toHaveBeenCalledWith('helpdesk/school-impersonation', expect.objectContaining({ breadcrumbs }))
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test.each([roles.helpdesk, roles.staAdmin])('does not add a superuser breadcrumb for %s', async (role) => {
+      const req = getReq({ ...reqParams, user: { role } })
+      const res = getRes()
+      jest.spyOn(res, 'render').mockImplementation()
+      await controller.getSchoolImpersonation(req, res, next)
+      expect(req.breadcrumbs).not.toHaveBeenCalledWith('Superuser', '/superuser')
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
   })
   describe('postAddSchoolImpersonation', () => {
     const reqParams = {
@@ -77,6 +102,20 @@ describe('helpdesk impersonation controller', () => {
       await controller.postAddSchoolImpersonation(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(controller.getSchoolImpersonation).toHaveBeenCalled()
+    })
+
+    test('preserves the page title without a Superuser breadcrumb when validation fails', async () => {
+      const req = getReq({ ...reqParams, user: { role: roles.superUser } })
+      const res = getRes()
+      const validationError = new ValidationError()
+      validationError.addError('dfeNumber', 'error')
+      jest.spyOn(schoolImpersonationService, 'setSchoolImpersonation').mockResolvedValue(validationError)
+      jest.spyOn(res, 'render').mockImplementation()
+      await controller.postAddSchoolImpersonation(req, res, next)
+      expect(req.breadcrumbs).not.toHaveBeenCalledWith('Superuser', '/superuser')
+      expect(req.breadcrumbs).toHaveBeenCalledWith(res.locals.pageTitle)
+      expect(res.render).toHaveBeenCalledWith('helpdesk/school-impersonation', expect.objectContaining({ err: validationError }))
+      expect(next).not.toHaveBeenCalled()
     })
   })
   describe('postRemoveSchoolImpersonation', () => {

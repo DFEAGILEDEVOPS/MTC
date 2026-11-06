@@ -2,6 +2,7 @@
 
 const schoolImpersonationService = require('../services/school-impersonation.service')
 const ValidationError = require('../lib/validation-error')
+const roles = require('../lib/consts/roles')
 
 const controller = {}
 
@@ -17,6 +18,9 @@ controller.getSchoolImpersonation = async function getSchoolImpersonation (req, 
   res.locals.pageTitle = 'MTC Helpdesk School Impersonation'
   try {
     res.locals.isSubmitImpersonationUrl = true
+    if (req.user.role === roles.superUser) {
+      req.breadcrumbs(res.locals.pageTitle)
+    }
     return res.render('helpdesk/school-impersonation', {
       formData: req.body,
       err: error || new ValidationError(),
