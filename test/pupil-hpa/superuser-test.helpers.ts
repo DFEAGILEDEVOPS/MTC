@@ -3,7 +3,7 @@ import { expect, type Page } from '@playwright/test';
 export function requiredEnvironmentVariable(name: string): string {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`Set ${name} before running the superuser browser tests.`);
+    throw new Error(`Set ${name} before running the admin browser tests.`);
   }
   return value;
 }
@@ -29,4 +29,10 @@ export async function loginAsTeacher(page: Page): Promise<void> {
   await signIn(page, requiredEnvironmentVariable('TEACHER_USERNAME'), requiredEnvironmentVariable('TEACHER_PASSWORD'));
   await expect(page).toHaveURL(/\/school\/school-home$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Manage the multiplication tables check for');
+}
+
+export async function loginAsServiceManager(page: Page): Promise<void> {
+  await signIn(page, requiredEnvironmentVariable('SERVICE_MANAGER_USERNAME'), requiredEnvironmentVariable('SERVICE_MANAGER_PASSWORD'));
+  await expect(page).toHaveURL(/\/service-manager\/home$/);
+  await expect(page.getByRole('heading', { name: 'Multiplication tables check for service managers', exact: true })).toBeVisible();
 }

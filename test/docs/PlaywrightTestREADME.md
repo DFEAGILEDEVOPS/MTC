@@ -48,6 +48,44 @@ Notes:
 - `npm ci` installs dependencies in `test/pupil-hpa/package.json`
 - `npx playwright install --with-deps` installs required browser binaries
 
+## Local superuser HDF summary test
+
+The local HDF summary project prepares a signed submission, runs the read-only superuser HDF tests, then removes the submission and restores the Development Phase check window to an open state. It uses the seeded local `service-manager` and `teacher5` accounts and their school (DfE number `2011005`).
+
+Start the local admin app and set the superuser credentials and school before running:
+
+```bash
+cd test/pupil-hpa
+SUPERUSER_USERNAME='…' \
+SUPERUSER_PASSWORD='…' \
+SUPERUSER_HDF_SCHOOL_DFE_NUMBER=2011005 \
+npx playwright test superuser-hdf.playwright.spec.ts --project=local-admin-hdf
+```
+
+By default, the project targets `http://localhost:3001`, matching `local-admin`. Set `ADMIN_BASE_URL` if the local app uses another URL. The setup clears any existing HDF for the dedicated school before submitting a fresh one. Cleanup removes the generated HDF and leaves the check window open; use a dedicated local test database because this flow changes its check-window dates.
+
+## Local superuser organisation edit test
+
+The organisation edit test is skipped unless the selected school already has an establishment type. To enable it locally, manually prepare your local test database (do not add this setup to a seed or run it against a shared environment):
+
+```bash
+UPDATE [mtc].[mtc_admin].[school]
+SET typeOfEstablishmentLookup_id = 1,
+    lastModifiedBy_userId = 10012
+WHERE id = 4;
+```
+
+Then run the organisation spec from `test/pupil-hpa` using the DfE number of the prepared school:
+
+```bash
+SUPERUSER_USERNAME=superuser \
+SUPERUSER_PASSWORD=password \
+SUPERUSER_SCHOOL_DFE_NUMBER='…' \
+npx playwright test superuser-organisations.playwright.spec.ts --project=local-admin
+```
+
+The SQL is a manual local-database change, not a deployable seed.
+
 ## Preprod authentication setup
 
 Preprod admin uses Playwright storage state from `auth.json`.
