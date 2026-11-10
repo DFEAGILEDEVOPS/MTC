@@ -96,6 +96,9 @@ export default defineConfig({
     {
       name: 'dev-admin',
       testIgnore: [
+        'superuser-hdf.playwright.spec.ts',
+        'local-hdf-setup.playwright.spec.ts',
+        'local-hdf-teardown.playwright.spec.ts',
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',
@@ -139,6 +142,9 @@ export default defineConfig({
     {
       name: 'test-admin',
       testIgnore: [
+        'superuser-hdf.playwright.spec.ts',
+        'local-hdf-setup.playwright.spec.ts',
+        'local-hdf-teardown.playwright.spec.ts',
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',

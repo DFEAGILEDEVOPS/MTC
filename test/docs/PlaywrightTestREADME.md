@@ -64,6 +64,8 @@ npx playwright test superuser-hdf.playwright.spec.ts --project=local-admin-hdf
 
 By default, the project targets `http://localhost:3001`, matching `local-admin`. Set `ADMIN_BASE_URL` if the local app uses another URL. The setup clears any existing HDF for the dedicated school before submitting a fresh one. Cleanup removes the generated HDF and leaves the check window open; use a dedicated local test database because this flow changes its check-window dates.
 
+The local HDF setup, teardown, and superuser HDF summary specs are excluded from `dev-admin` and `test-admin`, including their e2e pipeline runs. Run the superuser HDF summary tests through `local-admin-hdf`.
+
 ## Local superuser organisation edit test
 
 The organisation edit test is skipped unless the selected school already has an establishment type. To enable it locally, manually prepare your local test database (do not add this setup to a seed or run it against a shared environment):
