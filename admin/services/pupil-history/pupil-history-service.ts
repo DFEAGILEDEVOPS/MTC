@@ -2,10 +2,20 @@ import { type IPupilHistoryCheckData, type IPupilHistoryPupilData, type IPupilHi
 import * as R from 'ramda'
 import { type Moment } from 'moment-timezone'
 
+
+export interface IPupilHistoryCheckEvent {
+  label: string
+  occurredAt: Moment
+}
+
+export interface IPupilHistoryCheck extends IPupilHistoryCheckData {
+  events: IPupilHistoryCheckEvent[]
+}
+
 export interface IPupilHistory {
   school: IPupilHistorySchoolData
   pupil: IPupilHistoryPupilData
-  checks: IPupilHistoryCheckData[]
+  checks: IPupilHistoryCheck[]
   restarts: IPupilHistoryRestartData[]
   meta: {
     restartsTakenCount: number
@@ -48,6 +58,18 @@ export class PupilHistoryService {
     return events.sort((a, b) => b.occurredAt.valueOf() - a.occurredAt.valueOf())
   }
 
+  private static getCheckEvents (check: IPupilHistoryCheckData): IPupilHistoryCheckEvent[] {
+    const milestones = [
+      { label: 'PIN generated', occurredAt: check.createdAt },
+      { label: 'Pupil logged in', occurredAt: check.pupilLoginDate },
+      { label: 'Check received by server', occurredAt: check.receivedByServerAt },
+      { label: 'Check processing completed', occurredAt: check.completedAt }
+    ]
+    return milestones
+      .filter((event): event is IPupilHistoryCheckEvent => event.occurredAt?.isValid() === true)
+      .sort((first, second) => first.occurredAt.valueOf() - second.occurredAt.valueOf())
+  }
+
   private static getCheckStatus (check: IPupilHistoryCheckData): TCheckStatus {
     if (check.complete) {
       return 'Check complete'
@@ -68,9 +90,11 @@ export class PupilHistoryService {
     const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
     // Add a check status to each check
     const transformedChecks = rawPupilHistory.checks.map(check => {
-      const status = PupilHistoryService.getCheckStatus(check)
-      const transCheck = R.assoc('checkStatus', status, check)
-      return transCheck
+      return {
+        ...check,
+        checkStatus: PupilHistoryService.getCheckStatus(check),
+        events: PupilHistoryService.getCheckEvents(check)
+      }
     })
     return {
       school: rawPupilHistory.school,

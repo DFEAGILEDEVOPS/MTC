@@ -41,6 +41,26 @@ describe('PupilHistoryDataService', () => {
       const checks = await PupilHistoryDataService.getChecks('d6d98b88-c866-4496-9bd4-de7ba48d0f52')
       expect(checks).toHaveLength(1)
       expect(checks[0].complete).toBe(false)
+      expect(checks[0].completedAt).toBeNull()
+      expect(checks[0].pupilLoginDate).toBeNull()
+      expect(checks[0].receivedByServerAt).toBeNull()
+    })
+
+    test('it preserves the recorded milestone timestamps', async () => {
+      const createdAt = moment.utc('2026-10-20T09:00:00Z')
+      const pupilLoginDate = moment.utc('2026-10-20T09:01:00Z')
+      const receivedByServerAt = moment.utc('2026-10-20T09:05:00Z')
+      const completedAt = moment.utc('2026-10-20T09:06:00Z')
+      jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([{
+        ...mockDbCheck, createdAt, pupilLoginDate, receivedByServerAt, completedAt
+      }])
+
+      const checks = await PupilHistoryDataService.getChecks('d6d98b88-c866-4496-9bd4-de7ba48d0f52')
+
+      expect(checks[0].createdAt.valueOf()).toBe(createdAt.valueOf())
+      expect(checks[0].pupilLoginDate?.valueOf()).toBe(pupilLoginDate.valueOf())
+      expect(checks[0].receivedByServerAt?.valueOf()).toBe(receivedByServerAt.valueOf())
+      expect(checks[0].completedAt?.valueOf()).toBe(completedAt.valueOf())
     })
   })
 

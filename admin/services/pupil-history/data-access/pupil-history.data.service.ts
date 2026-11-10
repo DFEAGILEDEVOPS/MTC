@@ -8,9 +8,9 @@ export interface IPupilHistoryCheckData {
   id: number
   checkCode: string
   createdAt: moment.Moment
-  completedAt: moment.Moment | null
+  completedAt: null | moment.Moment
   pupilLoginDate: null | moment.Moment
-  receivedByServerAt: moment.Moment | null
+  receivedByServerAt: null | moment.Moment
   isLiveCheck: boolean
   received: boolean
   complete: boolean

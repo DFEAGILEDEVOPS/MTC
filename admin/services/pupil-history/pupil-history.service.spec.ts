@@ -41,11 +41,15 @@ const mockPupilHistoryDefault: IPupilHistory = {
     {
       id: 1,
       complete: true,
+      createdAt: moment('2022-01-26T08:55:00'),
+      completedAt: moment('2022-01-26T09:06:00'),
       pupilLoginDate: moment('2022-01-26T09:00:00'),
+      receivedByServerAt: moment('2022-01-26T09:05:00'),
       received: true,
       processingFailed: false,
       checkCode: 'sdfdsfhdsjkfhk',
-      isLiveCheck: true
+      isLiveCheck: true,
+      events: []
     }
   ]
 }
@@ -59,6 +63,45 @@ describe('PupilHistoryService', () => {
     jest.restoreAllMocks()
   })
   const mockPupilUuid = '2d455411-cc32-4e04-bcbc-36d76e364320'
+
+  test('it retains all recorded milestones when the check is complete', async () => {
+    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)
+
+    const pupilHistory = await PupilHistoryService.getHistory(mockPupilUuid)
+
+    expect(pupilHistory.checks[0].checkStatus).toBe('Check complete')
+    expect(pupilHistory.checks[0].events).toEqual([
+      { label: 'PIN generated', occurredAt: pupilHistoryMock.checks[0].createdAt },
+      { label: 'Pupil logged in', occurredAt: pupilHistoryMock.checks[0].pupilLoginDate },
+      { label: 'Check received by server', occurredAt: pupilHistoryMock.checks[0].receivedByServerAt },
+      { label: 'Check processing completed', occurredAt: pupilHistoryMock.checks[0].completedAt }
+    ])
+    expect(pupilHistoryMock.checks[0].events).toEqual([])
+  })
+
+  test('it omits milestones without valid timestamps, even when completion is flagged', async () => {
+    pupilHistoryMock.checks[0].pupilLoginDate = null
+    pupilHistoryMock.checks[0].receivedByServerAt = moment.invalid()
+    pupilHistoryMock.checks[0].completedAt = null
+    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)
+
+    const pupilHistory = await PupilHistoryService.getHistory(mockPupilUuid)
+
+    expect(pupilHistory.checks[0].events).toEqual([
+      { label: 'PIN generated', occurredAt: pupilHistoryMock.checks[0].createdAt }
+    ])
+  })
+
+  test('it orders milestones by their recorded timestamps', async () => {
+    pupilHistoryMock.checks[0].receivedByServerAt = moment('2022-01-26T09:07:00')
+    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)
+
+    const pupilHistory = await PupilHistoryService.getHistory(mockPupilUuid)
+
+    expect(pupilHistory.checks[0].events.map(event => event.label)).toEqual([
+      'PIN generated', 'Pupil logged in', 'Check processing completed', 'Check received by server'
+    ])
+  })
 
   test('it fails to "Pin generated" check status', async () => {
     pupilHistoryMock.checks[0].complete = false
