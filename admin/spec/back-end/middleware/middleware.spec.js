@@ -140,5 +140,19 @@ describe('availablility/middleware', () => {
       await func(req, res, next)
       expect(thenFunc).not.toHaveBeenCalled()
     })
+
+    test('it does not call the func param if the role is in the guard role list', async () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: roles.superUser
+      }
+      const req = httpMocks.createRequest(reqParams)
+      req.breadcrumbs = () => {}
+      const thenFunc = jest.fn()
+      const func = middleware.ifNotRole([roles.staAdmin, roles.superUser], thenFunc)
+      await func(req, res, next)
+      expect(thenFunc).not.toHaveBeenCalled()
+    })
   })
 })

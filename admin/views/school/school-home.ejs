@@ -64,7 +64,7 @@
             </li>
           </ol>
     </div>
-    <% if (user && (user.role===roles.helpdesk || user.role===roles.staAdmin)) { %>
+    <% if (user && (user.role===roles.helpdesk || user.role===roles.staAdmin || user.role===roles.superUser)) { %>
       <div class="govuk-grid-column-one-third" aria-label="sidebar">
         <aside class="app-related-items" role="complementary">
           <h2 class="govuk-heading-m" id="subsection-title">

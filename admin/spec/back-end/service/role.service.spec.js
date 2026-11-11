@@ -46,6 +46,10 @@ describe('role.service', () => {
       expect(roleService.mapDfeRoleToMtcRole('mtc_helpdesk')).toBe('HELPDESK')
     })
 
+    test('it maps SUPERUSER for Dfe Role mtc_superuser', () => {
+      expect(roleService.mapDfeRoleToMtcRole('mtc_superuser')).toBe(roles.superUser)
+    })
+
     test('it maps TEST-DEVELOPER for Dfe Role mtc_test_developer', () => {
       expect(roleService.mapDfeRoleToMtcRole('mtc_tech_support')).toBe('TECH-SUPPORT')
     })

@@ -9,37 +9,37 @@ const group = require('../controllers/group')
 router.get(
   '/pupils-list',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   group.groupPupilsPage
 )
 router.get(
   '/pupils-list/add',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   group.manageGroupPage
 )
 router.get(
   '/pupils-list/edit/:groupId',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   group.manageGroupPage
 )
 router.post(
   '/pupils-list/add',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   group.addGroup
 )
 router.post(
   '/pupils-list/edit',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   group.editGroup
 )
 router.get(
   '/pupils-list/delete/:groupId',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   group.removeGroup
 )
 

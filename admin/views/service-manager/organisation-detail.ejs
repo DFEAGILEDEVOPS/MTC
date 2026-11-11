@@ -83,12 +83,15 @@
             </dl>
 
             <div class="govuk-button-group">
-              <a href="/service-manager/organisations/<%= school.urlSlug %>/edit" class="govuk-button">Edit
-                organisation</a>
+              <% if (canEditOrganisation) { %>
+                <a href="/service-manager/organisations/<%= school.urlSlug %>/edit" class="govuk-button">Edit
+                  organisation</a>
+              <% } %>
 
               <a href="/service-manager/organisations/search" class="govuk-button govuk-button--secondary">Back to
                 search </a>
             </div>
+            <% if (canViewAuditHistory) { %>
             <div>
               <table id="school-audit" class="govuk-table govuk-spacious">
                 <caption class="govuk-body govuk-table__caption">Audit History</caption>
@@ -123,6 +126,7 @@
                 </tbody>
               </table>
             </div>
+            <% } %>
       </div>
       <div class="govuk-grid-column-one-third" aria-label="sidebar">
         <aside class="app-related-items" role="complementary">
