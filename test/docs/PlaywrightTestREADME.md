@@ -58,7 +58,7 @@ Start the local admin app and set the superuser credentials and school before ru
 cd test/pupil-hpa
 SUPERUSER_USERNAME='…' \
 SUPERUSER_PASSWORD='…' \
-SUPERUSER_HDF_SCHOOL_DFE_NUMBER=2011005 \
+SUPERUSER_HDF_SCHOOL_DFE_NUMBER='…' \
 npx playwright test superuser-hdf.playwright.spec.ts --project=local-admin-hdf
 ```
 
@@ -80,8 +80,8 @@ WHERE id = 4;
 Then run the organisation spec from `test/pupil-hpa` using the DfE number of the prepared school:
 
 ```bash
-SUPERUSER_USERNAME=superuser \
-SUPERUSER_PASSWORD=password \
+SUPERUSER_USERNAME='…' \
+SUPERUSER_PASSWORD='…' \
 SUPERUSER_SCHOOL_DFE_NUMBER='…' \
 npx playwright test superuser-organisations.playwright.spec.ts --project=local-admin
 ```
