@@ -8,6 +8,11 @@
   border-radius: 0;
   outline: 1px solid transparent;
   outline-offset: -1px;
+
+  &:focus {
+    outline: 3px solid currentColor;
+    outline-offset: -5px;
+  }
   -webkit-appearance: none;
   box-shadow: 0 2px 0 darken($colour, 15%);
   font-size: 1em;
