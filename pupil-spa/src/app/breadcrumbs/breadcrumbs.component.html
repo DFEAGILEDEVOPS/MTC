@@ -1,13 +1,14 @@
-<div class="column-one-half">
-  <div class="breadcrumbs">
-    <div *ngFor="let breadcrumb of breadcrumbs;">
-      <div *ngIf="breadcrumb.url">
-        <a href="/{{breadcrumb.url}}">{{breadcrumb.name}}</a>
-        <span class="breadcrumb-separator">&gt;</span>
-      </div>
-      <div *ngIf="!breadcrumb.url">
-        {{breadcrumb.name}}
-      </div>
-    </div>
-  </div>
+<div class="govuk-grid-column-one-half">
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <ng-container *ngFor="let breadcrumb of breadcrumbs;">
+        <li *ngIf="breadcrumb.url" class="govuk-breadcrumbs__list-item">
+          <a class="govuk-breadcrumbs__link" href="/{{breadcrumb.url}}">{{breadcrumb.name}}</a>
+        </li>
+        <li *ngIf="!breadcrumb.url" class="govuk-breadcrumbs__list-item" aria-current="page">
+          {{breadcrumb.name}}
+        </li>
+      </ng-container>
+    </ol>
+  </nav>
 </div>

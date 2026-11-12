@@ -71,9 +71,11 @@ http://10.0.2.2:<$port>/
 
 ## Frontend Notes
 
-The GDS libraries are included in the package.json file: `govuk-elements-sass` which has as its dependency `govuk_frontend_toolkit`
+Styling uses [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/), which is included in the package.json file as `govuk-frontend`.
 
-Sass include paths are setup in angular.json to allow these scss files to be pulled in directly.
+`src/lib/shared-styles/_govuk-frontend.scss` imports the GOV.UK Frontend components the app uses. When you use a new component, import its styles there.
+
+`node_modules` is a Sass include path in angular.json so that `govuk-frontend/dist/govuk/...` can be imported directly.
 
 
 

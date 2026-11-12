@@ -21,7 +21,6 @@ export class LoginFailureComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    (window as any).GOVUK.details.addDetailsPolyfill();
   }
 
 }

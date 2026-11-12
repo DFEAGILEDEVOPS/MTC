@@ -1,12 +1,12 @@
 <app-header class="full-width" [noFamiliarisationBar]="true"></app-header>
 <main id="content" class="js-content" role="main">
   <div *ngIf="loginPending === true">
-    <div class="grid-row">
-      <div class="column-full">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
         <div class="login-description">
           <app-svg-loading aria-hidden="true"></app-svg-loading>
           <span class="wait-text aa-lead-size" tabindex="0">
-            <b class="font-large">Loading...</b>
+            <b class="govuk-!-font-size-24">Loading...</b>
           </span>
         </div>
       </div>
@@ -20,49 +20,51 @@
         </div>
       </header>
     </div>
-    <div *ngIf="loginSucceeded === false" class="grid-row">
-      <div class="column-two-thirds">
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-          <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Details entered do not match our records
+    <div *ngIf="loginSucceeded === false" class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1">
+          <h2 class="govuk-error-summary__title" id="error-summary-heading-1">Details entered do not match our records
           </h2>
-          <p>Please check with your teacher that you used the correct school password and PIN. Your teacher may also find it
-            useful to view your check status on the ‘Check how many pupils have completed the check’ page within in the MTC service.</p>
+          <div class="govuk-error-summary__body">
+            <p>Please check with your teacher that you used the correct school password and PIN. Your teacher may also find it
+              useful to view your check status on the ‘Check how many pupils have completed the check’ page within in the MTC service.</p>
+          </div>
         </div>
       </div>
     </div>
-    <div *ngIf="isUnsupportedBrowser === false" class="grid-row">
-      <div class="column-two-thirds">
+    <div *ngIf="isUnsupportedBrowser === false" class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
         <header>
-          <h1 class="heading-xlarge">Sign in</h1>
+          <h1 class="govuk-heading-xl">Sign in</h1>
         </header>
 
         <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off"
               autocapitalize="none">
-          <div class="form-group">
-            <label for="schoolPin" class="form-label-bold"> School password </label>
-            <input #schoolPin id="schoolPin" class="form-control" required minlength="1"
+          <div class="govuk-form-group">
+            <label for="schoolPin" class="govuk-label govuk-label--s"> School password </label>
+            <input #schoolPin id="schoolPin" class="govuk-input govuk-input--width-20" required minlength="1"
                    [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
           </div>
-          <div class="form-group">
-            <label for="pupilPin" class="form-label-bold"> PIN </label>
-            <input #pupilPin id="pupilPin" class="form-control" required minlength="1"
+          <div class="govuk-form-group">
+            <label for="pupilPin" class="govuk-label govuk-label--s"> PIN </label>
+            <input #pupilPin id="pupilPin" class="govuk-input govuk-input--width-20" required minlength="1"
                    [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off"
                    type="number" pattern="\d*">
           </div>
-          <div class="form-group">
+          <div class="govuk-form-group">
             <p>
-              <input class="button button-start" type="submit" value="Sign in"
-                     [disabled]="!loginForm.form.valid">
+              <button class="govuk-button govuk-button--start" type="submit"
+                      [disabled]="!loginForm.form.valid">Sign in <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false"><path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/></svg></button>
             </p>
           </div>
         </form>
       </div>
     </div>
-    <div *ngIf="isUnsupportedBrowser === true" class="grid-row">
+    <div *ngIf="isUnsupportedBrowser === true" class="govuk-grid-row">
       <header>
-        <h1 class="heading-xlarge">This browser is not supported</h1>
+        <h1 class="govuk-heading-xl">This browser is not supported</h1>
       </header>
-      <p class="lede" tabindex="0">
+      <p class="govuk-body-l" tabindex="0">
         You can view additional information on supported browsers
         in the MTC IT guidance on GOV.UK: <a href="https://www.gov.uk/government/collections/multiplication-tables-check">https://www.gov.uk/government/collections/multiplication-tables-check</a>
       </p>

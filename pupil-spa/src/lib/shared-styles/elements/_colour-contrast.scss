@@ -89,17 +89,38 @@
     color: $fg-colour !important;
   }
 
-  .colour-contrast-#{$key} .back-link {
-    border-bottom-color: $fg-colour !important;
-
-    &:before {
-      border-right-color: $fg-colour !important;
-    }
+  .colour-contrast-#{$key} .govuk-back-link::before {
+    border-color: $fg-colour !important;
   }
 
-  // Hide the blue header bar on all contrast pages
-  .colour-contrast-#{$key} #global-header-bar {
-    display: none !important;
+  // GOV.UK Frontend sets an explicit text colour on these, so they would not inherit the contrast colour
+  .colour-contrast-#{$key} {
+    p,
+    .govuk-heading-xl,
+    .govuk-heading-l,
+    .govuk-heading-m,
+    .govuk-heading-s,
+    .govuk-body,
+    .govuk-body-l,
+    .govuk-list,
+    .govuk-label,
+    .govuk-hint,
+    .govuk-details,
+    .govuk-inset-text,
+    .govuk-warning-text__text {
+      color: $fg-colour !important;
+    }
+
+    .govuk-details__text,
+    .govuk-inset-text {
+      border-left-color: $fg-colour !important;
+    }
+
+    .govuk-warning-text__icon {
+      background-color: $fg-colour !important;
+      border-color: $fg-colour !important;
+      color: $bg-colour !important;
+    }
   }
 
   // Style the svgs
@@ -137,7 +158,7 @@
     fill: $bg-colour !important;
   }
 
-  .colour-contrast-#{$key} .multiple-choice [type=radio] + label {
+  .colour-contrast-#{$key} .govuk-radios__input + .govuk-radios__label {
 
     &::before {
       border-color: $fg-colour !important;

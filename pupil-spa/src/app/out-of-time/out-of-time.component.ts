@@ -30,7 +30,6 @@ export class OutOfTimeComponent implements AfterViewInit, OnDestroy {
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    (window as any).GOVUK.details.addDetailsPolyfill();
     const config = this.questionService.getConfig();
     if (config && config.questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {

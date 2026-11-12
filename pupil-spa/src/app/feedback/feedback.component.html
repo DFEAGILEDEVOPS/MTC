@@ -1,45 +1,47 @@
 <app-page-modifications>
     <app-header class="full-width"></app-header>
     <main id="content" class="js-content" role="main">
-        <div class="grid-row">
-            <div class="column-two-thirds">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
                 <header class="page-header">
-                    <h1 class="heading-xlarge aa-title-size" tabindex="0">Give feedback</h1>
+                    <h1 class="govuk-heading-xl aa-title-size" tabindex="0">Give feedback</h1>
                 </header>
 
                 <div *ngIf="(errorSatisfactionRating)"
-                    class="error-summary"
+                    class="govuk-error-summary"
                     role="group"
                     aria-labelledby="error-summary-heading-example-1"
                     tabindex="-1">
-                    <h1 class="heading-medium error-summary-heading aa-copy-size" id="error-summary-heading-example-1">
+                    <h1 class="govuk-error-summary__title aa-copy-size" id="error-summary-heading-example-1">
                         There were some problems with your input
                     </h1>
                 </div>
 
                 <form (ngSubmit)="onSubmit()" autocomplete="off">
 
-                    <h2 class="heading-medium no-top-margin aa-copy-size" tabindex="0">How did you find the multiplication tables check?</h2>
+                    <h2 class="govuk-heading-m no-top-margin aa-copy-size" tabindex="0">How did you find the multiplication tables check?</h2>
 
-                    <div [ngClass]="(errorSatisfactionRating === true)?'form-group-error':'form-group'" class="text">
+                    <div [ngClass]="(errorSatisfactionRating === true)?'govuk-form-group govuk-form-group--error':'govuk-form-group'" class="text">
                         <fieldset>
-                            <legend class="visually-hidden" aria-hidden="true">How did you find the multiplication tables check?</legend>
-                            <span *ngIf="errorSatisfactionRating" class="error-message aa-copy-size">Please choose an option below</span>
-                            <div class="multiple-choice" *ngFor="let satisfactionRating of satisfactionRatings">
-                                <input type="radio"
-                                    name="satisfactionRating"
-                                    id="satisfaction-rating-{{satisfactionRating.id}}"
-                                    [value]="satisfactionRating.id"
-                                    (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
-                                <label class="aa-copy-size" for="satisfaction-rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
+                            <legend class="govuk-visually-hidden" aria-hidden="true">How did you find the multiplication tables check?</legend>
+                            <span *ngIf="errorSatisfactionRating" class="govuk-error-message aa-copy-size">Please choose an option below</span>
+                            <div class="govuk-radios">
+                                <div class="govuk-radios__item" *ngFor="let satisfactionRating of satisfactionRatings">
+                                    <input class="govuk-radios__input" type="radio"
+                                        name="satisfactionRating"
+                                        id="satisfaction-rating-{{satisfactionRating.id}}"
+                                        [value]="satisfactionRating.id"
+                                        (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
+                                    <label class="govuk-label govuk-radios__label aa-copy-size" for="satisfaction-rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
+                                </div>
                             </div>
                         </fieldset>
                     </div>
 
                     <br style="clear:both">
 
-                    <div class="form-group">
-                        <input class="button ultrawider aa-button-size aa-contrast-button" type="submit" value="Send feedback" [disabled]="!enableSubmit">
+                    <div class="govuk-form-group">
+                        <input class="govuk-button ultrawider aa-button-size aa-contrast-button" type="submit" value="Send feedback" [disabled]="!enableSubmit">
                     </div>
                 </form>
             </div>

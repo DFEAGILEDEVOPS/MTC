@@ -1,35 +1,35 @@
 <app-page-modifications>
   <app-header class="full-width"></app-header>
   <main id="content" class="js-content" role="main">
-      <div class="grid-row">
-          <div class="column-two-thirds">
+      <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
             <p class="aa-title-size" tabindex="0">
               <strong>Not able to upload</strong>
             </p>
-            <div class="notice">
-              <strong class="visually-hidden">Warning</strong>
-              <app-svg-warning></app-svg-warning>
-              <strong class="aa-copy-size">
-                Please tell your teacher
-              </strong>
-            </div>
+            <div class="govuk-warning-text">
+<span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+<strong class="govuk-warning-text__text aa-copy-size">
+<span class="govuk-visually-hidden">Warning</span>
+Please tell your teacher
+</strong>
+</div>
             <br />
-            <details>
-              <summary><span class="summary aa-copy-size">Instructions for teachers</span></summary>
-              <div class="panel no-border">
-                <ol class="list list-number aa-copy-size">
+            <details class="govuk-details">
+              <summary class="govuk-details__summary"><span class="govuk-details__summary-text aa-copy-size">Instructions for teachers</span></summary>
+              <div class="govuk-details__text">
+                <ol class="govuk-list govuk-list--number aa-copy-size">
                   <li>Press the ‘Try upload again’ button.</li>
                   <li>If that still does not work, please contact the helpline for advice on how to upload the check.</li>
                 </ol>
-                <div class="panel panel-border-wide aa-copy-size aa-contrast-border">
-                  <div class="bold-small aa-copy-size">National curriculum assessments helpline</div>
+                <div class="govuk-inset-text aa-copy-size aa-contrast-border">
+                  <div class="govuk-!-font-size-19 govuk-!-font-weight-bold aa-copy-size">National curriculum assessments helpline</div>
                   <div>Telephone: 0300 303 3013</div>
                   <div>Monday to Friday, 9am to 5pm</div>
                 </div>
               </div>
             </details>
             <br />
-            <a routerLink="/check" [queryParams]="{unfinishedCheck: true}" class="button aa-button-size aa-contrast-button ultrawider" id="retry-button">
+            <a routerLink="/check" [queryParams]="{unfinishedCheck: true}" class="govuk-button aa-button-size aa-contrast-button ultrawider" id="retry-button">
               Try upload again
             </a>
           </div>

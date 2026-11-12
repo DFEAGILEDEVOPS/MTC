@@ -19,8 +19,6 @@ export class HeaderComponent implements OnInit {
   @Input() public noFamiliarisationBar = false;
 
   config: Config;
-  govukRoot = 'https://www.gov.uk';
-  govukAssetPath = 'assets/govuk_template';
   appTitle = 'Multiplication Tables Check';
   globalHeaderText = 'GOV.UK';
 

@@ -1,3 +1,78 @@
+// Flat grey keypad button, formerly the toolkit's button() mixin
+@mixin keypad-button($colour) {
+  background-color: $colour;
+  position: relative;
+  display: inline-block;
+  padding: .526315em .789473em .263157em;
+  border: none;
+  border-radius: 0;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  -webkit-appearance: none;
+  box-shadow: 0 2px 0 darken($colour, 15%);
+  font-size: 1em;
+  line-height: 1.25;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  color: $white;
+
+  &:link,
+  &:link:focus,
+  &:hover,
+  &:focus,
+  &:visited {
+    color: $white;
+  }
+
+  &:visited {
+    background-color: $colour;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: darken($colour, 5%);
+  }
+
+  &:active {
+    top: 2px;
+    box-shadow: 0 0 0 $colour;
+  }
+
+  &.disabled,
+  &[disabled="disabled"],
+  &[disabled] {
+    opacity: 0.5;
+
+    &:hover {
+      cursor: default;
+      background-color: $colour;
+    }
+
+    &:active {
+      top: 0;
+      box-shadow: 0 2px 0 darken($colour, 15%);
+    }
+  }
+
+  // Make the click target bigger than the button
+  &:before {
+    content: "";
+    height: 110%;
+    width: 100%;
+    display: block;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:active:before {
+    top: -10%;
+    height: 120%;
+  }
+}
+
 @import "./aa-variables.scss";
 
 @mixin customsize($size, $button-width, $button-preview-width, $button-height, $button-number-size, $button-text-size, $question-width, $answer-width, $answer-height) {
@@ -50,7 +125,7 @@
   }
 
   .numpad-button-#{$size}, .copy-size-#{$size} .numpad-button {
-    @include button($grey-1);
+    @include keypad-button($grey-1);
 
     touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     font-size: $button-number-size !important;
@@ -62,7 +137,7 @@
   }
 
   .numpad-button-preview-#{$size}, .copy-size-#{$size} .numpad-button {
-    @include button($grey-1);
+    @include keypad-button($grey-1);
 
     touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     font-size: $button-number-size !important;
@@ -74,7 +149,7 @@
   }
 
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
-    @include button($grey-1);
+    @include keypad-button($grey-1);
 
     touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     font-size: $button-text-size !important;

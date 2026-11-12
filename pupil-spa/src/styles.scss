@@ -1,59 +1,7 @@
-/* Base GDS Toolkit */
-
-// used by govuk-frontend-toolkit: image-url()
-$image-path: "../images/";
-
-// used by shared-styles (MTC): file-url()
-$path: "./assets/images/";
-
-/* Custom functions */
-@import "../lib/shared-styles/helpers/helpers";
-
-/* Settings (variables): imported from govuk_frontend_toolkit in node_modules */
-@import "stylesheets/colours/palette";
-@import "stylesheets/colours/organisation";
-@import "stylesheets/colours";
-@import "stylesheets/font_stack";
-@import "stylesheets/measurements";
-
-$mainstream-brand: $department-for-education;
-
-
-/* Mixins: imported from govuk_frontend_toolkit in node_modules */
-@import "stylesheets/conditionals";
-@import "stylesheets/device-pixels";
-@import "stylesheets/grid_layout";
-@import "stylesheets/typography";
-@import "stylesheets/shims";
-
-/* Functions: imported from govuk_frontend_toolkit in node_modules */
-@import "stylesheets/url-helpers";
-
-/* Extras: imported from govuk_frontend_toolkit in node_modules */
-@import "stylesheets/helpers";
-@import "stylesheets/design-patterns/alpha-beta";
-@import "stylesheets/design-patterns/breadcrumbs";
-@import "stylesheets/design-patterns/buttons";
-
-/* Imports from govuk-elements-sass in node_modules */
-@import 'elements/helpers';
-@import 'elements/layout';
-@import 'elements/elements-typography';
-@import 'elements/buttons'; // contains images from frontend-toolkit
-@import 'elements/forms';
-@import 'elements/forms/form-multiple-choice';
-@import 'elements/forms/form-validation';
-@import 'elements/panels';
-@import 'elements/details';
-@import 'elements/shame';
-@import 'elements/lists';
-@import 'elements/icons';
-
-/* Imports from govuk_template which have been vendored (copied) to our lib directorye */
-@import "govuk_template/stylesheets/govuk-template";
+@import "../lib/shared-styles/variables";
+@import "../lib/shared-styles/govuk-frontend";
 
 /* STA-MTC project elements */
-@import '../lib/shared-styles/elements/phase-banner';
 @import '../lib/shared-styles/elements/organization-logo';
 @import '../lib/shared-styles/elements/headings';
 @import '../lib/shared-styles/elements/timer';
@@ -65,14 +13,50 @@ $mainstream-brand: $department-for-education;
 @import '../lib/shared-styles/elements/font-size-copy';
 @import '../lib/shared-styles/elements/colour-contrast';
 
-html {
-  background-color: $grey-3;
+/* Base element styles */
+
+html, body, div, h1, h2, h3, h4, h5, h6, article, aside, footer, header, nav, section {
+  margin: 0;
+  padding: 0;
 }
 
-/* Header and footer */
+body {
+  font-family: $govuk-font-family;
+  font-size: 16px;
+  line-height: 1.5;
+  color: $black;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-#footer {
-  border-top: 10px solid $mainstream-brand;
+button, input, table, td, th {
+  font-family: inherit;
+}
+
+#content {
+  @include govuk-width-container;
+  @include govuk-clearfix;
+
+  display: block;
+  padding-bottom: 30px;
+  outline: none;
+
+  @include govuk-media-query($from: desktop) {
+    padding-bottom: 90px;
+  }
+}
+
+main {
+  display: block;
+
+  @include govuk-font($size: 19);
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 /* General elements */
@@ -117,53 +101,12 @@ legend {
 
 /* Buttons and links */
 
-.button-secondary {
-  @include button($grey-3);
-
-  margin-top: em(20);
-
-  @include media(tablet) {
-    margin-top: 0;
-  }
-}
-
 .back-link-wrapper {
   margin-top: 25px;
 }
 
 .back-link-wrapper + .page-header {
   margin-top: 15px;
-}
-
-.back-link,
-.back-link:link,
-.back-link:active,
-.back-link:hover,
-.back-link:visited {
-  border-bottom: 1px solid $black;
-  color: $black;
-  display: inline-block;
-  font-size: 15px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  padding-left: 11px;
-  position: relative;
-  text-decoration: none;
-
-  &:before {
-    border-top: 5px solid transparent;
-    border-right: 6px solid $black;
-    border-bottom: 5px solid transparent;
-    content: '';
-    display: block;
-    font-size: 12px;
-    height: 0;
-    left: 0;
-    margin-top: -7px;
-    position: absolute;
-    top: 50%;
-    width: 0;
-  }
 }
 
 /* Visibility */
@@ -179,10 +122,6 @@ legend {
   background-color: $grey-4;
 }
 
-.error-summary-heading {
-  margin-bottom: 0;
-}
-
 /* Forms */
 
 .textarea {
@@ -190,23 +129,6 @@ legend {
   max-width: 100%;
   height: 6em;
   resize: vertical;
-}
-
-.form-date .form-group {
-  float: left;
-  width: 50px;
-  margin-right: 1.5em;
-  margin-bottom: 0;
-  clear: none;
-}
-
-/* form-buttons */
-.form-buttons {
-  @extend .form-group;
-
-  input, a {
-    margin-right: em(20);
-  }
 }
 
 /* General */
@@ -230,17 +152,17 @@ body {
 }
 
 .support-column {
-  border-top: pem(10px) solid $mainstream-brand;
-  padding-top: pem(10px);
+  border-top: 10px solid $govuk-blue;
+  padding-top: 10px;
 
   ul {
-    @include core-16();
+    @include govuk-font($size: 16);
 
     list-style: none;
   }
 
   h2, h3, h4 {
-    @include bold-24();
+    @include govuk-font($size: 24, $weight: bold);
 
     margin-top: 0.3em;
     margin-bottom: 0.5em;
@@ -254,7 +176,7 @@ ol, ul {
   padding-left: 0;
 }
 
-.list-number, .list-bullet {
+.govuk-list--number, .govuk-list--bullet {
   padding-left: 0;
 }
 
@@ -275,25 +197,6 @@ ol, ul {
   padding: 5px 15px;
   float: left;
   overflow: hidden;
-}
-
-/* SVG icons */
-.notice .svg-warning {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  margin-top: -20px;
-}
-
-#page-modifications .button-start {
-  background-image: none;
-
-  .svg-arrow {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translate(0, -50%);
-  }
 }
 
 .more-links {
