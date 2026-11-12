@@ -66,7 +66,8 @@
 
 .mtc-notification-banner-orange {
   @extend .govuk-notification-banner;
-  --_govuk-notification-banner-colour: #{govuk-colour("orange")};
+  // Darker shade so white title text and the border meet WCAG AA contrast
+  --_govuk-notification-banner-colour: #{govuk-colour("orange", $variant: "shade-25")};
 }
 
 .mtc-notification-banner-green {
