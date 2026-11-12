@@ -13,3 +13,12 @@
   cursor: pointer;
   color: $govuk-link-colour;
 }
+
+// Disabled link-buttons: govuk-frontend only styles the disabled attribute
+.govuk-button--disabled {
+  opacity: 0.5;
+
+  &:hover {
+    cursor: not-allowed;
+  }
+}

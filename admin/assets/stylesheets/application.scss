@@ -5,7 +5,7 @@ $govuk-images-path: '#{$govuk-assets-path}images/';
 $govuk-fonts-path: '#{$govuk-assets-path}fonts/';
 
 $govuk-global-styles: true;
-@import '../../node_modules/govuk-frontend/govuk/all';
+@import '../../node_modules/govuk-frontend/dist/govuk/index';
 @import 'elements/_access-arrangements';
 @import 'elements/_accessible-autocomplete';
 @import 'elements/_app-cookie-banner';

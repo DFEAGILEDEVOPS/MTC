@@ -172,12 +172,12 @@ ul.checkbox-list {
   margin-top: govuk-em(15px, $govuk-root-font-size);
   margin-left: govuk-em(-35px, $govuk-root-font-size);
   li:first-child {
-    border-top: 1px solid govuk-colour("mid-grey");
+    border-top: 1px solid govuk-colour("black", $variant: "tint-80");
   }
   li {
     padding-bottom: govuk-em(15px, $govuk-root-font-size);
     padding-top: govuk-em(15px, $govuk-root-font-size);
-    border-bottom: 1px solid govuk-colour("mid-grey");
+    border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
     .multiple-choice-mtc input {
       top: -20px;
     }
