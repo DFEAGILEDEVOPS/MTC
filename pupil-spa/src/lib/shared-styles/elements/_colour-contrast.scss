@@ -95,6 +95,11 @@
 
   // GOV.UK Frontend sets an explicit text colour on these, so they would not inherit the contrast colour
   .colour-contrast-#{$key} {
+    .govuk-button.aa-contrast-button:focus {
+      outline: 3px solid $bg-colour !important;
+      outline-offset: -5px;
+    }
+
     p,
     .govuk-heading-xl,
     .govuk-heading-l,
