@@ -50,41 +50,18 @@
   /*
     These styles use gov uk selectors which we're trying to avoid
   */
-  .button-start.aa-button-size-#{$size}, .copy-size-#{$size} .button-start.aa-button-size {
+  .govuk-button--start.aa-button-size-#{$size}, .copy-size-#{$size} .govuk-button--start.aa-button-size {
     width: calc(#{$button-width} * 1.9) !important;
-    padding: 0 30px 0 10px;
   }
 
-  .copy-size-#{$size} .back-link.aa-link-size {
-    padding-left: calc(#{$link-size} / 1.5) !important;
-    height: $link-size !important;
-    line-height: $link-size !important;
-
-    &:before {
-      border-top-width: calc(#{$link-size} / 2.5) !important;
-      border-bottom-width: calc(#{$link-size} / 2.5) !important;
-      border-right-width: calc(#{$link-size} / 2) !important;
-      margin-top: calc(#{$link-size} * -0.5) !important;
-    }
-  }
-
-  .copy-size-#{$size} .notice .svg-warning {
-    width: $lead-size;
-    left: calc(35px - #{$lead-size});
-  }
-
-  .copy-size-#{$size} .multiple-choice {
-    padding-left: 0;
-  }
-
-  .multiple-choice [type=radio] + label.aa-copy-size-#{$size},
-  .copy-size-#{$size} .multiple-choice [type=radio]:not([name=font-size]) + label {
-    margin-left: $radio-outside;
-
+  // GOV.UK Frontend radios have a 44px touch target, so the circle and dot are centred within it
+  .govuk-radios__input + .govuk-radios__label.aa-copy-size-#{$size},
+  .copy-size-#{$size} .govuk-radios__input:not([name=font-size]) + .govuk-radios__label {
     &::before {
       width: $radio-outside;
       height: $radio-outside;
       top: 50%;
+      left: calc((44px - #{$radio-outside}) / 2);
       transform: translate(0, -50%);
     }
 
@@ -92,9 +69,7 @@
       width: $radio-inside;
       height: $radio-inside;
       border: 0;
-      background: #000;
-      border-radius: 50%;
-      left: 4px;
+      left: calc((44px - #{$radio-inside}) / 2);
       top: 50%;
       transform: translate(0, -50%);
     }
@@ -185,12 +160,12 @@
   when the font-size is xxlarge
 */
 
-.copy-size-xxlarge .column-two-thirds {
+.copy-size-xxlarge .govuk-grid-column-two-thirds {
   display: block;
   width: 100%;
 }
 
-.copy-size-xxlarge .column-one-third {
+.copy-size-xxlarge .govuk-grid-column-one-third {
   display: block;
   width: 100%;
 }

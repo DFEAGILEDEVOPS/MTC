@@ -1,0 +1,29 @@
+// GOV.UK Frontend v6. Component styles are imported individually, only for the components the app uses.
+
+// Arial is what the app has always rendered with (the legacy "nta" font was never loaded).
+// Using a stack without "GDS Transport" also stops GOV.UK Frontend emitting its own @font-face rules.
+$govuk-font-family: arial, sans-serif;
+$govuk-assets-path: "/assets/govuk-frontend/";
+$govuk-global-styles: true;
+
+@import "govuk-frontend/dist/govuk/base";
+@import "govuk-frontend/dist/govuk/core/index";
+@import "govuk-frontend/dist/govuk/objects/index";
+@import "govuk-frontend/dist/govuk/utilities/index";
+@import "govuk-frontend/dist/govuk/overrides/index";
+
+@import "govuk-frontend/dist/govuk/components/back-link/index";
+@import "govuk-frontend/dist/govuk/components/breadcrumbs/index";
+@import "govuk-frontend/dist/govuk/components/button/index";
+@import "govuk-frontend/dist/govuk/components/details/index";
+@import "govuk-frontend/dist/govuk/components/error-message/index";
+@import "govuk-frontend/dist/govuk/components/error-summary/index";
+@import "govuk-frontend/dist/govuk/components/footer/index";
+@import "govuk-frontend/dist/govuk/components/header/index";
+@import "govuk-frontend/dist/govuk/components/hint/index";
+@import "govuk-frontend/dist/govuk/components/inset-text/index";
+@import "govuk-frontend/dist/govuk/components/input/index";
+@import "govuk-frontend/dist/govuk/components/label/index";
+@import "govuk-frontend/dist/govuk/components/radios/index";
+@import "govuk-frontend/dist/govuk/components/service-navigation/index";
+@import "govuk-frontend/dist/govuk/components/warning-text/index";

@@ -53,28 +53,26 @@
 
 // Notification banners
 // The standard for GDS is to use blue for system events, but MTC want a choice of colours.
+// GOV.UK Frontend colours the header and the border from this custom property.
 .mtc-notification-banner-blue {
   @extend .govuk-notification-banner;
-  border: 5px solid govuk-colour("blue");
-  background-color: govuk-colour("blue");
+  --_govuk-notification-banner-colour: #{govuk-colour("blue")};
 }
 
 .mtc-notification-banner-red {
   @extend .govuk-notification-banner;
-  border: 5px solid govuk-colour("red");
-  background-color: govuk-colour("red");
+  --_govuk-notification-banner-colour: #{govuk-colour("red")};
 }
 
 .mtc-notification-banner-orange {
   @extend .govuk-notification-banner;
-  border: 5px solid govuk-colour("orange");
-  background-color: govuk-colour("orange");
+  // Darker shade so white title text and the border meet WCAG AA contrast
+  --_govuk-notification-banner-colour: #{govuk-colour("orange", $variant: "shade-25")};
 }
 
 .mtc-notification-banner-green {
   @extend .govuk-notification-banner;
-  border: 5px solid govuk-colour("green");
-  background-color: govuk-colour("green");
+  --_govuk-notification-banner-colour: #{govuk-colour("green")};
 }
 
 // Green border to highlight table cell content

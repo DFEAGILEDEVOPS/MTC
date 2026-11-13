@@ -1,12 +1,12 @@
 table.govuk-spacious {
-  border-bottom: 1px solid govuk-colour("mid-grey");
+  border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
   border-collapse: collapse;
   margin-bottom: $govuk-gutter *1.5;
   margin-top: $govuk-gutter *1.5;
   width: 100%;
 
   tr {
-    border-bottom: 1px solid govuk-colour("mid-grey");
+    border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
   }
 
   th, td {

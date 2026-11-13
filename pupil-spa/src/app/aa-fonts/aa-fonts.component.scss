@@ -1,4 +1,4 @@
-.multiple-choice {
+.govuk-radios__item {
   margin-bottom: 20px;
 }
 
@@ -6,7 +6,7 @@ label {
   line-height: 28px;
 }
 
-.column-full > p {
+.govuk-grid-column-full > p {
   margin-top: 15px;
 }
 
@@ -64,9 +64,13 @@ label {
   margin: 0 auto;
   background-color: rgba(0, 94, 165, 1);
   padding: 0;
-  i {
+
+  .govuk-warning-text__icon {
     margin-left: 30px;
     top: 90px;
+    background-color: #fff;
+    border-color: #fff;
+    color: #1d70b8;
   }
   p {
     margin: 70px 40px 0 80px;
@@ -77,7 +81,7 @@ label {
   @media (max-width: 750px) {
     max-width: 100%;
 
-    i {
+    .govuk-warning-text__icon {
       top: 50px;
     }
 

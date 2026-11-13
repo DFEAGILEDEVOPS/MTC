@@ -1,40 +1,40 @@
 <app-page-modifications>
     <app-header class="full-width"></app-header>
     <main id="content" class="js-content" role="main">
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <header class="page-header">
                     <h1 class="aa-title-size" tabindex="0">Welcome {{ pupil.firstName }}, to the {{ modeText }} check</h1>
                 </header>
                 <p id="first-name" class="aa-copy-size" tabindex="0">First name: <strong
-                    class="bold-medium aa-copy-size"
+                    class="govuk-!-font-size-24 govuk-!-font-weight-bold aa-copy-size"
                 >
                 {{ pupil.firstName }}
                 </strong></p>
                 <p id="last-name" class="aa-copy-size" tabindex="0">Last name: <strong
-                    class="bold-medium aa-copy-size"
+                    class="govuk-!-font-size-24 govuk-!-font-weight-bold aa-copy-size"
                 >
                 {{ pupil.lastName }}
                 </strong></p>
                 <p id="dob" class="aa-copy-size" tabindex="0">Date of birth: <strong
-                    class="bold-medium aa-copy-size"
+                    class="govuk-!-font-size-24 govuk-!-font-weight-bold aa-copy-size"
                 >
                     {{pupil.dob}}
                 </strong></p>
                 <p id="school" class="aa-copy-size" tabindex="0">School: <strong
-                    class="bold-medium aa-copy-size"
+                    class="govuk-!-font-size-24 govuk-!-font-weight-bold aa-copy-size"
                 >
                     {{school.name}}
                 </strong></p>
-                <p class="notice" tabindex="0">
-                    <strong class="visually-hidden">Warning</strong>
-                    <app-svg-warning></app-svg-warning>
-                    <strong class="aa-copy-size">
-                        Do not press ‘Next’ if this is not you,
+                <div class="govuk-warning-text" tabindex="0">
+<span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+<strong class="govuk-warning-text__text aa-copy-size" speak="true">
+<span class="govuk-visually-hidden">Warning</span>
+Do not press ‘Next’ if this is not you,
                         <a routerLink="/sign-out">sign out</a>
-                    </strong>
-                </p>
-                <button id="confirm-identity-button" role="button" class="button aa-button-size aa-contrast-button" (click)="onClick()">
+</strong>
+</div>
+                <button id="confirm-identity-button" role="button" class="govuk-button aa-button-size aa-contrast-button" (click)="onClick()">
                 Next
                 </button>
             </div>

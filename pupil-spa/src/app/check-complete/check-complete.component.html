@@ -1,22 +1,22 @@
 <app-page-modifications>
     <app-header class="full-width"></app-header>
     <main id="content" class="js-content" role="main">
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <header class="page-header">
                     <h1 class="aa-title-size" tabindex="0">Thank you</h1>
                 </header>
-                <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck && !hasAccessSettings'>
+                <p class="govuk-body-l aa-copy-size" tabindex="0" *ngIf='familiarisationCheck && !hasAccessSettings'>
                     You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go.
                 </p>
-                <p class="lede aa-copy-size" tabindex="0" *ngIf='familiarisationCheck && hasAccessSettings'>
+                <p class="govuk-body-l aa-copy-size" tabindex="0" *ngIf='familiarisationCheck && hasAccessSettings'>
                     <a href="" (click)="onStartAgainClick($event)">Start again</a> if you would like another go or you can <a routerLink="/access-settings">edit your settings</a>.
                 </p>
-                <p class="lede aa-copy-size" tabindex="0" *ngIf='!familiarisationCheck'>
+                <p class="govuk-body-l aa-copy-size" tabindex="0" *ngIf='!familiarisationCheck'>
                     Please leave <a routerLink="/feedback">feedback.</a>
                 </p>
                 <p>
-                    <a id='sign-out' routerLink="/sign-out" class="button aa-button-size wider aa-contrast-button">Sign out</a>
+                    <a id='sign-out' routerLink="/sign-out" class="govuk-button aa-button-size wider aa-contrast-button">Sign out</a>
                 </p>
             </div>
         </div>

@@ -6316,10 +6316,10 @@ got@^11.8.0:
     p-cancelable "^2.0.0"
     responselike "^2.0.0"
 
-govuk-frontend@^3.2.0:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.15.0.tgz#47c9cc41c8100ee28bc3aaf9a29a0c62d88070c9"
-  integrity sha512-kInDei8hrkMcrW7yC2EwhbSNBOBBPTdLxIDAye2G7KNrD9cyvNAfd0KchrfP/nWBOzu67ANoz2rtoRDLWiBN2w==
+govuk-frontend@6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-6.6.0.tgz#6fe9b666903ad60b49d6d52f43cb841fd211ed9c"
+  integrity sha512-xctkWrQvLnvQt7fyjQ3MGX9S0wz0x0RQuLxCeoXF+s8EjGICG81/DYQGKN5qgO+0KVT12UAaRwUsGY6fulRcRg==
 
 graceful-fs@^4.0.0, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.11"
