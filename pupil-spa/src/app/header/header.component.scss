@@ -1,20 +1,12 @@
 #familiarisation-header-bar {
-  background-color: #005ea5;
+  background-color: #1d70b8;
   color: white;
   text-align: center;
   font-size: 24px;
   line-height: 40px;
 }
 
-.header-logo {
-  max-height: 35px;
-  overflow: hidden;
-
-  .content {
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 1.3;
-    vertical-align: top;
-    color: #fff;
-  }
+// Let the colour contrast settings on the header bars apply to the logo and text
+.govuk-header__homepage-link {
+  color: inherit;
 }

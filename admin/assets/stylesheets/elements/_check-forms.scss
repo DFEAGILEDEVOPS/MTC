@@ -52,7 +52,7 @@ dl.inline-definition-list {
   dt {
     font-size: 24px;
 
-    color: govuk-colour("dark-grey");
+    color: govuk-colour("black", $variant: "tint-25");
     float: left;
     margin: 0;
     padding: 5px 0;

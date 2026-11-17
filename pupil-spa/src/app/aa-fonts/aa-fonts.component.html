@@ -1,22 +1,24 @@
 <app-page-modifications>
   <app-header class="full-width"></app-header>
   <main id="content" class="js-content" role="main">
-    <div class="grid-row">
-      <div class="column-full">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
         <p class="aa-title-size" tabindex="0">
           <strong>Choose size of words and numbers</strong>
         </p>
-        <div class="grid-row">
+        <div class="govuk-grid-row">
           <div class="column-float">
             <fieldset>
-              <div class="multiple-choice" *ngFor="let selectedFont of fontSettings;">
-                <input type="radio"
-                      value="{{selectedFont.val}}"
-                      id="font-{{selectedFont.val}}"
-                      name="font-size"
-                      [checked]="selectedSize === selectedFont.val"
-                      (change)="selectionChange(selectedFont.val)">
-                <label class="aa-copy-size-{{selectedFont.val}}" for="font-{{selectedFont.val}}"><span>{{selectedFont.label}}</span></label>
+              <div class="govuk-radios">
+                <div class="govuk-radios__item" *ngFor="let selectedFont of fontSettings;">
+                  <input class="govuk-radios__input" type="radio"
+                        value="{{selectedFont.val}}"
+                        id="font-{{selectedFont.val}}"
+                        name="font-size"
+                        [checked]="selectedSize === selectedFont.val"
+                        (change)="selectionChange(selectedFont.val)">
+                  <label class="govuk-label govuk-radios__label aa-copy-size-{{selectedFont.val}}" for="font-{{selectedFont.val}}"><span>{{selectedFont.label}}</span></label>
+                </div>
               </div>
             </fieldset>
           </div>
@@ -34,10 +36,9 @@
                   </table>
               </div>
             </div>
-            <div *ngIf="!validSelection" class="notice warning-box" tabindex="0">
-                <i class="icon icon-important">
-                    <span class="visually-hidden">Warning</span>
-                </i>
+            <div *ngIf="!validSelection" class="govuk-warning-text warning-box" tabindex="0">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <span class="govuk-visually-hidden">Warning</span>
                 <p>
                   This size won't work on your screen. Please choose another size or use a device with a larger screen.
                 </p>
@@ -47,7 +48,7 @@
         <p class="aa-copy-size" tabindex="0">
           If you don’t need this setting, please tell your teacher and <a routerLink="/sign-out" >sign out</a>
         </p>
-        <button [disabled]="!validSelection" class="button aa-button-size aa-contrast-button" (click)="onClick()" id="next">Next</button>
+        <button [disabled]="!validSelection" class="govuk-button aa-button-size aa-contrast-button" (click)="onClick()" id="next">Next</button>
       </div>
     </div>
   </main>

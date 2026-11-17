@@ -31,7 +31,7 @@ try {
 
 const config = require('./config')
 const jsVendorBundleFiles = [
-  './node_modules/govuk-frontend/govuk/all.js',
+  './node_modules/govuk-frontend/dist/govuk/all.bundle.js',
   './assets/vendor-js/jquery-3.7.1.min.js',
   './assets/vendor-js/gds-cookie-functions.js',
   './assets/vendor-js/gds-cookie-settings.js',
@@ -142,9 +142,7 @@ function bundleVendorJs () {
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'
     }))
-    .pipe(uglify({
-      ie8: true
-    }).on('error', function (e) {
+    .pipe(uglify().on('error', function (e) {
       winston.error(e)
     }))
     .pipe(gulp.dest('./public/javascripts/'))
@@ -158,9 +156,7 @@ function bundleAppVendorJs () {
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'
     }))
-    .pipe(uglify({
-      ie8: true
-    }).on('error', function (e) {
+    .pipe(uglify().on('error', function (e) {
       winston.error(e)
     }))
     .pipe(gulp.dest('./public/javascripts/'))
@@ -191,9 +187,7 @@ function bundleFuncCallsJs () {
         presets: ['@babel/preset-env'],
         sourceType: 'unambiguous'
       }))
-      .pipe(uglify({
-        ie8: true
-      }).on('error', function (e) {
+      .pipe(uglify().on('error', function (e) {
         winston.error(e)
       }))
       .pipe(gulp.dest('./public/javascripts/'))
@@ -205,7 +199,6 @@ function cleanPublic () {
   return gulp.src([
     'public/javascripts/app.js',
     'public/stylesheets/application.css',
-    'public/stylesheets/application-ie8.css',
     'public/vendor/'
   ], { read: false, allowEmpty: true, force: true })
     .pipe(clean())
@@ -219,13 +212,13 @@ function copyImages () {
 
 function copyGdsImages () {
   return gulp
-    .src(['./node_modules/govuk-frontend/govuk/assets/images/*'])
+    .src(['./node_modules/govuk-frontend/dist/govuk/assets/images/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/images'))
 }
 
 function copyGdsFonts () {
   return gulp
-    .src(['./node_modules/govuk-frontend/govuk/assets/fonts/*'])
+    .src(['./node_modules/govuk-frontend/dist/govuk/assets/fonts/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/fonts'))
 }
 
