@@ -17,7 +17,10 @@ Given(/^I ping the Pupil API$/) do
 end
 
 Then(/^I should see the correct build and commit info for the pupil app$/) do
-  build_commit_hash = {'Build' => page.html.split("\n")[14].split(' ')[2] , 'Commit' => page.html.split("\n")[15].split(' ')[2]}
+  build_commit_hash = {
+    'Build' => page.find('meta[name="build:number"]', visible: :all)[:content],
+    'Commit' => page.find('meta[name="build:commitId"]', visible: :all)[:content]
+  }
   if current_url.include? 'localhost'
     expect(build_commit_hash['Build']).to include '#mtc.build#'
     expect(build_commit_hash['Commit']).to include '#mtc.commit#'
