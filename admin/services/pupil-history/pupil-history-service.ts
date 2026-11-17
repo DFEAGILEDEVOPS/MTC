@@ -1,7 +1,5 @@
 import { type IPupilHistoryCheckData, type IPupilHistoryPupilData, type IPupilHistoryRestartData, type IPupilHistorySchoolData, PupilHistoryDataService } from './data-access/pupil-history.data.service'
-import * as R from 'ramda'
 import { type Moment } from 'moment-timezone'
-
 
 export interface IPupilHistoryCheckEvent {
   label: string
@@ -26,7 +24,7 @@ export type TCheckStatus = 'Pin generated' | 'Logged in' | 'Check received' | 'R
 
 export interface IPupilHistoryEvent {
   occurredAt: Moment
-  action: 'Pin generated' | 'Logged in' | 'Check received' | 'Check complete' | 'Restart'
+  action: 'Pin generated' | 'Logged in' | 'Check received' | 'Check complete' | 'Restart' | 'Restart removed'
   check?: IPupilHistoryCheckData & { active: boolean }
   restart?: IPupilHistoryRestartData
 }
@@ -34,6 +32,10 @@ export interface IPupilHistoryEvent {
 export class PupilHistoryService {
   public static async getTimeline (pupilUuid: string): Promise<IPupilHistoryEvent[]> {
     const history = await PupilHistoryService.getHistory(pupilUuid)
+    return PupilHistoryService.buildTimeline(history)
+  }
+
+  public static buildTimeline (history: IPupilHistory): IPupilHistoryEvent[] {
     const events: IPupilHistoryEvent[] = []
     for (const check of history.checks) {
       const checkEvents: [IPupilHistoryEvent['action'], Moment | null][] = [
@@ -54,6 +56,9 @@ export class PupilHistoryService {
     }
     for (const restart of history.restarts) {
       events.push({ occurredAt: restart.createdAt, action: 'Restart', restart })
+      if (restart.isDeleted && restart.deletedAt !== null) {
+        events.push({ occurredAt: restart.deletedAt, action: 'Restart removed', restart })
+      }
     }
     return events.sort((a, b) => b.occurredAt.valueOf() - a.occurredAt.valueOf())
   }
@@ -102,7 +107,7 @@ export class PupilHistoryService {
       pupil: rawPupilHistory.pupil,
       checks: transformedChecks,
       meta: {
-        restartsTakenCount: rawPupilHistory.restarts.length
+        restartsTakenCount: rawPupilHistory.restarts.filter(restart => !restart.isDeleted).length
       }
     }
   }

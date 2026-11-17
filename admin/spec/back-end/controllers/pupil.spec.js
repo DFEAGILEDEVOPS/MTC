@@ -453,7 +453,11 @@ describe('pupil controller:', () => {
       jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(mockHistory)
       await sut.getViewPupilHistory(req, res, next)
       expect(PupilHistoryService.getHistory).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalled()
+      expect(PupilHistoryService.getHistory).toHaveBeenCalledTimes(1)
+      expect(res.render).toHaveBeenCalledWith('pupil-register/pupil-history', expect.objectContaining({
+        pupilHistory: mockHistory,
+        timeline: []
+      }))
     })
 
     test('it calls next() if an error is thrown in the controller', async () => {

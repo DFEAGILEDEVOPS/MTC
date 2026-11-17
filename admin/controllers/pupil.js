@@ -275,6 +275,7 @@ const controller = {
       return res.render('pupil-register/pupil-history', {
         breadcrumbs: req.breadcrumbs(),
         pupilHistory,
+        timeline: PupilHistoryService.buildTimeline(pupilHistory),
         isStaAdmin
       })
     } catch (error) {

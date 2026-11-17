@@ -75,6 +75,9 @@ describe('PupilHistoryDataService', () => {
         description: 'IT issue',
         code: 'ITI',
         recordedByUser: 'Example User',
+        isDeleted: false,
+        deletedAt: null,
+        deletedByUser: 'system',
         checkId: 12,
         originCheck_id: 11
       }])
@@ -89,10 +92,38 @@ describe('PupilHistoryDataService', () => {
         restartReason: 'IT issue',
         restartReasonCode: 'ITI',
         recordedByUser: 'Example User',
+        isDeleted: false,
+        deletedAt: null,
+        deletedByUser: 'system',
         checkId: 12,
         originCheckId: 11
       }])
       expect(sqlService.readonlyQuery).toHaveBeenCalledWith(expect.stringContaining('ORDER BY'), expect.any(Array))
+    })
+
+    test('it includes removed restarts with their removal time and user', async () => {
+      const deletedAt = moment('2026-10-20T10:00:00Z')
+      jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([{
+        id: 8,
+        description: 'IT issue',
+        recordedByUser: 'Original User',
+        isDeleted: true,
+        deletedAt,
+        deletedByUser: 'Removing User'
+      }])
+
+      const restarts = await PupilHistoryDataService.getRestarts('d6d98b88-c866-4496-9bd4-de7ba48d0f52')
+
+      expect(restarts[0]).toMatchObject({
+        isDeleted: true,
+        deletedAt,
+        recordedByUser: 'Original User',
+        deletedByUser: 'Removing User'
+      })
+      const sql = jest.mocked(sqlService.readonlyQuery).mock.calls[0][0]
+      expect(sql).not.toContain('r.isDeleted = 0')
+      expect(sql).toContain('r.deletedByUser_id = du.id')
+      expect(sql).toContain('COALESCE(du.displayName, du.identifier, \'system\')')
     })
   })
 })

@@ -64,6 +64,76 @@ describe('PupilHistoryService', () => {
   })
   const mockPupilUuid = '2d455411-cc32-4e04-bcbc-36d76e364320'
 
+  const mockRestart = {
+    id: 8,
+    pupilId: 1,
+    createdAt: moment('2022-01-26T09:10:00'),
+    updatedAt: moment('2022-01-26T09:15:00'),
+    restartReason: 'IT issue',
+    restartReasonCode: 'ITI',
+    recordedByUser: 'Original User',
+    checkId: 2,
+    originCheckId: 1,
+    isDeleted: false,
+    deletedAt: null,
+    deletedByUser: 'system'
+  }
+
+  test('it combines all check milestones and restarts newest first, retaining current status and active values', async () => {
+    pupilHistoryMock.restarts = [mockRestart]
+    pupilHistoryMock.checks.push({
+      ...pupilHistoryMock.checks[0],
+      id: 2,
+      isLiveCheck: false,
+      complete: false,
+      received: false,
+      pupilLoginDate: null,
+      receivedByServerAt: null,
+      completedAt: null
+    })
+    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)
+
+    const timeline = await PupilHistoryService.getTimeline(mockPupilUuid)
+
+    expect(timeline.map(event => event.action)).toEqual([
+      'Restart', 'Check complete', 'Check received', 'Logged in', 'Pin generated', 'Pin generated'
+    ])
+    const officialEvents = timeline.filter(event => event.check?.id === 1)
+    expect(officialEvents).toHaveLength(4)
+    officialEvents.forEach(event => {
+      expect(event.check).toMatchObject({ active: true, checkStatus: 'Check complete', isLiveCheck: true })
+    })
+    expect(timeline[5].check).toMatchObject({ active: false, checkStatus: 'Pin generated', isLiveCheck: false })
+    expect(PupilHistoryDataService.getPupilHistory).toHaveBeenCalledTimes(1)
+  })
+
+  test('it retains a removed restart and adds a separate removal event without counting it as a restart taken', async () => {
+    const removedRestart = {
+      ...mockRestart,
+      isDeleted: true,
+      deletedAt: moment('2022-01-26T09:15:00'),
+      deletedByUser: 'Removing User'
+    }
+    pupilHistoryMock.restarts = [mockRestart, removedRestart]
+    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)
+
+    const history = await PupilHistoryService.getHistory(mockPupilUuid)
+    const timeline = PupilHistoryService.buildTimeline(history)
+
+    expect(history.meta.restartsTakenCount).toBe(1)
+    expect(timeline.filter(event => event.action === 'Restart')).toHaveLength(2)
+    expect(timeline[0]).toEqual({
+      action: 'Restart removed',
+      occurredAt: removedRestart.deletedAt,
+      restart: removedRestart
+    })
+    expect(timeline).toHaveLength(7)
+  })
+
+  test('it returns an empty timeline when there are no checks or restarts', () => {
+    expect(PupilHistoryService.buildTimeline({ ...pupilHistoryMock, checks: [] })).toEqual([])
+  })
+
   test('it retains all recorded milestones when the check is complete', async () => {
     jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)
 
