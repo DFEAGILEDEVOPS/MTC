@@ -2,17 +2,34 @@ const { JSDOM } = require('jsdom')
 const moment = require('moment-timezone')
 const ejsUtil = require('../../../lib/ejs-util')
 const dateService = require('../../../services/date.service')
+const { PupilHistoryFilterService } = require('../../../services/pupil-history/pupil-history-filter.service')
 
 describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])('%s history', (view) => {
   const render = async (timeline, isStaAdmin = true) => {
+    const historyView = PupilHistoryFilterService.filter(timeline)
+    const clearFiltersUrl = view === 'service-manager/pupil-summary' ?
+      '/service-manager/pupil-summary/pupil-slug' :
+      '/pupil-register/history/pupil-slug'
+    const filterErrors = await ejsUtil.render('partials/_form-error', {
+      error: historyView.error,
+      pageFields: ['history-action', 'history-from-day', 'history-to-day']
+    })
+    const historyFilters = await ejsUtil.render('partials/_pupil-history-filters', {
+      historyView,
+      clearFiltersUrl,
+      partial: () => filterErrors
+    })
     const historyTable = await ejsUtil.render('partials/_pupil-history', {
-      timeline,
+      historyView,
+      clearFiltersUrl,
+      partial: () => historyFilters,
       formatPupilHistoryDataAndTime: dateService.formatPupilHistoryDateAndTime
     })
     return ejsUtil.render(view, {
       partial: (name, data) => {
         if (name !== 'partials/_pupil-history') return ''
-        expect(data.timeline).toBe(timeline)
+        expect(data.historyView).toBe(historyView)
+        expect(data.clearFiltersUrl).toBe(clearFiltersUrl)
         return historyTable
       },
       breadcrumbs: [],
@@ -24,21 +41,20 @@ describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])
         isAnnulled: false,
         isFrozen: false
       },
-      pupilHistory: view === 'service-manager/pupil-summary' ?
-        timeline :
-          {
-            pupil: {
-              foreName: 'Example',
-              middleNames: '',
-              lastName: 'Pupil',
-              restartAvailable: false,
-              isDiscretionaryRestartAvailable: false,
-              urlSlug: 'pupil-slug'
-            },
-            checks: [{}, {}, {}],
-            meta: { restartsTakenCount: 0 }
-          },
-      timeline,
+      pupilHistory: {
+        pupil: {
+          foreName: 'Example',
+          middleNames: '',
+          lastName: 'Pupil',
+          restartAvailable: false,
+          isDiscretionaryRestartAvailable: false,
+          urlSlug: 'pupil-slug'
+        },
+        checks: [{}, {}, {}],
+        meta: { restartsTakenCount: 0 }
+      },
+      historyView,
+      clearFiltersUrl,
       isStaAdmin,
       csrftoken: 'csrf-token',
       formatFullGdsDate: () => '',
