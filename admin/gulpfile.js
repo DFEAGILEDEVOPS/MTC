@@ -49,6 +49,7 @@ const jsAppBundleFiles = [
   './assets/javascripts/custom-file-upload.js',
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
+  './assets/javascripts/pupil-history-filters.js',
   './assets/javascripts/mtc-autocomplete.js',
   './assets/javascripts/mtc-check-forms.js',
   './assets/javascripts/print-popup.js',

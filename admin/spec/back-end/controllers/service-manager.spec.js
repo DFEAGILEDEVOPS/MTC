@@ -21,6 +21,7 @@ const moment = require('moment-timezone')
 const { ServiceManagerSchoolService } = require('../../../services/service-manager/school/school.service')
 const { PupilFreezeService } = require('../../../services/service-manager/pupil-freeze/pupil-freeze.service')
 const { ServiceManagerAttendanceService } = require('../../../services/service-manager/attendance/service-manager.attendance.service')
+const { PupilHistoryService } = require('../../../services/pupil-history/pupil-history-service')
 
 describe('service manager controller:', () => {
   let next
@@ -1256,15 +1257,38 @@ describe('service manager controller:', () => {
         dfeNumber: 65794
       }
       jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue(thePupilData)
-      const audits = [{ id: 1, createdAt: '20 October 2026 9:00am', auditOperation: 'Update', user: 'Example User' }]
-      jest.spyOn(ServiceManagerPupilService, 'getPupilAuditHistory').mockResolvedValue(audits)
+      const timeline = [{ action: 'Restart', occurredAt: moment() }]
+      jest.spyOn(PupilHistoryService, 'getTimeline').mockResolvedValue(timeline)
       const res = getRes()
       jest.spyOn(res, 'render')
       await controller.getPupilSummary(req, res, next)
       expect(res.render).toHaveBeenCalledWith('service-manager/pupil-summary', {
         breadcrumbs: undefined,
-        pupil: { ...thePupilData, audits }
+        pupil: thePupilData,
+        historyView: expect.objectContaining({ timeline, totalCount: 1 }),
+        clearFiltersUrl: `/service-manager/pupil-summary/${validUuid}`
       })
+    })
+
+    test('it applies query filters to the summary history', async () => {
+      const req = getReq({
+        ...baseReq,
+        params: { slug: '4dc3212a-92ca-46da-b4bc-2cb7881ec593' },
+        query: { 'history-action': 'Pin generated' }
+      })
+      const timeline = [
+        { action: 'Restart', occurredAt: moment() },
+        { action: 'Pin generated', occurredAt: moment(), check: { isLiveCheck: true } }
+      ]
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({})
+      jest.spyOn(PupilHistoryService, 'getTimeline').mockResolvedValue(timeline)
+      const res = getRes()
+
+      await controller.getPupilSummary(req, res, next)
+
+      expect(res.render).toHaveBeenCalledWith('service-manager/pupil-summary', expect.objectContaining({
+        historyView: expect.objectContaining({ timeline: [timeline[1]], totalCount: 2 })
+      }))
     })
   })
 

@@ -20,6 +20,7 @@ const organisationBulkUploadService = require('../services/organisation-bulk-upl
 const { JobService } = require('../services/job/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil/service-manager.pupil.service')
 const { PupilHistoryService } = require('../services/pupil-history/pupil-history-service')
+const { PupilHistoryFilterService } = require('../services/pupil-history/pupil-history-filter.service')
 const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment/type-of-establishment-service')
@@ -747,13 +748,15 @@ const controller = {
     }
     const pupilData = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug)
     const pupilHistory = await PupilHistoryService.getTimeline(pupilUrlSlug)
+    const historyView = PupilHistoryFilterService.filter(pupilHistory, req.query)
     res.locals.pageTitle = 'Pupil Summary'
     req.breadcrumbs('Pupil Search', '/service-manager/pupil-search')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('service-manager/pupil-summary', {
       breadcrumbs: req.breadcrumbs(),
       pupil: pupilData,
-      pupilHistory
+      historyView,
+      clearFiltersUrl: `/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`
     })
   },
 
