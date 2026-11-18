@@ -30,3 +30,12 @@ input.govuk-link {
 .mtc-disabled-link {
   color: #666666;
 }
+
+// GOV.UK Frontend draws the footer crest with a CSS mask. Browsers fetch mask images with CORS,
+// so the crest disappears when ASSET_PATH points at another origin that doesn't send CORS headers.
+// Use a plain background image instead, which has no CORS requirement.
+.govuk-footer__copyright-logo::before {
+  background: govuk-image-url("govuk-crest.svg") no-repeat 50% 0 / 125px 102px;
+  -webkit-mask-image: none;
+  mask-image: none;
+}

@@ -1,4 +1,4 @@
-import { SchoolRecordMapper } from './school-mapper'
+import { SchoolRecordMapper } from './school-mapper.js'
 import * as csv from 'csv-string'
 
 let sut: SchoolRecordMapper

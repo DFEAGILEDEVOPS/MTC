@@ -1,6 +1,6 @@
-import { CheckSubmitService } from './check-submit.service'
-import { type IServiceBusQueueService } from '../azure/service-bus.queue.service'
-import { ServiceBusQueueNames } from '../azure/service-bus-queue.names'
+import { CheckSubmitService } from './check-submit.service.js'
+import { type IServiceBusQueueService } from '../azure/service-bus.queue.service.js'
+import { ServiceBusQueueNames } from '../azure/service-bus-queue.names.js'
 
 const SbQueueServiceMock = jest.fn<IServiceBusQueueService, any>(() => ({
   dispatch: jest.fn(),

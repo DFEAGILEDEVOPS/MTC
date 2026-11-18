@@ -2,14 +2,14 @@ import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import * as R from 'ramda'
 
-import * as Subject from './check-marker.v1'
-import { type ICheckFormService } from '../../services/check-form.service'
-import { type ILogger } from '../../common/logger'
+import * as Subject from './check-marker.v1.js'
+import { type ICheckFormService } from '../../services/check-form.service.js'
+import { type ILogger } from '../../common/logger.js'
 import answersMock from './answers-mock.json'
-import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
-import { CompressionService } from '../../common/compression-service'
-import { type ITableService } from '../../azure/table-service'
+import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message.js'
+import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models.js'
+import { CompressionService } from '../../common/compression-service.js'
+import { type ITableService } from '../../azure/table-service.js'
 
 const compressionService = new CompressionService()
 
@@ -78,7 +78,8 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (...args: unknown[]): Promise<void> => {
+      const [table, entity] = args as [string, any]
       actualTableName = table
       actualEntity = entity
     })
@@ -104,7 +105,8 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (...args: unknown[]): Promise<void> => {
+      const [table, entity] = args as [string, any]
       actualTableName = table
       actualEntity = entity
     })
@@ -130,7 +132,8 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (...args: unknown[]): Promise<void> => {
+      const [table, entity] = args as [string, any]
       actualTableName = table
       actualEntity = entity
     })
@@ -158,7 +161,8 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (...args: unknown[]): Promise<void> => {
+      const [table, entity] = args as [string, any]
       actualTableName = table
       actualEntity = entity
     })
@@ -188,7 +192,8 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (...args: unknown[]): Promise<void> => {
+      const [table, entity] = args as [string, any]
       actualTableName = table
       actualEntity = entity
     })
@@ -219,7 +224,8 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (...args: unknown[]): Promise<void> => {
+      const [table, entity] = args as [string, any]
       actualTableName = table
       actualEntity = entity
     })

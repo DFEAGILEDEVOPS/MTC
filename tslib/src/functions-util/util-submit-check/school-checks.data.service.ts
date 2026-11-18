@@ -1,5 +1,5 @@
 import { TYPES } from 'mssql'
-import { type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
+import { type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service.js'
 
 export interface ISchoolChecksDataService {
   fetchBySchoolUuid (schoolUuid: string): Promise<string[]>

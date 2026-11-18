@@ -1,6 +1,6 @@
-import { RedisService } from '../caching/redis-service'
-import Redis, { type RedisOptions } from 'ioredis'
-import config from '../config'
+import { RedisService } from '../caching/redis-service.js'
+import { Redis, type RedisOptions } from 'ioredis'
+import config from '../config.js'
 import { v4 as uuidv4 } from 'uuid'
 
 let sut: RedisService

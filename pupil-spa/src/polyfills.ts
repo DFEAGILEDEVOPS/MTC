@@ -20,11 +20,6 @@ import '@angular/localize/init';
  */
 
 /***************************************************************************************************
-* BROWSER POLYFILLS
-*/
-import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
-
-/***************************************************************************************************
  * Zone JS is required by Angular itself.
  */
 import 'zone.js'; // Included with Angular CLI.

@@ -1,4 +1,4 @@
-import { CompressionService } from './compression-service'
+import { CompressionService } from './compression-service.js'
 import largeCheck from './mocks/large-submitted-check.json'
 
 let sut: CompressionService

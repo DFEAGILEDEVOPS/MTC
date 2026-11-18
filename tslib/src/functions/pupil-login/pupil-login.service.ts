@@ -1,5 +1,5 @@
-import { type IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
-import { v4 as uuid } from 'uuid'
+import { type IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service.js'
+import { createUuid } from '../../common/uuid.js'
 import moment from 'moment'
 
 export interface IPupilLoginMessage {
@@ -40,7 +40,7 @@ export class PupilLoginService {
     }
     output.pupilEventTable.push({
       PartitionKey: message.checkCode.toLowerCase(),
-      RowKey: uuid(),
+      RowKey: createUuid(),
       eventType: 'pupil-login',
       payload: message,
       processedAt: moment().toDate()

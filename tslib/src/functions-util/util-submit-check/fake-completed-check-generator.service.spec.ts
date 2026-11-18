@@ -1,6 +1,6 @@
-import { FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
+import { FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service.js'
 import mockPreparedCheck from '../../common/mocks/mock-prepared-check-2021.json'
-import { type CheckQuestion, type CompleteCheckAnswer } from '../../schemas/check-schemas/validated-check'
+import { type CheckQuestion, type CompleteCheckAnswer } from '../../schemas/check-schemas/validated-check.js'
 
 let sut: FakeCompletedCheckGeneratorService
 

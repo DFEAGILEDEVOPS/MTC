@@ -1,8 +1,8 @@
 .assigned-check-windows {
   font-family: $govuk-font-family;
-  border-top: 1px solid govuk-colour('mid-grey');
+  border-top: 1px solid govuk-colour("black", $variant: "tint-80");
   > dl {
-    border-bottom: 1px solid govuk-colour('mid-grey');
+    border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
     > dd {
       margin-inline-start: 0;
     }

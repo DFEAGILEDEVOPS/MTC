@@ -1,12 +1,12 @@
 import { app, output, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
-import config from '../../config'
-import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
-import { jsonReviver } from '../../common/json-reviver'
-import { PsReportStagingDataService } from './ps-report-staging.data.service'
-import { CsvTransformer } from './csv-transformer'
-import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages'
+import config from '../../config.js'
+import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models.js'
+import { jsonReviver } from '../../common/json-reviver.js'
+import { PsReportStagingDataService } from './ps-report-staging.data.service.js'
+import { CsvTransformer } from './csv-transformer.js'
+import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage, PsReportBatchMessage } from '../common/ps-report-service-bus-messages.js'
 const RA = require('ramda-adjunct')
 
 const functionName = 'ps-report-3b-stage-csv-file'

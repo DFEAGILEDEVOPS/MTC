@@ -1,7 +1,7 @@
 import { app, type Timer, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { SqlService } from '../../sql/sql.service'
-import { CheckPinExpiryService } from './check-pin-expiry.service'
+import { SqlService } from '../../sql/sql.service.js'
+import { CheckPinExpiryService } from './check-pin-expiry.service.js'
 const functionName = 'check-pin-expiry'
 
 app.timer(functionName, {

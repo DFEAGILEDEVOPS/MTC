@@ -2,14 +2,6 @@ $horizontal-breakpoint-1: 641px;
 $horizontal-breakpoint-2: 721px;
 $horizontal-breakpoint-3: 781px;
 
-@mixin mtc-core-59($line-height: (64 / 64), $line-height-640: (55 / 53), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 59px;
-  $font-size-640: 46px;
-  $font-size-print: 28pt;
-
-  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
-}
-
 .practice-box, .badge {
   color: $white;
   background-color: $grey-1;
@@ -59,7 +51,7 @@ $horizontal-breakpoint-3: 781px;
 }
 
 .question-header {
-  @extend %contain-floats;
+  @include govuk-clearfix;
 
   margin: 0 auto;
   padding-left: 10px;
@@ -93,7 +85,16 @@ $horizontal-breakpoint-3: 781px;
 }
 
 .question-and-answer {
-  @include mtc-core-59;
+  font-family: $govuk-font-family;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 46px;
+  line-height: 1.0377358491;
+
+  @media (min-width: $horizontal-breakpoint-1) {
+    font-size: 59px;
+    line-height: 1;
+  }
 
   text-align: center;
   margin: 0;
