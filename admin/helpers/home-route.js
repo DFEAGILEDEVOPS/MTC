@@ -2,6 +2,7 @@
 
 const homeRoutes = require('../lib/consts/home-routes')
 const roles = require('../lib/consts/roles')
+const helpdeskService = require('../services/helpdesk.service')
 
 /**
  * Get the home page route for a signed in user, based on their role.
@@ -16,6 +17,10 @@ const getHomeRoute = (user) => {
     case roles.helpdesk:
     case roles.staAdmin:
       return homeRoutes.schoolHomeRoute
+    case roles.superUser:
+      return helpdeskService.isImpersonating(user) ?
+        homeRoutes.schoolHomeRoute :
+        homeRoutes.superUserHomeRoute
     case roles.testDeveloper:
       return homeRoutes.testDeveloperHomeRoute
     case roles.serviceManager:
