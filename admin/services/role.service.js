@@ -32,6 +32,7 @@ const service = {
       mtc_headteacher: roles.teacher,
       mtc_teacher: roles.teacher,
       mtc_helpdesk: roles.helpdesk,
+      mtc_superuser: roles.superUser,
       mtc_test_developer: roles.testDeveloper,
       mtc_tech_support: roles.techSupport,
       mtc_staadmin: roles.staAdmin

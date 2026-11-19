@@ -10,7 +10,7 @@ const { isAdminWindowAvailable } = require('../availability/middleware')
 /* Pupil Status routing */
 router.get('/',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   pupilStatusController.getViewPupilStatus
 )
 

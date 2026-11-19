@@ -6,6 +6,7 @@ const homeRoutes = require('../../../lib/consts/home-routes')
 const roles = require('../../../lib/consts/roles')
 const config = require('../../../config')
 const authModes = require('../../../lib/consts/auth-modes')
+const schoolImpersonationService = require('../../../services/school-impersonation.service')
 
 const getReqParams = (url = '/', method = 'GET') => {
   return {
@@ -115,6 +116,43 @@ describe('authentication controller', () => {
         sut.home(req, res)
         expect(res.redirect).toHaveBeenCalledWith(homeRoutes.serviceManagerHomeRoute)
         expect(res.statusCode).toBe(200)
+      })
+
+      test('should redirect to the superuser home when superuser is authenticated', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.superUser)
+        jest.spyOn(res, 'redirect').mockImplementation()
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.superUserHomeRoute)
+      })
+
+      test('should redirect superuser to the school home while impersonating', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.superUser)
+        Object.assign(req.user, { School: 9991001, schoolId: 1, timezone: 'Europe/London' })
+        jest.spyOn(res, 'redirect').mockImplementation()
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
+      })
+
+      test.each(['School', 'schoolId', 'timezone'])('should redirect superuser to its home when impersonation is missing %s', (field) => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.superUser)
+        Object.assign(req.user, { School: 9991001, schoolId: 1, timezone: 'Europe/London' })
+        delete req.user[field]
+        jest.spyOn(res, 'redirect').mockImplementation()
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.superUserHomeRoute)
+      })
+
+      test('should redirect superuser to its home after impersonation is removed', () => {
+        const res = createResponse()
+        const req = createRequest(authenticated, getReqParams(), roles.superUser)
+        Object.assign(req.user, { School: 9991001, schoolId: 1, timezone: 'Europe/London' })
+        schoolImpersonationService.removeImpersonation(req.user)
+        jest.spyOn(res, 'redirect').mockImplementation()
+        sut.home(req, res)
+        expect(res.redirect).toHaveBeenCalledWith(homeRoutes.superUserHomeRoute)
       })
 
       test('should redirect to correct home when techsupport role is authenticated', () => {
