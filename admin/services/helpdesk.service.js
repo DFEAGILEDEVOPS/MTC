@@ -18,7 +18,7 @@ helpdeskService.isHelpdeskRole = (user) => {
  * @returns {boolean}
  */
 helpdeskService.isStaAdmin = (user) => {
-  return user.role === roles.staAdmin
+  return user.role === roles.staAdmin || user.role === roles.superUser
 }
 
 /**

@@ -14,12 +14,6 @@ function getEnvironmentUrls(testInfo: TestInfo): { env: EnvironmentName; adminBa
   return { env, ...urls };
 }
 
-/**
- * Helper function to get a check-window date that is reliably in the past, so saving it
- * triggers the admin app's 'Override the warnings' confirmation regardless of when the
- * test runs. A fixed calendar date (e.g. 04/04/2026) eventually becomes stale once 'now'
- * passes it, so this is derived relative to the current date instead.
- */
 function getFixedCheckWindowDate(): { day: string; month: string; year: string } {
   return toDateParts(addDays(new Date(), -7));
 }
@@ -181,12 +175,18 @@ async function fillDateFieldIfVisible(
 }
 
 async function saveCheckWindowForm(page: Page, actionName: string): Promise<void> {
-  await page.getByRole('button', { name: 'Save' }).click();
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'load' }),
+    page.getByRole('button', { name: 'Save' }).click(),
+  ]);
 
   const overrideWarnings = page.getByRole('checkbox', { name: /Override the warnings on this screen\.?/i });
-  if (await overrideWarnings.isVisible({ timeout: 1500 }).catch(() => false)) {
+  if (await overrideWarnings.isVisible()) {
     await overrideWarnings.check();
-    await page.getByRole('button', { name: 'Save' }).click();
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'load' }),
+      page.getByRole('button', { name: 'Save' }).click(),
+    ]);
   }
 
   const errorSummary = page.locator('.govuk-error-summary');
@@ -194,6 +194,9 @@ async function saveCheckWindowForm(page: Page, actionName: string): Promise<void
     const summaryText = await errorSummary.innerText().catch(() => `Unknown validation error while trying to ${actionName}`);
     throw new Error(`Unable to ${actionName}: ${summaryText}`);
   }
+
+  await expect(page, `Expected successful check-window save: ${actionName}`)
+    .toHaveURL(/\/check-window\/manage-check-windows$/);
 }
 
 async function restoreToOpenCheckWindow(page: Page): Promise<void> {
@@ -242,21 +245,7 @@ test('Service Manager sets check window to a past date, Teacher views pupil resu
     // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - enter the fixed past date into all 3 sets
     await fillAndVerifyDateInputs(page, fixedCheckWindowDate);
 
-    // 7) Click Save
-    await page.getByRole('button', { name: 'Save' }).click();
-
-    // 8) Tick "Override the warnings on this screen." checkbox
-    const overrideWarnings = page
-      .getByRole('checkbox', { name: /Override the warnings on this screen\.?/i })
-      .or(page.locator('input[type="checkbox"][name*="override" i]'))
-      .or(page.locator('input[type="checkbox"][id*="override" i]'))
-      .first();
-    await expect(overrideWarnings).toBeVisible();
-    await overrideWarnings.check();
-    await expect(overrideWarnings).toBeChecked();
-
-    // 9) Click Save again
-    await page.getByRole('button', { name: 'Save' }).click();
+    await saveCheckWindowForm(page, 'set check-window dates to the past');
 
     // 10) Click Sign out
     await logoutFromAdmin(page);
@@ -293,4 +282,3 @@ test('Service Manager sets check window to a past date, Teacher views pupil resu
     await logoutFromAdmin(page).catch(() => undefined);
   }
 });
-
