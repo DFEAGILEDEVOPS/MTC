@@ -14,6 +14,15 @@ function summaryValue(page: Page, label: string) {
     .filter({ has: page.locator('dt').filter({ hasText: new RegExp(`^\\s*${label}\\s*$`) }) }).locator('dd');
 }
 
+async function openPupilSummary(page: Page): Promise<void> {
+  await page.getByRole('link', { name: 'Pupil Search', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Search by UPN', exact: true })
+    .fill(requiredEnvironmentVariable('SUPERUSER_PUPIL_UPN'));
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
+  await expect(page).toHaveURL(/\/service-manager\/pupil-summary\/[^/]+$/);
+  await expect(summaryValue(page, 'UPN')).toHaveText(requiredEnvironmentVariable('SUPERUSER_PUPIL_UPN'));
+}
+
 async function openAction(page: Page, action: Action): Promise<void> {
   await page.getByRole('link', { name: actions[action].link, exact: true }).click();
   await expect(page.getByRole('heading', { name: actions[action].heading, exact: true })).toBeVisible();
@@ -36,12 +45,7 @@ async function submitAction(page: Page, action: Action, summaryUrl: string): Pro
 const test = base.extend<{ pupil: { summaryUrl: string; status: string; name: string } }>({
   pupil: [async ({ page, browser, baseURL }, use) => {
     await loginAsServiceManager(page);
-    await page.getByRole('link', { name: 'Pupil Search', exact: true }).click();
-    await page.getByRole('textbox', { name: 'Search by UPN', exact: true })
-      .fill(requiredEnvironmentVariable('SUPERUSER_PUPIL_UPN'));
-    await page.getByRole('button', { name: 'Search', exact: true }).click();
-    await expect(page).toHaveURL(/\/service-manager\/pupil-summary\/[^/]+$/);
-    await expect(summaryValue(page, 'UPN')).toHaveText(requiredEnvironmentVariable('SUPERUSER_PUPIL_UPN'));
+    await openPupilSummary(page);
     await expect(summaryValue(page, 'Frozen'), 'Prepare an unfrozen dedicated pupil').toHaveText('No');
     await expect(page.getByRole('link', { name: actions.annul.link, exact: true }), 'Prepare an unannulled dedicated pupil').toBeVisible();
     const summaryUrl = page.url();
@@ -93,6 +97,22 @@ test.describe('Service-manager shared pupil administration regression', () => {
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute('href', href);
     }
+  });
+
+  test('shows the move warning directly below the heading', async ({ page }) => {
+    await loginAsServiceManager(page);
+    await openPupilSummary(page);
+    await page.getByRole('link', { name: 'Move pupil to different school', exact: true }).click();
+    await expect(page).toHaveURL(/\/service-manager\/pupil\/move\/[^/]+$/);
+
+    const heading = page.getByRole('heading', { name: 'Move to a new school', exact: true });
+    const warning = heading.locator('xpath=following-sibling::*[1]');
+    await expect(heading).toBeVisible();
+    await expect(warning).toHaveClass('govuk-warning-text');
+    await expect(warning).toBeVisible();
+    await expect(warning.locator('.govuk-warning-text__text')).toHaveText(
+      'Warning Moving a pupil should only be done in very specific circumstances as a last resort.'
+    );
   });
 
   for (const action of ['freeze', 'thaw', 'annul', 'undo'] as const) {

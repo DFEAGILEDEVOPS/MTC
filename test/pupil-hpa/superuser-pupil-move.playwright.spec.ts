@@ -31,6 +31,8 @@ async function openMove(page: Page): Promise<void> {
   await page.getByRole('link', { name: 'Move pupil to different school', exact: true }).click();
   await expect(page).toHaveURL(/\/service-manager\/pupil\/move\/[^/]+$/);
   await expect(page.getByRole('heading', { name: 'Move to a new school', exact: true })).toBeVisible();
+  await expect(page.locator('.govuk-warning-text'))
+    .toContainText('Moving a pupil should only be done in very specific circumstances as a last resort.');
 }
 
 async function confirmDestination(page: Page, school: School): Promise<void> {
