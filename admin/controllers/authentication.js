@@ -1,30 +1,18 @@
 'use strict'
 
 const logger = require('../services/log.service').getLogger()
-const homeRoutes = require('../lib/consts/home-routes')
+const getHomeRoute = require('../helpers/home-route')
 const authModes = require('../lib/consts/auth-modes')
 const config = require('../config')
 const url = require('url')
-const roles = require('../lib/consts/roles')
-const helpdeskService = require('../services/helpdesk.service')
 
 const dfeSignInRedirect = '/oidc-sign-in'
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
-    switch (req.user.role) {
-      case roles.teacher:
-      case roles.helpdesk:
-      case roles.staAdmin:
-        return res.redirect(homeRoutes.schoolHomeRoute)
-      case roles.superUser:
-        return res.redirect(helpdeskService.isImpersonating(req.user) ? homeRoutes.schoolHomeRoute : homeRoutes.superUserHomeRoute)
-      case roles.testDeveloper:
-        return res.redirect(homeRoutes.testDeveloperHomeRoute)
-      case roles.serviceManager:
-        return res.redirect(homeRoutes.serviceManagerHomeRoute)
-      case roles.techSupport:
-        return res.redirect(homeRoutes.techSupportHomeRoute)
+    const homeRoute = getHomeRoute(req.user)
+    if (homeRoute) {
+      return res.redirect(homeRoute)
     }
   } else {
     redirectToAuthModeSignIn(req, res)
