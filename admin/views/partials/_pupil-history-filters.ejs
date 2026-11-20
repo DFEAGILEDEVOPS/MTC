@@ -1,0 +1,65 @@
+<%
+  const { filters, error, actions } = historyView
+  const filtersExpanded = error.hasError() || filters.action !== '' ||
+    Object.values(filters.from).some(value => value !== '') ||
+    Object.values(filters.to).some(value => value !== '')
+%>
+<%- partial('partials/_form-error', {
+  pageFields: ['history-action', 'history-from-day', 'history-to-day'],
+  error
+}) %>
+<div id="pupil-history-filter-options" data-expanded="<%= filtersExpanded %>">
+<form action="<%= clearFiltersUrl %>" method="get" novalidate>
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Filter pupil history</legend>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        <div class="govuk-form-group<%= error.isError('history-action') ? ' govuk-form-group--error' : '' %>">
+          <label class="govuk-label" for="history-action">Action</label>
+          <% if (error.isError('history-action')) { %>
+            <p class="govuk-error-message" id="history-action-error"><span class="govuk-visually-hidden">Error:</span> <%= error.get('history-action') %></p>
+          <% } %>
+          <select class="govuk-select<%= error.isError('history-action') ? ' govuk-select--error' : '' %>" id="history-action" name="history-action"<% if (error.isError('history-action')) { %> aria-describedby="history-action-error"<% } %>>
+            <option value=""<%= filters.action === '' ? ' selected' : '' %>>All actions</option>
+            <% actions.forEach(action => { %>
+              <option value="<%= action %>"<%= filters.action === action ? ' selected' : '' %>><%= action %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <% ['from', 'to'].forEach(boundary => {
+        const prefix = 'history-' + boundary
+        const dateError = error.isError(prefix + '-day')
+      %>
+        <div class="govuk-grid-column-one-half">
+          <div class="govuk-form-group<%= dateError ? ' govuk-form-group--error' : '' %>">
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="<%= prefix %>-hint<%= dateError ? ' ' + prefix + '-error' : '' %>">
+              <legend class="govuk-fieldset__legend"><%= boundary === 'from' ? 'From' : 'To' %></legend>
+              <div class="govuk-hint" id="<%= prefix %>-hint">For example, 27 3 2026. Leave blank for no <%= boundary === 'from' ? 'start' : 'end' %> date.</div>
+              <% if (dateError) { %>
+                <p class="govuk-error-message" id="<%= prefix %>-error"><span class="govuk-visually-hidden">Error:</span> <%= error.get(prefix + '-day') %></p>
+              <% } %>
+              <div class="govuk-date-input" id="<%= prefix %>">
+                <% ['day', 'month', 'year'].forEach(part => { %>
+                  <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                      <label class="govuk-label govuk-date-input__label" for="<%= prefix %>-<%= part %>"><%= part.charAt(0).toUpperCase() + part.slice(1) %></label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-<%= part === 'year' ? '4' : '2' %><%= dateError ? ' govuk-input--error' : '' %>" id="<%= prefix %>-<%= part %>" name="<%= prefix %>-<%= part %>" type="text" inputmode="numeric" value="<%= filters[boundary][part] %>">
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <div class="govuk-button-group">
+      <button type="submit" class="govuk-button" data-module="govuk-button">Apply filters</button>
+      <a class="govuk-link" href="<%= clearFiltersUrl %>">Clear filters</a>
+    </div>
+  </fieldset>
+</form>
+</div>

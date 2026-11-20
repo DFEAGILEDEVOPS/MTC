@@ -4,7 +4,7 @@
   font-size: large;
   letter-spacing: 1px;
   color: #fff;
-  background-color: govuk-colour("dark-grey");
+  background-color: govuk-colour("black", $variant: "tint-25");
 }
 
 .warning-banner {

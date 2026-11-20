@@ -5,7 +5,7 @@
 .app-step-nav-header {
   position: relative;
   padding: 10px;
-  background: govuk-colour("light-grey", $legacy: "grey-4");
+  background: govuk-colour("black", $variant: "tint-95");
   border-top: solid 1px $govuk-border-colour;
   border-bottom: solid 1px $govuk-border-colour;
   @include govuk-media-query($from: tablet) {
@@ -135,7 +135,7 @@
 }
 
 .app-step-nav__button--controls {
-  @include govuk-font(14);
+  @include govuk-font(16);
   position: relative;
   z-index: 1; // this and relative position stops focus outline underlap with border of accordion
   padding: 0.5em 0;
@@ -321,7 +321,7 @@
 
 .app-step-nav__header {
   padding: 15px 0;
-  border-top: solid 2px govuk-colour("light-grey", $legacy: "grey-3");
+  border-top: solid 2px govuk-colour("black", $variant: "tint-95");
 }
 
 .app-step-nav--active .app-step-nav__header {
@@ -514,7 +514,7 @@
 .app-step-nav__help {
   position: relative;
   padding: 15px 0;
-  border-top: solid 2px govuk-colour("light-grey", $legacy: "grey-3");
+  border-top: solid 2px govuk-colour("black", $variant: "tint-95");
 }
 
 .app-step-nav__help:after {
@@ -555,7 +555,7 @@
 .app-step-nav__substep {
   position: relative;
   padding-top: 15px;
-  border-top: solid 2px govuk-colour("light-grey", $legacy: "grey-3");
+  border-top: solid 2px govuk-colour("black", $variant: "tint-95");
 }
 
 .app-step-nav__substep:after {

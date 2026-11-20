@@ -49,7 +49,7 @@ const controller = {
       }
       return next(error)
     }
-    req.flash('info', 'Retrospective Input assistant added')
+    req.flash('info', 'Retroactive Input assistant added')
     res.redirect(`/access-arrangements/overview?hl=${saveData.pupilUuid}`)
   },
   /**

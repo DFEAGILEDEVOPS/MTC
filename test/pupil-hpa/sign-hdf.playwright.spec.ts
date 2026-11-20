@@ -250,14 +250,15 @@ async function waitForHdfToBecomeAvailable(page: Page): Promise<void> {
     async () => {
       await page.reload();
       await dismissCookieBanner(page);
-      return page.getByText('Currently unavailable').count();
+      return new URL(page.url()).pathname === '/attendance/declaration-form'
+        && await page.getByLabel("Submitter's first name").isVisible();
     },
     {
       timeout: 45_000,
       intervals: [1000, 2000, 3000],
-      message: 'HDF remained unavailable after check-window update.',
+      message: 'HDF submitter form did not become available after check-window update. Check that the teacher is signed in, all pupils are eligible, and no HDF is already submitted.',
     }
-  ).toBe(0);
+  ).toBe(true);
 }
 
 /**

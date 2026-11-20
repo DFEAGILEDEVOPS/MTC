@@ -1,7 +1,7 @@
 import { app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { PreparedCheckSyncService } from './prepared-check-sync.service'
-import { type IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
+import { PreparedCheckSyncService } from './prepared-check-sync.service.js'
+import { type IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage.js'
 const functionName = 'check-sync'
 
 app.serviceBusQueue(functionName, {

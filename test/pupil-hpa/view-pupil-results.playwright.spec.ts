@@ -14,11 +14,8 @@ function getEnvironmentUrls(testInfo: TestInfo): { env: EnvironmentName; adminBa
   return { env, ...urls };
 }
 
-/**
- * Helper function to get the fixed check window date in DD/MM/YYYY format
- */
 function getFixedCheckWindowDate(): { day: string; month: string; year: string } {
-  return { day: '04', month: '04', year: '2026' };
+  return toDateParts(addDays(new Date(), -7));
 }
 
 /**
@@ -178,12 +175,18 @@ async function fillDateFieldIfVisible(
 }
 
 async function saveCheckWindowForm(page: Page, actionName: string): Promise<void> {
-  await page.getByRole('button', { name: 'Save' }).click();
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'load' }),
+    page.getByRole('button', { name: 'Save' }).click(),
+  ]);
 
   const overrideWarnings = page.getByRole('checkbox', { name: /Override the warnings on this screen\.?/i });
-  if (await overrideWarnings.isVisible({ timeout: 1500 }).catch(() => false)) {
+  if (await overrideWarnings.isVisible()) {
     await overrideWarnings.check();
-    await page.getByRole('button', { name: 'Save' }).click();
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'load' }),
+      page.getByRole('button', { name: 'Save' }).click(),
+    ]);
   }
 
   const errorSummary = page.locator('.govuk-error-summary');
@@ -191,6 +194,9 @@ async function saveCheckWindowForm(page: Page, actionName: string): Promise<void
     const summaryText = await errorSummary.innerText().catch(() => `Unknown validation error while trying to ${actionName}`);
     throw new Error(`Unable to ${actionName}: ${summaryText}`);
   }
+
+  await expect(page, `Expected successful check-window save: ${actionName}`)
+    .toHaveURL(/\/check-window\/manage-check-windows$/);
 }
 
 async function restoreToOpenCheckWindow(page: Page): Promise<void> {
@@ -208,10 +214,10 @@ async function restoreToOpenCheckWindow(page: Page): Promise<void> {
 
 /**
  * Test: Manage check windows and verify pupil results visibility
- * This test verifies that when a service manager sets the check window to 04/04/2026,
+ * This test verifies that when a service manager sets the check window to a past date,
  * teachers can view pupil results. Then the service manager resets the check window to the future.
  */
-test('Service Manager sets check window to 04/04/2026, Teacher views pupil results, then Service Manager resets to future date', async ({ page }, testInfo) => {
+test('Service Manager sets check window to a past date, Teacher views pupil results, then Service Manager resets to future date', async ({ page }, testInfo) => {
   const { env, adminBaseUrl } = getEnvironmentUrls(testInfo);
 
   // This test uses username/password login and admin-only navigation.
@@ -220,7 +226,7 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
   const fixedCheckWindowDate = getFixedCheckWindowDate();
 
   try {
-    // ========== STEP 1-10: Service Manager sets check window to 04/04/2026 ==========
+    // ========== STEP 1-10: Service Manager sets check window to a past date ==========
 
     // 1) Navigate to Admin site
     await page.goto(`${adminBaseUrl}/sign-in`);
@@ -236,24 +242,10 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
     await openCheckWindow(page, env);
     await dismissCookieBanner(page);
 
-    // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - Enter 04/04/2026 into all 3 sets
+    // 5-6) There are 3 sets of 3 input boxes (Day/Month/Year) - enter the fixed past date into all 3 sets
     await fillAndVerifyDateInputs(page, fixedCheckWindowDate);
 
-    // 7) Click Save
-    await page.getByRole('button', { name: 'Save' }).click();
-
-    // 8) Tick "Override the warnings on this screen." checkbox
-    const overrideWarnings = page
-      .getByRole('checkbox', { name: /Override the warnings on this screen\.?/i })
-      .or(page.locator('input[type="checkbox"][name*="override" i]'))
-      .or(page.locator('input[type="checkbox"][id*="override" i]'))
-      .first();
-    await expect(overrideWarnings).toBeVisible();
-    await overrideWarnings.check();
-    await expect(overrideWarnings).toBeChecked();
-
-    // 9) Click Save again
-    await page.getByRole('button', { name: 'Save' }).click();
+    await saveCheckWindowForm(page, 'set check-window dates to the past');
 
     // 10) Click Sign out
     await logoutFromAdmin(page);
@@ -277,17 +269,16 @@ test('Service Manager sets check window to 04/04/2026, Teacher views pupil resul
     await logoutFromAdmin(page);
   } finally {
     // Always restore check-window dates to an open state, even if the test fails mid-flow.
-    await page.goto(`${adminBaseUrl}/sign-in`).catch(() => undefined);
-    await loginAsAdmin(page, 'service-manager', 'password').catch(() => undefined);
-    await page.getByRole('link', { name: 'Manage check windows' }).click().catch(() => undefined);
+    // Errors here must not be swallowed: a silently failed restore leaves the shared
+    // check window closed for every subsequent test without any visible failure.
+    await page.goto(`${adminBaseUrl}/sign-in`);
+    await loginAsAdmin(page, 'service-manager', 'password');
+    await page.getByRole('link', { name: 'Manage check windows' }).click();
 
-    const manageHeading = page.getByRole('heading', { name: 'Manage check windows' });
-    if (await manageHeading.isVisible({ timeout: 10000 }).catch(() => false)) {
-      await openCheckWindow(page, env).catch(() => undefined);
-      await restoreToOpenCheckWindow(page).catch(() => undefined);
-    }
+    await expect(page.getByRole('heading', { name: 'Manage check windows' })).toBeVisible({ timeout: 10000 });
+    await openCheckWindow(page, env);
+    await restoreToOpenCheckWindow(page);
 
     await logoutFromAdmin(page).catch(() => undefined);
   }
 });
-

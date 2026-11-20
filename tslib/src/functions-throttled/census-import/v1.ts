@@ -1,15 +1,15 @@
 import * as csvString from 'csv-string'
 import moment from 'moment'
 import * as R from 'ramda'
-import { v4 as uuidv4 } from 'uuid'
-import { CensusImportDataService, type ICensusImportDataService } from './census-import.data.service'
+import { CensusImportDataService, type ICensusImportDataService } from './census-import.data.service.js'
 import type * as mssql from 'mssql'
-import { ConsoleLogger, type ILogger } from '../../common/logger'
-import { type IBlobService, BlobService } from '../../azure/blob-service'
-import { type IRedisService, RedisService } from '../../caching/redis-service'
-import redisKeyService from '../../caching/redis-key.service'
-import { type IJobDataService, JobDataService } from '../../services/data/job.data.service'
-import { JobStatusCode } from '../../common/job-status-code'
+import { ConsoleLogger, type ILogger } from '../../common/logger.js'
+import { createUuid } from '../../common/uuid.js'
+import { type IBlobService, BlobService } from '../../azure/blob-service.js'
+import { type IRedisService, RedisService } from '../../caching/redis-service.js'
+import redisKeyService from '../../caching/redis-key.service.js'
+import { type IJobDataService, JobDataService } from '../../services/data/job.data.service.js'
+import { JobStatusCode } from '../../common/job-status-code.js'
 
 export interface IJobResult {
   processCount: number
@@ -59,7 +59,7 @@ export class CensusImportV1 {
       const jobId = await this.jobDataService.getJobId(jobSlug)
       if (jobId === undefined) throw new Error('jobId is undefined')
       const blobContent = csvString.parse(blob.toString())
-      const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
+      const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${createUuid()}]`
       this.logger.info(`censusTable:${censusTable}`)
       this.logger.info('inserting data to staging table...')
       const stagingInsertCount = await this.censusImportDataService.loadStagingTable(censusTable, blobContent)

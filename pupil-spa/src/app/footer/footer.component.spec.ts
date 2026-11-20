@@ -26,14 +26,14 @@ describe('FooterComponent', () => {
 
   it('should have link with text', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.copyright a').textContent).toMatch(
+    expect(compiled.querySelector('.govuk-footer__copyright-logo').textContent).toMatch(
       /© Crown copyright/
     );
   });
 
   it('should have link to external copyright information', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.copyright a').href).toMatch(
+    expect(compiled.querySelector('.govuk-footer__copyright-logo').href).toMatch(
       'http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/'
     );
   });

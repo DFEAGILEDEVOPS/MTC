@@ -1,5 +1,5 @@
-import { type IPupilLoginDataService } from './pupil-login.data.service'
-import { PupilLoginService, type IPupilLoginMessage, type IPupilEvent } from './pupil-login.service'
+import { type IPupilLoginDataService } from './pupil-login.data.service.js'
+import { PupilLoginService, type IPupilLoginMessage, type IPupilEvent } from './pupil-login.service.js'
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService

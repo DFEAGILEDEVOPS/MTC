@@ -1,4 +1,4 @@
-import { type ReportLineAnswer } from './report-line-answer.class'
+import { type ReportLineAnswer } from './report-line-answer.class.js'
 import type moment from 'moment'
 
 export interface IReportLineBase {

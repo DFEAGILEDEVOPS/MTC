@@ -49,4 +49,24 @@ describe('HeaderComponent', () => {
       /Multiplication Tables Check/
     );
   });
+
+  it('should link the GOV.UK logo to GOV.UK', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('.header-logo').getAttribute('href')).toBe('https://www.gov.uk');
+  });
+
+  it('should link the service name to the sign in page', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('#proposition-name').getAttribute('routerLink')).toBe('/sign-in');
+  });
+
+  it('should show the try it out banner only for the familiarisation check', () => {
+    expect(fixture.debugElement.nativeElement.querySelector('#familiarisation-header-bar')).toBeNull();
+    mockUserService.isLoggedIn.and.returnValue(true);
+    spyOn(TestBed.inject(QuestionService), 'getConfig').and.returnValue({ practice: true } as any);
+    const practiceFixture = TestBed.createComponent(HeaderComponent);
+    practiceFixture.detectChanges();
+    const banner = practiceFixture.debugElement.nativeElement.querySelector('#familiarisation-header-bar');
+    expect(banner.querySelector('.govuk-tag').textContent).toMatch(/Try it out/);
+  });
 });
