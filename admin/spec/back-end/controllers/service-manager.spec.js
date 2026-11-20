@@ -1366,6 +1366,8 @@ describe('service manager controller:', () => {
         pupil: { firstName: 'Test', lastName: 'Pupil', urlSlug: uuid.NIL, isAnnulled, isFrozen },
         isServiceManager: true,
         guidancePdf: '/guidance.pdf',
+        historyView: { timeline: [], filters: {}, error: { hasError: () => false }, actions: [], totalCount: 0 },
+        clearFiltersUrl: `/service-manager/pupil-summary/${uuid.NIL}`,
         partial: () => ''
       })
       expect(html).toContain(`href="/service-manager${annulPath}${uuid.NIL}"`)

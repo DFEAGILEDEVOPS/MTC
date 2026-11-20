@@ -495,7 +495,7 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.user.role = role
-      const mockHistory = { pupil: {}, checks: [], meta: {} }
+      const mockHistory = { pupil: {}, checks: [], restarts: [], meta: {} }
       jest.spyOn(res, 'render').mockImplementation()
       jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(mockHistory)
 

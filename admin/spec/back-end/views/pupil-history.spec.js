@@ -33,11 +33,12 @@ describe('shared pupil history filters', () => {
   const render = (view, query, clearFiltersUrl) => {
     const locals = {
       pupil,
-      pupilHistory: { pupil, meta: { restartsTakenCount: 1 }, checks: [{}, {}, {}] },
+      pupilHistory: { pupil, meta: { restartsTakenCount: 1 }, checks: [{}, {}, {}], restarts: [] },
       historyView: PupilHistoryFilterService.filter(timeline, query),
       clearFiltersUrl,
       breadcrumbs: [],
       isStaAdmin: true,
+      isServiceManager: true,
       csrftoken: 'test-token',
       guidancePdf: '/guidance',
       formatFullGdsDate: date => date,
@@ -198,10 +199,13 @@ function renderHistory (isStaAdmin, restartAvailable = false, checkCount = 3, is
         isDiscretionaryRestartAvailable
       },
       checks: Array.from({ length: checkCount }, () => ({ receivedByServerAt: null, isLiveCheck: true })),
+      restarts: [],
       meta: { restartsTakenCount: 1 }
     },
     isStaAdmin,
     csrftoken: 'test-csrf-token',
+    historyView: { timeline: [], filters: {}, error: { hasError: () => false }, actions: [], totalCount: 0 },
+    clearFiltersUrl: '/pupil-register/history/test-pupil',
     partial: () => '',
     formatFullGdsDate: () => '',
     formatPupilHistoryDataAndTime: () => ''

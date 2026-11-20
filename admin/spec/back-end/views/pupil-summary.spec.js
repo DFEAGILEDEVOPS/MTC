@@ -51,11 +51,13 @@ describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])
           urlSlug: 'pupil-slug'
         },
         checks: [{}, {}, {}],
+        restarts: [],
         meta: { restartsTakenCount: 0 }
       },
       historyView,
       clearFiltersUrl,
       isStaAdmin,
+      isServiceManager: true,
       csrftoken: 'csrf-token',
       formatFullGdsDate: () => '',
       formatPupilHistoryDataAndTime: dateService.formatPupilHistoryDateAndTime
