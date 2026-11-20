@@ -3,6 +3,13 @@ import type moment from 'moment-timezone'
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
+export interface PupilAuditSummary {
+  id: number
+  createdAt: Moment
+  auditOperation: string
+  user: string
+}
+
 export class ServiceManagerPupilDataService {
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
@@ -36,6 +43,25 @@ export class ServiceManagerPupilDataService {
         name: 'urlSlug',
         value: urlSlug,
         type: TYPES.NVarChar
+      }
+    ]
+    return sqlService.readonlyQuery(sql, params)
+  }
+
+  static async getPupilAudits (pupilId: number): Promise<PupilAuditSummary[]> {
+    const sql = `
+      SELECT pa.id, pa.createdAt, aot.auditOperation,
+        COALESCE(u.displayName, u.identifier, 'system') as [user]
+      FROM mtc_admin.pupilAudit pa
+      INNER JOIN mtc_admin.auditOperationTypeLookup aot ON aot.id = pa.auditOperationTypeLookup_id
+      LEFT OUTER JOIN mtc_admin.[user] u ON u.id = pa.operationBy_userId
+      WHERE pa.pupil_id = @pupilId
+      ORDER BY pa.createdAt DESC, pa.id DESC`
+    const params = [
+      {
+        name: 'pupilId',
+        value: pupilId,
+        type: TYPES.Int
       }
     ]
     return sqlService.readonlyQuery(sql, params)

@@ -68,6 +68,16 @@ export class ServiceManagerPupilService {
     }
   }
 
+  static async getPupilAuditHistory (pupilId: number): Promise<ServiceManagerPupilAudit[]> {
+    const auditRows = await ServiceManagerPupilDataService.getPupilAudits(pupilId)
+    return auditRows.map(audit => ({
+      id: audit.id,
+      createdAt: dateService.formatDateAndTime(audit.createdAt),
+      auditOperation: audit.auditOperation,
+      user: audit.user
+    }))
+  }
+
   static async movePupilToSchool (pupil: ServiceManagerPupilDetails, school: ServiceManagerSchoolResult, userId: number): Promise<void> {
     if (pupil === undefined) {
       throw new Error('Missing pupil')
@@ -129,4 +139,11 @@ export interface ServiceManagerPupilDetails {
   status: string
   upn: string
   urlSlug: string
+}
+
+export interface ServiceManagerPupilAudit {
+  id: number
+  createdAt: string
+  auditOperation: string
+  user: string
 }

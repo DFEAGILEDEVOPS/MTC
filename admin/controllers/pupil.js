@@ -17,6 +17,7 @@ const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 const { PupilHistoryService } = require('../services/pupil-history/pupil-history-service')
+const { PupilHistoryFilterService } = require('../services/pupil-history/pupil-history-filter.service')
 const roles = require('../lib/consts/roles')
 
 const controller = {
@@ -275,6 +276,8 @@ const controller = {
       return res.render('pupil-register/pupil-history', {
         breadcrumbs: req.breadcrumbs(),
         pupilHistory,
+        historyView: PupilHistoryFilterService.filter(PupilHistoryService.buildTimeline(pupilHistory), req.query),
+        clearFiltersUrl: `/pupil-register/history/${encodeURIComponent(req.params.urlSlug)}`,
         isStaAdmin
       })
     } catch (error) {

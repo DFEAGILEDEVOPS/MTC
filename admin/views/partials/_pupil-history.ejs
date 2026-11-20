@@ -1,0 +1,38 @@
+<% const { timeline, error, totalCount } = historyView %>
+<%- partial('partials/_pupil-history-filters', { historyView, clearFiltersUrl }) %>
+<% if (error.hasError()) { %>
+  <p class="govuk-body">Correct the filters to view pupil history.</p>
+<% } else if (totalCount === 0) { %>
+  <p class="govuk-body">No pupil history recorded</p>
+<% } else if (timeline.length === 0) { %>
+  <p class="govuk-body">No events match your filters. <a class="govuk-link" href="<%= clearFiltersUrl %>">Clear filters</a> to view all pupil history.</p>
+<% } else { %>
+  <p class="govuk-body">Showing <%= timeline.length %> of <%= totalCount %> events</p>
+  <table class="govuk-table govuk-spacious" id="pupil-history">
+    <caption class="govuk-visually-hidden">Pupil history, newest first</caption>
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Date and time</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+        <th scope="col" class="govuk-table__header">Type</th>
+        <th scope="col" class="govuk-table__header" title="A mark indicates the official check currently used for this pupil">Active</th>
+        <th scope="col" class="govuk-table__header">Check status</th>
+        <th scope="col" class="govuk-table__header">Restart reason</th>
+        <th scope="col" class="govuk-table__header">Initiated by</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% timeline.forEach((event) => { %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><time datetime="<%= event.occurredAt.toISOString() %>"><%= formatPupilHistoryDataAndTime(event.occurredAt) %></time></td>
+          <td class="govuk-table__cell" title="<%= event.check?.checkCode %>"><%= event.action %></td>
+          <td class="govuk-table__cell"><%= event.check ? (event.check.isLiveCheck ? 'Official' : 'Try it out') : '' %></td>
+          <td class="govuk-table__cell"><%= event.check?.active ? '*' : '' %></td>
+          <td class="govuk-table__cell"><%= event.check?.checkStatus %></td>
+          <td class="govuk-table__cell"><%= event.restart?.restartReason %></td>
+          <td class="govuk-table__cell"><%= event.action === 'Restart removed' ? event.restart?.deletedByUser : event.restart?.recordedByUser %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
