@@ -42,6 +42,11 @@ router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
 router.get('/test-developer', isAuthenticated(roles.testDeveloper), (req, res, next) => testDeveloperController.getTestDeveloperHomePage(req, res, next))
 /* Service manager routing */
 router.get('/service-manager', isAuthenticated(roles.serviceManager), (req, res, next) => getServiceManagerHome(req, res, next))
+router.get('/superuser', isAuthenticated(roles.superUser), (req, res) => {
+  res.locals.pageTitle = 'MTC Superuser Homepage'
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('superuser/home', { breadcrumbs: req.breadcrumbs() })
+})
 /* Contact page */
 router.get('/contact', (req, res) => getContactPage(req, res))
 /* Cookies page */

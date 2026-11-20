@@ -20,6 +20,7 @@ const sut = require('../../../controllers/pupil')
 const csvService = require('../../../services/csv-file.service')
 const { PupilHistoryService } = require('../../../services/pupil-history/pupil-history-service')
 const moment = require('moment-timezone')
+const roles = require('../../../lib/consts/roles')
 
 describe('pupil controller:', () => {
   let next
@@ -484,6 +485,27 @@ describe('pupil controller:', () => {
         isStaAdmin: true
       }))
       expect(timeline).toHaveLength(2)
+    })
+
+    test.each([
+      [roles.staAdmin, true],
+      [roles.superUser, true],
+      [roles.helpdesk, false]
+    ])('sets discretionary restart controls for %s to %s', async (role, isStaAdmin) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.user.role = role
+      const mockHistory = { pupil: {}, checks: [], meta: {} }
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(mockHistory)
+
+      await sut.getViewPupilHistory(req, res, next)
+
+      expect(next).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('pupil-register/pupil-history', expect.objectContaining({
+        pupilHistory: mockHistory,
+        isStaAdmin
+      }))
     })
 
     test('it calls next() if an error is thrown in the controller', async () => {

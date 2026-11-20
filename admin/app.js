@@ -131,6 +131,7 @@ const pupilStatus = require('./routes/pupil-status')
 const websiteOffline = require('./routes/website-offline')
 const techSupport = require('./routes/tech-support')
 const roles = require('./lib/consts/roles')
+const getHomeRoute = require('./helpers/home-route')
 // globally configure ipv4 for all axios request uses...
 const axios = require('axios')
 const http = require('http')
@@ -266,9 +267,11 @@ app.use(function (req, res, next) {
   if (req.isAuthenticated()) {
     res.locals.isAuthenticated = true
     res.locals.user = req.user
+    res.locals.homeRoute = getHomeRoute(req.user) || '/'
   } else {
     res.locals.isAuthenticated = false
     res.locals.user = null
+    res.locals.homeRoute = '/'
   }
   next()
 })

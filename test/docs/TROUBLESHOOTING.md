@@ -109,6 +109,10 @@ npx playwright install --with-deps
 - Verify gate endpoint/pipeline ID in release configuration.
 - If manual approval is configured, ensure an approver has approved.
 
+### Pupil-results test waits for a missing override checkbox
+
+The check-window override checkbox is conditional, not a required step for every save. The pupil-results test accepts a direct successful save or confirms warnings when shown, and verifies the redirect to Manage check windows. If saving still fails, inspect the validation error or trace rather than increasing the checkbox timeout.
+
 ## Environment reset and sign-hdf readiness
 
 Each Azure deployment can reset shared test environments. After deployment, schools may return to a state where `0` pupils have completed checks.

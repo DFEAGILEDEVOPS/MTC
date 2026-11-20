@@ -380,7 +380,8 @@ const controller = {
   },
 
   getSearch: async function getSearch (req, res, next, validationError = new ValidationError()) {
-    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+    const organisationsHome = req.user.role === roles.superUser ? '/superuser' : '/service-manager/organisations'
+    req.breadcrumbs('Manage organisations', organisationsHome)
     res.locals.pageTitle = 'Search organisations'
     req.breadcrumbs(res.locals.pageTitle)
 
@@ -389,7 +390,8 @@ const controller = {
       res.render('service-manager/organisations-search', {
         breadcrumbs: req.breadcrumbs(),
         query,
-        error: validationError
+        error: validationError,
+        cancelPath: req.user.role === roles.superUser ? '/superuser' : '/service-manager/organisations'
       })
     } catch (error) {
       return next(error)
@@ -426,7 +428,8 @@ const controller = {
 
   getViewOrganisation: async function getViewOrganisation (req, res, next) {
     try {
-      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      const organisationsHome = req.user.role === roles.superUser ? '/superuser' : '/service-manager/organisations'
+      req.breadcrumbs('Manage organisations', organisationsHome)
       req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
       res.locals.pageTitle = 'View organisation'
       req.breadcrumbs(res.locals.pageTitle)
@@ -437,7 +440,9 @@ const controller = {
       school.audits = await schoolService.getSchoolAudits(req.params.slug)
       res.render('service-manager/organisation-detail', {
         breadcrumbs: req.breadcrumbs(),
-        school
+        school,
+        canEditOrganisation: req.user.role === roles.serviceManager || req.user.role === roles.superUser,
+        canViewAuditHistory: req.user.role === roles.serviceManager
       })
     } catch (error) {
       return next(error)
@@ -446,7 +451,8 @@ const controller = {
 
   getEditOrganisation: async function getEditOrganisation (req, res, next, validationError = new ValidationError()) {
     try {
-      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      const organisationsHome = req.user.role === roles.superUser ? '/superuser' : '/service-manager/organisations'
+      req.breadcrumbs('Manage organisations', organisationsHome)
       req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
       res.locals.pageTitle = 'Edit organisation'
       req.breadcrumbs(res.locals.pageTitle)
@@ -480,7 +486,8 @@ const controller = {
 
   getHdfSummary: async function getHdfSummary (req, res, next) {
     try {
-      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      const organisationsHome = req.user.role === roles.superUser ? '/superuser' : '/service-manager/organisations'
+      req.breadcrumbs('Manage organisations', organisationsHome)
       req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
       req.breadcrumbs('View organisation', `/service-manager/organisations/${req.params.slug}`)
       res.locals.pageTitle = 'HDF Submission Summary'
@@ -688,7 +695,8 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         query,
         error: validationError,
-        results: undefined
+        results: undefined,
+        cancelPath: req.user.role === roles.superUser ? '/superuser' : '/service-manager/home'
       })
     } catch (error) {
       return next(error)
@@ -730,7 +738,8 @@ const controller = {
           breadcrumbs: req.breadcrumbs(),
           results,
           query,
-          error: new ValidationError()
+          error: new ValidationError(),
+          cancelPath: req.user.role === roles.superUser ? '/superuser' : '/service-manager/home'
         })
       }
     } catch (error) {
@@ -756,7 +765,8 @@ const controller = {
       breadcrumbs: req.breadcrumbs(),
       pupil: pupilData,
       historyView,
-      clearFiltersUrl: `/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`
+      clearFiltersUrl: `/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`,
+      isServiceManager: req.user.role === roles.serviceManager || req.user.role === roles.superUser
     })
   },
 
@@ -769,7 +779,8 @@ const controller = {
     res.render('service-manager/annul-pupil', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -804,7 +815,8 @@ const controller = {
     res.render('service-manager/annul-pupil-undo', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -924,7 +936,8 @@ const controller = {
     res.render('service-manager/pupil/freeze', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -958,7 +971,8 @@ const controller = {
     res.render('service-manager/pupil/thaw', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil
+      pupil,
+      cancelPath: req.user.role === roles.superUser ? `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}` : '/service-manager/home'
     })
   },
 
@@ -1001,7 +1015,7 @@ const controller = {
       }
 
       const pupilData = pupilAddService.formatPupilData(pupil)
-      const isServiceManager = (req.user.role === roles.serviceManager)
+      const isServiceManager = req.user.role === roles.serviceManager || req.user.role === roles.superUser
       req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(req.params.slug).toLowerCase()}`)
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/pupil/edit', {
