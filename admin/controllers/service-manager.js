@@ -53,6 +53,19 @@ const controller = {
     }
   },
 
+  getEmergencyOffSwitch: async function getEmergencyOffSwitch (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Emergency off-switch'
+      req.breadcrumbs(res.locals.pageTitle)
+      res.render('service-manager/emergency-off-switch', {
+        breadcrumbs: req.breadcrumbs(),
+        isEmergencyOffSwitchEnabled: false
+      })
+    } catch (error) {
+      next(error)
+    }
+  },
+
   /**
    * Get custom time settings.
    * @param req

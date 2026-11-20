@@ -1,0 +1,89 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    Emergency off-switch status updated
+                </div>
+            <% } %>
+
+            <h1 class="govuk-heading-xl">Emergency off-switch</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+
+            <p class="govuk-body">
+                Use the emergency off-switch to immediately disable access to all checks across the system in exceptional circumstances. 
+                When activated, all pupils will be signed out and unable to access their checks until the switch is deactivated.
+            </p>
+
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This action will immediately terminate all active check sessions. Use only in emergencies.
+                </strong>
+            </div>
+
+            <form action="/service-manager/emergency-off-switch" method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">
+                                Emergency off-switch status
+                            </h2>
+                        </legend>
+                        
+                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" 
+                                       id="switch-on" 
+                                       name="emergencyOffSwitchStatus" 
+                                       type="radio" 
+                                       value="on"
+                                       <% if (isEmergencyOffSwitchEnabled === true) { %>checked<% } %>>
+                                <label class="govuk-label govuk-radios__label" for="switch-on">
+                                    On (checks disabled)
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" 
+                                       id="switch-off" 
+                                       name="emergencyOffSwitchStatus" 
+                                       type="radio" 
+                                       value="off"
+                                       <% if (isEmergencyOffSwitchEnabled === false) { %>checked<% } %>>
+                                <label class="govuk-label govuk-radios__label" for="switch-off">
+                                    Off (checks enabled)
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" type="submit" value="Save">
+                        Update emergency off-switch
+                    </button>
+                    <a class="govuk-button govuk-button--secondary" href="/service-manager/home">Cancel</a>
+                </div>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>

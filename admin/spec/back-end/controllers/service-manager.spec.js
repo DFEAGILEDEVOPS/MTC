@@ -58,6 +58,7 @@ describe('service manager controller:', () => {
 
   describe('pupil and organisation administration route permissions', () => {
     const routes = [
+      ['get', '/emergency-off-switch'],
       ['get', '/organisations/search'],
       ['post', '/organisations/search'],
       ['get', '/organisations/:slug'],
@@ -105,6 +106,46 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       await controller.getServiceManagerHome(req, res, next)
       expect(res.render).toHaveBeenCalled()
+    })
+  })
+
+  describe('getEmergencyOffSwitch', () => {
+    test('renders the placeholder page with its required template data', async () => {
+      const req = getReq({ method: 'GET', url: '/service-manager/emergency-off-switch' })
+      req.breadcrumbs.mockReturnValue([])
+      const res = getRes()
+      res.render.mockImplementation((view, data) => {
+        const template = fs.readFileSync(path.join(__dirname, '../../../views', `${view}.ejs`), 'utf8')
+        const html = ejs.render(template, {
+          ...data,
+          csrftoken: 'test-csrf-token',
+          guidancePdf: '/guidance.pdf',
+          partial: () => ''
+        })
+        expect(html).toContain('<h1 class="govuk-heading-xl">Emergency off-switch</h1>')
+        expect(html).toMatch(/id="switch-off"[^>]*checked/)
+      })
+
+      await controller.getEmergencyOffSwitch(req, res, next)
+
+      expect(res.locals.pageTitle).toBe('Emergency off-switch')
+      expect(req.breadcrumbs).toHaveBeenCalledWith('Emergency off-switch')
+      expect(res.render).toHaveBeenCalledWith('service-manager/emergency-off-switch', {
+        breadcrumbs: [],
+        isEmergencyOffSwitchEnabled: false
+      })
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('passes rendering errors to the error handler', async () => {
+      const req = getReq()
+      const res = getRes()
+      const error = new Error('Unable to render emergency off-switch page')
+      res.render.mockImplementation(() => { throw error })
+
+      await controller.getEmergencyOffSwitch(req, res, next)
+
+      expect(next).toHaveBeenCalledWith(error)
     })
   })
 

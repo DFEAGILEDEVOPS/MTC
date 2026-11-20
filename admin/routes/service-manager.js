@@ -12,6 +12,11 @@ router.get('/home',
   serviceManagerController.getServiceManagerHome
 )
 
+router.get('/emergency-off-switch',
+  isAuthenticated([roles.serviceManager, roles.superUser]),
+  serviceManagerController.getEmergencyOffSwitch
+)
+
 router.get('/check-settings',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getUpdateTiming
