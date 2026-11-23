@@ -65,7 +65,7 @@ describe('PupilHistoryDataService', () => {
   })
 
   describe('#getRestarts', () => {
-    test('it returns restart details including the user who recorded them', async () => {
+    test('it returns restart details including the role of the user who recorded them', async () => {
       const createdAt = moment('2026-10-20T09:30:00Z')
       jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([{
         id: 8,
@@ -74,10 +74,10 @@ describe('PupilHistoryDataService', () => {
         pupil_id: 43,
         description: 'IT issue',
         code: 'ITI',
-        recordedByUser: 'Example User',
+        recordedByRole: 'TEACHER',
         isDeleted: false,
         deletedAt: null,
-        deletedByUser: 'system',
+        deletedByRole: 'Unknown',
         checkId: 12,
         originCheck_id: 11
       }])
@@ -91,25 +91,30 @@ describe('PupilHistoryDataService', () => {
         pupilId: 43,
         restartReason: 'IT issue',
         restartReasonCode: 'ITI',
-        recordedByUser: 'Example User',
+        recordedByRole: 'TEACHER',
         isDeleted: false,
         deletedAt: null,
-        deletedByUser: 'system',
+        deletedByRole: 'Unknown',
         checkId: 12,
         originCheckId: 11
       }])
       expect(sqlService.readonlyQuery).toHaveBeenCalledWith(expect.stringContaining('ORDER BY'), expect.any(Array))
+      const sql = jest.mocked(sqlService.readonlyQuery).mock.calls[0][0]
+      expect(sql).toContain('[mtc_admin].[role] ur ON (u.role_id = ur.id)')
+      expect(sql).toContain('COALESCE(ur.title, \'Unknown\') as recordedByRole')
+      expect(sql).not.toContain('displayName')
+      expect(sql).not.toContain('identifier')
     })
 
-    test('it includes removed restarts with their removal time and user', async () => {
+    test('it includes removed restarts with their removal time and roles', async () => {
       const deletedAt = moment('2026-10-20T10:00:00Z')
       jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([{
         id: 8,
         description: 'IT issue',
-        recordedByUser: 'Original User',
+        recordedByRole: 'TEACHER',
         isDeleted: true,
         deletedAt,
-        deletedByUser: 'Removing User'
+        deletedByRole: 'STA-ADMIN'
       }])
 
       const restarts = await PupilHistoryDataService.getRestarts('d6d98b88-c866-4496-9bd4-de7ba48d0f52')
@@ -117,13 +122,14 @@ describe('PupilHistoryDataService', () => {
       expect(restarts[0]).toMatchObject({
         isDeleted: true,
         deletedAt,
-        recordedByUser: 'Original User',
-        deletedByUser: 'Removing User'
+        recordedByRole: 'TEACHER',
+        deletedByRole: 'STA-ADMIN'
       })
       const sql = jest.mocked(sqlService.readonlyQuery).mock.calls[0][0]
       expect(sql).not.toContain('r.isDeleted = 0')
       expect(sql).toContain('r.deletedByUser_id = du.id')
-      expect(sql).toContain('COALESCE(du.displayName, du.identifier, \'system\')')
+      expect(sql).toContain('[mtc_admin].[role] dur ON (du.role_id = dur.id)')
+      expect(sql).toContain('COALESCE(dur.title, \'Unknown\') as deletedByRole')
     })
   })
 })
