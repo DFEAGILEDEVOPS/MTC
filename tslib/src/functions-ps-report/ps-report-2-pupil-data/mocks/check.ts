@@ -1,4 +1,4 @@
-import { type Check } from '../pupil-data.models'
+import { type Check } from '../pupil-data.models.js'
 import moment from 'moment'
 
 export const check: Check = {

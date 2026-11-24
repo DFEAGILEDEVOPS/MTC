@@ -1,6 +1,6 @@
-import { AnswerCountValidator } from './answer-count.validator'
-import { type ICheckValidationError } from './validator-types'
-import config from '../../../config'
+import { AnswerCountValidator } from './answer-count.validator.js'
+import { type ICheckValidationError } from './validator-types.js'
+import config from '../../../config.js'
 
 let sut: AnswerCountValidator
 

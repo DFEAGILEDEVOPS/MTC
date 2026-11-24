@@ -7,7 +7,10 @@ const R = require('ramda')
 export interface IPupilHistoryCheckData {
   id: number
   checkCode: string
+  createdAt: moment.Moment
+  completedAt: null | moment.Moment
   pupilLoginDate: null | moment.Moment
+  receivedByServerAt: null | moment.Moment
   isLiveCheck: boolean
   received: boolean
   complete: boolean
@@ -53,6 +56,10 @@ export interface IPupilHistoryRestartData {
   pupilId: number
   restartReason: string
   restartReasonCode: string
+  recordedByRole: string
+  isDeleted: boolean
+  deletedAt: moment.Moment | null
+  deletedByRole: string
   checkId: number
   originCheckId: number
 }
@@ -135,7 +142,7 @@ export class PupilHistoryDataService {
         checkFormId: o.checkForm_id,
         checkWindowId: o.checkWindow_id,
         complete: o.complete,
-        completedAt: moment.tz(o.completedAt, config.DEFAULT_TIMEZONE),
+        completedAt: o.completedAt !== null ? moment.tz(o.completedAt, config.DEFAULT_TIMEZONE) : null,
         createdAt: moment.tz(o.createdAt, config.DEFAULT_TIMEZONE),
         createdByUserId: o.createdBy_userId,
         id: o.id,
@@ -180,15 +187,21 @@ export class PupilHistoryDataService {
       SELECT
         r.*,
         rrl.code,
-        rrl.description
+        rrl.description,
+        COALESCE(ur.title, 'Unknown') as recordedByRole,
+        COALESCE(dur.title, 'Unknown') as deletedByRole
       FROM
         [mtc_admin].[pupilRestart] r JOIN
         [mtc_admin].[pupil] p ON (r.pupil_id = p.id) JOIN
-        [mtc_admin].[restartReasonLookup] rrl ON (r.restartReasonLookup_id = rrl.id)
+        [mtc_admin].[restartReasonLookup] rrl ON (r.restartReasonLookup_id = rrl.id) LEFT JOIN
+        [mtc_admin].[user] u ON (r.recordedByUser_id = u.id) LEFT JOIN
+        [mtc_admin].[role] ur ON (u.role_id = ur.id) LEFT JOIN
+        [mtc_admin].[user] du ON (r.deletedByUser_id = du.id) LEFT JOIN
+        [mtc_admin].[role] dur ON (du.role_id = dur.id)
       WHERE
         p.urlSlug = @slug
-      AND
-        r.isDeleted = 0
+      ORDER BY
+        r.createdAt DESC, r.id DESC
     `
 
     const params = [
@@ -207,6 +220,10 @@ export class PupilHistoryDataService {
         pupilId: o.pupil_id,
         restartReason: o.description,
         restartReasonCode: o.code,
+        recordedByRole: o.recordedByRole,
+        isDeleted: o.isDeleted,
+        deletedAt: o.deletedAt,
+        deletedByRole: o.deletedByRole,
         createdAt: o.createdAt,
         updatedAt: o.updatedAt,
         checkId: o.checkId,

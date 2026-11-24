@@ -73,7 +73,7 @@ describe('FeedbackComponent', () => {
 
   it('should include one question', () => {
     const compiled = fixture.debugElement.nativeElement
-    const questions = compiled.querySelectorAll('h2.heading-medium')
+    const questions = compiled.querySelectorAll('h2.govuk-heading-m')
     expect(questions[0].textContent).toMatch(/How did you find the multiplication tables check?/)
   })
 

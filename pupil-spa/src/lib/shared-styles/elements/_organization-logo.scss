@@ -1,5 +1,5 @@
 .organisation-logo {
-  background-image: file-url('crests/org_crest_13px.png');
+  background-image: url('/assets/images/crests/org_crest_13px.png');
   background-position: 5px top;
   background-repeat: no-repeat;
   background-size: auto 20px;
@@ -10,8 +10,8 @@
   line-height: $gutter-half;
   padding: 20px 0 0 6px;
 
-  @include media(desktop) {
-    background-image: file-url('crests/org_crest_18px.png');
+  @include govuk-media-query($from: desktop) {
+    background-image: url('/assets/images/crests/org_crest_18px.png');
     background-position: 6px top;
     background-size: auto 25px;
     border-width: 2px;

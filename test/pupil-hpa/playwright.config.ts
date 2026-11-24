@@ -53,6 +53,28 @@ export default defineConfig({
   },
 
   projects: [
+    {
+      name: 'local-admin',
+      testMatch: ['superuser-home.playwright.spec.ts', 'superuser-organisations.playwright.spec.ts', 'superuser-service-messages.playwright.spec.ts', 'superuser-pupils.playwright.spec.ts', 'superuser-pupil-move.playwright.spec.ts', 'superuser-pupil-freeze.playwright.spec.ts', 'superuser-pupil-annulment.playwright.spec.ts', 'superuser-permissions.playwright.spec.ts', 'service-manager-regression.playwright.spec.ts'],
+      use: { baseURL: process.env.ADMIN_BASE_URL || 'http://localhost:3001' },
+    },
+    {
+      name: 'local-hdf-setup',
+      testMatch: 'local-hdf-setup.playwright.spec.ts',
+      teardown: 'local-hdf-teardown',
+      use: { baseURL: process.env.ADMIN_BASE_URL || 'http://localhost:3001' },
+    },
+    {
+      name: 'local-hdf-teardown',
+      testMatch: 'local-hdf-teardown.playwright.spec.ts',
+      use: { baseURL: process.env.ADMIN_BASE_URL || 'http://localhost:3001' },
+    },
+    {
+      name: 'local-admin-hdf',
+      testMatch: 'superuser-hdf.playwright.spec.ts',
+      dependencies: ['local-hdf-setup'],
+      use: { baseURL: process.env.ADMIN_BASE_URL || 'http://localhost:3001' },
+    },
     //dev
     {
       name: 'dev-preflight',
@@ -74,6 +96,9 @@ export default defineConfig({
     {
       name: 'dev-admin',
       testIgnore: [
+        'superuser-hdf.playwright.spec.ts',
+        'local-hdf-setup.playwright.spec.ts',
+        'local-hdf-teardown.playwright.spec.ts',
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',
@@ -117,6 +142,9 @@ export default defineConfig({
     {
       name: 'test-admin',
       testIgnore: [
+        'superuser-hdf.playwright.spec.ts',
+        'local-hdf-setup.playwright.spec.ts',
+        'local-hdf-teardown.playwright.spec.ts',
         'mtc-signin-and-check.playwright.spec.ts',
         'mtc-signin-and-try-it-out.playwright.spec.ts',
         'mtc-accessibility-check.playwright.spec.ts',

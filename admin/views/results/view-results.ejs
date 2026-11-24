@@ -27,6 +27,18 @@
           <span class="mtc-disabled-link">Download results data CTF file (You must sign the HDF to be able to download the results data)</span>
         <p>
       <% } %>
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            What is a CTF file?
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <p class="govuk-body">
+            The CTF file is a downloadable output of your results in a format that can be uploaded to your school management information system (MIS)
+          </p>
+        </div>
+      </details>
       <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
       <table id="resultsList" class="govuk-table govuk-spacious" role="listbox" aria-label="Results list.">
         <caption class="govuk-body govuk-table__caption">Pupil results</caption>

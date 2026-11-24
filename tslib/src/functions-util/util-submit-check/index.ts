@@ -1,8 +1,8 @@
 import { app, output, type HttpRequest, type HttpResponseInit, type InvocationContext } from '@azure/functions'
-import config from '../../config'
-import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
-import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
-import { SchoolChecksDataService } from './school-checks.data.service'
+import config from '../../config.js'
+import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service.js'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion.js'
+import { SchoolChecksDataService } from './school-checks.data.service.js'
 
 const functionName = 'util-submit-check'
 

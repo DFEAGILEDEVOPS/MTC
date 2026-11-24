@@ -3,8 +3,13 @@
   padding-top: 20px;
 }
 
-.heading-xlarge {
+.govuk-heading-xl {
+  margin-top: 15px;
   margin-bottom: .5em;
+
+  @include govuk-media-query($from: tablet) {
+    margin-top: 30px;
+  }
 }
 
 .page-header {

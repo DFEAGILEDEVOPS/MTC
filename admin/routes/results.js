@@ -10,13 +10,13 @@ const { isAdminWindowAvailable } = require('../availability/middleware')
 /* Check Form v2 routing */
 router.get('/view-results',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   resultsController.getViewResultsPage
 )
 
 router.get('/ctf-download',
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   resultsController.getCtfDownload
 )
 

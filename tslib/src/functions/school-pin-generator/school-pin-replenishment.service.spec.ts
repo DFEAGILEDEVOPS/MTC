@@ -1,10 +1,10 @@
-import { SchoolPinReplenishmnentService, type School, type SchoolPinUpdate } from './school-pin-replenishment.service'
+import { SchoolPinReplenishmnentService, type School, type SchoolPinUpdate } from './school-pin-replenishment.service.js'
 import moment from 'moment'
-import { type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
-import { type ILogger, ConsoleLogger } from '../../common/logger'
-import { type IPinConfigProvider } from './pin-config-provider'
-import { type IModifyResult } from '../../sql/sql.service'
-import { type IAllowedWordsService } from './allowed-words.service'
+import { type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service.js'
+import { type ILogger, ConsoleLogger } from '../../common/logger.js'
+import { type IPinConfigProvider } from './pin-config-provider.js'
+import { type IModifyResult } from '../../sql/sql.service.js'
+import { type IAllowedWordsService } from './allowed-words.service.js'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getAllSchools: jest.fn(),

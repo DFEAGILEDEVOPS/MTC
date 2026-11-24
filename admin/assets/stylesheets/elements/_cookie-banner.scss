@@ -1,6 +1,6 @@
 // https://github.com/alphagov/govuk_publishing_components/blob/master/app/assets/stylesheets/govuk_publishing_components/components/_cookie-banner.scss
 
-$govuk-cookie-banner-background: govuk-colour("light-grey", "grey-4");
+$govuk-cookie-banner-background: govuk-colour("black", $variant: "tint-95");
 
 .js-enabled {
   .gem-c-cookie-banner {

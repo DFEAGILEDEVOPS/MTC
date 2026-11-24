@@ -1,10 +1,10 @@
 import { type Timer, app, type InvocationContext } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
-import config from '../../config'
-import { type ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { BatchCheckNotifier } from './batch-check-notifier.service'
-const RA = require('ramda-adjunct')
+import config from '../../config.js'
+import { type ICheckNotificationMessage } from '../../schemas/check-notification-message.js'
+import { BatchCheckNotifier } from './batch-check-notifier.service.js'
+import * as RA from 'ramda-adjunct'
 
 const functionName = 'check-notifier-batch'
 

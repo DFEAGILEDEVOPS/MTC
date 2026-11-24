@@ -1,28 +1,28 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
-  <div class="grid-row">
-    <div class="column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
       <header class="page-header">
         <h1 tabindex="0">Sign-in error</h1>
       </header>
       <br />
-      <div class="notice">
-        <strong class="visually-hidden">Warning</strong>
-        <app-svg-warning></app-svg-warning>
-        <strong>
-          Please tell your teacher
-        </strong>
-      </div>
-      <details>
-        <summary><span class="summary">Instructions for teacher</span></summary>
-        <div class="panel no-border">
-          <ol class="list list-number">
+      <div class="govuk-warning-text">
+<span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+<strong class="govuk-warning-text__text">
+<span class="govuk-visually-hidden">Warning</span>
+Please tell your teacher
+</strong>
+</div>
+      <details class="govuk-details">
+        <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Instructions for teacher</span></summary>
+        <div class="govuk-details__text">
+          <ol class="govuk-list govuk-list--number">
             <li>Refresh the page</li>
             <li>Sign the pupil in again, using the green button at the bottom of this page</li>
             <li>If the error message appears again, make a note of the <strong>error text</strong> below</li>
             <li>Contact the national curriculum assessment helpline, using the contact details below</li>
-            <div class="panel panel-border-wide">
-              <div class="bold-small">National curriculum assessments helpline</div>
+            <div class="govuk-inset-text">
+              <div class="govuk-!-font-size-19 govuk-!-font-weight-bold">National curriculum assessments helpline</div>
               <div>Telephone: 0300 303 3013</div>
               <a href="https://help.multiplicationtablescheckservice.education.gov.uk/hc/en-gb/requests/new?ticket_form_id=">Contact us</a>
               <div>Monday to Friday, 9am to 5pm</div>
@@ -35,7 +35,7 @@
         </div>
       </details>
       <br />
-      <a routerLink="/sign-in" class="button ultrawider" id="sign-in-button">
+      <a routerLink="/sign-in" class="govuk-button ultrawider" id="sign-in-button">
         Sign in again
       </a>
     </div>

@@ -1,8 +1,8 @@
 import moment from 'moment'
-import { CsvTransformer } from './csv-transformer'
+import { CsvTransformer } from './csv-transformer.js'
 import * as CSV from 'csv-string'
-import { ConsoleLogger } from '../../common/logger'
-import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models'
+import { ConsoleLogger } from '../../common/logger.js'
+import { type IPsychometricReportLine } from '../ps-report-2-pupil-data/transformer-models.js'
 
 let sut: CsvTransformer
 

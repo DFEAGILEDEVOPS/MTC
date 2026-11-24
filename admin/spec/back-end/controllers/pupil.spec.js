@@ -19,6 +19,8 @@ const ValidationError = require('../../../lib/validation-error')
 const sut = require('../../../controllers/pupil')
 const csvService = require('../../../services/csv-file.service')
 const { PupilHistoryService } = require('../../../services/pupil-history/pupil-history-service')
+const moment = require('moment-timezone')
+const roles = require('../../../lib/consts/roles')
 
 describe('pupil controller:', () => {
   let next
@@ -453,7 +455,57 @@ describe('pupil controller:', () => {
       jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(mockHistory)
       await sut.getViewPupilHistory(req, res, next)
       expect(PupilHistoryService.getHistory).toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalled()
+      expect(PupilHistoryService.getHistory).toHaveBeenCalledTimes(1)
+      expect(res.render).toHaveBeenCalledWith('pupil-register/pupil-history', expect.objectContaining({
+        pupilHistory: mockHistory,
+        historyView: expect.objectContaining({ timeline: [], totalCount: 0 }),
+        clearFiltersUrl: goodReqParams.url
+      }))
+    })
+
+    test('it applies query filters without changing the underlying history or admin permissions', async () => {
+      const req = getReq({ ...goodReqParams, query: { 'history-action': 'Restart' } })
+      req.user.role = 'STA-ADMIN'
+      const res = getRes()
+      const history = { pupil: { restartAvailable: true }, meta: { restartsTakenCount: 1 } }
+      const timeline = [
+        { action: 'Restart', occurredAt: moment() },
+        { action: 'Pin generated', occurredAt: moment() }
+      ]
+      jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(history)
+      jest.spyOn(PupilHistoryService, 'buildTimeline').mockReturnValue(timeline)
+      jest.spyOn(res, 'render').mockImplementation()
+
+      await sut.getViewPupilHistory(req, res, next)
+
+      expect(next).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('pupil-register/pupil-history', expect.objectContaining({
+        pupilHistory: history,
+        historyView: expect.objectContaining({ timeline: [timeline[0]], totalCount: 2 }),
+        isStaAdmin: true
+      }))
+      expect(timeline).toHaveLength(2)
+    })
+
+    test.each([
+      [roles.staAdmin, true],
+      [roles.superUser, true],
+      [roles.helpdesk, false]
+    ])('sets discretionary restart controls for %s to %s', async (role, isStaAdmin) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.user.role = role
+      const mockHistory = { pupil: {}, checks: [], restarts: [], meta: {} }
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(mockHistory)
+
+      await sut.getViewPupilHistory(req, res, next)
+
+      expect(next).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('pupil-register/pupil-history', expect.objectContaining({
+        pupilHistory: mockHistory,
+        isStaAdmin
+      }))
     })
 
     test('it calls next() if an error is thrown in the controller', async () => {

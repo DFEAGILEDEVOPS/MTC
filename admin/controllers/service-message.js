@@ -6,6 +6,7 @@ const ValidationError = require('../lib/validation-error')
 const serviceMessagePresenter = require('../helpers/service-message-presenter')
 const logger = require('../services/log.service').getLogger()
 const uuidValidator = require('../lib/validator/common/uuid-validator')
+const roles = require('../lib/consts/roles')
 
 const controller = {
   /**
@@ -24,7 +25,8 @@ const controller = {
     try {
       res.render('service-message/service-message-overview', {
         breadcrumbs: req.breadcrumbs(),
-        rawServiceMessages
+        rawServiceMessages,
+        canManageServiceMessages: req.user.role === roles.serviceManager || req.user.role === roles.superUser
       })
     } catch (error) {
       return next(error)

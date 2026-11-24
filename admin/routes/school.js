@@ -11,7 +11,7 @@ const schoolController = require('../controllers/school')
 router.get(
   ['/', '/school-home'],
   isAdminWindowAvailable,
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin, roles.superUser]),
   schoolController.getSchoolLandingPage
 )
 

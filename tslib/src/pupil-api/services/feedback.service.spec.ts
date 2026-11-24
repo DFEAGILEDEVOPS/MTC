@@ -1,6 +1,6 @@
-import { PupilFeedbackService } from './feedback.service'
-import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
-import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names'
+import { PupilFeedbackService } from './feedback.service.js'
+import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
+import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names.js'
 
 describe('Pupil Feedback Service', () => {
   let sut: PupilFeedbackService

@@ -1,10 +1,19 @@
 import { type IPupilHistoryCheckData, type IPupilHistoryPupilData, type IPupilHistoryRestartData, type IPupilHistorySchoolData, PupilHistoryDataService } from './data-access/pupil-history.data.service'
-import * as R from 'ramda'
+import { type Moment } from 'moment-timezone'
+
+export interface IPupilHistoryCheckEvent {
+  label: string
+  occurredAt: Moment
+}
+
+export interface IPupilHistoryCheck extends IPupilHistoryCheckData {
+  events: IPupilHistoryCheckEvent[]
+}
 
 export interface IPupilHistory {
   school: IPupilHistorySchoolData
   pupil: IPupilHistoryPupilData
-  checks: IPupilHistoryCheckData[]
+  checks: IPupilHistoryCheck[]
   restarts: IPupilHistoryRestartData[]
   meta: {
     restartsTakenCount: number
@@ -12,7 +21,60 @@ export interface IPupilHistory {
 }
 
 export type TCheckStatus = 'Pin generated' | 'Logged in' | 'Check received' | 'Received data error' | 'Check complete' | 'n/a'
+
+export interface IPupilHistoryEvent {
+  occurredAt: Moment
+  action: 'Pin generated' | 'Logged in' | 'Check received' | 'Check complete' | 'Restart' | 'Restart removed'
+  check?: IPupilHistoryCheckData & { active: boolean }
+  restart?: IPupilHistoryRestartData
+}
+
 export class PupilHistoryService {
+  public static async getTimeline (pupilUuid: string): Promise<IPupilHistoryEvent[]> {
+    const history = await PupilHistoryService.getHistory(pupilUuid)
+    return PupilHistoryService.buildTimeline(history)
+  }
+
+  public static buildTimeline (history: IPupilHistory): IPupilHistoryEvent[] {
+    const events: IPupilHistoryEvent[] = []
+    for (const check of history.checks) {
+      const checkEvents: [IPupilHistoryEvent['action'], Moment | null][] = [
+        ['Pin generated', check.createdAt],
+        ['Logged in', check.pupilLoginDate],
+        ['Check received', check.receivedByServerAt],
+        ['Check complete', check.completedAt]
+      ]
+      for (const [action, occurredAt] of checkEvents) {
+        if (occurredAt !== null) {
+          events.push({
+            occurredAt,
+            action,
+            check: { ...check, active: history.pupil.currentCheckId === check.id }
+          })
+        }
+      }
+    }
+    for (const restart of history.restarts) {
+      events.push({ occurredAt: restart.createdAt, action: 'Restart', restart })
+      if (restart.isDeleted && restart.deletedAt !== null) {
+        events.push({ occurredAt: restart.deletedAt, action: 'Restart removed', restart })
+      }
+    }
+    return events.sort((a, b) => b.occurredAt.valueOf() - a.occurredAt.valueOf())
+  }
+
+  private static getCheckEvents (check: IPupilHistoryCheckData): IPupilHistoryCheckEvent[] {
+    const milestones = [
+      { label: 'PIN generated', occurredAt: check.createdAt },
+      { label: 'Pupil logged in', occurredAt: check.pupilLoginDate },
+      { label: 'Check received by server', occurredAt: check.receivedByServerAt },
+      { label: 'Check processing completed', occurredAt: check.completedAt }
+    ]
+    return milestones
+      .filter((event): event is IPupilHistoryCheckEvent => event.occurredAt?.isValid() === true)
+      .sort((first, second) => first.occurredAt.valueOf() - second.occurredAt.valueOf())
+  }
+
   private static getCheckStatus (check: IPupilHistoryCheckData): TCheckStatus {
     if (check.complete) {
       return 'Check complete'
@@ -33,9 +95,11 @@ export class PupilHistoryService {
     const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
     // Add a check status to each check
     const transformedChecks = rawPupilHistory.checks.map(check => {
-      const status = PupilHistoryService.getCheckStatus(check)
-      const transCheck = R.assoc('checkStatus', status, check)
-      return transCheck
+      return {
+        ...check,
+        checkStatus: PupilHistoryService.getCheckStatus(check),
+        events: PupilHistoryService.getCheckEvents(check)
+      }
     })
     return {
       school: rawPupilHistory.school,
@@ -43,7 +107,7 @@ export class PupilHistoryService {
       pupil: rawPupilHistory.pupil,
       checks: transformedChecks,
       meta: {
-        restartsTakenCount: rawPupilHistory.restarts.length
+        restartsTakenCount: rawPupilHistory.restarts.filter(restart => !restart.isDeleted).length
       }
     }
   }

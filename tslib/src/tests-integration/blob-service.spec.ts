@@ -1,7 +1,7 @@
 import { BlobServiceClient } from '@azure/storage-blob'
 import { v4 as uuid } from 'uuid'
-import config from '../config'
-import { BlobService } from '../azure/blob-service'
+import config from '../config.js'
+import { BlobService } from '../azure/blob-service.js'
 
 const commonPrefix = 'mtc-integration-test'
 const testRunContainerNames: string[] = []

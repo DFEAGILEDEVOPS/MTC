@@ -17,6 +17,7 @@ const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 const { PupilHistoryService } = require('../services/pupil-history/pupil-history-service')
+const { PupilHistoryFilterService } = require('../services/pupil-history/pupil-history-filter.service')
 const roles = require('../lib/consts/roles')
 
 const controller = {
@@ -37,7 +38,7 @@ const controller = {
       const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
       const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
 
-      if (availabilityData.hdfSubmitted && !(req.user.role === roles.staAdmin)) {
+      if (availabilityData.hdfSubmitted && req.user.role !== roles.staAdmin && req.user.role !== roles.superUser) {
         return res.render('availability/section-unavailable', {
           title: res.locals.pageTitle,
           breadcrumbs: req.breadcrumbs()
@@ -194,7 +195,7 @@ const controller = {
       }
 
       const pupilData = pupilAddService.formatPupilData(pupil)
-      const isStaAdmin = (req.user.role === roles.staAdmin)
+      const isStaAdmin = req.user.role === roles.staAdmin || req.user.role === roles.superUser
       req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
       req.breadcrumbs(res.locals.pageTitle)
       res.render('pupil-register/edit-pupil', {
@@ -270,11 +271,13 @@ const controller = {
       req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
       req.breadcrumbs(res.locals.pageTitle)
       const pupilHistory = await PupilHistoryService.getHistory(req.params.urlSlug)
-      const isStaAdmin = (req.user.role === roles.staAdmin)
+      const isStaAdmin = req.user.role === roles.staAdmin || req.user.role === roles.superUser
       console.log('isStaAdmin', isStaAdmin)
       return res.render('pupil-register/pupil-history', {
         breadcrumbs: req.breadcrumbs(),
         pupilHistory,
+        historyView: PupilHistoryFilterService.filter(PupilHistoryService.buildTimeline(pupilHistory), req.query),
+        clearFiltersUrl: `/pupil-register/history/${encodeURIComponent(req.params.urlSlug)}`,
         isStaAdmin
       })
     } catch (error) {
