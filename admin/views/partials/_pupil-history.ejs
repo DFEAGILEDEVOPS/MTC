@@ -30,7 +30,7 @@
           <td class="govuk-table__cell"><%= event.check?.active ? '*' : '' %></td>
           <td class="govuk-table__cell"><%= event.check?.checkStatus %></td>
           <td class="govuk-table__cell"><%= event.restart?.restartReason %></td>
-          <td class="govuk-table__cell"><%= event.action === 'Restart removed' ? event.restart?.deletedByUser : event.restart?.recordedByUser %></td>
+          <td class="govuk-table__cell"><%= event.action === 'Restart removed' ? event.restart?.deletedByRole : event.restart?.recordedByRole %></td>
         </tr>
       <% }) %>
     </tbody>

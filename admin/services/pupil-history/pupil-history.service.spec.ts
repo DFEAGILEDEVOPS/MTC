@@ -71,12 +71,12 @@ describe('PupilHistoryService', () => {
     updatedAt: moment('2022-01-26T09:15:00'),
     restartReason: 'IT issue',
     restartReasonCode: 'ITI',
-    recordedByUser: 'Original User',
+    recordedByRole: 'TEACHER',
     checkId: 2,
     originCheckId: 1,
     isDeleted: false,
     deletedAt: null,
-    deletedByUser: 'system'
+    deletedByRole: 'Unknown'
   }
 
   test('it combines all check milestones and restarts newest first, retaining current status and active values', async () => {
@@ -112,7 +112,7 @@ describe('PupilHistoryService', () => {
       ...mockRestart,
       isDeleted: true,
       deletedAt: moment('2022-01-26T09:15:00'),
-      deletedByUser: 'Removing User'
+      deletedByRole: 'STA-ADMIN'
     }
     pupilHistoryMock.restarts = [mockRestart, removedRestart]
     jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(pupilHistoryMock)

@@ -67,7 +67,7 @@ describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])
   test('renders every supplied action in order with check and restart details', async () => {
     const occurredAt = moment.tz('2026-10-20T09:00:00Z', 'Europe/London')
     const check = { checkCode: 'check-1', isLiveCheck: true, active: true, checkStatus: 'Check complete' }
-    const restart = { restartReason: 'IT issue <script>alert(1)</script>', recordedByUser: 'Example User' }
+    const restart = { restartReason: 'IT issue <script>alert(1)</script>', recordedByRole: 'TEACHER' }
     const events = [
       { occurredAt, action: 'Restart', restart },
       ...['Check complete', 'Check received', 'Logged in', 'Pin generated'].map(action => ({
@@ -82,7 +82,7 @@ describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])
     expect(rows).toHaveLength(events.length)
     expect(rows.map(row => row.cells[1].textContent)).toEqual(events.map(event => event.action))
     expect(rows[0].cells[5].textContent).toBe(restart.restartReason)
-    expect(rows[0].cells[6].textContent).toBe('Example User')
+    expect(rows[0].cells[6].textContent).toBe('TEACHER')
     expect(rows[1].cells[1].title).toBe('check-1')
     expect(rows[1].cells[2].textContent).toBe('Official')
     expect(rows[1].cells[3].textContent).toBe('*')
@@ -99,10 +99,10 @@ describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])
     }
   })
 
-  test('shows the original restart and its removal with the appropriate times and users', async () => {
+  test('shows the original restart and its removal with the appropriate times and roles', async () => {
     const createdAt = moment.tz('2026-10-20T09:00:00Z', 'Europe/London')
     const deletedAt = createdAt.clone().add(5, 'minutes')
-    const restart = { restartReason: 'IT issue', recordedByUser: 'Original User', deletedByUser: 'Removing User' }
+    const restart = { restartReason: 'IT issue', recordedByRole: 'TEACHER', deletedByRole: 'STA-ADMIN' }
     const document = new JSDOM(await render([
       { occurredAt: deletedAt, action: 'Restart removed', restart },
       { occurredAt: createdAt, action: 'Restart', restart }
@@ -111,7 +111,7 @@ describe.each(['service-manager/pupil-summary', 'pupil-register/pupil-history'])
 
     expect(rows).toHaveLength(2)
     expect(rows.map(row => row.cells[1].textContent)).toEqual(['Restart removed', 'Restart'])
-    expect(rows.map(row => row.cells[6].textContent)).toEqual(['Removing User', 'Original User'])
+    expect(rows.map(row => row.cells[6].textContent)).toEqual(['STA-ADMIN', 'TEACHER'])
     expect(rows.map(row => row.querySelector('time').dateTime)).toEqual([deletedAt.toISOString(), createdAt.toISOString()])
     rows.forEach(row => {
       expect(row.cells[5].textContent).toBe('IT issue')

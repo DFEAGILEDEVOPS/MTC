@@ -56,10 +56,10 @@ export interface IPupilHistoryRestartData {
   pupilId: number
   restartReason: string
   restartReasonCode: string
-  recordedByUser: string
+  recordedByRole: string
   isDeleted: boolean
   deletedAt: moment.Moment | null
-  deletedByUser: string
+  deletedByRole: string
   checkId: number
   originCheckId: number
 }
@@ -188,14 +188,16 @@ export class PupilHistoryDataService {
         r.*,
         rrl.code,
         rrl.description,
-        COALESCE(u.displayName, u.identifier, 'system') as recordedByUser,
-        COALESCE(du.displayName, du.identifier, 'system') as deletedByUser
+        COALESCE(ur.title, 'Unknown') as recordedByRole,
+        COALESCE(dur.title, 'Unknown') as deletedByRole
       FROM
         [mtc_admin].[pupilRestart] r JOIN
         [mtc_admin].[pupil] p ON (r.pupil_id = p.id) JOIN
         [mtc_admin].[restartReasonLookup] rrl ON (r.restartReasonLookup_id = rrl.id) LEFT JOIN
         [mtc_admin].[user] u ON (r.recordedByUser_id = u.id) LEFT JOIN
-        [mtc_admin].[user] du ON (r.deletedByUser_id = du.id)
+        [mtc_admin].[role] ur ON (u.role_id = ur.id) LEFT JOIN
+        [mtc_admin].[user] du ON (r.deletedByUser_id = du.id) LEFT JOIN
+        [mtc_admin].[role] dur ON (du.role_id = dur.id)
       WHERE
         p.urlSlug = @slug
       ORDER BY
@@ -218,10 +220,10 @@ export class PupilHistoryDataService {
         pupilId: o.pupil_id,
         restartReason: o.description,
         restartReasonCode: o.code,
-        recordedByUser: o.recordedByUser,
+        recordedByRole: o.recordedByRole,
         isDeleted: o.isDeleted,
         deletedAt: o.deletedAt,
-        deletedByUser: o.deletedByUser,
+        deletedByRole: o.deletedByRole,
         createdAt: o.createdAt,
         updatedAt: o.updatedAt,
         checkId: o.checkId,
