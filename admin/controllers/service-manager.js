@@ -3,6 +3,7 @@
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const settingService = require('../services/setting.service')
+const emergencyOffSwitchService = require('../services/emergency-off-switch.service')
 const pupilCensusService = require('../services/pupil-census.service')
 const pupilService = require('../services/pupil.service')
 const pupilEditService = require('../services/pupil-edit.service')
@@ -57,9 +58,10 @@ const controller = {
     try {
       res.locals.pageTitle = 'Emergency off-switch'
       req.breadcrumbs(res.locals.pageTitle)
+      const state = await emergencyOffSwitchService.get()
       res.render('service-manager/emergency-off-switch', {
         breadcrumbs: req.breadcrumbs(),
-        isEmergencyOffSwitchEnabled: false
+        isEmergencyOffSwitchEnabled: state.isEnabled
       })
     } catch (error) {
       next(error)

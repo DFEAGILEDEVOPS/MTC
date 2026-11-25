@@ -3,6 +3,7 @@ const httpMocks = require('node-mocks-http')
 
 const controller = require('../../../controllers/service-manager')
 const settingService = require('../../../services/setting.service')
+const emergencyOffSwitchService = require('../../../services/emergency-off-switch.service')
 const sceService = require('../../../services/sce.service')
 const pupilCensusService = require('../../../services/pupil-census.service')
 const sceSchoolValidator = require('../../../lib/validator/sce-school-validator')
@@ -58,7 +59,6 @@ describe('service manager controller:', () => {
 
   describe('pupil and organisation administration route permissions', () => {
     const routes = [
-      ['get', '/emergency-off-switch'],
       ['get', '/organisations/search'],
       ['post', '/organisations/search'],
       ['get', '/organisations/:slug'],
@@ -93,6 +93,24 @@ describe('service manager controller:', () => {
         }
       }
     })
+
+    test('GET /emergency-off-switch allows service-manager only', () => {
+      const layer = serviceManagerRouter.stack.find(({ route }) => route?.path === '/emergency-off-switch' && route.methods.get)
+      expect(layer).toBeDefined()
+      for (const role of Object.values(roles)) {
+        const req = getReq({ user: { id: 1, role }, isAuthenticated: () => true })
+        const res = getRes()
+        const routeNext = jest.fn()
+        layer.route.stack[0].handle(req, res, routeNext)
+        if (role === roles.serviceManager) {
+          expect(routeNext).toHaveBeenCalledTimes(1)
+          expect(res.redirect).not.toHaveBeenCalled()
+        } else {
+          expect(routeNext).not.toHaveBeenCalled()
+          expect(res.redirect).toHaveBeenCalledWith('/unauthorised')
+        }
+      }
+    })
   })
 
   describe('getServiceManagerHome', () => {
@@ -110,10 +128,11 @@ describe('service manager controller:', () => {
   })
 
   describe('getEmergencyOffSwitch', () => {
-    test('renders the placeholder page with its required template data', async () => {
+    test('renders the persisted switch state with the page', async () => {
       const req = getReq({ method: 'GET', url: '/service-manager/emergency-off-switch' })
       req.breadcrumbs.mockReturnValue([])
       const res = getRes()
+      jest.spyOn(emergencyOffSwitchService, 'get').mockResolvedValue({ isEnabled: false })
       res.render.mockImplementation((view, data) => {
         const template = fs.readFileSync(path.join(__dirname, '../../../views', `${view}.ejs`), 'utf8')
         const html = ejs.render(template, {
@@ -134,14 +153,15 @@ describe('service manager controller:', () => {
         breadcrumbs: [],
         isEmergencyOffSwitchEnabled: false
       })
+      expect(emergencyOffSwitchService.get).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
     })
 
     test('passes rendering errors to the error handler', async () => {
       const req = getReq()
       const res = getRes()
-      const error = new Error('Unable to render emergency off-switch page')
-      res.render.mockImplementation(() => { throw error })
+      const error = new Error('Unable to read emergency off-switch state')
+      jest.spyOn(emergencyOffSwitchService, 'get').mockRejectedValue(error)
 
       await controller.getEmergencyOffSwitch(req, res, next)
 
