@@ -1,0 +1,17 @@
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Multiplication tables check temporarily closed</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+
+            <p class="govuk-body">The MTC is currently unavailable due to a technical issue.</p>
+
+            <p class="govuk-body">Our engineers are working to resolve these issues as soon as possible.
+            </p>
+
+            <% if (isAuthenticated) { %>
+                <p><a class="govuk-link" href="/sign-out">Sign out</a></p>
+            <% } %>
+        </div>
+    </div>
+</main>
