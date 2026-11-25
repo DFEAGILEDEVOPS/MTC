@@ -13,7 +13,7 @@ router.get('/home',
 )
 
 router.get('/emergency-off-switch',
-  isAuthenticated([roles.serviceManager, roles.superUser]),
+  isAuthenticated([roles.serviceManager]),
   serviceManagerController.getEmergencyOffSwitch
 )
 
