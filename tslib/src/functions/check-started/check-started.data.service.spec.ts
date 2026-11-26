@@ -38,4 +38,22 @@ describe('CheckStartedDataService', () => {
       ])
     )
   })
+
+  test('checks the switch and matching check and attempt in one eligibility query', async () => {
+    const sqlService = { query: jest.fn().mockResolvedValue([{ allowed: true }]), modify: jest.fn() }
+    const service = new CheckStartedDataService(sqlService)
+    await expect(service.isSubmissionAllowed('check-code', 'attempt-id')).resolves.toBe(true)
+    const [sql, params] = sqlService.query.mock.calls[0]
+    expect(sql).toContain('e.[isEnabled] = 0')
+    expect(sql).toContain('c.[checkCode] = @checkCode AND a.[attemptId] = @attemptId')
+    expect(params).toStrictEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'checkCode', value: 'check-code' }),
+      expect.objectContaining({ name: 'attemptId', value: 'attempt-id' })
+    ]))
+  })
+
+  test('rejects a missing switch state during submission eligibility lookup', async () => {
+    const service = new CheckStartedDataService({ query: jest.fn().mockResolvedValue([]), modify: jest.fn() })
+    await expect(service.isSubmissionAllowed(null, null)).rejects.toThrow('Check submission eligibility returned an invalid result')
+  })
 })

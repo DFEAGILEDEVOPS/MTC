@@ -80,6 +80,25 @@ export class CheckStartedDataService implements ICheckStartedDataService {
     return results[0].approved
   }
 
+  async isSubmissionAllowed (checkCode: string | null, attemptId: string | null): Promise<boolean> {
+    const sql = `
+      SELECT CAST(CASE WHEN e.[isEnabled] = 0 OR EXISTS (
+        SELECT 1 FROM [mtc_admin].[checkStartAcknowledgement] AS a
+        INNER JOIN [mtc_admin].[check] AS c ON c.[id] = a.[check_id]
+        WHERE c.[checkCode] = @checkCode AND a.[attemptId] = @attemptId
+      ) THEN 1 ELSE 0 END AS BIT) AS [allowed]
+      FROM [mtc_admin].[emergencyOffSwitch] AS e WITH (READCOMMITTEDLOCK)
+      WHERE e.[id] = 1`
+    const results = await this.sqlService.query(sql, [
+      { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier },
+      { name: 'attemptId', value: attemptId, type: TYPES.UniqueIdentifier }
+    ])
+    if (typeof results?.[0]?.allowed !== 'boolean') {
+      throw new Error('Check submission eligibility returned an invalid result')
+    }
+    return results[0].allowed
+  }
+
   async isLiveCheck (checkCode: string): Promise<boolean> {
     const sql = `SELECT isLiveCheck FROM [mtc_admin].[check] WHERE checkCode = @checkCode`
     const params = [
@@ -95,5 +114,6 @@ export interface ICheckStartedDataService {
   updateCheckStartedDate (checkCode: string, checkStartedDateTime: Date): Promise<IModifyResult>
   hasStarted (checkCode: string): Promise<boolean>
   acknowledgeStart (checkCode: string, attemptId: string): Promise<boolean>
+  isSubmissionAllowed (checkCode: string | null, attemptId: string | null): Promise<boolean>
   isLiveCheck (checkCode: string): Promise<boolean>
 }

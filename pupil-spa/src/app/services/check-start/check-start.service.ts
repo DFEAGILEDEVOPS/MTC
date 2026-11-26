@@ -34,6 +34,10 @@ export class CheckStartService {
   }
 
   public async acknowledge(attemptId: string): Promise<void> {
+    this.storageService.setCheckStartAttemptId(attemptId);
+    if (this.storageService.getCheckStartAttemptId() !== attemptId) {
+      throw new Error('Unable to save check start attempt');
+    }
     const { token } = this.tokenService.getToken('checkSubmission');
     await this.httpService.post(`${APP_CONFIG.apiBaseUrl}/check-start`, {
       checkCode: this.storageService.getPupil().checkCode,

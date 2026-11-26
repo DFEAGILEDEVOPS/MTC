@@ -16,6 +16,7 @@ import {
   AuditStorageKey,
   InputsStorageKey,
   CheckStartTimeStorageKey,
+  CheckStartAttemptIdStorageKey,
   TokensStorageKey
 } from './storageKey';
 import { Answer } from '../answer/answer.model';
@@ -25,6 +26,7 @@ import { Question } from '../question/question.model';
 
 const accessArrangementsStorageKey = new AccessArrangementsStorageKey();
 const checkStartTimeStorageKey = new CheckStartTimeStorageKey();
+const checkStartAttemptIdStorageKey = new CheckStartAttemptIdStorageKey();
 const checkStateStorageKey = new CheckStateStorageKey();
 const completedSubmissionStorageKey = new CompletedSubmissionStorageKey();
 const configStorageKey = new ConfigStorageKey();
@@ -42,6 +44,7 @@ export interface IStorageService {
   getAccessArrangements(key: AccessArrangementsStorageKey): any
   getAllItems(): any
   getCheckStartTime(): any
+  getCheckStartAttemptId(): string | null
   getCheckState(key: CheckStateStorageKey): any
   getCompletedSubmission(): any
   getConfig(): any
@@ -60,6 +63,7 @@ export interface IStorageService {
   setAnswer(answer: Answer): void
   setAuditEntry(auditEntry: AuditEntry): void
   setCheckStartTime(checkStartTime: number): void
+  setCheckStartAttemptId(attemptId: string): void
   setCheckState(state: number): void
   setCompletedSubmission(isCompleted: boolean): any
   setConfig(config: object): any
@@ -76,6 +80,14 @@ export interface IStorageService {
 
 @Injectable()
 export class StorageService implements IStorageService {
+
+  getCheckStartAttemptId(): string | null {
+    return this.getItem(checkStartAttemptIdStorageKey);
+  }
+
+  setCheckStartAttemptId(attemptId: string): void {
+    this.setItem(checkStartAttemptIdStorageKey, attemptId);
+  }
 
   getAccessArrangements() {
     return this.getItem(accessArrangementsStorageKey);

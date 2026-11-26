@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from 'uuid';
 export type StorageKeyPrefix = 'answers' | 'inputs' | 'session' |
   'audit' | 'questions' | 'config' | 'pupil' | 'school' | 'access_token' |
   'feedback' | 'checkstate' | 'device' | 'pending_submission' | 'completed_submission' |
-  'access_arrangements' | 'tokens' | 'time_out' | 'check_start_time';
+  'access_arrangements' | 'tokens' | 'time_out' | 'check_start_time' | 'check_start_attempt_id';
 
 export type StorageKeyTypesSingular = SessionStorageKey | QuestionsStorageKey | TokensStorageKey | ConfigStorageKey |
   PupilStorageKey | SchoolStorageKey | FeedbackStorageKey | CheckStateStorageKey |
   DeviceStorageKey | PendingSubmissionStorageKey | CompletedSubmissionStorageKey | AccessArrangementsStorageKey |
-  TimeoutStorageKey | CheckStartTimeStorageKey;
+  TimeoutStorageKey | CheckStartTimeStorageKey | CheckStartAttemptIdStorageKey;
 
 export type StorageKeyTypesMulti = AnswersStorageKey | InputsStorageKey | AuditStorageKey;
 
@@ -142,5 +142,12 @@ export class CheckStartTimeStorageKey extends StorageKey {
   constructor() {
     super();
     this.prefix = 'check_start_time';
+  }
+}
+
+export class CheckStartAttemptIdStorageKey extends StorageKey {
+  constructor() {
+    super();
+    this.prefix = 'check_start_attempt_id';
   }
 }

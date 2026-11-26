@@ -56,6 +56,13 @@ describe('CheckStartService', () => {
     expect(url).toBe('apiBaseUrl/check-start')
     expect(body).toEqual({ checkCode: 'abc-def', attemptId: 'attempt-id' })
     expect(headers.get('Authorization')).toBe('Bearer signed-token')
+    expect(storageService.getCheckStartAttemptId()).toBe('attempt-id')
+  })
+  it('does not begin a check if the attempt id cannot be saved', async () => {
+    spyOn(storageService, 'setCheckStartAttemptId')
+    spyOn(storageService, 'getCheckStartAttemptId').and.returnValue(null)
+    await expectAsync(checkStartService.acknowledge('attempt-id')).toBeRejectedWithError('Unable to save check start attempt')
+    expect(httpServiceSpy.post).not.toHaveBeenCalled()
   })
   it('submit should call azure queue service successfully and audit successful call', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry')

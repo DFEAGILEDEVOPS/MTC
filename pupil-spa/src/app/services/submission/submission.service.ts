@@ -4,11 +4,13 @@ import { HttpService } from '../http/http.service'
 import { Injectable } from '@angular/core'
 import { CompressorService } from '../compressor/compressor.service'
 import { ApplicationInsightsService } from '../app-insights/app-insights.service'
+import { StorageService } from '../storage/storage.service'
 
 @Injectable()
 export class SubmissionService {
   public static readonly SubmittedCheckVersion4 = 4
-  constructor(private http: HttpService, private appInsightsService: ApplicationInsightsService) {}
+  constructor(private http: HttpService, private appInsightsService: ApplicationInsightsService,
+    private storageService: StorageService) {}
 
   async submit(payload: any): Promise<any> {
     const jsonPayload = JSON.stringify(payload)
@@ -21,7 +23,8 @@ export class SubmissionService {
       archive: gzipArchive,
       version: SubmissionService.SubmittedCheckVersion4,
       checkCode: payload.checkCode,
-      schoolUUID: payload.school.uuid
+      schoolUUID: payload.school.uuid,
+      attemptId: this.storageService.getCheckStartAttemptId()
     }
     this.appInsightsService.trackTrace(`Check [${payload?.checkCode}] for school [${payload?.school?.uuid}] final payload length: ${gzipArchive.length}`)
     await this.http.post(submissionUrl, postBody,
