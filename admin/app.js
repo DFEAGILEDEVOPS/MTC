@@ -45,6 +45,7 @@ const { CheckWindowPhaseService } = require('./services/check-window-phase/check
 const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
 const userInitErrorConsts = require('./lib/errors/user')
 const administrationMessageService = require('./services/administration-message.service')
+const emergencyOffSwitchMiddleware = require('./availability/emergency-off-switch.middleware')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -345,6 +346,7 @@ app.use((req, res, next) => {
 if (WEBSITE_OFFLINE) {
   app.use('*', websiteOffline)
 } else {
+  app.use(emergencyOffSwitchMiddleware)
   app.use('/', index)
   app.use('/test-developer', testDeveloper)
   app.use('/service-manager', serviceManager)
