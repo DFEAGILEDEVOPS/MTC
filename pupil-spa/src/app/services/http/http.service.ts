@@ -89,6 +89,9 @@ export class HttpService {
         console.error('http-service: transient ErrorEvent: (will attempt retry)', error);
         return true;
       } else {
+        if (error.error?.code === 'EMERGENCY_OFF_SWITCH_ENABLED') {
+          return false;
+        }
         /**
          * HttpErrorResponse handling - the remote server has provided a response
          * Retry on these failures for Azure:

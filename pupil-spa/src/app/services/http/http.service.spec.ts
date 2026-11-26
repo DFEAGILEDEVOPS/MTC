@@ -159,6 +159,20 @@ describe('HttpService', () => {
       expect(httpClientSpy.post).toHaveBeenCalledTimes(2)
     })
 
+    it('does not retry the emergency off-switch response', async () => {
+      httpClientSpy.post.and.returnValue(asyncError(new HttpErrorResponse({
+        error: {
+          error: 'Service temporarily unavailable',
+          code: 'EMERGENCY_OFF_SWITCH_ENABLED'
+        },
+        status: 503,
+        statusText: 'Service unavailable'
+      })))
+
+      await expectAsync(httpService.postJson('http://localhost', { foo: 'bar' })).toBeRejected()
+      expect(httpClientSpy.post).toHaveBeenCalledTimes(1)
+    })
+
     it('retries if the error code is 504 - Gateway timeout', async () => {
       const expectedResponse = { checkCode: '1111-2222-3333-4444' }
       httpClientSpy.post.and

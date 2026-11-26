@@ -3,6 +3,7 @@ import logger from '../services/log.service.js'
 import apiResponse from '../helpers/api-response.js'
 import { RedisPupilAuthenticationService } from '../services/redis-pupil-auth.service.js'
 import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service.js'
+import { EmergencyOffSwitchEnabledError } from '../errors/emergency-off-switch-enabled.error.js'
 
 export class RedisAuthController {
   private readonly redisAuthService: IPupilAuthenticationService
@@ -33,6 +34,9 @@ export class RedisAuthController {
       }
       return apiResponse.sendJson(res, data)
     } catch (error: any) {
+      if (error instanceof EmergencyOffSwitchEnabledError) {
+        return apiResponse.emergencyOffSwitchEnabled(res)
+      }
       logger.error('Failed to authenticate pupil: ', error)
       return apiResponse.unauthorised(res)
     }

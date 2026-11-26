@@ -12,6 +12,7 @@ import { Login } from './login.model'
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
 import { DeviceService } from '../services/device/device.service'
 import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service'
+import { WindowRefService } from '../services/window-ref/window-ref.service'
 
 @Component({
     selector: 'app-login',
@@ -39,6 +40,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private loginErrorDiagnosticsService: LoginErrorDiagnosticsService,
     private userService: UserService,
     private router: Router,
+    private windowRefService: WindowRefService,
     private questionService: QuestionService,
     private warmupQuestionService: WarmupQuestionService,
     private elRef: ElementRef,
@@ -119,6 +121,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
         },
         async (err) => {
           this.submitted = false
+          if (err.status === 503 && err.error?.code === 'EMERGENCY_OFF_SWITCH_ENABLED') {
+            await this.displayMinTime(startTime)
+            this.loginPending = false
+            this.loginSucceeded = false
+            const holdingPageUrl = new URL(
+              '/emergency-off-switch-service-unavailable',
+              APP_CONFIG.adminBaseUrl
+            )
+            this.windowRefService.nativeWindow.location.assign(holdingPageUrl.toString())
+            return
+          }
           this.loginErrorService.changeMessage(err.message)
           if (err.status === 401) {
             await this.displayMinTime(startTime)

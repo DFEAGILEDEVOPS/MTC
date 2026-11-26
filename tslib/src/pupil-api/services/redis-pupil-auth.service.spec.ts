@@ -3,10 +3,14 @@ import type { IPupilLoginMessage } from './redis-pupil-auth.service.js'
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service.js'
 import type { IRedisService } from './redis.service.js'
 import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
+import type { EmergencyOffSwitchService } from './emergency-off-switch.service.js'
+import type { ICheckStartedDataService } from '../../functions/check-started/check-started.data.service.js'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
 let messageDispatchMock: IServiceBusQueueService
+let emergencyOffSwitchServiceMock: Pick<EmergencyOffSwitchService, 'getState'>
+let checkStartedDataServiceMock: Pick<ICheckStartedDataService, 'hasStarted'>
 
 const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
@@ -26,7 +30,22 @@ describe('redis-pupil-auth.service', () => {
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
     messageDispatchMock = new MessageDispatchMock()
-    sut = new RedisPupilAuthenticationService(redisServiceMock, messageDispatchMock)
+    emergencyOffSwitchServiceMock = {
+      getState: jest.fn().mockResolvedValue({
+        isEnabled: false,
+        updatedAt: new Date(),
+        updatedBy_userId: null
+      })
+    }
+    checkStartedDataServiceMock = {
+      hasStarted: jest.fn().mockResolvedValue(false)
+    }
+    sut = new RedisPupilAuthenticationService(
+      redisServiceMock,
+      messageDispatchMock,
+      emergencyOffSwitchServiceMock,
+      checkStartedDataServiceMock
+    )
   })
 
   test('should be defined', () => {
@@ -141,6 +160,49 @@ describe('redis-pupil-auth.service', () => {
     const buildNumber = '1-2-3'
     const payload = await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(payload).toStrictEqual(expectedPayload)
+  })
+
+  test('unstarted checks are blocked while the emergency off-switch is enabled', async () => {
+    const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
+      config: { practice: false },
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'),
+      pinExpiresAtUtc: moment.utc().add(1, 'hour')
+    }
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
+    jest.spyOn(emergencyOffSwitchServiceMock, 'getState').mockResolvedValue({
+      isEnabled: true,
+      updatedAt: new Date(),
+      updatedBy_userId: null
+    })
+    jest.spyOn(checkStartedDataServiceMock, 'hasStarted').mockResolvedValue(false)
+
+    await expect(sut.authenticate('abc12def', '5678', '1-2-3'))
+      .rejects.toMatchObject({ code: 'EMERGENCY_OFF_SWITCH_ENABLED' })
+    expect(checkStartedDataServiceMock.hasStarted).toHaveBeenCalledWith(expectedPayload.checkCode)
+    expect(redisServiceMock.expire).not.toHaveBeenCalled()
+    expect(messageDispatchMock.dispatch).not.toHaveBeenCalled()
+  })
+
+  test('started checks remain available while the emergency off-switch is enabled', async () => {
+    const expectedPayload = {
+      checkCode: '1111-2222-AAAA-4444',
+      config: { practice: false },
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'),
+      pinExpiresAtUtc: moment.utc().add(1, 'hour')
+    }
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
+    jest.spyOn(emergencyOffSwitchServiceMock, 'getState').mockResolvedValue({
+      isEnabled: true,
+      updatedAt: new Date(),
+      updatedBy_userId: null
+    })
+    jest.spyOn(checkStartedDataServiceMock, 'hasStarted').mockResolvedValue(true)
+
+    const payload = await sut.authenticate('abc12def', '5678', '1-2-3')
+
+    expect(payload).toStrictEqual(expectedPayload)
+    expect(checkStartedDataServiceMock.hasStarted).toHaveBeenCalledWith(expectedPayload.checkCode)
   })
 
   test('authorisation is denied if the pin is not yet valid', async () => {

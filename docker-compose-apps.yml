@@ -80,6 +80,7 @@ services:
       - "./:/mtc"
     environment:
       REDIS_HOST: 'redis'
+      ADMIN_BASE_URL: 'http://localhost:3001'
     command: ["./docker-start-dev.sh"]
   pupil_api:
     build:

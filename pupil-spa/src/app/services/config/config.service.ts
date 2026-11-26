@@ -7,6 +7,7 @@ import { lastValueFrom } from 'rxjs';
  */
 export interface IAppConfig {
   applicationInsightsConnectionString: string;
+  adminBaseUrl: string
   apiBaseUrl: string
   checkStartAPIErrorDelay: number;
   checkStartAPIErrorMaxAttempts: number;
@@ -26,6 +27,7 @@ export interface IAppConfig {
 
 export class AppConfig implements IAppConfig {
   readonly applicationInsightsConnectionString: string
+  readonly adminBaseUrl: string
   readonly apiBaseUrl: string
   readonly checkStartAPIErrorDelay: number
   readonly checkStartAPIErrorMaxAttempts: number
@@ -45,6 +47,7 @@ export class AppConfig implements IAppConfig {
 
 class MockAppConfig implements IAppConfig {
   applicationInsightsConnectionString: ''
+  adminBaseUrl = 'http://localhost:3001'
   apiBaseUrl = 'apiBaseUrl'
   checkStartAPIErrorDelay: 9
   checkStartAPIErrorMaxAttempts = 3

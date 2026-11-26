@@ -1,11 +1,11 @@
 import { TYPES } from 'mssql'
-import { type IModifyResult, SqlService } from '../../sql/sql.service.js'
+import { type IModifyResult, type ISqlService, SqlService } from '../../sql/sql.service.js'
 
 export class CheckStartedDataService implements ICheckStartedDataService {
-  private readonly sqlService: SqlService
+  private readonly sqlService: Pick<ISqlService, 'query' | 'modify'>
 
-  constructor () {
-    this.sqlService = new SqlService()
+  constructor (sqlService?: Pick<ISqlService, 'query' | 'modify'>) {
+    this.sqlService = sqlService ?? new SqlService()
   }
 
   async updateCheckStartedDate (checkCode: string, checkStartedDateTime: Date): Promise<IModifyResult> {
@@ -18,6 +18,17 @@ export class CheckStartedDataService implements ICheckStartedDataService {
       { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier }
     ]
     return this.sqlService.modify(sql, params)
+  }
+
+  async hasStarted (checkCode: string): Promise<boolean> {
+    const sql = `SELECT CASE WHEN [startedAt] IS NULL THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT) END AS [hasStarted]
+                   FROM [mtc_admin].[check]
+                  WHERE [checkCode] = @checkCode`
+    const params = [
+      { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier }
+    ]
+    const results = await this.sqlService.query(sql, params)
+    return results?.[0]?.hasStarted === true
   }
 
   async isLiveCheck (checkCode: string): Promise<boolean> {
@@ -33,5 +44,6 @@ export class CheckStartedDataService implements ICheckStartedDataService {
 
 export interface ICheckStartedDataService {
   updateCheckStartedDate (checkCode: string, checkStartedDateTime: Date): Promise<IModifyResult>
+  hasStarted (checkCode: string): Promise<boolean>
   isLiveCheck (checkCode: string): Promise<boolean>
 }

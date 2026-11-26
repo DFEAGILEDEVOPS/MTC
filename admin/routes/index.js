@@ -28,6 +28,10 @@ const getTestError = require('../controllers/test-error')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
+router.get('/emergency-off-switch-service-unavailable', (req, res) => {
+  res.locals.pageTitle = 'Multiplication tables check temporarily closed'
+  res.render('availability/emergency-off-switch-service-unavailable', {})
+})
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))
 /* signed out (dfe signin only) */

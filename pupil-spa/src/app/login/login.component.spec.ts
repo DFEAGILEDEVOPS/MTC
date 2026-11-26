@@ -37,6 +37,7 @@ describe('LoginComponent', () => {
   let loginErrorService
   let loginErrorDiagnosticsService
   let mockDeviceService
+  let mockWindowRefService
   let qrCodeUsageService: QrCodeUsageService
 
   beforeEach(waitForAsync(() => {
@@ -48,6 +49,14 @@ describe('LoginComponent', () => {
       isLocalStorageEnabled: () => true,
       isUnsupportedBrowser: () => false,
       setupDeviceCookie: () => {}
+    }
+    mockWindowRefService = {
+      nativeWindow: {
+        navigator: { onLine: true },
+        location: {
+          assign: jasmine.createSpy('assign')
+        }
+      }
     }
 
     mockUserService = {
@@ -69,7 +78,7 @@ describe('LoginComponent', () => {
         LoginErrorDiagnosticsService,
         LoginErrorService,
         StorageService,
-        WindowRefService,
+        { provide: WindowRefService, useValue: mockWindowRefService },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: Login, useValue: mockLoginModel },
@@ -254,7 +263,47 @@ describe('LoginComponent', () => {
       tick(2)
       expect(loginErrorService.changeMessage).toHaveBeenCalledWith('login failed')
       expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in'])
+      expect(mockWindowRefService.nativeWindow.location.assign).not.toHaveBeenCalled()
       expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled()
+    }))
+  })
+
+  describe('when the emergency off-switch is enabled', () => {
+    beforeEach(() => {
+      spyOn(mockUserService, 'login').and.callFake(() => Promise.reject({
+          status: 503,
+          error: { code: 'EMERGENCY_OFF_SWITCH_ENABLED' },
+          message: 'Service temporarily unavailable'
+        }))
+    })
+
+    it('redirects to the emergency EJS page without showing a login error', fakeAsync(() => {
+      spyOn(loginErrorDiagnosticsService, 'process')
+      component.onSubmit('schoolPin', 'pupilPin')
+      tick(2)
+
+      expect(mockWindowRefService.nativeWindow.location.assign).toHaveBeenCalledWith(
+        'http://localhost:3001/emergency-off-switch-service-unavailable'
+      )
+      expect(mockRouter.navigate).not.toHaveBeenCalled()
+      expect(loginErrorService.changeMessage).not.toHaveBeenCalled()
+      expect(loginErrorDiagnosticsService.process).not.toHaveBeenCalled()
+    }))
+
+    it('keeps the existing sign-in-fail behavior for unrelated service unavailable errors', fakeAsync(() => {
+      mockUserService.login.and.returnValue(Promise.reject({
+        status: 503,
+        error: { error: 'Service unavailable' },
+        message: 'Service unavailable'
+      }))
+      spyOn(loginErrorDiagnosticsService, 'process')
+
+      component.onSubmit('schoolPin', 'pupilPin')
+      tick(2)
+
+      expect(mockWindowRefService.nativeWindow.location.assign).not.toHaveBeenCalled()
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-fail'])
+      expect(loginErrorDiagnosticsService.process).toHaveBeenCalled()
     }))
   })
 

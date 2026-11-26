@@ -1,5 +1,6 @@
 import type { Response } from 'express'
 import { DefaultSecurityHeaders } from '../routes/default-security-headers.js'
+import { EmergencyOffSwitchEnabledErrorCode } from '../errors/emergency-off-switch-enabled.error.js'
 
 const apiResponse = {
   unauthorised: (res: Response): Response => {
@@ -15,6 +16,14 @@ const apiResponse = {
   serverError: (res: Response): Response => {
     apiResponse.setDefaultHeaders(res)
     return res.status(500).json({ error: 'Server error' })
+  },
+
+  emergencyOffSwitchEnabled: (res: Response): Response => {
+    apiResponse.setDefaultHeaders(res)
+    return res.status(503).json({
+      error: 'Service temporarily unavailable',
+      code: EmergencyOffSwitchEnabledErrorCode
+    })
   },
 
   messageTooLarge: (res: Response): Response => {

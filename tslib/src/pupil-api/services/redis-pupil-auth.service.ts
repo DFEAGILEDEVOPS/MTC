@@ -7,6 +7,9 @@ import { ServiceBusQueueService } from '../../azure/service-bus.queue.service.js
 import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service.js'
 import { PingService } from './ping.service.js'
 import { ServiceBusQueueNames } from '../../azure/service-bus-queue.names.js'
+import { CheckStartedDataService, type ICheckStartedDataService } from '../../functions/check-started/check-started.data.service.js'
+import { EmergencyOffSwitchEnabledError } from '../errors/emergency-off-switch-enabled.error.js'
+import { EmergencyOffSwitchService } from './emergency-off-switch.service.js'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>
@@ -25,8 +28,15 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
   private readonly redisService: IRedisService
   private readonly queueService: IServiceBusQueueService
   private readonly pingService: PingService
+  private readonly emergencyOffSwitchService: Pick<EmergencyOffSwitchService, 'getState'>
+  private readonly checkStartedDataService: Pick<ICheckStartedDataService, 'hasStarted'>
 
-  constructor (redisService?: IRedisService, queueService?: IServiceBusQueueService) {
+  constructor (
+    redisService?: IRedisService,
+    queueService?: IServiceBusQueueService,
+    emergencyOffSwitchService?: Pick<EmergencyOffSwitchService, 'getState'>,
+    checkStartedDataService?: Pick<ICheckStartedDataService, 'hasStarted'>
+  ) {
     if (redisService === undefined) {
       redisService = new RedisService()
     }
@@ -36,6 +46,8 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     }
     this.queueService = queueService
     this.pingService = new PingService()
+    this.emergencyOffSwitchService = emergencyOffSwitchService ?? new EmergencyOffSwitchService()
+    this.checkStartedDataService = checkStartedDataService ?? new CheckStartedDataService()
   }
 
   async authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined> {
@@ -61,6 +73,14 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     const currentDateTime = moment.utc()
     if (moment.utc(pinValidFromUtc).isAfter(currentDateTime) || moment.utc(pinExpiresAtUtc).isBefore(currentDateTime)) {
       return
+    }
+
+    const emergencyOffSwitchState = await this.emergencyOffSwitchService.getState()
+    if (emergencyOffSwitchState.isEnabled) {
+      const checkHasStarted = await this.checkStartedDataService.hasStarted(preparedCheckEntry.checkCode)
+      if (!checkHasStarted) {
+        throw new EmergencyOffSwitchEnabledError()
+      }
     }
 
     if (preparedCheckEntry.config.practice === false) {
