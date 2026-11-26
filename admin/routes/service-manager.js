@@ -12,9 +12,14 @@ router.get('/home',
   serviceManagerController.getServiceManagerHome
 )
 
-router.get('/emergency-off-switch',
+router.get('/emergency-off-switch/:status?',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getEmergencyOffSwitch
+)
+
+router.post('/emergency-off-switch',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postEmergencyOffSwitch
 )
 
 router.get('/check-settings',

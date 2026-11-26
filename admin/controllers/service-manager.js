@@ -57,14 +57,31 @@ const controller = {
   getEmergencyOffSwitch: async function getEmergencyOffSwitch (req, res, next) {
     try {
       res.locals.pageTitle = 'Emergency off-switch'
+      const successfulPost = req.params.status || false
       req.breadcrumbs(res.locals.pageTitle)
       const state = await emergencyOffSwitchService.get()
       res.render('service-manager/emergency-off-switch', {
         breadcrumbs: req.breadcrumbs(),
-        isEmergencyOffSwitchEnabled: state.isEnabled
+        isEmergencyOffSwitchEnabled: state.isEnabled,
+        successfulPost
       })
     } catch (error) {
       next(error)
+    }
+  },
+
+  postEmergencyOffSwitch: async function postEmergencyOffSwitch (req, res, next) {
+    const status = req.body?.emergencyOffSwitchStatus
+    if (status !== 'on' && status !== 'off') {
+      req.flash('error', 'Select whether the emergency off-switch should be on or off')
+      return res.redirect('/service-manager/emergency-off-switch')
+    }
+
+    try {
+      await emergencyOffSwitchService.update(status === 'on', req.user.id)
+      return res.redirect('/service-manager/emergency-off-switch/updated')
+    } catch (error) {
+      return next(error)
     }
   },
 

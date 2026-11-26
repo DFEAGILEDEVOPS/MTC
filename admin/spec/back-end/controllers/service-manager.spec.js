@@ -94,8 +94,9 @@ describe('service manager controller:', () => {
       }
     })
 
-    test('GET /emergency-off-switch allows service-manager only', () => {
-      const layer = serviceManagerRouter.stack.find(({ route }) => route?.path === '/emergency-off-switch' && route.methods.get)
+    test.each(['get', 'post'])('%s /emergency-off-switch allows service-manager only', (method) => {
+      const routePath = method === 'get' ? '/emergency-off-switch/:status?' : '/emergency-off-switch'
+      const layer = serviceManagerRouter.stack.find(({ route }) => route?.path === routePath && route.methods[method])
       expect(layer).toBeDefined()
       for (const role of Object.values(roles)) {
         const req = getReq({ user: { id: 1, role }, isAuthenticated: () => true })
@@ -151,10 +152,30 @@ describe('service manager controller:', () => {
       expect(req.breadcrumbs).toHaveBeenCalledWith('Emergency off-switch')
       expect(res.render).toHaveBeenCalledWith('service-manager/emergency-off-switch', {
         breadcrumbs: [],
-        isEmergencyOffSwitchEnabled: false
+        isEmergencyOffSwitchEnabled: false,
+        successfulPost: false
       })
       expect(emergencyOffSwitchService.get).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
+    })
+
+    test('renders the success message after an update', async () => {
+      const req = getReq({
+        method: 'GET',
+        url: '/service-manager/emergency-off-switch/updated',
+        params: { status: 'updated' }
+      })
+      req.breadcrumbs.mockReturnValue([])
+      const res = getRes()
+      jest.spyOn(emergencyOffSwitchService, 'get').mockResolvedValue({ isEnabled: true })
+
+      await controller.getEmergencyOffSwitch(req, res, next)
+
+      expect(res.render).toHaveBeenCalledWith('service-manager/emergency-off-switch', {
+        breadcrumbs: [],
+        isEmergencyOffSwitchEnabled: true,
+        successfulPost: 'updated'
+      })
     })
 
     test('passes rendering errors to the error handler', async () => {
@@ -166,6 +187,62 @@ describe('service manager controller:', () => {
       await controller.getEmergencyOffSwitch(req, res, next)
 
       expect(next).toHaveBeenCalledWith(error)
+    })
+  })
+
+  describe('postEmergencyOffSwitch', () => {
+    test.each([
+      ['on', true],
+      ['off', false]
+    ])('saves the "%s" state and redirects', async (status, isEnabled) => {
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/emergency-off-switch',
+        body: { emergencyOffSwitchStatus: status },
+        user: { id: 42 }
+      })
+      const res = getRes()
+      jest.spyOn(emergencyOffSwitchService, 'update').mockResolvedValue({})
+
+      await controller.postEmergencyOffSwitch(req, res, next)
+
+      expect(emergencyOffSwitchService.update).toHaveBeenCalledWith(isEnabled, 42)
+      expect(res.redirect).toHaveBeenCalledWith('/service-manager/emergency-off-switch/updated')
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('rejects invalid status without updating the switch', async () => {
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/emergency-off-switch',
+        body: { emergencyOffSwitchStatus: 'enabled' }
+      })
+      const res = getRes()
+      jest.spyOn(emergencyOffSwitchService, 'update')
+
+      await controller.postEmergencyOffSwitch(req, res, next)
+
+      expect(emergencyOffSwitchService.update).not.toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalledWith('error', expect.stringContaining('Select whether'))
+      expect(res.redirect).toHaveBeenCalledWith('/service-manager/emergency-off-switch')
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('passes persistence errors to the error handler', async () => {
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/emergency-off-switch',
+        body: { emergencyOffSwitchStatus: 'on' },
+        user: { id: 42 }
+      })
+      const res = getRes()
+      const error = new Error('Unable to update emergency off-switch')
+      jest.spyOn(emergencyOffSwitchService, 'update').mockRejectedValue(error)
+
+      await controller.postEmergencyOffSwitch(req, res, next)
+
+      expect(next).toHaveBeenCalledWith(error)
+      expect(res.redirect).not.toHaveBeenCalled()
     })
   })
 
