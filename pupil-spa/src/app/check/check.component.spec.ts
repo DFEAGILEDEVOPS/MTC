@@ -87,6 +87,15 @@ describe('CheckComponent', () => {
     expect(component).toBeTruthy()
   })
 
+  it('only bypasses the unload warning for an emergency redirect', () => {
+    const event = { preventDefault: jasmine.createSpy('preventDefault'), returnValue: undefined }
+    expect(component.canUnload(event)).toBeFalse()
+    component.allowEmergencyRedirect()
+    event.preventDefault.calls.reset()
+    expect(component.canUnload(event)).toBeTrue()
+    expect(event.preventDefault).not.toHaveBeenCalled()
+  })
+
   it('default view should be the warmup-intro screen', fakeAsync(() => {
     fixture.detectChanges()
     tick()

@@ -41,6 +41,7 @@ export class CheckComponent implements OnInit, CanComponentDeactivate {
   public allowedStates: Array<string> = [];
   public totalNumberOfQuestions: number;
   protected window: any;
+  private emergencyRedirect = false;
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
@@ -171,6 +172,7 @@ export class CheckComponent implements OnInit, CanComponentDeactivate {
    */
   @HostListener('window:beforeunload', [ '$event' ])
   canUnload(event: any) {
+    if (this.emergencyRedirect) return true;
     if (event) {
       event.preventDefault()
       event.returnValue = ''
@@ -368,6 +370,10 @@ export class CheckComponent implements OnInit, CanComponentDeactivate {
 
   questionsIntroClickHandler() {
     this.changeState();
+  }
+
+  allowEmergencyRedirect() {
+    this.emergencyRedirect = true;
   }
 
   /**

@@ -10,6 +10,7 @@ let dataServiceMock: ICheckStartedDataService
 const CheckStartedDataServiceMock = jest.fn<ICheckStartedDataService, any>(() => ({
   updateCheckStartedDate: jest.fn(),
   hasStarted: jest.fn().mockResolvedValue(false),
+  acknowledgeStart: jest.fn(),
   isLiveCheck: jest.fn().mockResolvedValue(false)
 }))
 

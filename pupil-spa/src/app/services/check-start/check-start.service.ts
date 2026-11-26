@@ -7,6 +7,8 @@ import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure
 import { AuditService } from '../audit/audit.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
+import { HttpHeaders } from '@angular/common/http';
+import { HttpService } from '../http/http.service';
 
 /**
  * Declaration of check start service
@@ -18,6 +20,7 @@ export class CheckStartService {
   checkStartAPIErrorMaxAttempts;
 
   constructor(private azureQueueService: AzureQueueService,
+              private httpService: HttpService,
               private storageService: StorageService,
               private tokenService: TokenService,
               private auditService: AuditService,
@@ -28,6 +31,16 @@ export class CheckStartService {
     } = APP_CONFIG;
     this.checkStartAPIErrorDelay = checkStartAPIErrorDelay;
     this.checkStartAPIErrorMaxAttempts = checkStartAPIErrorMaxAttempts;
+  }
+
+  public async acknowledge(attemptId: string): Promise<void> {
+    const { token } = this.tokenService.getToken('checkSubmission');
+    await this.httpService.post(`${APP_CONFIG.apiBaseUrl}/check-start`, {
+      checkCode: this.storageService.getPupil().checkCode,
+      attemptId
+    }, new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${token}`), this.checkStartAPIErrorMaxAttempts);
   }
 
   /**

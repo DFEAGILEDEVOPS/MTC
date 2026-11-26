@@ -3,19 +3,39 @@ import { CheckStartedDataService } from './check-started.data.service.js'
 describe('CheckStartedDataService', () => {
   test.each([
     [true, true],
-    [false, false],
-    [undefined, false]
-  ])('reports startedAt state %s as %s', async (hasStarted, expected) => {
+    [false, false]
+  ])('reports acknowledged start state %s as %s', async (hasStarted, expected) => {
     const sqlService = {
-      query: jest.fn().mockResolvedValue(hasStarted === undefined ? [] : [{ hasStarted }]),
+      query: jest.fn().mockResolvedValue([{ hasStarted }]),
       modify: jest.fn()
     }
     const service = new CheckStartedDataService(sqlService)
 
     await expect(service.hasStarted('1111-2222-3333-4444')).resolves.toBe(expected)
     expect(sqlService.query).toHaveBeenCalledWith(
-      expect.stringContaining('startedAt'),
+      expect.stringContaining('checkStartAcknowledgement'),
       expect.arrayContaining([expect.objectContaining({ name: 'checkCode', value: '1111-2222-3333-4444' })])
+    )
+  })
+
+  test('rejects an invalid lookup result', async () => {
+    const service = new CheckStartedDataService({ query: jest.fn().mockResolvedValue([]), modify: jest.fn() })
+    await expect(service.hasStarted('check-code')).rejects.toThrow('Check start lookup returned an invalid result')
+  })
+
+  test('returns the acknowledgement decision from the transactional query', async () => {
+    const sqlService = {
+      query: jest.fn().mockResolvedValue([{ approved: true }]),
+      modify: jest.fn()
+    }
+    const service = new CheckStartedDataService(sqlService)
+    await expect(service.acknowledgeStart('check-code', 'attempt-id')).resolves.toBe(true)
+    expect(sqlService.query).toHaveBeenCalledWith(
+      expect.stringContaining('WITH (UPDLOCK, HOLDLOCK)'),
+      expect.arrayContaining([
+        expect.objectContaining({ name: 'checkCode', value: 'check-code' }),
+        expect.objectContaining({ name: 'attemptId', value: 'attempt-id' })
+      ])
     )
   })
 })
