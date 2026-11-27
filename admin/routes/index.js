@@ -30,7 +30,7 @@ const getTestError = require('../controllers/test-error')
 router.get('/', (req, res) => home(req, res))
 router.get('/emergency-off-switch-service-unavailable', (req, res) => {
   res.locals.pageTitle = 'Multiplication tables check temporarily closed'
-  res.render('availability/emergency-off-switch-service-unavailable', {})
+  res.render('availability/emergency-off-switch-service-unavailable', { isPupil: req.query.source === 'pupil' })
 })
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))

@@ -1,4 +1,4 @@
-import { Request, TYPES, Transaction, type IResult, ISOLATION_LEVEL } from 'mssql'
+import sql, { type Request as SqlRequest, type IResult } from 'mssql'
 import { type ILogger, ConsoleLogger } from '../common/logger.js'
 import retry, { retryOnAllSoftErrorsPredicate } from './async-retry.js'
 import config from '../config.js'
@@ -6,6 +6,7 @@ import * as R from 'ramda'
 import { DateTimeService, type IDateTimeService } from '../common/datetime.service.js'
 import * as connectionPool from './pool.service.js'
 
+const { Request, TYPES, Transaction, ISOLATION_LEVEL } = sql
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
   pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
@@ -54,7 +55,7 @@ export class SqlService implements ISqlService {
     return R.map(R.pipe(R.map(this.dateTimeService.convertDateToMoment)), recordSet)
   }
 
-  private addParamsToRequestSimple (params: ISqlParameter[], request: Request): void {
+  private addParamsToRequestSimple (params: ISqlParameter[], request: SqlRequest): void {
     if (params !== undefined) {
       for (const param of params) {
         request.input(param.name, param.type, param.value)
@@ -151,7 +152,7 @@ export class SqlService implements ISqlService {
    * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
    * @param {{input}} request -  mssql request
    */
-  private addParamsToRequest (params: ISqlParameter[], request: Request): void {
+  private addParamsToRequest (params: ISqlParameter[], request: SqlRequest): void {
     for (const param of params) {
       if (param.type === undefined) {
         throw new Error('parameter type invalid')

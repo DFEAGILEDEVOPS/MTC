@@ -74,7 +74,7 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
       if (error.status === 503 && error.error?.code === 'EMERGENCY_OFF_SWITCH_ENABLED') {
         this.emergencyEvent.emit();
         this.windowRefService.nativeWindow.location.assign(
-          new URL('/emergency-off-switch-service-unavailable', APP_CONFIG.adminBaseUrl).toString()
+          new URL('/emergency-off-switch-service-unavailable?source=pupil', APP_CONFIG.adminBaseUrl).toString()
         );
       } else {
         console.error('Unable to acknowledge check start', error);

@@ -112,7 +112,7 @@ describe('QuestionsIntroComponent', () => {
       await component.onClick()
 
       expect(mockWindowRefService.nativeWindow.location.assign).toHaveBeenCalledWith(
-        'http://localhost:3001/emergency-off-switch-service-unavailable'
+        'http://localhost:3001/emergency-off-switch-service-unavailable?source=pupil'
       )
       expect(component.clickEvent.emit).not.toHaveBeenCalled()
       expect(component.emergencyEvent.emit).toHaveBeenCalledTimes(1)

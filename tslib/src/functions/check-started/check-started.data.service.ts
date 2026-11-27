@@ -1,5 +1,7 @@
-import { TYPES } from 'mssql'
+import sql from 'mssql'
 import { type IModifyResult, type ISqlService, SqlService } from '../../sql/sql.service.js'
+
+const { TYPES } = sql
 
 export class CheckStartedDataService implements ICheckStartedDataService {
   private readonly sqlService: Pick<ISqlService, 'query' | 'modify'>

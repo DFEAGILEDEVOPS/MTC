@@ -1,12 +1,13 @@
-import { ConnectionPool } from 'mssql'
+import sql, { type ConnectionPool as SqlConnectionPool } from 'mssql'
 import { ConsoleLogger, type ILogger } from '../common/logger.js'
 import config from '../config.js'
 
-let pool: ConnectionPool
+const { ConnectionPool } = sql
+let pool: SqlConnectionPool
 
 // pool can still be connecting when first used...
 // https://github.com/tediousjs/node-mssql/issues/934
-export async function getInstance (logger?: ILogger): Promise<ConnectionPool> {
+export async function getInstance (logger?: ILogger): Promise<SqlConnectionPool> {
   if (logger === undefined) {
     logger = new ConsoleLogger()
   }

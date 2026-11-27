@@ -8,7 +8,7 @@ export function requiredEnvironmentVariable(name: string): string {
   return value;
 }
 
-async function signIn(page: Page, username: string, password: string): Promise<void> {
+export async function signIn(page: Page, username: string, password: string): Promise<void> {
   await page.goto('/sign-in');
   const acceptCookies = page.getByRole('button', { name: 'Accept all cookies', exact: true });
   if (await acceptCookies.isVisible()) {

@@ -283,11 +283,19 @@ describe('LoginComponent', () => {
       tick(2)
 
       expect(mockWindowRefService.nativeWindow.location.assign).toHaveBeenCalledWith(
-        'http://localhost:3001/emergency-off-switch-service-unavailable'
+        'http://localhost:3001/emergency-off-switch-service-unavailable?source=pupil'
       )
       expect(mockRouter.navigate).not.toHaveBeenCalled()
       expect(loginErrorService.changeMessage).not.toHaveBeenCalled()
       expect(loginErrorDiagnosticsService.process).not.toHaveBeenCalled()
+    }))
+
+    it('keeps the loading screen visible while navigating to the holding page', fakeAsync(() => {
+      component.onSubmit('schoolPin', 'pupilPin')
+      tick(2)
+
+      expect(mockWindowRefService.nativeWindow.location.assign).toHaveBeenCalled()
+      expect(component.loginPending).toBeTrue()
     }))
 
     it('keeps the existing sign-in-fail behavior for unrelated service unavailable errors', fakeAsync(() => {

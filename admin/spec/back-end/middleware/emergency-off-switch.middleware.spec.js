@@ -30,7 +30,7 @@ describe('emergencyOffSwitchMiddleware', () => {
     await emergencyOffSwitchMiddleware(req, res, next)
 
     expect(res.locals.pageTitle).toBe('The service is temporarily unavailable')
-    expect(res.render).toHaveBeenCalledWith('availability/emergency-off-switch-service-unavailable', {})
+    expect(res.render).toHaveBeenCalledWith('availability/emergency-off-switch-service-unavailable', { isPupil: false })
     expect(next).not.toHaveBeenCalled()
   })
 
@@ -42,7 +42,19 @@ describe('emergencyOffSwitchMiddleware', () => {
 
     await emergencyOffSwitchMiddleware(req, res, next)
 
-    expect(res.render).toHaveBeenCalledWith('availability/emergency-off-switch-service-unavailable', {})
+    expect(res.render).toHaveBeenCalledWith('availability/emergency-off-switch-service-unavailable', { isPupil: false })
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  test('preserves the pupil view when a teacher session visits the pupil holding page', async () => {
+    req.path = '/emergency-off-switch-service-unavailable'
+    req.query = { source: 'pupil' }
+    jest.spyOn(emergencyOffSwitchService, 'get').mockResolvedValue({ isEnabled: true })
+    jest.spyOn(res, 'render')
+
+    await emergencyOffSwitchMiddleware(req, res, next)
+
+    expect(res.render).toHaveBeenCalledWith('availability/emergency-off-switch-service-unavailable', { isPupil: true })
     expect(next).not.toHaveBeenCalled()
   })
 

@@ -123,10 +123,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.submitted = false
           if (err.status === 503 && err.error?.code === 'EMERGENCY_OFF_SWITCH_ENABLED') {
             await this.displayMinTime(startTime)
-            this.loginPending = false
-            this.loginSucceeded = false
             const holdingPageUrl = new URL(
-              '/emergency-off-switch-service-unavailable',
+              '/emergency-off-switch-service-unavailable?source=pupil',
               APP_CONFIG.adminBaseUrl
             )
             this.windowRefService.nativeWindow.location.assign(holdingPageUrl.toString())

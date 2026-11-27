@@ -9,7 +9,7 @@
             <p class="govuk-body">Our engineers are working to resolve these issues as soon as possible.
             </p>
 
-            <% if (isAuthenticated) { %>
+            <% if (isAuthenticated && !isPupil) { %>
                 <p><a class="govuk-link" href="/sign-out">Sign out</a></p>
             <% } %>
         </div>

@@ -25,7 +25,9 @@ async function emergencyOffSwitchMiddleware (req, res, next) {
     }
 
     res.locals.pageTitle = 'The service is temporarily unavailable'
-    return res.render('availability/emergency-off-switch-service-unavailable', {})
+    return res.render('availability/emergency-off-switch-service-unavailable', {
+      isPupil: requestPath === '/emergency-off-switch-service-unavailable' && req.query.source === 'pupil'
+    })
   } catch (error) {
     return next(error)
   }
