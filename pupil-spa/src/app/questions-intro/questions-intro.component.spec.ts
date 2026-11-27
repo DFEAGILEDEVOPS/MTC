@@ -17,7 +17,6 @@ import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { loadConfigMockService } from '../services/config/config.service'
-import { WindowRefService } from '../services/window-ref/window-ref.service'
 
 describe('QuestionsIntroComponent', () => {
   let component: QuestionsIntroComponent;
@@ -25,10 +24,8 @@ describe('QuestionsIntroComponent', () => {
   let auditEntryInserted: AuditEntry;
   let auditService;
   let checkStartService;
-  let mockWindowRefService;
 
   beforeEach(waitForAsync(() => {
-    mockWindowRefService = { nativeWindow: { location: { assign: jasmine.createSpy('assign') } } }
     const inject = TestBed.configureTestingModule({
     declarations: [QuestionsIntroComponent],
     schemas: [NO_ERRORS_SCHEMA],
@@ -42,7 +39,6 @@ describe('QuestionsIntroComponent', () => {
         TokenService,
         StorageService,
         CheckStartService,
-        { provide: WindowRefService, useValue: mockWindowRefService },
         AppUsageService,
         AuditEntryFactory,
         provideHttpClient(withInterceptorsFromDi()),
@@ -73,65 +69,27 @@ describe('QuestionsIntroComponent', () => {
     describe('calls check start submit', () => {
       it('successfully calls check start service', waitForAsync (async() => {
         checkStartService = fixture.debugElement.injector.get(CheckStartService);
-        spyOn(checkStartService, 'acknowledge').and.resolveTo();
         spyOn(checkStartService, 'submit');
         component.clickEvent.subscribe(g => {
           expect(g).toBe(null);
         });
         await component.onClick();
         expect(auditEntryInserted instanceof CheckStarted).toBeTruthy();
-        expect(checkStartService.acknowledge).toHaveBeenCalledTimes(1);
         expect(checkStartService.submit).toHaveBeenCalledTimes(1);
       }));
     });
 
-    it('does not start while acknowledgement is pending and ignores double clicks', async () => {
+    it('starts immediately without an API acknowledgement while the existing start notification is pending', async () => {
       let resolveStart: () => void
-      spyOn(checkStartService, 'acknowledge').and.returnValue(new Promise<void>(resolve => { resolveStart = resolve }))
-      spyOn(checkStartService, 'submit')
+      spyOn(checkStartService, 'submit').and.returnValue(new Promise<void>(resolve => { resolveStart = resolve }))
       spyOn(component.clickEvent, 'emit')
 
       const start = component.onClick()
-      await component.onClick()
-      expect(component.clickEvent.emit).not.toHaveBeenCalled()
-      expect(checkStartService.acknowledge).toHaveBeenCalledTimes(1)
+      expect(component.clickEvent.emit).toHaveBeenCalledOnceWith(null)
+      expect(auditEntryInserted instanceof CheckStarted).toBeTruthy()
+      TestBed.inject(HttpTestingController).expectNone(request => request.url.endsWith('/check-start'))
       resolveStart()
       await start
-      expect(component.clickEvent.emit).toHaveBeenCalledTimes(1)
-    })
-
-    it('redirects without starting when the switch blocks the start', async () => {
-      spyOn(checkStartService, 'acknowledge').and.rejectWith({
-        status: 503,
-        error: { code: 'EMERGENCY_OFF_SWITCH_ENABLED' }
-      })
-      spyOn(checkStartService, 'submit')
-      spyOn(component.clickEvent, 'emit')
-      spyOn(component.emergencyEvent, 'emit')
-
-      await component.onClick()
-
-      expect(mockWindowRefService.nativeWindow.location.assign).toHaveBeenCalledWith(
-        'http://localhost:3001/emergency-off-switch-service-unavailable?source=pupil'
-      )
-      expect(component.clickEvent.emit).not.toHaveBeenCalled()
-      expect(component.emergencyEvent.emit).toHaveBeenCalledTimes(1)
-      expect(checkStartService.submit).not.toHaveBeenCalled()
-    })
-
-    it('allows retry with the same attempt when acknowledgement fails', async () => {
-      spyOn(console, 'error')
-      const acknowledge = spyOn(checkStartService, 'acknowledge')
-      acknowledge.and.returnValues(Promise.reject(new Error('network error')), Promise.resolve())
-      spyOn(checkStartService, 'submit')
-      spyOn(component.clickEvent, 'emit')
-
-      await component.onClick()
-      expect(component.startFailed).toBeTrue()
-      expect(component.clickEvent.emit).not.toHaveBeenCalled()
-      await component.onClick()
-      expect(acknowledge.calls.argsFor(0)).toEqual(acknowledge.calls.argsFor(1))
-      expect(component.clickEvent.emit).toHaveBeenCalledTimes(1)
     })
   });
 

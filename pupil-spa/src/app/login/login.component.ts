@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, AfterViewInit } from '@angular/core'
+import { Component, ElementRef, OnInit, AfterViewInit, inject } from '@angular/core'
 import { APP_CONFIG } from '../services/config/config.service'
 import { Router } from '@angular/router'
 
@@ -13,6 +13,7 @@ import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
 import { DeviceService } from '../services/device/device.service'
 import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
+import { ServiceAvailabilityService } from '../services/service-availability/service-availability.service'
 
 @Component({
     selector: 'app-login',
@@ -22,6 +23,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service'
 })
 export class LoginComponent implements OnInit, AfterViewInit {
 
+  private readonly serviceAvailabilityService = inject(ServiceAvailabilityService)
   private submitted: boolean
   public loginModel = new Login('', '', '')
   public loginPending: boolean
@@ -95,7 +97,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
       return
     }
     this.submitted = true
-    this.userService.login(schoolPin, pupilPin)
+    return this.serviceAvailabilityService.ensureAvailable()
+      .then(() => this.userService.login(schoolPin, pupilPin))
       .then(
         async () => {
           this.loginSucceeded = true

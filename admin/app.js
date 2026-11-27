@@ -140,6 +140,9 @@ axios.defaults.httpAgent = new http.Agent({ family: 4 })
 
 setupBrowserSecurity(app)
 
+// This public read-only check does not need an admin session.
+app.get('/pupil-service-availability', require('./controllers/pupil-service-availability'))
+
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
 

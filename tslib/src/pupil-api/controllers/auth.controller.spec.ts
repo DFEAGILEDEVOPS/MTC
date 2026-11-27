@@ -3,7 +3,6 @@ import * as httpMocks from 'node-mocks-http'
 import logger from '../services/log.service.js'
 import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service.js'
 import type { Request } from 'express'
-import { EmergencyOffSwitchEnabledError } from '../errors/emergency-off-switch-enabled.error.js'
 
 class RedisPupilAuthServiceMock implements IPupilAuthenticationService {
   async authenticate (): Promise<object | undefined> {
@@ -69,17 +68,6 @@ describe('redis auth controller', () => {
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(401)
     expect(data.error).toBe('Unauthorised')
-  })
-
-  test('returns a service unavailable response when the emergency off-switch is enabled', async () => {
-    jest.spyOn(redisPupilAuthService, 'authenticate').mockRejectedValue(new EmergencyOffSwitchEnabledError())
-
-    await sut.postAuth(req, res)
-
-    const data = JSON.parse(res._getData())
-    expect(res.statusCode).toBe(503)
-    expect(data.error).toBe('Service temporarily unavailable')
-    expect(data.code).toBe('EMERGENCY_OFF_SWITCH_ENABLED')
   })
 
   test('shortcuts to return unauthorised if no schoolPin provided', async () => {

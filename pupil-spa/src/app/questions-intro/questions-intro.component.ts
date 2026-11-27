@@ -6,9 +6,6 @@ import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { CheckStartService } from '../services/check-start/check-start.service';
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
-import { APP_CONFIG } from '../services/config/config.service'
-import { WindowRefService } from '../services/window-ref/window-ref.service'
-import { v4 as uuidv4 } from 'uuid'
 
 @Component({
     selector: 'app-questions-intro',
@@ -27,13 +24,7 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
-  @Output()
-  emergencyEvent: EventEmitter<void> = new EventEmitter();
-
   public count: number;
-  public startPending = false;
-  public startFailed = false;
-  private readonly attemptId = uuidv4();
 
   constructor(
     private auditService: AuditService,
@@ -42,8 +33,7 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
     private checkStartService: CheckStartService,
     private elRef: ElementRef,
     private auditEntryFactory: AuditEntryFactory,
-    private monotonicTimeService: MonotonicTimeService,
-    private windowRefService: WindowRefService
+    private monotonicTimeService: MonotonicTimeService
   ) {
     this.count = this.questionService.getNumberOfQuestions();
   }
@@ -64,28 +54,10 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
   }
 
   async onClick() {
-    if (this.startPending) return;
-    this.startPending = true;
-    this.startFailed = false;
-    try {
-      await this.checkStartService.acknowledge(this.attemptId);
-    } catch (error) {
-      this.startPending = false;
-      if (error.status === 503 && error.error?.code === 'EMERGENCY_OFF_SWITCH_ENABLED') {
-        this.emergencyEvent.emit();
-        this.windowRefService.nativeWindow.location.assign(
-          new URL('/emergency-off-switch-service-unavailable?source=pupil', APP_CONFIG.adminBaseUrl).toString()
-        );
-      } else {
-        console.error('Unable to acknowledge check start', error);
-        this.startFailed = true;
-      }
-      return;
-    }
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     this.auditService.addEntry(this.auditEntryFactory.createCheckStarted(mtime));
     this.clickEvent.emit(null);
-    void this.checkStartService.submit(mtime.formatAsDate());
+    await this.checkStartService.submit(mtime.formatAsDate());
   }
 
   async ngOnDestroy(): Promise<void> {

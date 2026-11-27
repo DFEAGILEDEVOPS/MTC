@@ -8,7 +8,6 @@ import submitRoutes from './routes/submit.js'
 import feedbackRoutes from './routes/feedback.js'
 import pingRoute from './routes/ping.js'
 import headRoute from './routes/head.js'
-import { CheckStartController } from './controllers/check-start.controller.js'
 import corsOptions from './helpers/cors-options.js'
 import { initLogger } from './helpers/logger.js'
 import { createUuid } from '../common/uuid.js'
@@ -56,8 +55,6 @@ class App {
     /* API endpoints */
     this.express.use('/ping', pingRoute)
     this.express.use('/auth', authRoutes)
-    const checkStartController = new CheckStartController()
-    this.express.post('/check-start', (req, res) => { void checkStartController.postStart(req, res) })
     this.express.use('/submit', submitRoutes)
     this.express.use('/feedback', feedbackRoutes)
     this.express.use(headRoute)

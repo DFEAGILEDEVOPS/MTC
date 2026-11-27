@@ -6,7 +6,6 @@ import { AuditService } from '../audit/audit.service'
 import { TokenService } from '../token/token.service'
 import { AppConfigService, loadConfigMockService } from '../config/config.service'
 import { APP_INITIALIZER } from '@angular/core'
-import { HttpService } from '../http/http.service'
 
 let checkStartService: CheckStartService
 let tokenService: TokenService
@@ -15,20 +14,17 @@ let azureQueueServiceSpy: {
 };
 let auditService: AuditService
 let storageService: StorageService
-let httpServiceSpy: { post: jasmine.Spy }
 
 describe('CheckStartService', () => {
   beforeEach(() => {
     azureQueueServiceSpy = {
       addMessageToQueue: jasmine.createSpy('addMessageToQueue')
     }
-    httpServiceSpy = { post: jasmine.createSpy('post').and.resolveTo({}) }
     const inject = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           { provide: AzureQueueService, useValue: azureQueueServiceSpy },
-          { provide: HttpService, useValue: httpServiceSpy },
           TokenService,
           AuditService,
           CheckStartService,
@@ -48,21 +44,6 @@ describe('CheckStartService', () => {
   })
   it('should be created', () => {
     expect(checkStartService).toBeTruthy()
-  })
-  it('sends the check-bound token and attempt id for acknowledgement', async () => {
-    spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'signed-token' })
-    await checkStartService.acknowledge('attempt-id')
-    const [url, body, headers] = httpServiceSpy.post.calls.mostRecent().args
-    expect(url).toBe('apiBaseUrl/check-start')
-    expect(body).toEqual({ checkCode: 'abc-def', attemptId: 'attempt-id' })
-    expect(headers.get('Authorization')).toBe('Bearer signed-token')
-    expect(storageService.getCheckStartAttemptId()).toBe('attempt-id')
-  })
-  it('does not begin a check if the attempt id cannot be saved', async () => {
-    spyOn(storageService, 'setCheckStartAttemptId')
-    spyOn(storageService, 'getCheckStartAttemptId').and.returnValue(null)
-    await expectAsync(checkStartService.acknowledge('attempt-id')).toBeRejectedWithError('Unable to save check start attempt')
-    expect(httpServiceSpy.post).not.toHaveBeenCalled()
   })
   it('submit should call azure queue service successfully and audit successful call', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry')

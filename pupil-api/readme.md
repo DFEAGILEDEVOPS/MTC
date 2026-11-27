@@ -32,6 +32,30 @@ Will launch the app in development mode on http://localhost:3003/
 
 CORS is disabled in development. In production the whitelist can be configured using the CORS_WHITELIST environment variable.
 
+## Emergency off-switch
+
+Before submitting credentials, the pupil app checks the admin app's public
+`GET /pupil-service-availability` endpoint. It reads the existing switch setting
+through the admin service and returns only an `isEnabled` boolean. It
+allows cross-origin reads and disables caching.
+
+When enabled, the pupil app redirects to the emergency holding page without
+calling `/auth`. Otherwise, it uses the original pupil authentication flow.
+Availability-check failures show the existing connection/service-error page;
+they are not reported as incorrect credentials.
+
+Pupils already signed in can start or continue their check. Check-start
+notifications, submissions and upload retries retain their normal behaviour and
+do not check the switch or require an emergency-specific attempt ID.
+
+Pupil authentication does not query SQL or change its existing Redis behaviour.
+The admin app retains its existing SQL-backed setting and audit history.
+Historical check-start acknowledgement migrations are retained because they
+have already been deployed, but the application no longer uses that table.
+
+The pupil app's `ADMIN_BASE_URL` must point to the deployed admin app, not
+localhost. Deploy the admin endpoint before deploying the updated pupil app.
+
 ## Environment Variables
 
 dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application,

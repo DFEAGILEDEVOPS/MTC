@@ -84,7 +84,7 @@ test.describe('Emergency off-switch', () => {
   });
 
   test('shows the emergency holding page when a pupil signs in with generated credentials', async ({ page, baseURL }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(180_000);
     const pupilBaseUrl = baseURL === environmentUrls.dev.adminBaseUrl
       ? environmentUrls.dev.pupilBaseUrl
       : environmentUrls.test.pupilBaseUrl;
@@ -97,6 +97,7 @@ test.describe('Emergency off-switch', () => {
     const generatePinsName = 'Generate password and PINs for the official check';
     await page.getByRole('link', { name: generatePinsName, exact: true })
       .or(page.getByRole('button', { name: generatePinsName, exact: true })).click();
+    await page.waitForLoadState('load');
     const pupil = page.getByRole('checkbox', { name: /Tick pupil/i }).first();
     const pupilId = await pupil.inputValue();
     await pupil.check();
@@ -112,18 +113,32 @@ test.describe('Emergency off-switch', () => {
     await signOut(page);
 
     await enableSwitchAndSignOut(page);
+    await page.route(`${pupilBaseUrl}/assets/config.json`, async route => {
+      const response = await route.fetch();
+      expect(response.ok(), 'The pupil app configuration must load successfully').toBeTruthy();
+      const config = await response.json();
+      await route.fulfill({ response, json: { ...config, adminBaseUrl: baseURL } });
+    });
     await page.goto(`${pupilBaseUrl}/sign-in`);
     await page.getByLabel('School password', { exact: true }).fill(schoolPassword);
     await page.getByLabel('PIN', { exact: true }).fill(pupilPin);
-    const authResponse = page.waitForResponse(response =>
-      new URL(response.url()).pathname === '/auth' && response.request().method() === 'POST'
+    let authRequestSent = false;
+    page.on('request', request => {
+      if (new URL(request.url()).pathname === '/auth' && request.method() === 'POST') {
+        authRequestSent = true;
+      }
+    });
+    const availabilityResponse = page.waitForResponse(response =>
+      response.url() === `${baseURL}/pupil-service-availability` && response.request().method() === 'GET',
+      { timeout: 60_000 }
     );
     await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-    const response = await authResponse;
-    expect(response.status()).toBe(503);
-    expect((await response.json()).code).toBe('EMERGENCY_OFF_SWITCH_ENABLED');
-    await expect(page).toHaveURL(`${baseURL}/emergency-off-switch-service-unavailable?source=pupil`);
+    const response = await availabilityResponse;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual({ isEnabled: true });
+    await expect(page).toHaveURL(`${baseURL}/emergency-off-switch-service-unavailable?source=pupil`, { timeout: 60_000 });
     await expect(page.getByRole('heading', { name: holdingPageHeading, exact: true })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Sign out', exact: true })).toHaveCount(0);
+    expect(authRequestSent, 'Credentials must not be submitted while the emergency switch is enabled').toBe(false);
   });
 });

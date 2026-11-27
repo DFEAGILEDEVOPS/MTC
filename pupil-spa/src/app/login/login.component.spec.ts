@@ -22,6 +22,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { loadConfigMockService } from '../services/config/config.service'
 import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service'
 import { AuditService } from '../services/audit/audit.service'
+import { ServiceAvailabilityService } from '../services/service-availability/service-availability.service'
 
 describe('LoginComponent', () => {
   let component: LoginComponent
@@ -39,8 +40,11 @@ describe('LoginComponent', () => {
   let mockDeviceService
   let mockWindowRefService
   let qrCodeUsageService: QrCodeUsageService
+  let mockServiceAvailabilityService: jasmine.SpyObj<ServiceAvailabilityService>
 
   beforeEach(waitForAsync(() => {
+    mockServiceAvailabilityService = jasmine.createSpyObj('ServiceAvailabilityService', ['ensureAvailable'])
+    mockServiceAvailabilityService.ensureAvailable.and.resolveTo()
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     }
@@ -86,6 +90,7 @@ describe('LoginComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: Router, useValue: mockRouter },
         { provide: UserService, useValue: mockUserService },
+        { provide: ServiceAvailabilityService, useValue: mockServiceAvailabilityService },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: QrCodeUsageService, useClass: QrCodeUsageService }, // original
         { provide: AuditService, useClass: AuditService } // original
@@ -151,6 +156,33 @@ describe('LoginComponent', () => {
       component.onSubmit('goodPin', 'goodPin')
       expect(component.loginPending).toBeTruthy()
     })
+
+    it('does not send credentials until the separate availability check has succeeded', fakeAsync(() => {
+      let allowSignIn: () => void
+      mockServiceAvailabilityService.ensureAvailable.and.returnValue(new Promise<void>(resolve => { allowSignIn = resolve }))
+      spyOn(mockUserService, 'login').and.resolveTo(true)
+
+      component.onSubmit('goodPin', 'goodPin')
+      expect(mockUserService.login).not.toHaveBeenCalled()
+      allowSignIn()
+      tick(2)
+      expect(mockUserService.login).toHaveBeenCalledOnceWith('goodPin', 'goodPin')
+    }))
+
+    it('shows a service error without sending credentials if availability cannot be checked', fakeAsync(() => {
+      mockServiceAvailabilityService.ensureAvailable.and.rejectWith({
+        status: 503,
+        message: 'Unable to check service availability'
+      })
+      spyOn(mockUserService, 'login')
+
+      component.onSubmit('goodPin', 'goodPin')
+      tick(2)
+
+      expect(mockUserService.login).not.toHaveBeenCalled()
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-fail'])
+      expect(mockWindowRefService.nativeWindow.location.assign).not.toHaveBeenCalled()
+    }))
   })
 
   describe('on successful login', () => {
@@ -270,11 +302,12 @@ describe('LoginComponent', () => {
 
   describe('when the emergency off-switch is enabled', () => {
     beforeEach(() => {
-      spyOn(mockUserService, 'login').and.callFake(() => Promise.reject({
+      spyOn(mockUserService, 'login').and.resolveTo(true)
+      mockServiceAvailabilityService.ensureAvailable.and.rejectWith({
           status: 503,
           error: { code: 'EMERGENCY_OFF_SWITCH_ENABLED' },
           message: 'Service temporarily unavailable'
-        }))
+        })
     })
 
     it('redirects to the emergency EJS page without showing a login error', fakeAsync(() => {
@@ -288,6 +321,7 @@ describe('LoginComponent', () => {
       expect(mockRouter.navigate).not.toHaveBeenCalled()
       expect(loginErrorService.changeMessage).not.toHaveBeenCalled()
       expect(loginErrorDiagnosticsService.process).not.toHaveBeenCalled()
+      expect(mockUserService.login).not.toHaveBeenCalled()
     }))
 
     it('keeps the loading screen visible while navigating to the holding page', fakeAsync(() => {
@@ -299,6 +333,7 @@ describe('LoginComponent', () => {
     }))
 
     it('keeps the existing sign-in-fail behavior for unrelated service unavailable errors', fakeAsync(() => {
+      mockServiceAvailabilityService.ensureAvailable.and.resolveTo()
       mockUserService.login.and.returnValue(Promise.reject({
         status: 503,
         error: { error: 'Service unavailable' },

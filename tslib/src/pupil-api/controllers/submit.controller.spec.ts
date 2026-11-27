@@ -5,15 +5,14 @@ import logger from '../services/log.service.js'
 import { type IJwtService } from '../../services/jwt.service.js'
 import { type ICheckSubmitService } from '../../services/check-submit.service.js'
 import { ServiceBusError } from '@azure/service-bus'
+import { SqlService } from '../../sql/sql.service.js'
 
 let req: Request
 let res: Response
 let sut: SubmitController
 let jwtServiceMock: IJwtService
 let checkSubmitServiceMock: ICheckSubmitService
-let eligibilityMock: { isSubmissionAllowed: jest.Mock }
 const checkCode = '38f666df-244c-4dff-828f-4ffad7e60e4b'
-const attemptId = 'c5082eb1-0855-4d26-9447-b5798243b640'
 
 function createMockRequest (contentType: string): any {
   return httpMocks.createRequest({
@@ -49,8 +48,11 @@ describe('submit controller', () => {
     res = httpMocks.createResponse()
     jwtServiceMock = new JwtServiceMock()
     checkSubmitServiceMock = new CheckSubmitServiceMock()
-    eligibilityMock = { isSubmissionAllowed: jest.fn().mockResolvedValue(true) }
-    sut = new SubmitController(jwtServiceMock, checkSubmitServiceMock, eligibilityMock)
+    sut = new SubmitController(jwtServiceMock, checkSubmitServiceMock)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   test('returns an 400 error if the request is not JSON', async () => {
@@ -143,9 +145,9 @@ describe('submit controller', () => {
     expect(res.statusCode).toBe(500) // Generic error
   })
 
-  test('allows an acknowledged attempt and preserves it for submission retries', async () => {
+  test('allows submission retries without a start acknowledgement', async () => {
     req.headers.authorization = 'Bearer 123'
-    req.body = { checkCode, attemptId, archive: '-' }
+    req.body = { checkCode, archive: '-' }
     jest.spyOn(jwtServiceMock, 'verify').mockResolvedValue({ checkCode })
     const submit = jest.spyOn(checkSubmitServiceMock, 'submit')
       .mockRejectedValueOnce(new Error('temporary queue failure'))
@@ -156,49 +158,21 @@ describe('submit controller', () => {
     const retryRes = httpMocks.createResponse()
     await sut.postSubmit(req, retryRes)
     expect(retryRes.statusCode).toBe(200)
-    expect(eligibilityMock.isSubmissionAllowed).toHaveBeenCalledTimes(2)
-    expect(eligibilityMock.isSubmissionAllowed).toHaveBeenCalledWith(checkCode, attemptId)
     expect(submit).toHaveBeenCalledTimes(2)
+    expect(submit).toHaveBeenNthCalledWith(1, req.body)
+    expect(submit).toHaveBeenNthCalledWith(2, req.body)
   })
 
-  test('blocks an unacknowledged or different attempt when the switch is enabled', async () => {
+  test.each([false, true])('submits without querying emergency eligibility (switch enabled: %s)', async (isEnabled) => {
+    const query = jest.spyOn(SqlService.prototype, 'query').mockResolvedValue([{ isEnabled, allowed: !isEnabled }])
     req.headers.authorization = 'Bearer 123'
-    req.body = { checkCode, attemptId }
-    const response = httpMocks.createResponse()
+    req.body = { checkCode, archive: '-' }
     jest.spyOn(jwtServiceMock, 'verify').mockResolvedValue({ checkCode })
-    eligibilityMock.isSubmissionAllowed.mockResolvedValue(false)
-    const submit = jest.spyOn(checkSubmitServiceMock, 'submit')
-    await sut.postSubmit(req, response)
-    expect(response.statusCode).toBe(503)
-    expect(JSON.parse(response._getData()).code).toBe('EMERGENCY_OFF_SWITCH_ENABLED')
-    expect(eligibilityMock.isSubmissionAllowed).toHaveBeenCalledWith(checkCode, attemptId)
-    expect(submit).not.toHaveBeenCalled()
-  })
-
-  test.each([
-    ['missing attempt', undefined, checkCode],
-    ['invalid attempt', 'invalid', checkCode],
-    ['different token check', attemptId, '11111111-1111-4111-8111-111111111111']
-  ])('does not grant an emergency exception for %s', async (_label, submittedAttempt, tokenCheckCode) => {
-    req.headers.authorization = 'Bearer 123'
-    req.body = { checkCode, attemptId: submittedAttempt }
-    jest.spyOn(jwtServiceMock, 'verify').mockResolvedValue({ checkCode: tokenCheckCode })
-    eligibilityMock.isSubmissionAllowed.mockResolvedValue(false)
-    await sut.postSubmit(req, res)
-    expect(res.statusCode).toBe(503)
-    expect(eligibilityMock.isSubmissionAllowed).toHaveBeenCalledWith(
-      tokenCheckCode === checkCode ? checkCode : null,
-      submittedAttempt === attemptId ? attemptId : null
-    )
-  })
-
-  test('returns a retryable error if eligibility cannot be determined', async () => {
-    req.headers.authorization = 'Bearer 123'
-    eligibilityMock.isSubmissionAllowed.mockRejectedValue(new Error('database unavailable'))
     const submit = jest.spyOn(checkSubmitServiceMock, 'submit')
     await sut.postSubmit(req, res)
-    expect(res.statusCode).toBe(500)
-    expect(submit).not.toHaveBeenCalled()
+    expect(res.statusCode).toBe(200)
+    expect(submit).toHaveBeenCalledWith(req.body)
+    expect(query).not.toHaveBeenCalled()
   })
 })
 
